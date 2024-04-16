@@ -69,7 +69,6 @@ export default function Rules(){
       </div>
     );
 }
-
 /*
 <p style="font-size:18px">GAMEPLAY 3V3 RULES</p>
         <p>
