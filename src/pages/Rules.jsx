@@ -33,17 +33,17 @@ export default function Rules(){
           WL8, 1 ref per world, no consumables, no gadgets, no external
           assistance.{" "}
         </p>
-        <p style={{ fontSize: "16px" }}>
+        <p style={{ fontSize: "18px" }}>
           {" "}
           BOSS PICKS
           <br /> 2x alternate team 1 picking one, team 2 picking the other.
           Drake is the first boss. Matches will be determined by a best 7, or 9,
           depending on the division. <br />
         </p>
-        <p style={{ fontSize: "16px" }}>
+        <p style={{ fontSize: "18px" }}>
           CHARACTER PICKS <br /> A ban completely removes the character from
           both teams' pools. Currently, we do not allow duplicate characters.
-          You have 30 seconds to decide on a ban, else, it is forfeit. <br />
+          You have 30 seconds to decide on a ban, or else it is forfeit. <br />
           You have 30 seconds to decide on a character. You may hover a
           selection by typing "hover" before a pick. depending on draft or
           blind, the pick order may be different. you must ONLY pick characters
@@ -56,13 +56,13 @@ export default function Rules(){
           can ref will stop timer in cases of a solo ref, team 1 goes first,
           then team 2
         </p>
-        <p style={{ fontSize: "16px" }}>
+        <p style={{ fontSize: "18px" }}>
           ACCIDENTS<br /> Do not respawn until the boss is complete do not heal to
           full or obtain energy if both teams die, the team that survived for
           the longest amount of time wins only legal heals occur while the match
           timer is active
         </p>
-        <p style={{ fontSize: "16px" }}>
+        <p style={{ fontSize: "18px" }}>
           FREE RESET<br /> every team is allowed one free reset to account for
           technical issues . 2 min roll call for HP and energy as desired
         </p>
