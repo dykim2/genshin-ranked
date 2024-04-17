@@ -1,5 +1,14 @@
 export default function Rules(){
     return (
+        <nav>
+          <ul>
+            <a href= "index.html"> Home    </a>
+            <a href= "index.html"> Characters    </a>
+            <a href= "index.html"> Rules    </a>
+            <a href= "index.html"> Play    </a>
+          </ul>
+        </nav>
+        
       <div>
         <h1>Genshin Ranked rulebook</h1>
         <p style={{ fontSize: "18px" }}>
