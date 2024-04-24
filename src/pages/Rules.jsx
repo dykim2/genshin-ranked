@@ -100,8 +100,9 @@ export default function Rules(){
     <u>
       <p style={{ fontSize: "16px" }}>
         ACCIDENTS
-    </u><br /> Do not respawn until the boss is complete. Do not heal to
-    full or obtain energy if both teams die, the team that survived for
+    </u><br /> Do not respawn until the boss is complete. Do not heal or obtain energy outside of combat. If both teams
+    die, the team that
+    survived for
     the longest amount of time wins. Legal heals occur while the match timer is active.
     </p>
     <u>
