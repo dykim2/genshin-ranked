@@ -73,7 +73,8 @@ export default function Rules(){
       <p style={{ fontSize: "16px" }}>
         BOSS PICKS
     </u>
-    <br /> 2x alternate team 1 picking one, team 2 picking the other.
+    <br /> Team1 picks one character first, followed by two picks from Team2. Team1 then gets to pick two characters
+    followed by one pick from Team2.
     Drake is the first boss. Matches will be determined by a best 7 or 9,
     depending on the division. <br />
     </p>
@@ -99,21 +100,21 @@ export default function Rules(){
     <u>
       <p style={{ fontSize: "16px" }}>
         ACCIDENTS
-    </u><br /> Do not respawn until the boss is complete do not heal to
+    </u><br /> Do not respawn until the boss is complete. Do not heal to
     full or obtain energy if both teams die, the team that survived for
-    the longest amount of time wins only legal heals occur while the match
-    timer is active
+    the longest amount of time wins. Legal heals occur while the match timer is active.
     </p>
     <u>
       <p style={{ fontSize: "16px" }}>
         FREE RESET
-    </u><br /> every team is allowed one free reset to account for
+    </u><br /> Every team is allowed one free reset to account for
     technical issues. 2 min roll call for HP and energy as desired
     </p>
   </div>
 </body>
 
 </html>
+    
 /*
 <p style="font-size:18px">GAMEPLAY 3V3 RULES</p>
         <p>
