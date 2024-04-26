@@ -22,6 +22,9 @@ export default function NaviBar(){
               <li>
                 <NavLink to="/play">Play</NavLink>
               </li>
+              <li>
+                <a href="http://discord.gg/fnGdP36E2Q">Discord</a>
+              </li>
             </ul>
           </nav>
         </header>
