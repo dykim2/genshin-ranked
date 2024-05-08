@@ -7,22 +7,24 @@ export default function Rules(){
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <style>
-    body {
-      background-color: black;
-      color: white;
-    }
-  </style>
-</head>
+            div {
+              margin: 25px 75px 50px 75px;
+            }
+            body {
+              background-color: black;
+              color: white;
+            }
+          </style>
+        </head>
 
-<body>
+        <body>
 
-  <div>
-
-    <h1>Genshin Ranked rulebook</h1>
-    <p style={{ fontSize: "18px" }}>
+        <div>
+        <h1>Genshin Ranked rulebook</h1>
+        <p style={{ fontSize: "18px" }}>
       GENSHIN RANKED is a CO-OP 3v3 gamemode where players are organized in teams of 3 to fight a series of bosses.
       Whichever team can kill the bosses faster will win.
-    </p>
+        </p>
     <b>
       <p style={{ fontSize: "18px" }}>DIVISIONS: </p>
     </b>
