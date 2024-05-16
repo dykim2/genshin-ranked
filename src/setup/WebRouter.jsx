@@ -5,6 +5,8 @@ import Rules from "../pages/Rules.jsx";
 import Play from "../pages/Play.jsx";
 import InvalidPage from "../pages/InvalidPage.jsx";
 import Ranked from "./Ranked.jsx";
+import Player from "../pages/Player.jsx";
+import Redirect from "../pages/RedirectOne.jsx";
 
 export default function WebRouter() {
 
@@ -22,6 +24,8 @@ const styleInfo = () => {
           <Route path="/rules" element={<Rules />} />
           <Route path="/play" element={<Play />} />
           <Route path="/characters" element={<Characters />} />
+          <Route path="/test" element={<Player />} />
+          <Route path="/redirect" element={<Redirect />} />
           <Route path="*" element={<InvalidPage />} />
         </Route>
       </Routes>
