@@ -7,18 +7,15 @@ import InvalidPage from "../pages/InvalidPage.jsx";
 import Ranked from "./Ranked.jsx";
 import Player from "../pages/Player.jsx";
 import Redirect from "../pages/RedirectOne.jsx";
+import OneCharacter from "../pages/OneCharacter.jsx";
+import { useContext } from "react";
+import CharacterContext from "../contexts/CharacterContext.js";
 
 export default function WebRouter() {
-
-const styleInfo = () => {
-  
-}
-
-  // simple router, should route between all pages sufficiently
+  const characters = useContext(CharacterContext);
   return (
     <BrowserRouter>
       <Routes>
-        {/* we will insert the pages here */}
         <Route path="/" element={<Ranked />}>
           <Route index element={<Home />} />
           <Route path="/rules" element={<Rules />} />
@@ -26,6 +23,17 @@ const styleInfo = () => {
           <Route path="/characters" element={<Characters />} />
           <Route path="/test" element={<Player />} />
           <Route path="/redirect" element={<Redirect />} />
+          {
+            characters.map(char => {
+              return(
+                <Route
+                  key={char._id}
+                  path={`/characters/${char.name}`}
+                  element={<OneCharacter name={char.name} img={char.image} />}
+                />
+              )
+            })
+          }
           <Route path="*" element={<InvalidPage />} />
         </Route>
       </Routes>

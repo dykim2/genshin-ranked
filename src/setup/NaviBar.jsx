@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "./css/NaviBar.css"
+import icon from "../images/icon.png"
 
 export default function NaviBar(){
     return (
@@ -7,8 +8,14 @@ export default function NaviBar(){
         <header>
           <nav className="navigation">
             <ul>
-              <li>
-                <p style={{color: 'white'}}>Genshin Ranked</p>
+              <li style={{display: 'flex', alignItems: 'center', justifyContent: "center"}}>
+                <b><i><p>GENSHIN RANKED </p></i></b>
+                <img
+                  src={icon}
+                  alt="Ranked Icon"
+                  width="20"
+                  height="20"
+                />
               </li>
               <li>
                 <NavLink to="/">Home</NavLink>
