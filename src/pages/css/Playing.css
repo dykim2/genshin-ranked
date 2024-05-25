@@ -1,0 +1,8 @@
+.Modal {
+    height: 400px;
+    width: 400px;
+    position: absolute;
+    top: 35%;
+    left: 43%;
+    background-color: black;
+}

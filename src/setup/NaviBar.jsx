@@ -9,7 +9,7 @@ export default function NaviBar(){
           <nav className="navigation">
             <ul>
               <li style={{display: 'flex', alignItems: 'center', justifyContent: "center"}}>
-                <b><i><p>GENSHIN RANKED </p></i></b>
+                <b><i><p>RANKED </p></i></b>
                 <img
                   src={icon}
                   alt="Ranked Icon"

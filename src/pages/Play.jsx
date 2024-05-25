@@ -1,4 +1,8 @@
-import {Button, Row} from "react-bootstrap";
+import { useState, useEffect, useContext } from "react";
+import './css/Playing.css';
+import { Cookies, useCookies } from "react-cookie";
+import Modal from "react-modal";
+import IdentityContext from "../contexts/IdentityContext";
 /*
     notes:
     1) I need to be able to redirect the user to a page of my choosing. 
@@ -13,16 +17,67 @@ import {Button, Row} from "react-bootstrap";
     Gonna try to use browser cookies - this should solve the problem of "am i player 1 or 2?". This does not answer one key question: how can i update 
 */
 
-import {Cookies} from "react-cookie";
 export default function Play(){
-    const draft = () => {
-        alert("draft time");
+  Modal.setAppElement("#root")
+  const [refreshing, setRefresh] = useState(false); // for a refresh games option
+  const [activeGames, setActive] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [choosing, setChoosing] = useState(false);
+  const [cookies, setCookie, removeCookie] = useCookies(["player"]);
+  const [exists, setExists] = useState([]);
+  const [, forceRefresh] = useState(); // refreshes the page
+  const [identity, setIdentity] = useContext(IdentityContext);
+  // const []
+  const refreshGames = () => {
+    setRefresh(true);
+    setTimeout(() => {setRefresh(false)}, 10000) // wait 10 seconds between refreshes 
+  };
+  useEffect( () => {
+    async function findActive() {
+      let gameData = await fetch(
+        "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
+        {
+          method: "GET",
+        }
+      );
+      setActive(await gameData.json());
     }
-    const blind = () => {
-        alert("blind pick.");
+  findActive();
+  }, [refreshing])
+    const playGame = (id) => {
+      setOpen(false);
+      setChoosing(true);
+      // call api to see if a player 1 / 2 / ref exists
+      fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/find/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // obtain the player information
+          data.connected;
+        });
     }
-    const playGame = () => {
+    const close = () => {
+      setOpen(false);
+    }
+    const join = () => {
+      setOpen(true);
+    }
+    const quit = () => {
       
+    }
+    const player1 = () => {
+      setCookie("player", "1");
+    }
+    const player2 = () => {
+      setCookie("player", "2");
+    }
+    const ref = () => {
+      setCookie("player", "ref");
+    }
+    const spectate = () => {
+      setCookie("player", "spectate");
+    }
+    const joinAGame = () => {
+
     }
     const createGame = () => {
       // create the game here
@@ -40,17 +95,117 @@ export default function Play(){
     };
     return (
       <div>
+        {
+          cookies.player == "" ? null : <p style={{fontSize: 20, color: "blue"}}>You are currently in the middle of a game.</p>
+        }
         <div style={centerStyle}>
           <h1 style={{ fontSize: 65 }}>Welcome to Genshin Ranked!</h1>
           <p style={{ fontSize: 50 }}>
-            As a referee, click to start a new game!
+            Click to start a new game or join an existing one!
           </p>
-          <button style={{ fontSize: 40, marginTop: 10 }} onClick={createGame}>New Game</button>
-          <button style={{ fontSize: 40, marginTop: 10 }}>Join existing game</button>
+          <button style={{ fontSize: 40, marginTop: 10 }} onClick={createGame}>
+            New Game
+          </button>
+          <button style={{ fontSize: 40, marginTop: 10 }} onClick={join}>
+            Join existing game
+          </button>
+          <button style={{ fontSize: 40, marginTop: 10 }} onClick={() => {removeCookie("player"); forceRefresh();}}>Quit existing game</button>
+          <Modal
+            isOpen={open}
+            onRequestClose={close}
+            contentLabel="Finding a game"
+            className="Modal"
+          >
+            <h1 style={{ color: "white" }}>Current games:</h1>
+            {activeGames.map((game) => {
+              return (
+                <div
+                  key={game._id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    color: "white",
+                  }}
+                >
+                  <button
+                    style={{ fontSize: 22, width: 150 }}
+                    onClick={() => {
+                      playGame(game._id);
+                    }}
+                  >
+                    ID {game._id}
+                  </button>
+                  <p style={{ fontSize: 22 }}>
+                    {" (current status:" + game.result + ")"}
+                  </p>
+                </div>
+              );
+            })}
+            <div>
+              <button
+                disabled={refreshing}
+                style={{ width: 200, fontSize: 22, color: "red" }}
+                onClick={refreshGames}
+              >
+                {refreshing ? "Please Wait" : "Refresh"}
+              </button>
+              <button
+                style={{ width: 200, fontSize: 22, color: "blue" }}
+                onClick={close}
+              >
+                Exit
+              </button>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={choosing}
+            onRequestClose={close}
+            contentLabel="Choosing what player"
+            className="Modal"
+          >
+            <h1 style={{ color: "white" }}>Choose the player:</h1>
+            <button
+              style={{ width: 200, height: 50, marginLeft: 100, marginTop: 35 }}
+              onClick={player1}
+            >
+              Player 1
+            </button>
+            <button
+              style={{ width: 200, height: 50, marginLeft: 100 }}
+              onClick={player2}
+            >
+              Player 2
+            </button>
+            <button
+              style={{ width: 200, height: 50, marginLeft: 100 }}
+              onClick={ref}
+            >
+              Ref
+            </button>
+            <button
+              style={{ width: 200, height: 50, marginLeft: 100 }}
+              onClick={spectate}
+            >
+              Spectate
+            </button>
+            <button
+              style={{ width: 200, height: 50, marginLeft: 100 }}
+              onClick={() => {
+                setChoosing(false);
+              }}
+            >
+              Exit
+            </button>
+          </Modal>
         </div>
       </div>
     );
+    
 }
+
+
+
 /*
  2 scenarios
  1) user has a full game, wants to play. Click on a "Play" button. 
@@ -70,5 +225,4 @@ export default function Play(){
 
 
 
- question is how i plan to update each user's screen at the same time. Hence why I just plan to consolidate it to one page that ideally I can update between different screens.
 */
