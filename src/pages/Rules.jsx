@@ -64,10 +64,8 @@ export default function Rules() {
         <p style={{ fontsize: "16px" }}>
           <u>BOSS PICKS</u>
           <br />
-          Team 1 picks one character first, followed by two picks from Team2.
-          Team 1 then gets to pick two characters followed by one pick from Team
-          2. Drake is the first boss. Matches will be determined by a best 7 or
-          9, depending on the division.
+          Team 1 and Team 2 alternate boss picks. Each team chooses 3-4 boss, 
+          depending on division.
           <br />
         </p>
         <u></u>
@@ -78,7 +76,10 @@ export default function Rules() {
           Currently, we do not allow duplicate characters. You have 30 seconds
           to decide on a ban, else, it is forfeit.
           <br />
-          You have 30 seconds to decide on a character. You may hover a
+          You have 30 seconds to decide on a character. Team 1 picks one character first, 
+          followed by two picks from Team2. Team 1 then gets to pick two characters followed 
+          by one pick from Team 2. Drake is the first boss. Matches will be determined by a best 7 or
+          9, depending on the division. You may hover a
           selection by typing "hover" before a pick. Depending on draft or
           blind, the pick order may be different. You must ONLY pick characters
           that fall in your division or below based off the
