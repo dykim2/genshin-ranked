@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import './css/Playing.css';
+import { redirect, useNavigate } from "react-router-dom";
 import { Cookies, useCookies } from "react-cookie";
 import Modal from "react-modal";
 import IdentityContext from "../contexts/IdentityContext";
+import ActiveContext from "../contexts/ActiveContext";
 /*
     notes:
     1) I need to be able to redirect the user to a page of my choosing. 
@@ -20,40 +22,32 @@ import IdentityContext from "../contexts/IdentityContext";
 export default function Play(){
   Modal.setAppElement("#root")
   const [refreshing, setRefresh] = useState(false); // for a refresh games option
-  const [activeGames, setActive] = useState([]);
+  const [activeGames, setActive] = useContext(ActiveContext);
   const [open, setOpen] = useState(false);
   const [choosing, setChoosing] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["player"]);
-  const [exists, setExists] = useState([]);
   const [, forceRefresh] = useState(); // refreshes the page
-  const [identity, setIdentity] = useContext(IdentityContext);
-  // const []
+  const [identity, setIdentity] = useContext(IdentityContext); // the game the player chooses
+  const navi = useNavigate();
   const refreshGames = () => {
     setRefresh(true);
     setTimeout(() => {setRefresh(false)}, 10000) // wait 10 seconds between refreshes 
   };
   useEffect( () => {
-    async function findActive() {
-      let gameData = await fetch(
-        "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
-        {
-          method: "GET",
-        }
-      );
-      setActive(await gameData.json());
-    }
-  findActive();
-  }, [refreshing])
-    const playGame = (id) => {
+
+  }, [])
+    const playGame = async(id) => {
       setOpen(false);
-      setChoosing(true);
       // call api to see if a player 1 / 2 / ref exists
-      fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/find/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          // obtain the player information
-          data.connected;
-        });
+      let info = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/find/${id}`)
+      info = await info.json();
+      setIdentity(info[0]);
+      console.log("yike")
+      console.log(info);
+      console.log("--------------------")
+      console.log(identity)
+      // redirect to the new page (/play/id) - add to navigation
+      setChoosing(true);
     }
     const close = () => {
       setOpen(false);
@@ -61,29 +55,65 @@ export default function Play(){
     const join = () => {
       setOpen(true);
     }
-    const quit = () => {
-      
+    const navigate = (id) => { 
+      console.log("hi");
+      return navi(`/play/${id}`)
     }
-    const player1 = () => {
-      setCookie("player", "1");
+    const choosePlayer = async(playerChoice, id) => {
+      // set the player in the API
+      let valid = true;
+      console.log("----")
+      console.log(playerChoice);
+      if(playerChoice != "spectate"){
+        let res = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/players/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            player: ""+playerChoice,
+          }),
+        })
+        console.log("res")
+        if (res.status != 200) {
+          valid = false;
+          alert("An error occoured trying something.");
+        }
+        res = await res.json();
+        console.log(res);
+      }
+      if(!valid){
+        return; // don't go any further
+      }
+      setCookie("player", playerChoice);
+      forceRefresh(true);
+      console.log("success");
+      setChoosing(false);
+      navigate(id);
+      // navigate to the game page
+      // make sure to move active games to a context
     }
-    const player2 = () => {
-      setCookie("player", "2");
-    }
-    const ref = () => {
-      setCookie("player", "ref");
-    }
-    const spectate = () => {
-      setCookie("player", "spectate");
-    }
-    const joinAGame = () => {
-
-    }
-    const createGame = () => {
+    const createGame = async() => {
       // create the game here
       /*
-
+        to create a game,
+        1) generate an ID (get the last game, add 1 to id, or generate a random ID
+        2) show the screen again
+        3) navigate accordingly
       */
+     let gameInfo = await fetch("https://rankedapi-late-cherry-618.fly.dev/gameAPI/", {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({
+          _id: -1
+       }) // create next available game
+     });
+     gameInfo = await gameInfo.json();
+     setIdentity(gameInfo);
+     // once created, connect the game to the websocket api to allow for picks and bans
+     setChoosing(true);
     }
     const centerStyle = {
       display: "flex",
@@ -91,13 +121,17 @@ export default function Play(){
       justifyContent: "center",
       whitespace: 'pre-line',
       flexDirection: "column",
-      marginTop: 300
+      marginTop: 300,
+      fontFamily: "Roboto Mono"
     };
     return (
       <div>
-        {
-          cookies.player == "" ? null : <p style={{fontSize: 20, color: "blue"}}>You are currently in the middle of a game.</p>
-        }
+        {console.log("testv2 performace")}
+        {typeof cookies.player == "undefined" ? null : (
+          <p style={{ fontSize: 20, color: "blue" }}>
+            You are currently in the middle of a game.
+          </p>
+        )}
         <div style={centerStyle}>
           <h1 style={{ fontSize: 65 }}>Welcome to Genshin Ranked!</h1>
           <p style={{ fontSize: 50 }}>
@@ -109,7 +143,15 @@ export default function Play(){
           <button style={{ fontSize: 40, marginTop: 10 }} onClick={join}>
             Join existing game
           </button>
-          <button style={{ fontSize: 40, marginTop: 10 }} onClick={() => {removeCookie("player"); forceRefresh();}}>Quit existing game</button>
+          <button
+            style={{ fontSize: 40, marginTop: 10 }}
+            onClick={() => {
+              removeCookie("player");
+              forceRefresh();
+            }}
+          >
+            Quit existing game
+          </button>
           <Modal
             isOpen={open}
             onRequestClose={close}
@@ -129,15 +171,15 @@ export default function Play(){
                   }}
                 >
                   <button
-                    style={{ fontSize: 22, width: 150 }}
-                    onClick={() => {
-                      playGame(game._id);
+                    style={{ fontSize: 18, width: 150 }}
+                    onClick={async () => {
+                      await playGame(game._id);
                     }}
                   >
                     ID {game._id}
                   </button>
-                  <p style={{ fontSize: 22 }}>
-                    {" (current status:" + game.result + ")"}
+                  <p style={{ fontSize: 18 }}>
+                    {" (current status: " + game.result + ")"}
                   </p>
                 </div>
               );
@@ -145,13 +187,30 @@ export default function Play(){
             <div>
               <button
                 disabled={refreshing}
-                style={{ width: 200, fontSize: 22, color: "red" }}
-                onClick={refreshGames}
+                style={{
+                  width: 250,
+                  fontSize: 22,
+                  color: "red",
+                }}
+                onClick={async () => {
+                  refreshGames();
+                  let gameData = await fetch(
+                    "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
+                    {
+                      method: "GET",
+                    }
+                  );
+                  setActive(await gameData.json());
+                }}
               >
                 {refreshing ? "Please Wait" : "Refresh"}
               </button>
               <button
-                style={{ width: 200, fontSize: 22, color: "blue" }}
+                style={{
+                  width: 250,
+                  fontSize: 22,
+                  color: "blue",
+                }}
                 onClick={close}
               >
                 Exit
@@ -167,25 +226,28 @@ export default function Play(){
             <h1 style={{ color: "white" }}>Choose the player:</h1>
             <button
               style={{ width: 200, height: 50, marginLeft: 100, marginTop: 35 }}
-              onClick={player1}
+              onClick={() => choosePlayer("1", identity._id)}
+              disabled={identity.connected[0] == 1 ? true : false}
             >
               Player 1
             </button>
             <button
               style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={player2}
+              onClick={() => choosePlayer("2", identity._id)}
+              disabled={identity.connected[1] == 1 ? true : false}
             >
               Player 2
             </button>
             <button
               style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={ref}
+              onClick={() => choosePlayer("ref", identity._id)}
+              disabled={identity.connected[2] == 2 ? true : false}
             >
               Ref
             </button>
             <button
               style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={spectate}
+              onClick={() => choosePlayer("spectate", identity._id)}
             >
               Spectate
             </button>

@@ -1,7 +1,6 @@
 // will need a context to generate a url randomly 
 // link to a second page on clicking of the url, which then redirects to play but sets the user cookies so they see stuff on their end
 import { useContext, useEffect } from "react";
-import { Button } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import PlayingContext from "../contexts/PlayingContext";
@@ -24,6 +23,6 @@ export default function Redirect(){
         navi("/play");
     }
     return(
-        <Button style={{fontSize: 24}} onClick={press}>Press to direct</Button>
+        <button style={{fontSize: 24}} onClick={press}>Press to direct</button>
     )
 }

@@ -1,5 +1,4 @@
 import { useContext, useState } from "react"
-import { Button } from "react-bootstrap";
 import {useCookies, withCookies, Cookies} from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import PlayingContext from "../contexts/PlayingContext";
@@ -69,7 +68,7 @@ export default function Player() {
       <p>Welcome! </p>
       <p>You are player {cookies.player}</p>
       <br />
-      <Button onClick={update}>Set a cookie!</Button>
+      <button onClick={update}>Set a cookie!</button>
       {cookies.player == 1 ? (
         <p style={{ fontSize: "18px" }}>Welcome player 1!</p>
       ) : (

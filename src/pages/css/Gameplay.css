@@ -1,0 +1,99 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, [col] 1fr); 
+    grid-template-rows: auto;
+    grid-gap: 4px;
+    margin: 20px;
+}
+
+.grid {
+    padding: 20px;
+    font-size: 105%;
+    color: #fff;
+    border-radius: 5px;
+    background-color: #444;
+}
+
+.one {
+    grid-column: 1 / span 1;
+    grid-row: row 1;
+}
+.two {
+    grid-column: 2 / span 1;
+    grid-row: row 1;
+}
+.three {
+    grid-column: 3 / span 1;
+    grid-row: row 1;
+}
+.four {
+    grid-column: 1 / span 1;
+    grid-row: row 2;
+}
+.five {
+    grid-column: 2 / span 1;
+    grid-row: row 2;
+    display: grid;
+    grid-gap: 5px;
+}
+.six {
+    grid-column: 1;
+    grid-row: 1;
+    align-items: center;
+    justify-content: center;
+}
+.seven {
+    grid-column: 3 / span 1;
+    grid-row: row 2;
+}
+.eight {
+    grid-column: 1 / span 1;
+    grid-row: row 3;
+}
+.nine {
+    grid-column: 2 / span 1;
+    grid-row: row 3;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    grid-gap: 15px;
+}
+.ten {
+    grid-column: 3 / span 1;
+    grid-row: row 3;
+}
+.eleven {
+    grid-column: 1 / span 1;
+    grid-row: row 4;
+    display: grid;
+    grid-gap: 150px;
+    grid-template-columns: repeat(auto-fill, [col] 1fr);
+    padding: 40px;
+}
+.twelve {
+    grid-column: 2 / span 1;
+    grid-row: row 4;
+}
+.thirteen {
+    grid-column: 3 / span 1;
+    grid-row: row 4;
+    display: grid;
+    grid-gap: 150px;
+    grid-template-columns: repeat(auto-fill, [col] 1fr);
+    padding: 40px;
+}
+.sub-left {
+    grid-column: 1;
+    grid-row: 1;
+}
+.sub-center-left {
+    grid-column: 2;
+    grid-row: 1;
+}
+.sub-center-right {
+    grid-column: 3;
+    grid-row: 1;
+}
+.sub-right {
+    grid-column: 4;
+    grid-row: 1;
+}
