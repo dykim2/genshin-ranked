@@ -261,6 +261,7 @@ export default function Game(props){
  
 const sendSelection = (teamNum, selection) => {
   let gameID = props.id;
+  console.log(`props: ${JSON.stringify(props)}`);
   // use the selection variable
   if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
     console.log("identity error");
@@ -314,7 +315,7 @@ const sendSelection = (teamNum, selection) => {
         }
       } else if(identity.bans[3]._id == -1){
         // first four bans (or 5)
-        for (let i = 0; i < 4; i--) {
+        for (let i = 0; i < 4; i++) {
           if (identity.bans[i]._id == -1) {
             // last boss that has not been selected
             (i + 1) % 2 == 0 ? changeTurn(1) : changeTurn(2);
