@@ -8,3 +8,13 @@
     overflow-y: scroll;
     font-family: 'Roboto Mono';
 }
+
+.playbutton{
+    /* CSS for buttons in play menu 
+    lines 150-157 in Play.jsx
+    */
+    font-size: 40px; 
+    margin-top: 10px; 
+    border-radius: 10px;
+    padding: 10px;
+}

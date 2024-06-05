@@ -147,14 +147,14 @@ export default function Play(){
           <p style={{ fontSize: 50 }}>
             Click to start a new game or join an existing one!
           </p>
-          <button style={{ fontSize: 40, marginTop: 10 }} onClick={createGame}>
+          <button className="playbutton" onClick={createGame}>
             New Game
           </button>
-          <button style={{ fontSize: 40, marginTop: 10 }} onClick={join}>
+          <button className="playbutton"  onClick={join}>
             Join existing game
           </button>
           <button
-            style={{ fontSize: 40, marginTop: 10 }}
+          className="playbutton"
             onClick={() => {
               removeCookie("player");
               forceRefresh();
