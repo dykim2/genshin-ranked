@@ -10,23 +10,30 @@ export default function Characters() {
   const wait = () => {
     setRefreshing(true);
     setTimeout(() => {
-        setRefreshing(false)
-        console.log("wait");
-      }, 2000
-    );
-  }
-  
+      setRefreshing(false);
+      console.log("wait");
+    }, 2000);
+  };
+  // <button disabled={refreshing} style={{fontSize: 24, marginLeft: "300px", color: "red", backgroundColor: "transparent", outlineColor: "red"}} onClick={() => {}}>{refreshing ? "Please wait to refresh" : "Click me to refresh"}</button>
   return (
-    <div style={{color: "white"}}>
-      <p>Choose a character to see more about them and their restrictions for ranked play!</p>
-      <button disabled={refreshing} style={{fontSize: 24, marginLeft: "300px", color: "red", backgroundColor: "transparent", outlineColor: "red"}} onClick={() => {}}>{refreshing ? "Please wait to refresh" : "Click me to refresh"}</button>
-      {
-        chars.map(char => {
-          return(
-            (char._id < 0 || typeof char._id == "undefined") ? null : <Link style={{color: chooseColor(char.element)}} key={char.name} to={`/characters/${char.name}`}><br />{char.name}</Link>
-          )
-        })
-      }
+    <div style={{ color: "white" }}>
+      <p>
+        Choose a character to see more about them and their restrictions for
+        ranked play!
+      </p>
+
+      {chars.map((char) => {
+        return char._id < 0 || typeof char._id == "undefined" ? null : (
+          <Link
+            style={{ color: chooseColor(char.element) }}
+            key={char.name}
+            to={`/characters/${char.name}`}
+          >
+            <br />
+            {char.name}
+          </Link>
+        );
+      })}
     </div>
   );
 }

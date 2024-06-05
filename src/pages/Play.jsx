@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import './css/Playing.css';
-import { redirect, useNavigate } from "react-router-dom";
-import { Cookies, useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import Modal from "react-modal";
-import IdentityContext from "../contexts/IdentityContext";
 import ActiveContext from "../contexts/ActiveContext";
 /*
     notes:
@@ -19,6 +18,8 @@ import ActiveContext from "../contexts/ActiveContext";
     Gonna try to use browser cookies - this should solve the problem of "am i player 1 or 2?". This does not answer one key question: how can i update 
 */
 
+const gameInfo = () => JSON.stringify(sessionStorage.getItem("game")) || { connected: [0, 0, 0] };
+
 export default function Play(){
   Modal.setAppElement("#root")
   const [refreshing, setRefresh] = useState(false); // for a refresh games option
@@ -27,25 +28,27 @@ export default function Play(){
   const [choosing, setChoosing] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["player"]);
   const [, forceRefresh] = useState(); // refreshes the page
-  const [identity, setIdentity] = useContext(IdentityContext); // the game the player chooses
+  const [status, setStatus] = useState(gameInfo()); // the game the player chooses
   const navi = useNavigate();
+  const [creating, setCreating] = useState(false);
+  const [readying, setReadying] = useState(false);
   const refreshGames = () => {
     setRefresh(true);
     setTimeout(() => {setRefresh(false)}, 10000) // wait 10 seconds between refreshes 
   };
   useEffect( () => {
-
-  }, [])
+    console.log("resetting in play")
+    sessionStorage.setItem("game", JSON.stringify(status));
+  }, [status])
     const playGame = async(id) => {
+      setCreating(false);
       setOpen(false);
       // call api to see if a player 1 / 2 / ref exists
+      sessionStorage.removeItem("game");
       let info = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/find/${id}`)
       info = await info.json();
-      setIdentity(info[0]);
-      console.log("yike")
-      console.log(info);
-      console.log("--------------------")
-      console.log(identity)
+      setStatus(info[0]);
+      sessionStorage.setItem("game", JSON.stringify(info[0]));
       // redirect to the new page (/play/id) - add to navigation
       setChoosing(true);
     }
@@ -60,11 +63,18 @@ export default function Play(){
       return navi(`/play/${id}`)
     }
     const choosePlayer = async(playerChoice, id) => {
+      setReadying(true);
       // set the player in the API
       let valid = true;
-      console.log("----")
-      console.log(playerChoice);
-      if(playerChoice != "spectate"){
+      let bosses = await fetch(
+        "https://rankedapi-late-cherry-618.fly.dev/bossAPI/all",
+        {
+          method: "GET",
+        }
+      );
+      bosses = await bosses.json();
+      sessionStorage.setItem("bosses", JSON.stringify(bosses[0]));
+      if(playerChoice != "spectate" && !creating){
         let res = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/players/${id}`, {
           method: "PUT",
           headers: {
@@ -74,44 +84,44 @@ export default function Play(){
             player: ""+playerChoice,
           }),
         })
-        console.log("res")
         if (res.status != 200) {
           valid = false;
-          alert("An error occoured trying something.");
+          alert("An error occured trying something.");
         }
         res = await res.json();
-        console.log(res);
+      }
+      else if(creating){
+        let res = await fetch(
+          `https://rankedapi-late-cherry-618.fly.dev/gameAPI/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              _id: -1,
+              player: "" + playerChoice,
+            }),
+          }
+        );
+        sessionStorage.removeItem("game");
+        res = await res.json();
+        setStatus(res[0]);
+        sessionStorage.setItem("game", JSON.stringify(res[0]))
+        id = res[0]._id;
       }
       if(!valid){
         return; // don't go any further
       }
-      setCookie("player", playerChoice);
-      forceRefresh(true);
-      console.log("success");
+      setCookie("player", ""+playerChoice+" game "+id);
       setChoosing(false);
+      setReadying(false);
       navigate(id);
-      // navigate to the game page
-      // make sure to move active games to a context
+      window.location.reload();
     }
     const createGame = async() => {
       // create the game here
-      /*
-        to create a game,
-        1) generate an ID (get the last game, add 1 to id, or generate a random ID
-        2) show the screen again
-        3) navigate accordingly
-      */
-     let gameInfo = await fetch("https://rankedapi-late-cherry-618.fly.dev/gameAPI/", {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({
-          _id: -1
-       }) // create next available game
-     });
-     gameInfo = await gameInfo.json();
-     setIdentity(gameInfo);
+      setCreating(true);
      // once created, connect the game to the websocket api to allow for picks and bans
      setChoosing(true);
     }
@@ -200,7 +210,8 @@ export default function Play(){
                       method: "GET",
                     }
                   );
-                  setActive(await gameData.json());
+                  gameData = await gameData.json();
+                  setActive(gameData[0]);
                 }}
               >
                 {refreshing ? "Please Wait" : "Refresh"}
@@ -223,42 +234,66 @@ export default function Play(){
             contentLabel="Choosing what player"
             className="Modal"
           >
-            <h1 style={{ color: "white" }}>Choose the player:</h1>
-            <button
-              style={{ width: 200, height: 50, marginLeft: 100, marginTop: 35 }}
-              onClick={() => choosePlayer("1", identity._id)}
-              disabled={identity.connected[0] == 1 ? true : false}
-            >
-              Player 1
-            </button>
-            <button
-              style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={() => choosePlayer("2", identity._id)}
-              disabled={identity.connected[1] == 1 ? true : false}
-            >
-              Player 2
-            </button>
-            <button
-              style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={() => choosePlayer("ref", identity._id)}
-              disabled={identity.connected[2] == 2 ? true : false}
-            >
-              Ref
-            </button>
-            <button
-              style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={() => choosePlayer("spectate", identity._id)}
-            >
-              Spectate
-            </button>
-            <button
-              style={{ width: 200, height: 50, marginLeft: 100 }}
-              onClick={() => {
-                setChoosing(false);
-              }}
-            >
-              Exit
-            </button>
+            {readying ? <p>Loading your game... You will be automatically redirected!</p> : <div>
+              <h1 style={{ color: "white" }}>Choose the player:</h1>
+              <button
+                style={{
+                  width: 200,
+                  height: 50,
+                  marginLeft: 100,
+                  marginTop: 35,
+                }}
+                onClick={() => choosePlayer("1", status._id)}
+                disabled={
+                  typeof status.connected != "undefined" &&
+                  status.connected[0] == 1
+                    ? true
+                    : false
+                }
+              >
+                Player 1
+              </button>
+              <button
+                style={{ width: 200, height: 50, marginLeft: 100 }}
+                onClick={() => choosePlayer("2", status._id)}
+                disabled={
+                  typeof status.connected != "undefined" &&
+                  status.connected[1] == 1
+                    ? true
+                    : false
+                }
+              >
+                Player 2
+              </button>
+              <button
+                style={{ width: 200, height: 50, marginLeft: 100 }}
+                onClick={() => choosePlayer("ref", status._id)}
+                disabled={
+                  typeof status.connected != "undefined" &&
+                  status.connected[2] == 2
+                    ? true
+                    : false
+                }
+              >
+                Ref
+              </button>
+              <button
+                style={{ width: 200, height: 50, marginLeft: 100 }}
+                onClick={() => choosePlayer("spectate", status._id)}
+              >
+                Spectate
+              </button>
+              <button
+                style={{ width: 200, height: 50, marginLeft: 100 }}
+                onClick={() => {
+                  setChoosing(false); // stop choosing and remove game information
+                  setStatus({ connected: [0, 0, 0] }); // back to default
+                  sessionStorage.removeItem("game");
+                }}
+              >
+                Exit
+              </button>
+            </div>}
           </Modal>
         </div>
       </div>

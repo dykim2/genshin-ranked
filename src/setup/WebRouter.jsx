@@ -1,5 +1,4 @@
-import { BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import {ErrorBoundary} from "react-error-boundary";
+import {Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import Characters from "../pages/Characters.jsx";
 import Home from "../pages/Home.jsx";
 import Rules from "../pages/Rules.jsx";
@@ -11,13 +10,12 @@ import Redirect from "../pages/RedirectOne.jsx";
 import OneCharacter from "../pages/OneCharacter.jsx";
 import { useContext, useEffect } from "react";
 import CharacterContext from "../contexts/CharacterContext.js";
-import IdentityContext from "../contexts/IdentityContext.js";
 import Game from "../pages/Game.jsx";
 import ActiveContext from "../contexts/ActiveContext.js";
+import { PlayingContext, socket } from "../contexts/PlayingContext.js";
 
 export default function WebRouter() {
   const [characters, setCharacters] = useContext(CharacterContext);
-  const [identity, setIdentity] = useContext(IdentityContext); // distinguish this as the game selected by the player, the others are just active games and thereby the link will be valid
   const [active, setActive] = useContext(ActiveContext)
   useEffect(() => {
     // obtain list of characters, save them to a context
@@ -36,6 +34,7 @@ export default function WebRouter() {
       });
       arr.sort(compare);
       setCharacters(arr);
+      sessionStorage.setItem("characters", JSON.stringify(arr));
     }
     async function findActive() {
       let gameData = await fetch(
@@ -63,7 +62,7 @@ function ErrorPage({error, resetErrorBoundary}){
     <div style={centerStyle}>
         <h1 style={{ fontSize: 65 }}>Oh no, something went wrong!</h1>
         <p style={{ fontSize: 50 }}>
-          Press this button to return to home, and please send a bug report explaining how you got to this screen.
+          Navigate to / to return home, and please send a bug report explaining how you got to this screen.
         </p>
         <button onClick={resetErrorBoundary} style={{fontSize: 35}}>back</button>
     </div>
@@ -71,7 +70,7 @@ function ErrorPage({error, resetErrorBoundary}){
 }
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Ranked />}>
+      <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
         <Route index element={<Home />} />
         <Route path="/rules" element={<Rules />} />
         <Route path="/play" element={<Play />} />
@@ -84,7 +83,6 @@ function ErrorPage({error, resetErrorBoundary}){
             />
           );
         })}
-        <Route path={`/play/${identity._id}`} element={<Game />} />
         <Route path="/characters" element={<Characters />} />
         <Route path="/test" element={<Player />} />
         <Route path="/redirect" element={<Redirect />} />
@@ -101,13 +99,35 @@ function ErrorPage({error, resetErrorBoundary}){
       </Route>
     )
   );
+  const gameRoutes = () => {
+    
+  }
+  const newRouter = createBrowserRouter([
+    {
+      path: "/",
+      element: <Ranked />,
+      children: [
+        {
+          index: true,
+          element: <Home />
+        },
+        {
+          path: "rules",
+          element: <Rules />
+        },
+        {
+          path: "play",
+          element: <Play />
+        },
+      ],
+      errorElement: <ErrorPage />
+
+    }
+  ])
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorPage}
-      onReset={() => window.location.replace("/")}
-    >
+    <PlayingContext.Provider value={socket}>
       <RouterProvider router={router} />
-    </ErrorBoundary>
+    </PlayingContext.Provider>
   );
 }
 

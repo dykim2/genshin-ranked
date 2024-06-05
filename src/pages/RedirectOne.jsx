@@ -3,7 +3,6 @@
 import { useContext, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import PlayingContext from "../contexts/PlayingContext";
 export default function Redirect(){
     // player 1 redirect
     // on loading of this page, add cookies to the browser stating this is player 1
@@ -11,7 +10,6 @@ export default function Redirect(){
     
     const [cookies, setCookie] = useCookies(['player']);
     const navi = useNavigate();
-    const [players, setPlayers] = useContext(PlayingContext);
     useEffect(() => {
         if (cookies.player == 1) {
           setCookie("player", 2);
