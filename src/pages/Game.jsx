@@ -261,7 +261,6 @@ export default function Game(props){
  
 const sendSelection = (teamNum, selection) => {
   let gameID = props.id;
-  console.log(`props: ${JSON.stringify(props)}`);
   // use the selection variable
   if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
     console.log("identity error");
@@ -306,6 +305,7 @@ const sendSelection = (teamNum, selection) => {
       // to make sure the turn order is consistent on a page refresh
 
       if (identity.bosses[identity.bosses.length - 1]._id == -1) {
+        //if the last boss has not been selected
         for (let i = identity.bosses.length - 1; i > -1; i--) {
           if (identity.bosses[i]._id != -1) {
             // last boss that has not been selected
