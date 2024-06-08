@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext, useCallback, Fragment} from "react";
+import { useState, useEffect, useContext, useCallback, Fragment } from "react";
 import { useCookies } from "react-cookie";
 import "./css/Playing.css";
 import "./css/Gameplay.css";
@@ -20,19 +20,22 @@ const findBosses = async () => {
   bosses = await bosses.json();
   return bosses[0];
 };
-function MyTurn (turnInfo, id) {
+function MyTurn(turnInfo, id) {
   const [cookieInfo, setCookie] = useCookies(["player"]);
   if ("" + turnInfo.turnInfo == cookieInfo.player.substring(0, 1)) {
     return <p style={{ color: "red" }}>YOUR TURN!</p>;
   } else if (
     (cookieInfo.player.substring(0, 1) == "1" ||
-    cookieInfo.player.substring(0, 1) == "2") && turnInfo.turnInfo > 0
+      cookieInfo.player.substring(0, 1) == "2") &&
+    turnInfo.turnInfo > 0
   ) {
     return <p style={{ color: "red" }}>Opponent's turn!</p>;
   } else {
-    return <p style={{ color: "red" }}>It is team {turnInfo.turnInfo}'s turn!</p>;
+    return (
+      <p style={{ color: "red" }}>It is team {turnInfo.turnInfo}'s turn!</p>
+    );
   }
-};
+}
 const forwardTimes = () => {
   console.log("yes");
 };
@@ -40,28 +43,29 @@ const parseBoss = (data) => {
   // takes in a copy of local storage usestate
   // takes in a copy of data
   // returns the value to add to sessionStorage
-    // find first boss
-    const identity = JSON.parse(sessionStorage.getItem("game"));
-    console.log("----------");
-    console.log(identity);
-    const bossList = JSON.parse(sessionStorage.getItem("bosses"));
-    let nextArr = [0, 2, 1];
-    let newBosses = [...identity.bosses];
-    for (let i = 0; i < identity.bosses.length; i++) {
-      if (identity.bosses[i]._id == -1) {
-        newBosses[i] = bossList[data.boss];
-        break;
-      }
+  // find first boss
+  const identity = JSON.parse(sessionStorage.getItem("game"));
+  console.log("----------");
+  console.log(identity);
+  const bossList = JSON.parse(sessionStorage.getItem("bosses"));
+  let nextArr = [0, 2, 1];
+  let newBosses = [...identity.bosses];
+  for (let i = 0; i < identity.bosses.length; i++) {
+    if (identity.bosses[i]._id == -1) {
+      newBosses[i] = bossList[data.boss];
+      break;
     }
+  }
   let returnVal = "";
   if (data.nextTeam == -1) {
-    
-    alert("Team 2 has selected " + bossList[data.boss].boss + " for their boss!");
+    alert(
+      "Team 2 has selected " + bossList[data.boss].boss + " for their boss!"
+    );
     returnVal = {
       ...identity,
       result: "ban",
       bosses: newBosses,
-      turn: 1
+      turn: 1,
     };
   } else {
     alert(
@@ -74,13 +78,13 @@ const parseBoss = (data) => {
     returnVal = {
       ...identity,
       bosses: newBosses,
-      turn: data.nextTeam
+      turn: data.nextTeam,
     };
   }
-  console.log("return")
+  console.log("return");
   console.log(returnVal);
   return returnVal;
-}
+};
 function compare(one, two) {
   // compare characters
   if (one._id == "undefined") {
@@ -103,8 +107,8 @@ const parseBan = (data) => {
   let index = -1;
   for (let i = 0; i < identity.bans.length; i++) {
     if (identity.bans[i]._id == -1) {
-      for(let j = 0; j < charList.length; j++){
-        if(charList[j]._id == data.ban){
+      for (let j = 0; j < charList.length; j++) {
+        if (charList[j]._id == data.ban) {
           newBans[i] = charList[j];
           index = j;
           break;
@@ -115,13 +119,13 @@ const parseBan = (data) => {
   }
   if (data.nextTeam == -2) {
     alert("Team 2 has banned " + charList[index].name + "!");
-    return{
+    return {
       ...identity,
       bans: newBans,
       result: "pick",
-      turn: 1
+      turn: 1,
     };
-  } else if(data.nextTeam == -1){
+  } else if (data.nextTeam == -1) {
     alert("Team 1 has banned " + charList[index].name + "!");
     return {
       ...identity,
@@ -137,13 +141,13 @@ const parseBan = (data) => {
         charList[index].name +
         "!"
     );
-    return{
-    ...identity,
-    bans: newBans,
-    turn: data.nextTeam
-  };
+    return {
+      ...identity,
+      bans: newBans,
+      turn: data.nextTeam,
+    };
   }
-}
+};
 const parsePick = (data) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
@@ -168,7 +172,6 @@ const parsePick = (data) => {
       pickst1: newPicks,
       turn: data.nextTeam,
     };
-    
   } else {
     let newPicks = [...identity.pickst2];
     for (let i = 0; i < identity.pickst2.length; i++) {
@@ -186,13 +189,13 @@ const parsePick = (data) => {
     returnInfo = {
       ...identity,
       pickst2: newPicks,
-      turn: data.nextTeam
+      turn: data.nextTeam,
     };
   }
   // console.log("index: "+index)
   if (data.nextTeam == -1) {
     // picks are over
-    console.log("sent from parsepick")
+    console.log("sent from parsepick");
     returnInfo = {
       ...returnInfo,
       result: "play",
@@ -211,26 +214,26 @@ const parsePick = (data) => {
     alert("Team " + data.team + " has selected " + charList[index].name + "!");
   }
   return returnInfo;
-}
+};
 const parseTimes = (identity, data) => {
   if (data[0] == 1) {
     let newTimes = [...timest1];
     newTimes[data[1]] = data[2];
-    return{
+    return {
       ...identity,
       timest1: newTimes,
     };
   } else {
     let newTimes = [...timest2];
     newTimes[data[1]] = data[2];
-    return{
+    return {
       ...identity,
       timest2: newTimes,
     };
   }
-}
+};
 
-export default function Game(props){
+export default function Game(props) {
   // the actual meat of the game, including picks / bans / etc
   // const [ident, setIdent] = useAtom(atom({ connected: [0, 0, 0] }));
   const [identity, setIdentity] = useState(gameInfo());
@@ -238,11 +241,13 @@ export default function Game(props){
   const [selection, setSelection] = useState(""); // what character they choose
   const [showInfo, setShow] = useState("boss"); // show bosses, characters, or neither (character, boss, none)
   // const [update, setUpdate] = useState(false);
-  const [bosses, setBosses] = useState(JSON.parse(sessionStorage.getItem("bosses")));
+  const [bosses, setBosses] = useState(
+    JSON.parse(sessionStorage.getItem("bosses"))
+  );
   const [turn, setTurn] = useState(1); // current turn
   const [cookies, setCookie] = useCookies(["player"]);
   const socket = useContext(PlayingContext);
-    // https://rankedwebsocketapi.fly.dev/
+  // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
     sessionStorage.setItem("game", JSON.stringify(info));
     setIdentity(info);
@@ -250,50 +255,50 @@ export default function Game(props){
 
   const changeTurn = (newTurn) => {
     setTurn(newTurn);
-    console.log("new turn: " +newTurn);
-  }
+    console.log("new turn: " + newTurn);
+  };
   /*
   useEffect(() => {
     sessionStorage.setItem("game", JSON.stringify(identity));
   }, [identity])
   */
- 
-const sendSelection = (teamNum, selection) => {
-  let gameID = props.id;
-  // use the selection variable
-  if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
-    console.log("identity error");
-    return;
-  }
-  // boss, pick, etc
-  let res = identity.result;
-  let req = "";
-  if (res.toLowerCase() == "waiting") {
-    req = JSON.stringify({
-      id: gameID,
-      type: "add",
-      changed: "boss",
-      data: {
-        character: selection.id,
-        boss: selection.id,
-        team: teamNum,
-      },
-    });
-  } else {
-    req = JSON.stringify({
-      id: gameID,
-      type: "add",
-      changed: identity.result,
-      data: {
-        character: selection.id,
-        boss: selection.id,
-        team: teamNum,
-      },
-    });
-  }
-  console.log("sent from sendselection");
-  socket.send(req);
-};
+
+  const sendSelection = (teamNum, selection) => {
+    let gameID = props.id;
+    // use the selection variable
+    if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
+      console.log("identity error");
+      return;
+    }
+    // boss, pick, etc
+    let res = identity.result;
+    let req = "";
+    if (res.toLowerCase() == "waiting") {
+      req = JSON.stringify({
+        id: gameID,
+        type: "add",
+        changed: "boss",
+        data: {
+          character: selection.id,
+          boss: selection.id,
+          team: teamNum,
+        },
+      });
+    } else {
+      req = JSON.stringify({
+        id: gameID,
+        type: "add",
+        changed: identity.result,
+        data: {
+          character: selection.id,
+          boss: selection.id,
+          team: teamNum,
+        },
+      });
+    }
+    console.log("sent from sendselection");
+    socket.send(req);
+  };
   useEffect(() => {
     // setup the socket
     /*
@@ -318,7 +323,7 @@ const sendSelection = (teamNum, selection) => {
     // Listen for messages
     socket.addEventListener("message", function (event) {
       console.log(JSON.parse(event.data));
-      console.log("^^^^")
+      console.log("^^^^");
       let data = JSON.parse(event.data);
       if (data.message.toLowerCase() != "success") {
         console.log(data);
@@ -350,7 +355,7 @@ const sendSelection = (teamNum, selection) => {
         }
         case "pick": {
           res = parsePick(data, characters);
-          if(data.nextTeam == -1){
+          if (data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
                 type: "switch",
@@ -392,14 +397,14 @@ const sendSelection = (teamNum, selection) => {
       console.log(event.data);
       socket.close();
     });
-    
+
     return () => {
-      if(socket.readyState === 1){
+      if (socket.readyState === 1) {
         socket.close();
       }
     };
   }, []);
- 
+
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
   let picks = [0, 2, 4, 6, 8, 1, 3, 5, 7];
   let bans = [0, 2, 5, 1, 3, 4];
@@ -532,7 +537,7 @@ const sendSelection = (teamNum, selection) => {
         <div className="grid seven">
           {[0, 1, 2].map((val) => {
             return (
-              <div key={val} className={`pick pick-${4 * val + 1}`}>
+              <div key={val} className={`pick pick-${4 * val + 1}`} style={{textAlign:"center"}}>
                 <p>
                   {typeof identity.playerst2 == "undefined" ||
                   typeof identity.playerst2[val] == "undefined"
@@ -544,8 +549,19 @@ const sendSelection = (teamNum, selection) => {
           })}
           {[0, 1, 2, 3, 4, 5].map((val) => {
             return (
-              <Fragment key={val}>
-                <p className={`pick pick-${2 * val + 2}`}>
+              <div
+              key={val}
+              className={`pick pick-${2 * val + 2}`}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "end",
+              }}
+            >
+                <p
+              // className={`pick pick-${2 * val + 2}`}
+              >
                   {typeof identity.pickst2 == "undefined" ||
                   typeof identity.pickst2[val] == "undefined"
                     ? "pick " + (val + 1)
@@ -553,8 +569,10 @@ const sendSelection = (teamNum, selection) => {
                 </p>
                 <img
                   key={val}
-                  className={`pick pick-${val + 13}`}
-                  width={IMG_SIZE}
+                  // className={`pick pick-${2 * val + 2}`}
+                // className={`pick pick-${val + 13}`}
+                  style={{paddingLeft: "5px" }}
+                width={IMG_SIZE}
                   height={IMG_SIZE}
                   src={
                     typeof identity.pickst2 == "undefined" ||
@@ -563,7 +581,7 @@ const sendSelection = (teamNum, selection) => {
                       : identity.pickst2[val].icon
                   }
                 />
-              </Fragment>
+              </div>
             );
           })}
         </div>

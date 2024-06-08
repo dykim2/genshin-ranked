@@ -215,7 +215,7 @@ export default function Play(){
               >
                 {refreshing ? "Please Wait" : "Refresh"}
               </button>
-              {/* <button
+              { <button
                 style={{
                   width: 250,
                   fontSize: 22,
@@ -224,7 +224,7 @@ export default function Play(){
                 onClick={close}
               >
                 Exit
-              </button> */}
+              </button> }
             </div>
           </Modal>
           <Modal
@@ -234,7 +234,7 @@ export default function Play(){
             className="Modal"
           >
             {readying ? <p>Loading your game... You will be automatically redirected!</p> : <div className="modalcontent">
-              <h1 style={{ color: "white", textAlign:"center"}}>You are?</h1>
+              <h1 style={{ color: "white", textAlign:"center"}}>Choose your player:</h1>
               <br />
               <br />
               <button
