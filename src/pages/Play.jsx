@@ -131,7 +131,6 @@ export default function Play(){
       justifyContent: "center",
       whitespace: 'pre-line',
       flexDirection: "column",
-      marginTop: 300,
       fontFamily: "Roboto Mono"
     };
     return (
@@ -144,17 +143,17 @@ export default function Play(){
         )}
         <div style={centerStyle}>
           <h1 style={{ fontSize: 65 }}>Welcome to Genshin Ranked!</h1>
-          <p style={{ fontSize: 50 }}>
+          <p style={{ fontSize: 50, marginBottom: 100 }}>
             Click to start a new game or join an existing one!
           </p>
-          <button style={{ fontSize: 40, marginTop: 10 }} onClick={createGame}>
+          <button className="playbutton" onClick={createGame}>
             New Game
           </button>
-          <button style={{ fontSize: 40, marginTop: 10 }} onClick={join}>
+          <button className="playbutton"  onClick={join}>
             Join existing game
           </button>
           <button
-            style={{ fontSize: 40, marginTop: 10 }}
+          className="playbutton"
             onClick={() => {
               removeCookie("player");
               forceRefresh();
@@ -216,7 +215,7 @@ export default function Play(){
               >
                 {refreshing ? "Please Wait" : "Refresh"}
               </button>
-              <button
+              {/* <button
                 style={{
                   width: 250,
                   fontSize: 22,
@@ -225,7 +224,7 @@ export default function Play(){
                 onClick={close}
               >
                 Exit
-              </button>
+              </button> */}
             </div>
           </Modal>
           <Modal
@@ -234,15 +233,12 @@ export default function Play(){
             contentLabel="Choosing what player"
             className="Modal"
           >
-            {readying ? <p>Loading your game... You will be automatically redirected!</p> : <div>
-              <h1 style={{ color: "white" }}>Choose the player:</h1>
+            {readying ? <p>Loading your game... You will be automatically redirected!</p> : <div className="modalcontent">
+              <h1 style={{ color: "white", textAlign:"center"}}>You are?</h1>
+              <br />
+              <br />
               <button
-                style={{
-                  width: 200,
-                  height: 50,
-                  marginLeft: 100,
-                  marginTop: 35,
-                }}
+                className="modalbuttons"
                 onClick={() => choosePlayer("1", status._id)}
                 disabled={
                   typeof status.connected != "undefined" &&
@@ -254,7 +250,7 @@ export default function Play(){
                 Player 1
               </button>
               <button
-                style={{ width: 200, height: 50, marginLeft: 100 }}
+                className="modalbuttons"
                 onClick={() => choosePlayer("2", status._id)}
                 disabled={
                   typeof status.connected != "undefined" &&
@@ -266,7 +262,7 @@ export default function Play(){
                 Player 2
               </button>
               <button
-                style={{ width: 200, height: 50, marginLeft: 100 }}
+                className="modalbuttons"
                 onClick={() => choosePlayer("ref", status._id)}
                 disabled={
                   typeof status.connected != "undefined" &&
@@ -278,13 +274,13 @@ export default function Play(){
                 Ref
               </button>
               <button
-                style={{ width: 200, height: 50, marginLeft: 100 }}
+                className="modalbuttons"
                 onClick={() => choosePlayer("spectate", status._id)}
               >
                 Spectate
               </button>
               <button
-                style={{ width: 200, height: 50, marginLeft: 100 }}
+                className="modalbuttons"
                 onClick={() => {
                   setChoosing(false); // stop choosing and remove game information
                   setStatus({ connected: [0, 0, 0] }); // back to default

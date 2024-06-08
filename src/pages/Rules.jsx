@@ -65,7 +65,7 @@ export default function Rules() {
           <u>BOSS PICKS</u>
           <br />
           Team 1 and Team 2 alternate boss picks. Each team chooses 3-4 boss, 
-          depending on division.
+          depending on division. In addition, each team has to fight the default boss, Ruin Drake first.
           <br />
         </p>
         <u></u>
@@ -76,11 +76,13 @@ export default function Rules() {
           Currently, we do not allow duplicate characters. You have 30 seconds
           to decide on a ban, else, it is forfeit.
           <br />
-          You have 30 seconds to decide on a character. Team 1 picks one character first, 
-          followed by two picks from Team2. Team 1 then gets to pick two characters followed 
-          by one pick from Team 2. Drake is the first boss. Matches will be determined by a best 7 or
-          9, depending on the division. You may hover a
-          selection by typing "hover" before a pick. Depending on draft or
+          You have 30 seconds to decide on a character. Team1 picks one character first, 
+          followed by two picks from Team2. Team1 then gets to pick two characters followed 
+          by one pick from Team2. Then Team2 bans one character followed by one character ban 
+          from Team1. Finally, Team2 gets one pick followed by two picks from Team1. Team2 then 
+          gets to pick 2 followed by one pick from Team1. 
+          Matches will be determined by a best 7 or 9, depending on the division. 
+          You may hover a selection by typing "hover" before a pick. Depending on draft or
           blind, the pick order may be different. You must ONLY pick characters
           that fall in your division or below based off the
           <a href="/characters">
