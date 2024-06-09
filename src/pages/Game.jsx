@@ -119,6 +119,10 @@ const parseBan = (data) => {
   }
   if (data.nextTeam == -2) {
     alert("Team 2 has banned " + charList[index].name + "!");
+    socket.send(JSON.stringify({
+      type: "phase",
+      phase: "pick"
+    }))
     return {
       ...identity,
       bans: newBans,
@@ -202,6 +206,11 @@ const parsePick = (data) => {
       turn: -1,
     };
     alert("Team 1 has selected " + charList[index].name + "!");
+    // switch phase on socket
+    socket.send(JSON.stringify({
+      type: "phase",
+      phase: "progress"
+    }))
   } else if (data.nextTeam == -2) {
     // second phase of bans
     alert("Team 2 has selected " + charList[index].name + "!");
@@ -210,6 +219,12 @@ const parsePick = (data) => {
       result: "ban",
       turn: 2,
     };
+    socket.send(
+      JSON.stringify({
+        type: "phase",
+        phase: "ban",
+      })
+    );
   } else {
     alert("Team " + data.team + " has selected " + charList[index].name + "!");
   }
@@ -235,7 +250,6 @@ const parseTimes = (identity, data) => {
 
 export default function Game(props) {
   // the actual meat of the game, including picks / bans / etc
-  // const [ident, setIdent] = useAtom(atom({ connected: [0, 0, 0] }));
   const [identity, setIdentity] = useState(gameInfo());
   const [characters, setCharacters] = useContext(CharacterContext);
   const [selection, setSelection] = useState(""); // what character they choose
@@ -253,10 +267,6 @@ export default function Game(props) {
     setIdentity(info);
   };
 
-  const changeTurn = (newTurn) => {
-    setTurn(newTurn);
-    console.log("new turn: " + newTurn);
-  };
   /*
   useEffect(() => {
     sessionStorage.setItem("game", JSON.stringify(identity));
@@ -316,8 +326,21 @@ export default function Game(props) {
     */
    socket.addEventListener("open", function(event) {
     socket.send(JSON.stringify({
-      type: "turn"
-    }));
+      type: "get",
+      id: props.id
+    }))
+    // get updated bosses / characters too?
+    socket.send(
+      JSON.stringify({
+        type: "find",
+        query: "boss"
+    }))
+    socket.send(
+      JSON.stringify({
+        type: "find",
+        query: "character"
+      })
+    );
    })
 
     // Listen for messages
@@ -334,47 +357,56 @@ export default function Game(props) {
       if(data.id != props.id){
         return; // do nothing if game does not match
       }
-      let res;
+      let res = null;
       switch (data.type) {
         case "create": {
-          setIdentity(data.game);
+          updateIdentity(data.game);
           break;
         }
-        case "get":
-          setIdentity(data.game);
+        case "get": {
+          updateIdentity(data.game);
           console.log("game added?");
           console.log(data.game);
+          setTurn(data.game.turn);
           break;
+        }
+        case "turn": {
+          setTurn(data.turn);
+          break;
+        }
         case "boss": {
-          res = parseBoss(data);
+          updateIdentity(data.game); // pain to continuously override game, but this ensures no one can mess with it and have their changes saved locally
+          parseBoss(data);
           break;
         }
         case "ban": {
-          res = parseBan(data, characters);
+          updateIdentity(data.game);
+          parseBan(data, characters);
           break;
         }
         case "pick": {
-          res = parsePick(data, characters);
-          if (data.nextTeam == -1) {
-            socket.send(
-              JSON.stringify({
-                type: "switch",
-                id: identity._id,
-                phase: "progress",
-              })
-            );
-          }
+          updateIdentity(data.game);
+          parsePick(data, characters);
           break;
         }
         case "times": {
           // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
-          updateIdentity(parseTimes(identity, data));
+          updateIdentity(data.game);
+          parseTimes(identity, data);
           res = null;
           break;
         }
+        case "query": {
+          if(data.boss){
+            setBosses(data.bossList);
+          }
+          else{
+            setCharacters(data.characterList);
+          }
+        }
         case "switch": {
           /*
-            setIdentity((iden) => ({
+            updateIdentity((iden) => ({
               ...iden,
               result: newPhase,
             }));
@@ -384,7 +416,7 @@ export default function Game(props) {
       }
       if (res != null) {
         updateIdentity(res);
-        changeTurn(res.turn);
+        setTurn(res.turn);
       }
       console.log("sent");
     });
