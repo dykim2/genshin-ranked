@@ -5,6 +5,8 @@ import "./css/Gameplay.css";
 import CharacterContext from "../contexts/CharacterContext.js";
 import Tooltip from "@mui/material/Tooltip";
 import { PlayingContext } from "../contexts/PlayingContext.js";
+import TimesModal from "./TimesModal.jsx";
+import OrderModal from "./OrderModal.jsx";
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
@@ -36,7 +38,7 @@ function MyTurn(turnInfo, id) {
     );
   }
 }
-const forwardTimes = () => {
+const forwardTimes = (boss, time, team) => {
   console.log("yes");
 };
 const parseBoss = (data) => {
@@ -261,6 +263,13 @@ export default function Game(props) {
   const [turn, setTurn] = useState(1); // current turn
   const [cookies, setCookie] = useCookies(["player"]);
   const socket = useContext(PlayingContext);
+
+  const [showT1Modal, setShowT1] = useState(false);
+  const [showT2Modal, setShowT2] = useState(false);
+
+  const [showT1Order, setOrderT1] = useState(false);
+  const [showT2Order, setOrderT2] = useState(false);
+
   // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
     sessionStorage.setItem("game", JSON.stringify(info));
@@ -273,9 +282,47 @@ export default function Game(props) {
   }, [identity])
   */
 
+  /**
+   * 
+   * @param {*} selection the selection information (what boss/pick is chosen)
+   * @param {*} type boss or pick (pick counts for both ban and pick)
+   */
+  const checkCharStatus = (id) => {
+    for(let i = 0; i < characters.length; i++){
+      if(characters[i]._id == id){
+        return characters[i].chosen;
+      }
+    }
+  }
+ const checkSelection = (selection, type) => {
+  //
+  if(selection._id == -1){
+    console.log("none selected")
+    return true;
+  }
+  switch(type){
+    case "boss":
+      // check id and check name
+      let bossInfo = JSON.stringify(identity.bosses);
+      console.log(bossInfo);
+      if(bossInfo.contains(`\"_id\":${selection._id},`) || bossInfo.contains(selection.name) || checkCharStatus(selection._id)){
+        console.log("boss fail");
+        return false;
+      }
+      break;
+    case "ban":
+    case "pick":
+      break;
+    default: 
+      return false;
+  }
+ }
+
   const sendSelection = (teamNum, selection) => {
     let gameID = props.id;
     // use the selection variable
+    // verify the same boss / pick is not already chosen
+
     if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
       console.log("identity error");
       return;
@@ -284,6 +331,12 @@ export default function Game(props) {
     let res = identity.result;
     let req = "";
     if (res.toLowerCase() == "waiting") {
+      // check bosses, see if picked
+      for(let i = 0; i < 1; i++){
+        if(!checkSelection(selection, res)){
+          alert("Invalid pick! Please select a BOSS that has not been chosen yet!")
+        }
+      }
       req = JSON.stringify({
         id: gameID,
         type: "add",
@@ -309,6 +362,39 @@ export default function Game(props) {
     console.log("sent from sendselection");
     socket.send(req);
   };
+  /**
+   * Processes the request to update team information. 
+   * @param {*} team the target team to update information for
+   * @param {*} boss the index of the boss to add status for
+   * @param {*} choice the choice made by the user
+   * @param {*} type either "penalty" or "death" - which menu was chosen
+   */
+  const updateStatusInfo = (team, boss, choice, type) => {
+    // for the specified team, edit the [status] array for the [boss] information by sending a socket request with information [choice] and menu type [type].
+    console.log("time to update status info!")
+    // return;
+
+    // unreachable code
+    switch(type){
+      case "Penalty": {
+        break;
+      }
+      case "Death": {
+        break;
+      }
+      default: {
+        console.log("Something oops happened.")
+        return;
+      }
+
+    }
+    socket.send(JSON.stringify({
+      type: "status",
+      team: team,
+
+    }))
+  }
+
   useEffect(() => {
     // setup the socket
     /*
@@ -398,10 +484,14 @@ export default function Game(props) {
         }
         case "query": {
           if(data.boss){
+            sessionStorage.removeItem("bosses");
             setBosses(data.bossList);
+            sessionStorage.setItem("bosses", data.bossList);
           }
           else{
+            sessionStorage.removeItem("characters")
             setCharacters(data.characterList);
+            sessionStorage.setItem("characters", data.characterList);
           }
         }
         case "switch": {
@@ -569,7 +659,11 @@ export default function Game(props) {
         <div className="grid seven">
           {[0, 1, 2].map((val) => {
             return (
-              <div key={val} className={`pick pick-${4 * val + 1}`} style={{textAlign:"center"}}>
+              <div
+                key={val}
+                className={`pick pick-${4 * val + 1}`}
+                style={{ textAlign: "center" }}
+              >
                 <p>
                   {typeof identity.playerst2 == "undefined" ||
                   typeof identity.playerst2[val] == "undefined"
@@ -582,18 +676,18 @@ export default function Game(props) {
           {[0, 1, 2, 3, 4, 5].map((val) => {
             return (
               <div
-              key={val}
-              className={`pick pick-${2 * val + 2}`}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "end",
-              }}
-            >
-                <p
-              // className={`pick pick-${2 * val + 2}`}
+                key={val}
+                className={`pick pick-${2 * val + 2}`}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "end",
+                }}
               >
+                <p
+                // className={`pick pick-${2 * val + 2}`}
+                >
                   {typeof identity.pickst2 == "undefined" ||
                   typeof identity.pickst2[val] == "undefined"
                     ? "pick " + (val + 1)
@@ -602,9 +696,9 @@ export default function Game(props) {
                 <img
                   key={val}
                   // className={`pick pick-${2 * val + 2}`}
-                // className={`pick pick-${val + 13}`}
-                  style={{paddingLeft: "5px" }}
-                width={IMG_SIZE}
+                  // className={`pick pick-${val + 13}`}
+                  style={{ paddingLeft: "5px" }}
+                  width={IMG_SIZE}
                   height={IMG_SIZE}
                   src={
                     typeof identity.pickst2 == "undefined" ||
@@ -619,9 +713,9 @@ export default function Game(props) {
         </div>
         <div className="grid newgrid eight">
           {cookies.player.charAt(0) == "1" ? (
-            <button className="boss-1">Adjust player picks</button>
+            <button style={{ fontSize: 20 }}>Adjust player picks</button>
           ) : cookies.player.charAt(0) == "r" ? (
-            <button>Add T2 times</button>
+            <button style={{ fontSize: 20 }}>Add T2 times</button>
           ) : null}
         </div>
         <div className="grid nine">
@@ -651,9 +745,11 @@ export default function Game(props) {
 
         <div className="grid newgrid ten">
           {cookies.player.charAt(0) == "2" ? (
-            <button className="boss-1">Adjust player picks</button>
+            <button style={{ fontSize: 20 }}>Adjust player picks</button>
           ) : cookies.player.charAt(0) == "r" ? (
-            <button>Add T1 times</button>
+            <button style={{ fontSize: 20 }} onClick={() => setShowT1(true)}>
+              Add T1 times
+            </button>
           ) : null}
         </div>
         <div className="grid newgrid eleven">
@@ -734,78 +830,38 @@ export default function Game(props) {
           })}
         </div>
       </div>
+        <TimesModal
+          times={identity.timest1}
+          bosses={identity.bosses}
+          playerNames={identity.playerst1}
+          open={showT1Modal}
+          close={() => setShowT1(false)}
+          updateTimes={forwardTimes}
+          team={1}
+          updateStatus={updateStatusInfo}
+        />
+        <TimesModal
+          times={identity.timest2}
+          bosses={identity.bosses}
+          playerNames={identity.playerst2}
+          open={showT2Modal}
+          close={() => setShowT2(false)}
+          updateTimes={forwardTimes}
+          team={2}
+          updateStatus={updateStatusInfo}
+        />
+        <OrderModal
+          team={1}
+          open={showT1Order}
+          players={identity.playerst1}
+          picks={identity.pickst1}
+          progress={identity.phase.toLowerCase() == "progress"}
+          close={() => {setOrderT1(false)}}
+          reorder={e}
+        />
     </div>
   );
 }
 /*
   team 1 bans
-*/
-
-/*
- placeholder for code
-
- <div style={styles.splitScreen}>
-        <div style={styles.top}>
-          <p style={{ textAlign: "center" }}>
-            {typeof identity.team1 == "undefined" ? "Team 1!" : identity.team1}
-          </p>
-          <div
-            style={{
-              marginTop: 1000,
-              flexDirection: "row"
-            }}
-          >
-            <p style={{ backgroundColor: "red", fontSize: 35, width: "10%", flex: 1 }}>test</p>
-            <p style={{ backgroundColor: "green", fontSize: 35, width: "10%", flex: 1}}>test2</p>
-          </div>
-        </div>
-        <div style={styles.center}>
-          <p style={{ textAlign: "center", marginBottom: 100 }}>
-            {showInfo == "boss" ? "Bosses" : "Characters"}
-          </p>
-
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            <div>{showInfo == "boss" ? <BossList /> : null}</div>
-            <div>{showInfo == "character" ? <CharList /> : null}</div>
-          </div>
-          <p style={{ marginTop: 50, fontSize: 24, textAlign: "center" }}>
-            {`Currently selected: ${selection}`}
-          </p>
-          <div
-            style={{
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <button
-              style={{
-                marginTop: 100,
-                fontSize: 24,
-              }}
-              onClick={() => {
-                showInfo == "character"
-                  ? setShow("boss")
-                  : setShow("character");
-              }}
-            >
-              Switch!
-            </button>
-          </div>
-        </div>
-        <div style={styles.bottom}>
-          <p
-            style={{
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {typeof identity.team2 == "undefined" ? "Team 2!" : identity.team2}
-          </p>
-          {
-            // picks
-          }
-        </div>
-      </div>
 */

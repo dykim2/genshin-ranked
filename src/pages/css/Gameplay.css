@@ -304,3 +304,7 @@
     grid-column: 4;
     grid-row: 1;
 }
+
+.large {
+    font-size: 20px;
+}
