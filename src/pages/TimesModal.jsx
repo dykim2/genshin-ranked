@@ -1,4 +1,4 @@
-import {Button, Menu, MenuItem, Modal, TextField} from "@mui/material"
+import {Box, Button, Menu, MenuItem, Modal, TextField} from "@mui/material"
 import { Fragment, useState } from "react";
 const styling = {
     position: 'absolute',
@@ -7,7 +7,8 @@ const styling = {
     width: 500,
     display: 'grid',
     gridTemplateColumns: '1fr 1fr 1fr 1fr', // boss button ("Add Aeonblight Drake time"), time, status (dropdown menu)
-    component: "form"
+    component: "form",
+    backgroundColor: "black"
 }   
 export default function TimesModal(props){
     // create a grid, field and button to set time
@@ -26,7 +27,7 @@ export default function TimesModal(props){
     // pass boss names, callback function, player names, open, close, updateTimes, team, status
     let bossNames = props.bosses;
     let penaltyMenu = ["No Penalty", "Did not finish", "Ref Error", "Variable", "Forced Retry"] 
-    let deathMenu = props.playerNames;
+    let deathMenu = [...props.playerNames];
     deathMenu.unshift("No Deaths");
     deathMenu.push(deathMenu[0] + " and " + deathMenu[1]);
     deathMenu.push(deathMenu[0] + " and " + deathMenu[2]);
@@ -49,9 +50,9 @@ export default function TimesModal(props){
     const sendStatus = (index, time) => {
       console.log("hi");
       return;
-      props.updateTimes(index, time, props.team);
-      props.updateStatus(props.team, index, penaltyStatus, "penalty");
-      props.updateStatus(props.team, index, deathStatus, "death");
+      // props.updateTimes(index, time, props.team);
+      // props.updateStatus(props.team, index, penaltyStatus, "penalty");
+      // props.updateStatus(props.team, index, deathStatus, "death");
     }
     return (
       <Modal
@@ -73,7 +74,7 @@ export default function TimesModal(props){
                   <Menu id={`Penalty ${boss._id}`} open={penaltyOpen} anchorEl={penaltyAnchor} onClose={closePenalty}>
                     {
                       penaltyMenu.map((penalty) => {
-                        return(<MenuItem onClick={() => {setPenaltyStatus(penalty)}}>{penalty}</MenuItem>)
+                        return(<MenuItem key={penalty} onClick={() => {setPenaltyStatus(penalty)}}>{penalty}</MenuItem>)
                       })
                     }
                   </Menu>
@@ -84,7 +85,7 @@ export default function TimesModal(props){
                   <Menu id={`Death ${boss._id}`} open={deathOpen} anchorEl={deathAnchor} onClose={closeDeath} MenuListProps={{'aria-labelledby': 'death-button'}}>
                     {
                       deathMenu.map((player) => {
-                        return (<MenuItem onClick={() => setDeathStatus(player)}>{player}</MenuItem>)
+                        return (<MenuItem key={player} onClick={() => setDeathStatus(player)}>{player}</MenuItem>)
                       }) 
                     }
                   </Menu>

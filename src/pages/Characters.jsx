@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import CharacterContext from "../contexts/CharacterContext";
+import CharacterContext from "../contexts/CharacterContext.js";
 
 export default function Characters() {
   // api implemented, uploading data next

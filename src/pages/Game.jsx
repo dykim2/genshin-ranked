@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext, useCallback, Fragment } from "react";
 import { useCookies } from "react-cookie";
+import { Box } from "@mui/material";
 import "./css/Playing.css";
 import "./css/Gameplay.css";
 import CharacterContext from "../contexts/CharacterContext.js";
@@ -38,9 +39,7 @@ function MyTurn(turnInfo, id) {
     );
   }
 }
-const forwardTimes = (boss, time, team) => {
-  console.log("yes");
-};
+
 const parseBoss = (data) => {
   // takes in a copy of local storage usestate
   // takes in a copy of data
@@ -270,6 +269,9 @@ export default function Game(props) {
   const [showT1Order, setOrderT1] = useState(false);
   const [showT2Order, setOrderT2] = useState(false);
 
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
   // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
     sessionStorage.setItem("game", JSON.stringify(info));
@@ -281,7 +283,18 @@ export default function Game(props) {
     sessionStorage.setItem("game", JSON.stringify(identity));
   }, [identity])
   */
-
+  const forwardTimes = (boss, time, team) => {
+    console.log("yes");
+    if(isNaN(parseFloat(time))){
+      // do error modal thing
+      alert("Please enter a valid number or decimal for the time.")
+      return;
+    }
+    socket.send(JSON.stringify({
+      type: "times",
+      data: [team, boss, time]
+    }))
+  };
   /**
    * 
    * @param {*} selection the selection information (what boss/pick is chosen)
@@ -291,6 +304,13 @@ export default function Game(props) {
     for(let i = 0; i < characters.length; i++){
       if(characters[i]._id == id){
         return characters[i].chosen;
+      }
+    }
+  }
+  const checkBossStatus = (id) => {
+    for (let i = 0; i < bosses.length; i++) {
+      if (bosses[i]._id == id) {
+        return bosses[i].chosen;
       }
     }
   }
@@ -305,17 +325,24 @@ export default function Game(props) {
       // check id and check name
       let bossInfo = JSON.stringify(identity.bosses);
       console.log(bossInfo);
-      if(bossInfo.contains(`\"_id\":${selection._id},`) || bossInfo.contains(selection.name) || checkCharStatus(selection._id)){
+      if(bossInfo.contains(`\"_id\":${selection._id},`) || bossInfo.contains(selection.name) || checkBossStatus(selection._id)){
         console.log("boss fail");
         return false;
       }
       break;
     case "ban":
     case "pick":
+      let charInfo = JSON.stringify(identity.bans) + JSON.stringify(identity.pickst1) + JSON.stringify(identity.pickst2);
+      console.log(charInfo);
+      if(charInfo.contains(`\"_id\":${selection._id},`) || charInfo.contains(selection.name) || checkCharStatus(selection._id)){
+        console.log("pick or ban fail");
+        return false;
+      }
       break;
     default: 
       return false;
   }
+  return true;
  }
 
   const sendSelection = (teamNum, selection) => {
@@ -364,34 +391,53 @@ export default function Game(props) {
   };
   /**
    * Processes the request to update team information. 
-   * @param {*} team the target team to update information for
-   * @param {*} boss the index of the boss to add status for
-   * @param {*} choice the choice made by the user
-   * @param {*} type either "penalty" or "death" - which menu was chosen
+   * @param {Number} team the target team to update information for
+   * @param {Number} boss the index of the boss to add status for
+   * @param {String} choice the choice made by the user
+   * @param {String} type either "penalty" or "death" - which menu was chosen
    */
   const updateStatusInfo = (team, boss, choice, type) => {
     // for the specified team, edit the [status] array for the [boss] information by sending a socket request with information [choice] and menu type [type].
     console.log("time to update status info!")
     // return;
-
     // unreachable code
-    switch(type){
-      case "Penalty": {
-        break;
-      }
-      case "Death": {
-        break;
-      }
-      default: {
-        console.log("Something oops happened.")
-        return;
-      }
-
+    socket.send(
+      JSON.stringify({
+        type: "status",
+        menu: type,
+        team: team,
+        data: {
+          bossIndex: boss,
+          status: choice,
+        }
+      })
+    );
+  }
+  /**
+   * Checks for valid team information, and if valid, sends it to the socket.
+   * @param {Number} team either team 1 or team 2, throws an error if neither
+   * @param {[Number]} order the new ordering of picks 
+   * @param {Object} names the player names
+   * @param {String} teamName the name of the team
+   */
+  const changeTeamInfo = (team, order, names, teamName) => {
+    // check valid team and valid team name
+    if(teamName.length > 20){
+      // throw error with error modal - team name should not be longer than 20 characters
+      return;
+    }
+    if(order.length != 2 * names.length){
+      // throw error
+      return;
     }
     socket.send(JSON.stringify({
-      type: "status",
+      type: "team",
       team: team,
-
+      data: {
+        teamName: teamName,
+        order: order,
+        playerNames: names
+      }
     }))
   }
 
@@ -415,7 +461,7 @@ export default function Game(props) {
       type: "get",
       id: props.id
     }))
-    // get updated bosses / characters too?
+    // get updated bosses / characters too
     socket.send(
       JSON.stringify({
         type: "find",
@@ -434,11 +480,10 @@ export default function Game(props) {
       console.log(JSON.parse(event.data));
       console.log("^^^^");
       let data = JSON.parse(event.data);
-      if (data.message.toLowerCase() != "success") {
+      if (data.message.toLowerCase() == "failure") {
         console.log(data);
-        throw new Error(
-          "An error happened getting data from the server. Please report this!"
-        );
+        alert(data.error); 
+        return;
       }
       if(data.id != props.id){
         return; // do nothing if game does not match
@@ -461,35 +506,38 @@ export default function Game(props) {
           break;
         }
         case "boss": {
-          updateIdentity(data.game); // pain to continuously override game, but this ensures no one can mess with it and have their changes saved locally
-          parseBoss(data);
+          res = parseBoss(data);
           break;
         }
         case "ban": {
-          updateIdentity(data.game);
-          parseBan(data, characters);
+          res = parseBan(data, characters);
           break;
         }
         case "pick": {
-          updateIdentity(data.game);
-          parsePick(data, characters);
+          res = parsePick(data, characters);
+          if (data.nextTeam == -1) {
+            socket.send(
+              JSON.stringify({
+                type: "switch",
+                id: props._id,
+                phase: "progress",
+              })
+            );
+          }
           break;
         }
         case "times": {
           // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
-          updateIdentity(data.game);
-          parseTimes(identity, data);
-          res = null;
+          res = parseTimes(identity, data);
           break;
         }
         case "query": {
-          if(data.boss){
+          if (data.boss) {
             sessionStorage.removeItem("bosses");
             setBosses(data.bossList);
             sessionStorage.setItem("bosses", data.bossList);
-          }
-          else{
-            sessionStorage.removeItem("characters")
+          } else {
+            sessionStorage.removeItem("characters");
             setCharacters(data.characterList);
             sessionStorage.setItem("characters", data.characterList);
           }
@@ -527,6 +575,18 @@ export default function Game(props) {
     };
   }, []);
 
+  const closeT1Times = () => {
+    setShowT1(false);
+  }
+  const closeT2Times = () => {
+    setShowT2(false);
+  };
+  const closeT1Order = () => {
+    setOrderT1(false);
+  };
+  const closeT2Order = () => {
+    setOrderT2(false);
+  };
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
   let picks = [0, 2, 4, 6, 8, 1, 3, 5, 7];
   let bans = [0, 2, 5, 1, 3, 4];
@@ -548,6 +608,7 @@ export default function Game(props) {
           <p className="boss boss-3">
             {"Currently choosing: " + identity.result.toUpperCase()}
           </p>
+          <Box className="boss boss-4">{/* add box information */}</Box>
         </div>
         <div className="grid three">
           {typeof identity.team2 == "undefined"
@@ -713,9 +774,23 @@ export default function Game(props) {
         </div>
         <div className="grid newgrid eight">
           {cookies.player.charAt(0) == "1" ? (
-            <button style={{ fontSize: 20 }}>Adjust player picks</button>
+            <button
+              onClick={() => {
+                setOrderT1(true);
+              }}
+              style={{ fontSize: 20 }}
+            >
+              Adjust player picks
+            </button>
           ) : cookies.player.charAt(0) == "r" ? (
-            <button style={{ fontSize: 20 }}>Add T2 times</button>
+            <button
+              onClick={() => {
+                setShowT1(true);
+              }}
+              style={{ fontSize: 20 }}
+            >
+              Add T1 times
+            </button>
           ) : null}
         </div>
         <div className="grid nine">
@@ -745,10 +820,12 @@ export default function Game(props) {
 
         <div className="grid newgrid ten">
           {cookies.player.charAt(0) == "2" ? (
-            <button style={{ fontSize: 20 }}>Adjust player picks</button>
+            <button style={{ fontSize: 20 }} onClick={() => setOrderT2(true)}>
+              Adjust player picks
+            </button>
           ) : cookies.player.charAt(0) == "r" ? (
-            <button style={{ fontSize: 20 }} onClick={() => setShowT1(true)}>
-              Add T1 times
+            <button style={{ fontSize: 20 }} onClick={() => setShowT2(true)}>
+              Add T2 times
             </button>
           ) : null}
         </div>
@@ -820,7 +897,7 @@ export default function Game(props) {
         </div>
         <div className="grid newgrid sixteen">
           <p className="boss boss-1">T2 times: </p>
-          {picks.map((pick) => {
+          {picks.map((pick) => { 
             return typeof identity.timest2 == "undefined" ||
               typeof identity.timest2[pick] == "undefined" ? null : (
               <p className={`boss boss-${pick + 2}`} key={pick}>
@@ -830,35 +907,46 @@ export default function Game(props) {
           })}
         </div>
       </div>
-        <TimesModal
-          times={identity.timest1}
-          bosses={identity.bosses}
-          playerNames={identity.playerst1}
-          open={showT1Modal}
-          close={() => setShowT1(false)}
-          updateTimes={forwardTimes}
-          team={1}
-          updateStatus={updateStatusInfo}
-        />
-        <TimesModal
-          times={identity.timest2}
-          bosses={identity.bosses}
-          playerNames={identity.playerst2}
-          open={showT2Modal}
-          close={() => setShowT2(false)}
-          updateTimes={forwardTimes}
-          team={2}
-          updateStatus={updateStatusInfo}
-        />
-        <OrderModal
-          team={1}
-          open={showT1Order}
-          players={identity.playerst1}
-          picks={identity.pickst1}
-          progress={identity.phase.toLowerCase() == "progress"}
-          close={() => {setOrderT1(false)}}
-          reorder={e}
-        />
+      <TimesModal
+        times={identity.timest1}
+        bosses={identity.bosses}
+        playerNames={identity.playerst1}
+        open={showT1Modal}
+        close={closeT1Times}
+        updateTimes={forwardTimes}
+        team={1}
+        updateStatus={updateStatusInfo}
+      />
+      <TimesModal
+        times={identity.timest2}
+        bosses={identity.bosses}
+        playerNames={identity.playerst2}
+        open={showT2Modal}
+        close={closeT2Times}
+        updateTimes={forwardTimes}
+        team={2}
+        updateStatus={updateStatusInfo}
+      />
+      <OrderModal
+        team={1}
+        teamName={identity.team1}
+        open={showT1Order}
+        players={identity.playerst1}
+        picks={identity.pickst1}
+        progress={false}
+        close={closeT1Order}
+        reorder={changeTeamInfo}
+      />
+      <OrderModal
+        team={2}
+        teamName={identity.team2}
+        open={showT2Order}
+        players={identity.playerst2}
+        picks={identity.pickst2}
+        progress={false}
+        close={closeT2Order}
+        reorder={changeTeamInfo}
+      />
     </div>
   );
 }

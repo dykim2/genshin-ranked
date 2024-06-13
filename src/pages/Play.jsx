@@ -3,7 +3,7 @@ import './css/Playing.css';
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Modal from "react-modal";
-import ActiveContext from "../contexts/ActiveContext";
+import ActiveContext from "../contexts/ActiveContext.js";
 
 // start implementing redux!
 
