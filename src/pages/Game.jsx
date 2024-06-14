@@ -248,6 +248,60 @@ const parseTimes = (identity, data) => {
     };
   }
 };
+const parseUpdate = (identity, data) => {
+  let newIden = null;
+  switch(data.team){
+    case 1:
+      newIden = {
+        ...identity,
+        playerst1: playerNames,
+        team1: teamName
+      };
+      break;
+    case 2:
+      newIden = {
+        ...identity,
+        playerst2: playerNames,
+        team2: teamName
+      };
+      break;
+    default:
+      newIden = {...identity};
+      break;
+  }
+  console.log(data);
+  console.log("----^^^^^----");
+  console.log(newIden);
+  return newIden;
+  // team information
+}
+const parseStatus = (identity, data) => {
+  // update team information 
+  let newIden = null;
+  switch(data.team){
+    case 1:
+      data.menu.toLowerCase() == "penalty"
+        ? (newIden = { ...identity, penaltyt1: data.status })
+        : data.menu.toLowerCase() == "death"
+        ? (newIden = { ...identity, deatht1: data.status })
+        : newIden = {...identity};
+      break;
+    case 2:
+      data.menu.toLowerCase() == "penalty"
+        ? (newIden = { ...identity, penaltyt2: data.status })
+        : data.menu.toLowerCase() == "death"
+        ? (newIden = { ...identity, deatht2: data.status })
+        : (newIden = {...identity});
+      break;
+    default:
+      newIden = {...identity};
+      break;
+  };
+  console.log(data);
+  console.log("-------");
+  console.log(newIden);
+  return newIden;
+}
 
 export default function Game(props) {
   // the actual meat of the game, including picks / bans / etc
@@ -393,7 +447,7 @@ export default function Game(props) {
    * Processes the request to update team information. 
    * @param {Number} team the target team to update information for
    * @param {Number} boss the index of the boss to add status for
-   * @param {String} choice the choice made by the user
+   * @param {[Boolean]} choice the choice array made by the user (true / false for each of retry, forced retry, etc)
    * @param {String} type either "penalty" or "death" - which menu was chosen
    */
   const updateStatusInfo = (team, boss, choice, type) => {
@@ -430,6 +484,11 @@ export default function Game(props) {
       // throw error
       return;
     }
+    for (let i = 0; i < names.length; i++) {
+      if (names[i] == "") {
+        team == 1 ? names[i] = playerst1[i] : names[i] = playerst2[i];
+      }
+    }
     socket.send(JSON.stringify({
       type: "team",
       team: team,
@@ -439,6 +498,66 @@ export default function Game(props) {
         playerNames: names
       }
     }))
+  }
+  const parseTextColor = (index, team) => {
+    let value = 0;
+    switch(team){
+      case 1: {
+        if(identity.statust1[index] == [false, false, false, false, false]){
+          value += 1;
+        }
+        if (identity.deatht1[index] == [false, false, false]) {
+          value += 2;
+        }
+        break;
+      }
+      case 2: {
+        if(identity.statust2[index] == [false, false, false, false, false]){
+          value += 1;
+        }
+        if (identity.deatht2[index] == [false, false, false]) {
+          value += 2;
+        }
+        break;
+      }
+    }
+    switch(value){
+      case 0:
+        return {
+          color: "white"
+        }
+      case 1:
+        return {
+          color: "red"
+        }
+      case 2:
+        return {
+          color: "blue"
+        }
+      case 3:
+        return {
+          color: "green"
+        }
+    }
+    return {
+      color: "white"
+    }
+  }
+  const parseStatusTooltip = (index, team) => {
+    let penaltyString = "";
+    let deathString = "";
+    for(let i = 0; i < identity.statust1.length; i++){ // status and death have identical lengths always
+      if(identity.statust1[index][i]){
+        
+      }
+    }
+
+    return (
+      <Fragment>
+        <p><b>{`Penalties: `}</b>{``}</p>
+        <p>{`Deaths: `}</p>
+      </Fragment>
+    );
   }
 
   useEffect(() => {
@@ -489,6 +608,7 @@ export default function Game(props) {
         return; // do nothing if game does not match
       }
       let res = null;
+      console.log("testing")
       switch (data.type) {
         case "create": {
           updateIdentity(data.game);
@@ -541,6 +661,15 @@ export default function Game(props) {
             setCharacters(data.characterList);
             sessionStorage.setItem("characters", data.characterList);
           }
+          break;
+        }
+        case "TeamUpdate": {
+          res = parseUpdate(identity, data);
+          break;
+        }
+        case "status": {
+          res = parseStatus(identity, data);
+          break;
         }
         case "switch": {
           /*
@@ -595,24 +724,24 @@ export default function Game(props) {
       <div className="container">
         <div className="grid one">
           {typeof identity.team1 == "undefined"
-            ? "Team 1 Selections!"
+            ? "team 1 Selections!"
             : identity.team1 + " picks!"}
         </div>
         <div className="grid newgrid two">
           <p className="boss boss-1">
-            {showInfo == "boss" ? "Bosses:" : "Characters:"}
+            {showInfo == "boss" ? "bosses:" : "characters:"}
           </p>
           <div className="boss boss-2">
             <MyTurn turnInfo={turn == 1 ? 1 : 2} />
           </div>
           <p className="boss boss-3">
-            {"Currently choosing: " + identity.result.toUpperCase()}
+            {"currently choosing: " + identity.result.toLowerCase()}
           </p>
           <Box className="boss boss-4">{/* add box information */}</Box>
         </div>
         <div className="grid three">
           {typeof identity.team2 == "undefined"
-            ? "Team 2 Selections!"
+            ? "team 2 Selections!"
             : identity.team2 + " picks!"}
         </div>
         <div className="grid four">
@@ -889,7 +1018,7 @@ export default function Game(props) {
           {picks.map((pick) => {
             return typeof identity.timest1 == "undefined" ||
               typeof identity.timest1[pick] == "undefined" ? null : (
-              <p className={`boss boss-${pick + 2}`} key={pick}>
+              <p className={`boss boss-${pick + 2}`} key={pick} style={() => {}}>
                 {identity.timest1[pick]}
               </p>
             );
@@ -897,12 +1026,14 @@ export default function Game(props) {
         </div>
         <div className="grid newgrid sixteen">
           <p className="boss boss-1">T2 times: </p>
-          {picks.map((pick) => { 
+          {picks.map((pick) => {
             return typeof identity.timest2 == "undefined" ||
               typeof identity.timest2[pick] == "undefined" ? null : (
-              <p className={`boss boss-${pick + 2}`} key={pick}>
-                {identity.timest2[pick]}
-              </p>
+              <Tooltip key={pick} title={"times"}>
+                <p className={`boss boss-${pick + 2}`}>
+                  {identity.timest2[pick]}
+                </p>
+              </Tooltip>
             );
           })}
         </div>
@@ -930,9 +1061,11 @@ export default function Game(props) {
       <OrderModal
         team={1}
         teamName={identity.team1}
-        open={showT1Order}
+        open={showT1Order == true ? true : false}
         players={identity.playerst1}
         picks={identity.pickst1}
+        penalty={identity.penaltyt1}
+        deaths={identity.deatht1}
         progress={false}
         close={closeT1Order}
         reorder={changeTeamInfo}
@@ -940,9 +1073,11 @@ export default function Game(props) {
       <OrderModal
         team={2}
         teamName={identity.team2}
-        open={showT2Order}
+        open={showT2Order == true ? true : false}
         players={identity.playerst2}
         picks={identity.pickst2}
+        penalty={identity.penaltyt2}
+        deaths={identity.deatht2}
         progress={false}
         close={closeT2Order}
         reorder={changeTeamInfo}

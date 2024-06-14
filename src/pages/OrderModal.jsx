@@ -7,35 +7,38 @@
 // create a simple menu, choose ordering from 1 to 6 and then pass along results
 
 import { Box, Button, Modal, Menu, MenuItem, TextField } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Fragment, useState, useEffect } from "react";
 const styling = {
   position: "absolute",
-  top: `40%`,
+  top: `30%`,
   left: "40%",
   width: 500,
   display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr 1fr", // boss button ("Add Aeonblight Drake time"), time, status (dropdown menu)
+  gridTemplateColumns: "1fr 1fr 1fr", // boss button ("Add Aeonblight Drake time"), time, status (dropdown menu)
   component: "form",
   backgroundColor: 'white'
 };   
 export default function OrderModal(props) {
-    // props.phase - if it is "progress"
     const [order, setOrder] = useState([0,1,2,3,4,5]); // taken from original pick order
     const [active, setActive] = useState([null, null, null, null, null, null]);
     const [names, setNames] = useState(["", "", ""])
     const [teamName, setTeamName] = useState(props.teamName);
     const activeAnchors = active.map(menu => {return Boolean(menu);})
-    console.log(activeAnchors);
     const activateAnchor = (index, event) => {
-        setActive(active => active[index] = event.currentTarget);
+        let newActive = [...active];
+        newActive[index] = event.currentTarget;
+        setActive(newActive);
     }
     const deactivateAnchor = (index) => {
-        setActive(active => active[index] = null);
+        let newActive = [...active];
+        newActive[index] = null;
+        setActive(newActive);
     }
     // useref value for new order - updates on change, but actual dro
     
     const pickArr = props.picks.map(pick => {return pick.name;});
-    console.log(pickArr);
+    // console.log(pickArr); 
     const verifyOrder = () => {
         if(!props.progress){
             alert("Please wait to change character order until after picks are finished!")
@@ -47,6 +50,26 @@ export default function OrderModal(props) {
         else{
             alert("Please make sure each player has two unique characters!")
         }
+    }
+    /**
+     * Makes a shallow copy of names with the same objects, to edit accordingly.
+     * @param {*} index the location of the name to update
+     * @param {*} e the event information
+     */
+    const updateNames = (index, e) => {
+        let newNames = [...names];
+        newNames[index] = e.target.value; 
+        setNames(newNames);
+    }
+    const updateOrder = (index, value) => {
+        if(value < 0 || value >= order.length){
+            // do literally, absolutely, utterly nothing
+            return;
+        }
+        let newOrder = [...order];
+        newOrder[index] = value;
+        setOrder(newOrder);
+        deactivateAnchor(index); // deactivate on selection
     }
     /*
         menu items should be from 1 to 6, 1 being the first pick and 6 being the last
@@ -64,85 +87,13 @@ export default function OrderModal(props) {
         aria-description="a modal to allow players of each team to change the order of their picks, to better represent who is and who plays who"
       >
         <Box sx={styling}>
-          {props.players.map((selection) => selection.name).map((name, index) => {
-            {console.log("name: "+name+", index: "+index)}
-            return (
-              <Fragment key={`pick ${name}`}>
-                <TextField
-                  id={name}
-                  label={`Player ${index + 1} name`}
-                  defaultValue={name}
-                  onChange={() => {}}
-                />
-                <Button
-                  variant="outlined"
-                  id={`button-${2 * index}`}
-                  onClick={() => {}}
-                >
-                  {order[2 * index]}
-                </Button>
-                <Menu
-                  open={activeAnchors[2 * index]}
-                  id={2 * index}
-                  anchorEl={active[2 * index]}
-                  onClose={() => {}}
-                >
-                  {pickArr.map((pick, ind) => {
-                    return (
-                      <MenuItem key={pick} onClick={() => {}}>
-                        {pick}
-                      </MenuItem>
-                    );
-                  })}
-                </Menu>
-                <Button
-                  variant="outlined"
-                  id={`button-${2 * index + 1}`}
-                  onClick={() => {}}
-                >
-                  {order[2 * index + 1]}
-                </Button>
-                <Menu
-                  open={activeAnchors[2 * index + 1]}
-                  id={2 * index + 1}
-                  anchorEl={active[2 * index + 1]}
-                  onClose={() => {}}
-                >
-                  {pickArr.map((pick, ind) => {
-                    return (
-                      <MenuItem key={pick} onClick={() => {}}>
-                        {pick}
-                      </MenuItem>
-                    );
-                  })}
-                </Menu>
-              </Fragment>
-            );
-          })}
-          <TextField
-            id={`team-${props.team}-name`}
-            sx={{ gridColumn: "span 2", fontSize: "20" }}
-            label={`Your team (Team ${props.team}) name`}
-            defaultValue={props.teamName}
-            onChange={() => {}}
-            error={teamName.length > 20}
-            helperText={teamName.length > 20 ? "Team names are limited to 20 characters." : undefined}
-          />
-          <Button
-            sx={{ gridColumn: "span 2", fontSize: "20" }}
-            onClick={verifyOrder}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Modal>
-    );
-}
-
-/*
-
-<Box sx={styling}>
-          {names.map((name, index) => {
+          <p
+            style={{ textAlign: "center", gridColumn: "span 3" }}
+          >{`Team ${props.team} characters`}</p>
+          <p style={{ textAlign: "center" }}> </p>
+          <p style={{ textAlign: "center" }}>Character 1</p>
+          <p style={{ textAlign: "center" }}>Character 2</p>
+          {props.players.map((name, index) => {
             return (
               <Fragment key={`pick ${name}`}>
                 <TextField
@@ -150,9 +101,7 @@ export default function OrderModal(props) {
                   label={`Player ${index + 1} name`}
                   defaultValue={name}
                   onChange={(e) => {
-                    setNames((name) => {
-                      name[index] = e.target.value;
-                    });
+                    updateNames(index, e);
                   }}
                 />
                 <Button
@@ -162,21 +111,24 @@ export default function OrderModal(props) {
                     activateAnchor(2 * index, e);
                   }}
                 >
-                  {order[2 * index]}
+                  {pickArr[2 * index]}
+                  <ArrowDropDownIcon />
                 </Button>
                 <Menu
                   open={activeAnchors[2 * index]}
                   id={2 * index}
                   anchorEl={active[2 * index]}
-                  onClose={() => deactivateAnchor(2 * index)}
+                  onClose={() => {
+                    deactivateAnchor(2 * index);
+                  }}
                 >
                   {pickArr.map((pick, ind) => {
                     return (
                       <MenuItem
-                        key={pick}
-                        onClick={() =>
-                          setOrder((currOrder) => (currOrder[2 * index] = ind))
-                        }
+                        key={`${pick} - ${ind}`}
+                        onClick={() => {
+                          updateOrder(2 * index, ind);
+                        }}
                       >
                         {pick}
                       </MenuItem>
@@ -191,22 +143,21 @@ export default function OrderModal(props) {
                   }}
                 >
                   {order[2 * index + 1]}
+                  <ArrowDropDownIcon />
                 </Button>
                 <Menu
                   open={activeAnchors[2 * index + 1]}
                   id={2 * index + 1}
                   anchorEl={active[2 * index + 1]}
-                  onClose={() => deactivateAnchor(2 * index + 1)}
+                  onClose={() => {
+                    deactivateAnchor(2 * index + 1);
+                  }}
                 >
                   {pickArr.map((pick, ind) => {
                     return (
                       <MenuItem
-                        key={pick}
-                        onClick={() =>
-                          setOrder(
-                            (currOrder) => (currOrder[2 * index + 1] = ind)
-                          )
-                        }
+                        key={`${pick} - ${ind}`}
+                        onClick={() => updateOrder(2 * index + 1, ind)}
                       >
                         {pick}
                       </MenuItem>
@@ -218,19 +169,24 @@ export default function OrderModal(props) {
           })}
           <TextField
             id={`team-${props.team}-name`}
-            sx={{ gridColumn: "span 2", fontSize: "20" }}
+            sx={{ gridColumn: "span 3", fontSize: "20" }}
             label={`Your team (Team ${props.team}) name`}
             defaultValue={props.teamName}
             onChange={(e) => setTeamName(e.target.value)}
             error={teamName.length > 20}
-            helperText={teamName.length > 20 ? "Team names are limited to 20 characters." : undefined}
+            helperText={
+              teamName.length > 20
+                ? "Team names are limited to 20 characters."
+                : undefined
+            }
           />
           <Button
-            sx={{ gridColumn: "span 2", fontSize: "20" }}
+            sx={{ gridColumn: "span 3", fontSize: "20" }}
             onClick={verifyOrder}
           >
             Submit
           </Button>
         </Box>
-
-*/
+      </Modal>
+    );
+}
