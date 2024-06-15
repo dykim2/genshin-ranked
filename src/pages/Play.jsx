@@ -81,7 +81,7 @@ export default function Play(){
       }
       else if(creating){
         let res = await fetch(
-          `https://rankedapi-late-cherry-618.fly.dev/gameAPI/`,
+          `http://localhost:3000/gameAPI/`,
           {
             method: "POST",
             headers: {
@@ -95,6 +95,8 @@ export default function Play(){
         );
         sessionStorage.removeItem("game");
         res = await res.json();
+        console.log("res");
+        console.log(res);
         setStatus(res[0]);
         sessionStorage.setItem("game", JSON.stringify(res[0]))
         id = res[0]._id;
@@ -222,7 +224,7 @@ export default function Play(){
             contentLabel="Choosing what player"
             className="Modal"
           >
-            {readying ? <p>Loading your game... You will be automatically redirected!</p> : <div className="modalcontent">
+            {readying ? <p style={{color: "white", fontSize: 20}}>Loading your game... You will be automatically redirected!</p> : <div className="modalcontent">
               <h1 style={{ color: "white", textAlign:"center"}}>Choose your player:</h1>
               <br />
               <br />

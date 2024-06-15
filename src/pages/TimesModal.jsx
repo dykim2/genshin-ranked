@@ -1,13 +1,14 @@
-import {Box, Button, Menu, MenuItem, Modal, TextField} from "@mui/material"
+import {Box, Button, Menu, MenuItem, Modal, TextField, Tooltip} from "@mui/material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Fragment, useState } from "react";
+import "@fontsource/roboto/300.css";
 const styling = {
     position: 'absolute',
     top: `30%`,
-    left: '40%',
-    width: 700,
+    left: '30%',
+    width: 950,
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr', // boss button ("Add Aeonblight Drake time"), time, status (dropdown menu)
+    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr', // boss button ("Add Aeonblight Drake time"), time, status (dropdown menu)
     component: "form",
     backgroundColor: "white"
 }   
@@ -41,6 +42,38 @@ export default function TimesModal(props){
   );
   const [deathInfo, setDeathInfo] = useState([...props.deaths]); // toggles
 
+  const deathField = (index, info = deathInfo) => {
+    // information of what statuses are applied
+    let text = "Deaths: ";
+    const newMenu = [...props.playerNames];
+    for(let i = 0; i < newMenu.length; i++){
+      if(info[index][i]){
+        text += newMenu[i]+", ";
+      }
+    }
+    return text.substring(0, text.length - 2); // remove the last space and comma
+  }
+  const statusField = (index, info = penaltyInfo) => {
+    // information of what statuses are applied
+    let text = "Status: ";
+    const newMenu = ["Retry", "DNF", "Ref Error", "VAR", "Forced RT", "Tech"];
+    for (let i = 0; i < newMenu.length; i++) {
+      if (info[index][i]) {
+        text += newMenu[i] + ", ";
+      }
+    }
+    return text.substring(0, text.length - 2); // remove the last space and comma
+  };
+  let penArr = [];
+  let deadArr = [];
+  for(let i = 0; i < penaltyStatus.length; i++){
+    penArr.push(statusField(i));
+    deadArr.push(deathField(i));
+  }
+  
+  const [penaltyDisplay, setPenaltyDisplay] = useState(penArr);
+  const [deathDisplay, setDeathDisplay] = useState(deadArr);
+
   // match boss with time
   // pass boss names, callback function, player names, open, close, updateTimes, team, status
   let penaltyMenu = [
@@ -50,19 +83,13 @@ export default function TimesModal(props){
     "Ref Error",
     "VAR",
     "Forced RT",
+    "Tech"
   ];
   let deathMenu = [...props.playerNames];
   deathMenu.unshift("No Deaths");
   // send back index
   // mostly inspired from official Material UI docs
   const sendStatus = (index, time) => {
-    console.log("time info")
-    console.log(data);
-    console.log("penalty info")
-    console.log(penaltyInfo);
-    console.log("death info")
-    console.log(deathInfo);
-    return;
     props.updateTimes(index, time, props.team);
     props.updateStatus(props.team, index, penaltyInfo[index], "penalty");
     props.updateStatus(props.team, index, deathInfo[index], "death");
@@ -77,9 +104,6 @@ export default function TimesModal(props){
     newPenalty[index] = penalty;
     setPenaltyStatus(newPenalty);
     let copyPenalty = [...penaltyInfo];
-      console.log(copyPenalty);
-      console.log("---------");
-      console.log("penalty: "+penalty+", index: "+index+", loc: "+loc);
     if(penalty == "Remove Penalties"){
       copyPenalty[index] = Array(5).fill(false);
       setPenaltyInfo(copyPenalty); 
@@ -88,10 +112,12 @@ export default function TimesModal(props){
       copyPenalty[index][loc - 1] = true;
       setPenaltyInfo(copyPenalty);
     }
+    let penArr = [...penaltyDisplay];
+    penArr[index] = statusField(index, copyPenalty);
+    setPenaltyDisplay(penArr);
     deactivateAnchor(2 * index);
   };
   const updateDeath = (index, death, loc) => {
-    console.log("hi ??");
     let newDeath = [...deathStatus];
     newDeath[index] = death;
     setDeathStatus(newDeath);
@@ -101,16 +127,18 @@ export default function TimesModal(props){
       setDeathInfo(copyDeath); 
     }
     else{
-      console.log(copyDeath);
-      console.log("---------")
       copyDeath[index][loc - 1] = true;
       setDeathInfo(copyDeath);
     }
+    let deadArr = [...deathDisplay];
+    deadArr[index] = deathField(index, copyDeath);
+    setDeathDisplay(deadArr);
     deactivateAnchor(2 * index + 1);
   };
   let bossNames = props.bosses.map((boss) => {
     return boss.boss;
   });
+  
   return (
     <Modal
       open={props.open}
@@ -124,20 +152,23 @@ export default function TimesModal(props){
             textAlign: "center",
             color: "blue",
             fontSize: 20,
-            gridColumn: "span 4",
+            gridColumn: "span 8",
+            fontFamily: 'Roboto'
           }}
         >{`Team ${props.team} times`}</p>
         {bossNames.map((boss, index) => {
           return (
             <Fragment key={`${boss} ind ${index}`}>
-              <TextField
-                id={boss}
-                label={`${boss} time`}
-                defaultValue={props.times[index]}
-                onChange={(e) => {
-                  updateData(index, e);
-                }}
-              />
+              <Tooltip arrow title={`Enter time (in seconds, as a decimal) for boss ${boss}`}>
+                <TextField
+                  id={boss}
+                  label={`${boss} time`}
+                  defaultValue={props.times[index]}
+                  onChange={(e) => {
+                    updateData(index, e);
+                  }}
+                />
+              </Tooltip>
               <Button
                 variant="outlined"
                 id={`penalty-button-${index}`}
@@ -209,6 +240,26 @@ export default function TimesModal(props){
               >
                 Submit
               </Button>
+              <TextField
+                disabled
+                label={"current penalties for boss " + (index + 1)}
+                sx={{ gridColumn: "span 2" }}
+                value={
+                  penaltyDisplay[index] == "Status"
+                    ? "Status: "
+                    : penaltyDisplay[index]
+                }
+              />
+              <TextField
+                disabled
+                label={"current deaths for boss " + (index + 1)}
+                sx={{ gridColumn: "span 2" }}
+                value={
+                  penaltyDisplay[index] == "Deaths"
+                    ? "Deaths: "
+                    : deathDisplay[index]
+                }
+              />
             </Fragment>
           );
         })}
@@ -216,10 +267,11 @@ export default function TimesModal(props){
           onClick={() => {
             props.close();
           }}
-          sx={{ textAlign: "center", gridColumn: "span 4", fontSize: 20 }}
+          sx={{ textAlign: "center", gridColumn: "span 8", fontSize: 20 }}
         >
           Exit
         </Button>
+        
       </Box>
     </Modal>
   );

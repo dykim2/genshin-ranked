@@ -548,7 +548,7 @@ export default function Game(props) {
     let deathString = "";
     for(let i = 0; i < identity.statust1.length; i++){ // status and death have identical lengths always
       if(identity.statust1[index][i]){
-        
+
       }
     }
 
@@ -924,7 +924,18 @@ export default function Game(props) {
         </div>
         <div className="grid nine">
           <p className="boss-1">{`Currently selected: ${selection.name}`}</p>
-          <button
+          {cookies.player.charAt(0) == 'r'
+          ? <button
+              className="boss-3"
+              onClick={() => {socket.send(JSON.stringify({
+                type: "switch",
+                phase: "finish"
+              }))}}
+              disabled={identity.result != "progress"}
+            >
+              End Game
+          </button> 
+          : <button
             className="boss-3"
             onClick={() => {
               sendSelection(turn, selection);
@@ -932,7 +943,7 @@ export default function Game(props) {
             disabled={turn + "" != cookies.player.charAt(0)} //
           >
             Select
-          </button>
+          </button>}
           <button
             className="boss-2"
             onClick={() => {
@@ -1018,7 +1029,10 @@ export default function Game(props) {
           {picks.map((pick) => {
             return typeof identity.timest1 == "undefined" ||
               typeof identity.timest1[pick] == "undefined" ? null : (
-              <p className={`boss boss-${pick + 2}`} key={pick} style={() => {}}>
+              <p
+                className={`boss boss-${pick + 2}`}
+                key={pick}
+              >
                 {identity.timest1[pick]}
               </p>
             );
@@ -1042,6 +1056,8 @@ export default function Game(props) {
         times={identity.timest1}
         bosses={identity.bosses}
         playerNames={identity.playerst1}
+        penalty={identity.penaltyt1}
+        deaths={identity.deatht1}
         open={showT1Modal}
         close={closeT1Times}
         updateTimes={forwardTimes}
@@ -1052,6 +1068,8 @@ export default function Game(props) {
         times={identity.timest2}
         bosses={identity.bosses}
         playerNames={identity.playerst2}
+        penalty={identity.penaltyt2}
+        deaths={identity.deatht2}
         open={showT2Modal}
         close={closeT2Times}
         updateTimes={forwardTimes}
@@ -1064,8 +1082,6 @@ export default function Game(props) {
         open={showT1Order == true ? true : false}
         players={identity.playerst1}
         picks={identity.pickst1}
-        penalty={identity.penaltyt1}
-        deaths={identity.deatht1}
         progress={false}
         close={closeT1Order}
         reorder={changeTeamInfo}
@@ -1076,8 +1092,6 @@ export default function Game(props) {
         open={showT2Order == true ? true : false}
         players={identity.playerst2}
         picks={identity.pickst2}
-        penalty={identity.penaltyt2}
-        deaths={identity.deatht2}
         progress={false}
         close={closeT2Order}
         reorder={changeTeamInfo}
