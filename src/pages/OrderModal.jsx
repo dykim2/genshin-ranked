@@ -22,8 +22,8 @@ const styling = {
 export default function OrderModal(props) {
     const [order, setOrder] = useState([0,1,2,3,4,5]); // taken from original pick order
     const [active, setActive] = useState([null, null, null, null, null, null]);
-    const [names, setNames] = useState(["", "", ""])
-    const [teamName, setTeamName] = useState(props.teamName);
+    const [names, setNames] = useState([...props.players])
+    const [teamName, setTeamName] = useState([props.teamName]);
     const activeAnchors = active.map(menu => {return Boolean(menu);})
     const activateAnchor = (index, event) => {
         let newActive = [...active];
@@ -38,17 +38,20 @@ export default function OrderModal(props) {
     // useref value for new order - updates on change, but actual dro
     
     const pickArr = props.picks.map(pick => {return pick.name;});
-    // console.log(pickArr); 
     const verifyOrder = () => {
+      console.log("Player names");
+      console.log(names);
+      console.log("Pick order");
+      console.log(order);
         if(!props.progress){
-            alert("Please wait to change character order until after picks are finished!")
-            return;
+          alert("Please wait to change character order until after picks are finished!")
+          return;
         }
         if((new Set(order)).size == order.length){
-            props.reorder(props.team, order, names, teamName);
+          props.reorder(props.team, order, names, teamName);
         }
         else{
-            alert("Please make sure each player has two unique characters!")
+          alert("Please make sure each player has two unique characters!")
         }
     }
     /**
@@ -74,10 +77,6 @@ export default function OrderModal(props) {
     /*
         menu items should be from 1 to 6, 1 being the first pick and 6 being the last
     */
-   useEffect(() => {
-    console.log(props.players)
-    console.log("--------")
-   }, [])
    // order is size 3 array
     return (
       <Modal
@@ -88,11 +87,28 @@ export default function OrderModal(props) {
       >
         <Box sx={styling}>
           <p
-            style={{ textAlign: "center", gridColumn: "span 3" }}
+            style={{
+              textAlign: "center",
+              gridColumn: "span 3",
+              color: "blue",
+              fontFamily: "Roboto",
+            }}
           >{`Team ${props.team} characters`}</p>
-          <p style={{ textAlign: "center" }}> </p>
-          <p style={{ textAlign: "center" }}>Character 1</p>
-          <p style={{ textAlign: "center" }}>Character 2</p>
+          <p
+            style={{ textAlign: "center", color: "blue", fontFamily: "Roboto" }}
+          >
+            {" "}
+          </p>
+          <p
+            style={{ textAlign: "center", color: "blue", fontFamily: "Roboto" }}
+          >
+            Character 1
+          </p>
+          <p
+            style={{ textAlign: "center", color: "blue", fontFamily: "Roboto" }}
+          >
+            Character 2
+          </p>
           {props.players.map((name, index) => {
             return (
               <Fragment key={`pick ${name}`}>
@@ -142,7 +158,7 @@ export default function OrderModal(props) {
                     activateAnchor(2 * index + 1, e);
                   }}
                 >
-                  {order[2 * index + 1]}
+                  {pickArr[2 * index + 1]}
                   <ArrowDropDownIcon />
                 </Button>
                 <Menu
@@ -185,6 +201,12 @@ export default function OrderModal(props) {
             onClick={verifyOrder}
           >
             Submit
+          </Button>
+          <Button
+            sx={{ gridColumn: "span 3", fontSize: "20" }}
+            onClick={props.close}
+          >
+            Exit
           </Button>
         </Box>
       </Modal>

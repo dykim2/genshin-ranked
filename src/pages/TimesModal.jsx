@@ -1,6 +1,6 @@
 import {Box, Button, Menu, MenuItem, Modal, TextField, Tooltip} from "@mui/material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "@fontsource/roboto/300.css";
 const styling = {
     position: 'absolute',
@@ -36,11 +36,26 @@ export default function TimesModal(props){
   const [penaltyStatus, setPenaltyStatus] = useState(
     Array(props.bosses.length).fill("Penalty")
   );
-  const [penaltyInfo, setPenaltyInfo] = useState([...props.penalty]); // toggles
+  // props.penalty is an object, could just display as 2D array
+  // in a useeffect set the values accordingly
+
+  const [penaltyInfo, setPenaltyInfo] = useState(Array.from({length: props.bosses.length}, () => (Array(6).fill(false)))); // toggles - now an object of arrays
   const [deathStatus, setDeathStatus] = useState(
     Array(props.bosses.length).fill("Deaths")
   );
-  const [deathInfo, setDeathInfo] = useState([...props.deaths]); // toggles
+  const [deathInfo, setDeathInfo] = useState(Array.from({length: props.bosses.length}, () => (Array(3).fill(false)))); // toggles
+
+  useEffect(() => {
+    // get death and penalty info from parent
+    let newInfo = [...penaltyInfo];
+    let newDeath = [...deathInfo];
+    for (let i = 0; i < Object.values(props.penalty).length; i++) {
+      newInfo[i] = props.penalty[i];
+      newDeath[i] = props.deaths[i];
+    }
+    setDeathInfo(newDeath);
+    setPenaltyInfo(newInfo);
+  }, []);
 
   const deathField = (index, info = deathInfo) => {
     // information of what statuses are applied

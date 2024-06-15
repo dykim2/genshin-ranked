@@ -81,7 +81,7 @@ export default function Play(){
       }
       else if(creating){
         let res = await fetch(
-          `http://localhost:3000/gameAPI/`,
+          `https://rankedapi-late-cherry-618.fly.dev/gameAPI/`,
           {
             method: "POST",
             headers: {
