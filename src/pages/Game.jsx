@@ -931,8 +931,8 @@ export default function Game(props) {
             {showInfo == "boss"
               ? useCallback(
                   bosses.map((boss) => {
-                    return (
-                      boss._id != -1 ? <Tooltip key={boss._id} title={boss.boss} arrow>
+                    return boss._id != -1 ? (
+                      <Tooltip key={boss._id} title={boss.boss} arrow>
                         <img
                           width={IMG_SIZE}
                           height={IMG_SIZE}
@@ -949,14 +949,14 @@ export default function Game(props) {
                               boss._id == selection.id &&
                               selection.type == "boss"
                                 ? "red"
-                                : chosenBosses.includes(boss._id)
+                                : typeof chosenBosses != "undefined" && chosenBosses.includes(boss._id)
                                 ? "black"
                                 : "transparent",
                             margin: 5,
                           }}
                         />
-                      </Tooltip> : null
-                    );
+                      </Tooltip>
+                    ) : null;
                   })
                 )
               : null}
@@ -983,7 +983,7 @@ export default function Game(props) {
                               char._id == selection.id &&
                               selection.type == "character"
                                 ? "red"
-                                : chosenChars.includes(char._id) 
+                                : typeof chosenChars != "undefined" && chosenChars.includes(char._id)
                                 ? "black"
                                 : "transparent",
                             margin: 5,
@@ -1025,9 +1025,7 @@ export default function Game(props) {
                 //  justifyContent: "end",
                 // }}
               >
-                <p
-                  className={`pick pick-${2 * val + 2}`}
-                >
+                <p className={`pick pick-${2 * val + 2}`}>
                   {typeof identity.pickst2 == "undefined" ||
                   typeof identity.pickst2[val] == "undefined"
                     ? "pick " + (val + 1)
@@ -1081,7 +1079,7 @@ export default function Game(props) {
                   JSON.stringify({
                     type: "switch",
                     phase: "finish",
-                    id: props.id
+                    id: props.id,
                   })
                 );
               }}
@@ -1180,6 +1178,18 @@ export default function Game(props) {
             );
           })}
         </div>
+        <div className="grid fourteen">
+          <p
+            style={{
+              fontSize: 20,
+              fontFamily: "Roboto Mono",
+              alignItems: "center",
+            }}
+          >
+            {`You are playing game ID`} <b>{`${props.id}! `}</b>
+            Make sure everyone you are playing with joins this ID.
+          </p>
+        </div>
         <div className="grid newgrid fifteen">
           <p className="boss boss-1">T1 times: </p>
           {picks.map((pick) => {
@@ -1192,6 +1202,14 @@ export default function Game(props) {
           })}
         </div>
         <div className="grid newgrid sixteen">
+          <button style={{fontSize: 20}} onClick={() => {socket.send(JSON.stringify({
+            type: "get",
+            id: props.id
+          }))}}>
+            Refresh All Game Info (only use if absolutely necessary)
+          </button>
+        </div>
+        <div className="grid newgrid seventeen">
           <p className="boss boss-1">T2 times: </p>
           {picks.map((pick) => {
             return typeof identity.timest2 == "undefined" ||
