@@ -13,16 +13,6 @@ const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
 const swapToBansPickIndex = 2; // can change in future games :eyes:
 
-const findBosses = async () => {
-  let bosses = await fetch(
-    "https://rankedapi-late-cherry-618.fly.dev/bossAPI/all",
-    {
-      method: "GET",
-    }
-  );
-  bosses = await bosses.json();
-  return bosses[0];
-};
 function MyTurn(turnInfo, id) {
   const [cookieInfo, setCookie] = useCookies(["player"]);
   if ("" + turnInfo.turnInfo == cookieInfo.player.substring(0, 1)) {
@@ -74,7 +64,7 @@ const parseBoss = (data) => {
     alert(
       "Team " +
         nextArr[data.nextTeam] +
-        " has selected  " +
+        " has selected " +
         bossList[data.boss].boss +
         " for their boss!"
     );
@@ -84,23 +74,10 @@ const parseBoss = (data) => {
       turn: data.nextTeam,
     };
   }
-  console.log("return");
-  console.log(returnVal);
+  // console.log("return");
+  // console.log(returnVal);
   return returnVal;
 };
-function compare(one, two) {
-  // compare characters
-  if (one._id == "undefined") {
-    throw new Error("Please only compare characters.");
-  }
-  if (one._id < two._id) {
-    return -1;
-  } else if (one._id > two._id) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
 const parseBan = (data) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
@@ -205,11 +182,6 @@ const parsePick = (data) => {
       turn: -1,
     };
     alert("Team 1 has selected " + charList[index].name + "!");
-    // switch phase on socket
-    socket.send(JSON.stringify({
-      type: "switch",
-      phase: "progress"
-    }))
   } else if (data.nextTeam == -2) {
     // second phase of bans
     alert("Team 2 has selected " + charList[index].name + "!");
@@ -218,13 +190,6 @@ const parsePick = (data) => {
       result: "ban",
       turn: 2,
     };
-    socket.send(
-      JSON.stringify({
-        type: "switch",
-        phase: "ban",
-        id: identity._id,
-      })
-    );
   } else {
     alert("Team " + data.team + " has selected " + charList[index].name + "!");
   }
@@ -254,15 +219,15 @@ const parseUpdate = (identity, data) => {
     case 1:
       newIden = {
         ...identity,
-        playerst1: playerNames,
-        team1: teamName
+        playerst1: data.playerNames,
+        team1: data.teamName
       };
       break;
     case 2:
       newIden = {
         ...identity,
-        playerst2: playerNames,
-        team2: teamName
+        playerst2: data.playerNames,
+        team2: data.teamName
       };
       break;
     default:
@@ -413,6 +378,7 @@ export default function Game(props) {
 
   // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
+    // console.log(info);
     sessionStorage.removeItem('game');
     sessionStorage.setItem("game", JSON.stringify(info));
     setIdentity(info);
@@ -469,7 +435,7 @@ export default function Game(props) {
         let bossInfo = JSON.stringify(identity.bosses);
         // console.log(bossInfo);
         if (
-          bossInfo.includes(`\"_id\":${selection._id},`) ||
+          bossInfo.includes(`"_id":${selection._id},`) ||
           bossInfo.includes(selection.name) ||
           checkBossStatus(selection._id)
         ) {
@@ -668,6 +634,7 @@ export default function Game(props) {
             deathString += deathMenu[i] + ", ";
           }
         }
+        break;
       }
       case 2: {
         deathMenu = [...identity.playerst2];
@@ -744,10 +711,10 @@ export default function Game(props) {
         case "turn": {
           console.log(data.turn+" new turn on websocket reload")
           setTurn(data.turn);
-          if(typeof data.bosses != undefined){
+          if(typeof data.bosses != "undefined"){
             setChosenBosses(data.bosses);
           }
-          if(typeof data.chars != undefined){
+          if(typeof data.chars != "undefined"){
             setChosenChars(data.chars)
           }
           break;
@@ -755,16 +722,18 @@ export default function Game(props) {
         case "boss": {
           res = parseBoss(data);
           let newBossArr = [...chosenBosses]
+          console.log(newBossArr);
           newBossArr.push(data.boss);
           setChosenBosses(newBossArr);
           break;
         }
         case "ban": {
-          res = parseBan(data, characters);
+          res = parseBan(data);
           let newCharArr = [...chosenChars];
           newCharArr.push(data.ban)
           setChosenChars(newCharArr); // add id to list of chosen
           if(data.nextTeam == -2 || data.nextTeam == -1){
+            console.log("data next team swap phase try")
             socket.send(
               JSON.stringify({
                 type: "switch",
@@ -776,7 +745,7 @@ export default function Game(props) {
           break;
         }
         case "pick": {
-          res = parsePick(data, characters);
+          res = parsePick(data);
           let newCharArr = [...chosenChars];
           newCharArr.push(data.pick);
           setChosenChars(newCharArr);
@@ -784,19 +753,25 @@ export default function Game(props) {
             socket.send(
               JSON.stringify({
                 type: "switch",
-                id: props._id,
+                id: props.id,
                 phase: "progress",
+              })
+            );
+          }
+          else if(data.nextTeam == -2){
+            socket.send(
+              JSON.stringify({
+                type: "switch",
+                phase: "ban",
+                id: props.id,
               })
             );
           }
           break;
         }
         case "times": {
-          console.log("checking times i guess");
           // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
           res = parseTimes(identity, data.time);
-          console.log(res);
-          console.log("maybe ^^&")
           break;
         }
         case "query": {
@@ -819,11 +794,11 @@ export default function Game(props) {
           res = parseStatus(identity, data);
           break;
         }
-        case "switch": {
-          updateIdentity((iden) => ({
-            ...iden,
-            result: newPhase,
-          }));
+        case "phase": {
+          res = {
+            ...JSON.parse(sessionStorage.getItem("game")),
+            result: data.newPhase
+          };
           break;
         }
       }
@@ -831,7 +806,6 @@ export default function Game(props) {
         updateIdentity(res);
         setTurn(res.turn);
       }
-      console.log("sent");
     });
     socket.addEventListener("close", function (event) {
       console.log("closed");
@@ -1204,6 +1178,7 @@ export default function Game(props) {
         <div className="grid newgrid sixteen">
           <button style={{fontSize: 20}} onClick={() => {socket.send(JSON.stringify({
             type: "get",
+            phase: "ban",
             id: props.id
           }))}}>
             Refresh All Game Info (only use if absolutely necessary)

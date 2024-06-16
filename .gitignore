@@ -23,3 +23,8 @@ src/store.js
 *.njsproj
 *.sln
 *.sw?
+
+# eslint config files - not important really
+eslint.config.js
+.eslintrc.cjs
+.eslintrc.json
