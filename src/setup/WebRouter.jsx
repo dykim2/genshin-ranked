@@ -64,7 +64,9 @@ function ErrorPage({error, resetErrorBoundary}){
         <p style={{ fontSize: 50 }}>
           Navigate to / to return home, and please send a bug report explaining how you got to this screen.
         </p>
-        <button onClick={resetErrorBoundary} style={{fontSize: 35}}>back</button>
+        <br></br>
+        <br></br>
+        <button onClick={resetErrorBoundary} style={{fontSize: 35, padding: '10px 20px', borderRadius: 10}}>Back</button>
     </div>
     );
 }

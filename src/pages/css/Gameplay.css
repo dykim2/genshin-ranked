@@ -1,9 +1,18 @@
 .container {
     display: grid;
-    grid-template-columns: 1fr repeat(2, minmax(200px, max-content)) 1fr;
-    /* grid-template-rows: auto; */
+    grid-template-columns: 1fr 6fr 1fr;
+    grid-template-rows: auto;
     grid-gap: 4px;
-    margin: 20px;
+    padding: 20px;
+    background-image: url("../../images/pc-abyss-bg.03b76d35.png");
+    background-size: cover;
+    background-position: center;
+    overflow-x: auto;
+}
+
+#root{
+    
+    overflow-x: hidden;
 }
 
 .grid {
@@ -11,7 +20,7 @@
     font-size: 105%;
     color: #fff;
     border-radius: 5px;
-    background-color: #444;
+    /* background-color: #444; */
 }
 
 .newgrid {
@@ -27,12 +36,12 @@
 }
 
 .two {
-    grid-column: 2 / span 2;
+    grid-column: 2 / span 1;
     grid-row: row 1;
 }
 
 .three {
-    grid-column: 4 / span 1;
+    grid-column: 3 / span 1;
     grid-row: row 1;
 }
 
@@ -42,20 +51,19 @@
     display: grid;
     grid-template-columns: 1fr 4fr 1fr;
     grid-template-rows: repeat(6, 1fr);
-    grid-auto-rows: 150px;
+    /* grid-auto-rows: 150px; */
     grid-gap: 15px;
     position: relative;
     text-align: center;
 }
 
 .five {
-    grid-column: 2 / span 2;
+    grid-column: 2 / span 1;
     grid-row: row 2;
     display: grid;
     grid-gap: 5px;
-    grid-template-rows: auto;
     overflow-y: auto;
-    max-height: 940px;
+    height: 600px;
     /* grid-auto-flow: column; */
 }
 
@@ -65,12 +73,12 @@
 }
 
 .seven {
-    grid-column: 4 / span 1;
+    grid-column: 3 / span 1;
     grid-row: row 2;
     display: grid;
     grid-template-columns: 1fr 4fr 1fr;
     grid-template-rows: repeat(6, 1fr);
-    grid-auto-rows: 150px;
+    /* grid-auto-rows: 150px; */
     grid-gap: 15px;
     position: relative;
     text-align: center;
@@ -82,7 +90,7 @@
 }
 
 .nine {
-    grid-column: 2 / span 2;
+    grid-column: 2 / span 1;
     grid-row: row 3;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
@@ -90,47 +98,47 @@
 }
 
 .ten {
-    grid-column: 4 / span 1;
+    grid-column: 3 / span 1;
     grid-row: row 3;
 }
 
 .eleven {
     grid-column: 1 / span 1;
-    grid-row: row 4 / span 1;
+    grid-row: row 3 / span 1;
 }
 
 .twelve {
-    grid-column: 2 / span 2;
+    grid-column: 2 / span 1;
     grid-row: row 4 / span 1;
     overflow-x: scroll;
 }
 
 .thirteen {
-    grid-column: 4 / span 1;
-    grid-row: row 4 / span 1;
+    grid-column: 3 / span 1;
+    grid-row: row 3 / span 1;
 }
 
 .fourteen {
     grid-column: 1 / span 1;
-    grid-row: row 5 / span 1;
+    grid-row: row 3 / span 1;
     align-self: center;
     background-color: black;
 }
 
 .fifteen {
-    grid-column: 2 / span 2;
+    grid-column: 2 / span 1;
     grid-row: row 5 / span 1;
     overflow-x: scroll;
 }
 
 .sixteen {
-    grid-column: 4 / span 1;
-    grid-row: row 5 / span 1;
+    grid-column: 3 / span 1;
+    grid-row: row 3 / span 1;
     background-color: black;
 }
 
 .seventeen {
-    grid-column: 2 / span 2;
+    grid-column: 2 / span 1;
     grid-row: row 6 / span 1;
     overflow-x: scroll;
 }
