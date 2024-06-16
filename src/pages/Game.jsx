@@ -122,11 +122,6 @@ const parseBan = (data) => {
   }
   if (data.nextTeam == -2) {
     alert("Team 2 has banned " + charList[index].name + "!");
-    socket.send(JSON.stringify({
-      type: "phase",
-      phase: "pick",
-      id: identity._id
-    }))
     return {
       ...identity,
       bans: newBans,
@@ -488,7 +483,6 @@ export default function Game(props) {
           JSON.stringify(identity.bans) +
           JSON.stringify(identity.pickst1) +
           JSON.stringify(identity.pickst2);
-        console.log(charInfo);
         if (
           charInfo.includes(`\"_id\":${selection._id},`) ||
           charInfo.includes(selection.name) ||
@@ -537,7 +531,7 @@ export default function Game(props) {
     } else {
       if (!checkSelection(selection, res)) {
         alert(
-          "Invalid pick! Please select a character that has not been chosen yet!"
+          "Invalid pick! Please select a boss (or character) that has not been chosen yet!"
         );
         return;
       }
@@ -717,7 +711,8 @@ export default function Game(props) {
     if(socket.readyState == 1){
       socket.send(JSON.stringify({
         type: "turn",
-        id: props.id
+        id: props.id,
+        getSelectionInfo: true
       }))
     }
     // Listen for messages
@@ -749,6 +744,12 @@ export default function Game(props) {
         case "turn": {
           console.log(data.turn+" new turn on websocket reload")
           setTurn(data.turn);
+          if(typeof data.bosses != undefined){
+            setChosenBosses(data.bosses);
+          }
+          if(typeof data.chars != undefined){
+            setChosenChars(data.chars)
+          }
           break;
         }
         case "boss": {
@@ -763,6 +764,15 @@ export default function Game(props) {
           let newCharArr = [...chosenChars];
           newCharArr.push(data.ban)
           setChosenChars(newCharArr); // add id to list of chosen
+          if(data.nextTeam == -2 || data.nextTeam == -1){
+            socket.send(
+              JSON.stringify({
+                type: "phase",
+                phase: "pick",
+                id: props.id,
+              })
+            );
+          }
           break;
         }
         case "pick": {
@@ -810,12 +820,10 @@ export default function Game(props) {
           break;
         }
         case "switch": {
-          /*
-            updateIdentity((iden) => ({
-              ...iden,
-              result: newPhase,
-            }));
-            */
+          updateIdentity((iden) => ({
+            ...iden,
+            result: newPhase,
+          }));
           break;
         }
       }
