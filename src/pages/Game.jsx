@@ -207,7 +207,7 @@ const parsePick = (data) => {
     alert("Team 1 has selected " + charList[index].name + "!");
     // switch phase on socket
     socket.send(JSON.stringify({
-      type: "phase",
+      type: "switch",
       phase: "progress"
     }))
   } else if (data.nextTeam == -2) {
@@ -220,7 +220,7 @@ const parsePick = (data) => {
     };
     socket.send(
       JSON.stringify({
-        type: "phase",
+        type: "switch",
         phase: "ban",
         id: identity._id,
       })
@@ -767,7 +767,7 @@ export default function Game(props) {
           if(data.nextTeam == -2 || data.nextTeam == -1){
             socket.send(
               JSON.stringify({
-                type: "phase",
+                type: "switch",
                 phase: "pick",
                 id: props.id,
               })
