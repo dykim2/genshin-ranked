@@ -983,7 +983,7 @@ export default function Game(props) {
                               char._id == selection.id &&
                               selection.type == "character"
                                 ? "red"
-                                : chosenChars.includes(char._id)
+                                : typeof chosenChars != "undefined" && chosenChars.includes(char._id)
                                 ? "black"
                                 : "transparent",
                             margin: 5,
