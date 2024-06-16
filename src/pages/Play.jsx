@@ -26,7 +26,6 @@ export default function Play(){
     setTimeout(() => {setRefresh(false)}, 10000) // wait 10 seconds between refreshes 
   };
   useEffect( () => {
-    console.log("resetting in play")
     sessionStorage.setItem("game", JSON.stringify(status));
   }, [status])
     const playGame = async(id) => {
@@ -126,7 +125,6 @@ export default function Play(){
     };
     return (
       <div>
-        {console.log("testv2 performace")}
         {typeof cookies.player == "undefined" ? null : (
           <p style={{ fontSize: 20, color: "blue" }}>
             You are currently in the middle of a game.

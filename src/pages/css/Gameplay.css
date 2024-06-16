@@ -65,11 +65,11 @@
     grid-column: 4 / span 1;
     grid-row: row 2;
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 4fr 1fr;
     grid-template-rows: auto;
     grid-gap: 15px;
     position: relative;
-    text-align: end;
+    text-align: center;
 }
 
 .eight {

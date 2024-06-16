@@ -46,14 +46,16 @@ const parseBoss = (data) => {
   // returns the value to add to sessionStorage
   // find first boss
   const identity = JSON.parse(sessionStorage.getItem("game"));
-  console.log("----------");
-  console.log(identity);
   const bossList = JSON.parse(sessionStorage.getItem("bosses"));
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
+  let long = false;
   for (let i = 0; i < identity.bosses.length; i++) {
     if (identity.bosses[i]._id == -1) {
       newBosses[i] = bossList[data.boss];
+      if(bossList[data.boss].type == "long"){
+        long = true;
+      }
       break;
     }
   }
@@ -122,7 +124,8 @@ const parseBan = (data) => {
     alert("Team 2 has banned " + charList[index].name + "!");
     socket.send(JSON.stringify({
       type: "phase",
-      phase: "pick"
+      phase: "pick",
+      id: identity._id
     }))
     return {
       ...identity,
@@ -224,6 +227,7 @@ const parsePick = (data) => {
       JSON.stringify({
         type: "phase",
         phase: "ban",
+        id: identity._id,
       })
     );
   } else {
@@ -396,7 +400,7 @@ export default function Game(props) {
   const [bosses, setBosses] = useState(
     JSON.parse(sessionStorage.getItem("bosses"))
   );
-  const [turn, setTurn] = useState(1); // current turn
+  const [turn, setTurn] = useState(identity.turn != undefined ? identity.turn : 1); // current turn
   const [cookies, setCookie] = useCookies(["player"]);
   const socket = useContext(PlayingContext);
 
@@ -409,7 +413,7 @@ export default function Game(props) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const [chosenBosses, setChosenBosses] = useState([]);
+  const [chosenBosses, setChosenBosses] = useState([-1]);
   const [chosenChars, setChosenChars] = useState([]);
 
   // https://rankedwebsocketapi.fly.dev/
@@ -468,10 +472,10 @@ export default function Game(props) {
       case "boss":
         // check id and check name
         let bossInfo = JSON.stringify(identity.bosses);
-        console.log(bossInfo);
+        // console.log(bossInfo);
         if (
-          bossInfo.contains(`\"_id\":${selection._id},`) ||
-          bossInfo.contains(selection.name) ||
+          bossInfo.includes(`\"_id\":${selection._id},`) ||
+          bossInfo.includes(selection.name) ||
           checkBossStatus(selection._id)
         ) {
           console.log("boss fail");
@@ -486,8 +490,8 @@ export default function Game(props) {
           JSON.stringify(identity.pickst2);
         console.log(charInfo);
         if (
-          charInfo.contains(`\"_id\":${selection._id},`) ||
-          charInfo.contains(selection.name) ||
+          charInfo.includes(`\"_id\":${selection._id},`) ||
+          charInfo.includes(selection.name) ||
           checkCharStatus(selection._id)
         ) {
           console.log("pick or ban fail");
@@ -506,7 +510,7 @@ export default function Game(props) {
     // verify the same boss / pick is not already chosen
 
     if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
-      console.log("identity error");
+      alert("identity error");
       return;
     }
     // boss, pick, etc
@@ -518,6 +522,7 @@ export default function Game(props) {
         alert(
           "Invalid pick! Please select a BOSS that has not been chosen yet!"
         );
+        return;
       }
       req = JSON.stringify({
         id: gameID,
@@ -534,6 +539,7 @@ export default function Game(props) {
         alert(
           "Invalid pick! Please select a character that has not been chosen yet!"
         );
+        return;
       }
       req = JSON.stringify({
         id: gameID,
@@ -560,7 +566,6 @@ export default function Game(props) {
     // for the specified team, edit the [status] array for the [boss] information by sending a socket request with information [choice] and menu type [type].
     console.log("time to update status info!");
     // return;
-    // unreachable code
     socket.send(
       JSON.stringify({
         type: "status",
@@ -600,6 +605,7 @@ export default function Game(props) {
       JSON.stringify({
         type: "team",
         team: team,
+        id: props.id,
         data: {
           teamName: teamName,
           order: order,
@@ -704,28 +710,16 @@ export default function Game(props) {
        - test
        - TEST
     */
+   
     socket.addEventListener("open", function (event) {
-      socket.send(
-        JSON.stringify({
-          type: "get",
-          id: props.id,
-        })
-      );
-      // get updated bosses / characters too
-      socket.send(
-        JSON.stringify({
-          type: "find",
-          query: "boss",
-        })
-      );
-      socket.send(
-        JSON.stringify({
-          type: "find",
-          query: "character",
-        })
-      );
+      // this does not load more than once
     });
-
+    if(socket.readyState == 1){
+      socket.send(JSON.stringify({
+        type: "turn",
+        id: props.id
+      }))
+    }
     // Listen for messages
     socket.addEventListener("message", function (event) {
       console.log(JSON.parse(event.data));
@@ -740,7 +734,6 @@ export default function Game(props) {
         return; // do nothing if game does not match
       }
       let res = null;
-      console.log("testing");
       switch (data.type) {
         case "create": {
           updateIdentity(data.game);
@@ -754,22 +747,29 @@ export default function Game(props) {
           break;
         }
         case "turn": {
+          console.log(data.turn+" new turn on websocket reload")
           setTurn(data.turn);
           break;
         }
         case "boss": {
           res = parseBoss(data);
-          setChosenBosses([...chosenBosses].push(data.boss));
+          let newBossArr = [...chosenBosses]
+          newBossArr.push(data.boss);
+          setChosenBosses(newBossArr);
           break;
         }
         case "ban": {
           res = parseBan(data, characters);
-          setChosenChars([...chosenChars].push(data.ban)); // add id to list of chosen
+          let newCharArr = [...chosenChars];
+          newCharArr.push(data.ban)
+          setChosenChars(newCharArr); // add id to list of chosen
           break;
         }
         case "pick": {
           res = parsePick(data, characters);
-          setChosenChars([...chosenChars].push(data.pick)); // add id to list of chosen
+          let newCharArr = [...chosenChars];
+          newCharArr.push(data.pick);
+          setChosenChars(newCharArr);
           if (data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
@@ -820,7 +820,6 @@ export default function Game(props) {
         }
       }
       if (res != null) {
-        console.log("please ffs")
         updateIdentity(res);
         setTurn(res.turn);
       }
@@ -925,7 +924,7 @@ export default function Game(props) {
               ? useCallback(
                   bosses.map((boss) => {
                     return (
-                      <Tooltip key={boss._id} title={boss.boss} arrow>
+                      boss._id != -1 ? <Tooltip key={boss._id} title={boss.boss} arrow>
                         <img
                           width={IMG_SIZE}
                           height={IMG_SIZE}
@@ -948,7 +947,7 @@ export default function Game(props) {
                             margin: 5,
                           }}
                         />
-                      </Tooltip>
+                      </Tooltip> : null
                     );
                   })
                 )
@@ -1008,18 +1007,18 @@ export default function Game(props) {
           })}
           {[0, 1, 2, 3, 4, 5].map((val) => {
             return (
-              <div
+              <Fragment
                 key={val}
-                className={`pick pick-${2 * val + 2}`}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "end",
-                }}
+                // className={`pick pick-${2 * val + 2}`}
+                // style={{
+                //  display: "flex",
+                //  flexDirection: "row",
+                //  alignItems: "center",
+                //  justifyContent: "end",
+                // }}
               >
                 <p
-                // className={`pick pick-${2 * val + 2}`}
+                  className={`pick pick-${2 * val + 2}`}
                 >
                   {typeof identity.pickst2 == "undefined" ||
                   typeof identity.pickst2[val] == "undefined"
@@ -1029,8 +1028,7 @@ export default function Game(props) {
                 <img
                   key={val}
                   // className={`pick pick-${2 * val + 2}`}
-                  // className={`pick pick-${val + 13}`}
-                  style={{ paddingLeft: "5px" }}
+                  className={`pick pick-${val + 13}`}
                   width={IMG_SIZE}
                   height={IMG_SIZE}
                   src={
@@ -1040,7 +1038,7 @@ export default function Game(props) {
                       : identity.pickst2[val].icon
                   }
                 />
-              </div>
+              </Fragment>
             );
           })}
         </div>
@@ -1075,6 +1073,7 @@ export default function Game(props) {
                   JSON.stringify({
                     type: "switch",
                     phase: "finish",
+                    id: props.id
                   })
                 );
               }}

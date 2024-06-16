@@ -43,8 +43,18 @@ export default function OrderModal(props) {
       console.log(names);
       console.log("Pick order");
       console.log(order);
-        if(!props.progress){
-          alert("Please wait to change character order until after picks are finished!")
+      // check default
+      let defaultVal = true;
+      for(let i = 0; i < order.length; i++){
+        if(order[i] != i){
+          defaultVal = false;
+          break;
+        }
+      }
+        if (!props.progress && !defaultVal) {
+          alert(
+            "Please wait to change character order until after picks are finished!"
+          );
           return;
         }
         if((new Set(order)).size == order.length){
