@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   build: {
     sourcemap: true,
+    base: "/genshin-ranked/",
   },
-  case: "https://dykim2.github.io/genshin-ranked/",
 });
