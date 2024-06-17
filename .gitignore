@@ -26,5 +26,6 @@ src/store.js
 
 # eslint config files - not important really
 eslint.config.js
+
 .eslintrc.cjs
 .eslintrc.json

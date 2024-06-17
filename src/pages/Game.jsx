@@ -172,7 +172,6 @@ const parsePick = (data) => {
       turn: data.nextTeam,
     };
   }
-  // console.log("index: "+index)
   if (data.nextTeam == -1) {
     // picks are over
     console.log("sent from parsepick");
@@ -195,7 +194,8 @@ const parsePick = (data) => {
   }
   return returnInfo;
 };
-const parseTimes = (identity, data) => {
+const parseTimes = (data) => {
+  const identity = JSON.parse(sessionStorage.getItem("game"));
   if (data[0] == 1) {
     let newTimes = [...identity.timest1];
     newTimes[data[1]] = data[2];
@@ -213,34 +213,25 @@ const parseTimes = (identity, data) => {
     };
   }
 };
-const parseUpdate = (identity, data) => {
+const parseUpdate = (data) => {
+  const identity = JSON.parse(sessionStorage.getItem("game"));
   let newIden = null;
-  switch(data.team){
-    case 1:
-      newIden = {
-        ...identity,
-        playerst1: data.playerNames,
-        team1: data.teamName
-      };
-      break;
-    case 2:
-      newIden = {
-        ...identity,
-        playerst2: data.playerNames,
-        team2: data.teamName
-      };
-      break;
-    default:
-      newIden = {...identity};
-      break;
+  if(data.team != 1 && data.team != 2){
+    newIden = {...identity};
   }
-  console.log(data);
-  console.log("----^^^^^----");
-  console.log(newIden);
+  else{
+    newIden = {
+      ...identity,
+      [`playerst${data.team}`]: data.playerNames,
+      [`team${data.team}`]: data.teamName,
+      [`pickst${data.team}`]: data.order
+    }
+  }
   return newIden;
   // team information
 }
-const parseStatus = (identity, data) => {
+const parseStatus = (data) => {
+  const identity = JSON.parse(sessionStorage.getItem("game"));
   // update team information 
   let newIden = null;
   switch(data.team){
@@ -298,57 +289,6 @@ const parseStatus = (identity, data) => {
   console.log(newIden);
   return newIden;
 }
-
-/*
-return JSON.stringify({
-    message: "Success",
-    type: "status",
-    menu: info.data.menu,
-    team: info.team,
-    id: info.id,
-    bossIndex: info.data.bossIndex,
-    status: info.data.status
-  })
- switch(info.team){
-    case 1:
-      switch(info.menu.toLowerCase()){
-        case "penalty": {
-          gameInfo.penaltyt1[info.data.bossIndex] = info.data.status;
-          gameInfo.markModified('penaltyt1');
-          break;
-        }
-        case "death": {
-          gameInfo.deatht1[info.data.bossIndex] = info.data.status;
-          gameInfo.markModified('deatht1');
-          break;
-        }
-        default:
-          failed = true;
-          break;
-      }
-      break;
-    case 2:
-      switch (info.menu.toLowerCase()) {
-        case "penalty": {
-          gameInfo.penaltyt2[info.data.bossIndex] = info.data.status;
-          gameInfo.markModified("penaltyt2");
-          break;
-        }
-        case "death": {
-          gameInfo.deatht2[info.data.bossIndex] = info.data.status;
-          gameInfo.markModified("deatht2");
-          break;
-        }
-        default:
-          failed = true;
-          break;
-      }
-      break;
-    default:
-      failed = true;
-      break;
-  }
-*/
 
 export default function Game(props) {
   // the actual meat of the game, including picks / bans / etc
@@ -578,7 +518,7 @@ export default function Game(props) {
     let value = 0;
     switch (team) {
       case 1: {
-        if (identity.statust1[index] == [false, false, false, false, false]) {
+        if (identity.penaltyt1[index] == [false, false, false, false, false]) {
           value += 1;
         }
         if (identity.deatht1[index] == [false, false, false]) {
@@ -587,7 +527,7 @@ export default function Game(props) {
         break;
       }
       case 2: {
-        if (identity.statust2[index] == [false, false, false, false, false]) {
+        if (identity.penaltyt2[index] == [false, false, false, false, false]) {
           value += 1;
         }
         if (identity.deatht2[index] == [false, false, false]) {
@@ -597,10 +537,6 @@ export default function Game(props) {
       }
     }
     switch (value) {
-      case 0:
-        return {
-          color: "white",
-        };
       case 1:
         return {
           color: "red",
@@ -613,10 +549,11 @@ export default function Game(props) {
         return {
           color: "green",
         };
+      default:
+        return {
+          color: "white",
+        };
     }
-    return {
-      color: "white",
-    };
   };
   const parseStatusTooltip = (index, team) => {
     let penaltyString = "";
@@ -626,8 +563,8 @@ export default function Game(props) {
     switch(team){
       case 1: {
         deathMenu = [...identity.playerst1];
-        for (let i = 0; i < identity.statust1[index].length; i++) { // looks like [[false, false, false], [false, false, false]]
-          if (identity.statust1[index][i]) {
+        for (let i = 0; i < identity.penaltyt1[index].length; i++) { // looks like [[false, false, false], [false, false, false]]
+          if (identity.penaltyt1[index][i]) {
             penaltyString += penaltyMenu[i] + ", ";
           }
           if (i < identity.playerst1.length && identity.deatht1[index][i]) {
@@ -638,9 +575,9 @@ export default function Game(props) {
       }
       case 2: {
         deathMenu = [...identity.playerst2];
-        for (let i = 0; i < identity.statust2[index].length; i++) {
+        for (let i = 0; i < identity.penaltyt2[index].length; i++) {
           // looks like [[false, false, false], [false, false, false]]
-          if (identity.statust2[index][i]) {
+          if (identity.penaltyt2[index][i]) {
             penaltyString += penaltyMenu[i] + ", ";
           }
           if(i < identity.playerst2.length && identity.deatht2[index][i]) {
@@ -652,11 +589,11 @@ export default function Game(props) {
     
     return (
       <Fragment>
-        <p>
+        <p style={{color: 'red', fontSize: 20}}>
           <b>{`Penalties: `}</b>
           {`${penaltyString}`}
         </p>
-        <p>
+        <p style={{color: 'blue', fontSize: 20}}>
           <b>{`Deaths: `}</b>
           {`${deathString}`}
         </p>
@@ -664,14 +601,6 @@ export default function Game(props) {
     );
   };
   useEffect(() => {
-    // setup the socket
-    /*
-       current todos day before publish / day of:
-       - test
-       - test
-       - TEST
-    */
-   
     socket.addEventListener("open", function (event) {
       // this does not load more than once
     });
@@ -684,8 +613,8 @@ export default function Game(props) {
     }
     // Listen for messages
     socket.addEventListener("message", function (event) {
-      console.log(JSON.parse(event.data));
-      console.log("^^^^");
+      // console.log(JSON.parse(event.data));
+      // console.log("^^^^");
       let data = JSON.parse(event.data);
       if (data.message.toLowerCase() == "failure") {
         console.log(data);
@@ -771,7 +700,7 @@ export default function Game(props) {
         }
         case "times": {
           // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
-          res = parseTimes(identity, data.time);
+          res = parseTimes(data.time);
           break;
         }
         case "query": {
@@ -787,11 +716,11 @@ export default function Game(props) {
           break;
         }
         case "TeamUpdate": {
-          res = parseUpdate(identity, data);
+          res = parseUpdate(data);
           break;
         }
         case "status": {
-          res = parseStatus(identity, data);
+          res = parseStatus(data);
           break;
         }
         case "phase": {
@@ -923,7 +852,8 @@ export default function Game(props) {
                               boss._id == selection.id &&
                               selection.type == "boss"
                                 ? "red"
-                                : typeof chosenBosses != "undefined" && chosenBosses.includes(boss._id)
+                                : typeof chosenBosses != "undefined" &&
+                                  chosenBosses.includes(boss._id)
                                 ? "black"
                                 : "transparent",
                             margin: 5,
@@ -957,7 +887,8 @@ export default function Game(props) {
                               char._id == selection.id &&
                               selection.type == "character"
                                 ? "red"
-                                : typeof chosenChars != "undefined" && chosenChars.includes(char._id)
+                                : typeof chosenChars != "undefined" &&
+                                  chosenChars.includes(char._id)
                                 ? "black"
                                 : "transparent",
                             margin: 5,
@@ -1169,18 +1100,27 @@ export default function Game(props) {
           {picks.map((pick) => {
             return typeof identity.timest1 == "undefined" ||
               typeof identity.timest1[pick] == "undefined" ? null : (
-              <p className={`boss boss-${pick + 2}`} key={pick}>
-                {identity.timest1[pick]}
-              </p>
+              <Tooltip key={pick} title={parseStatusTooltip(pick, 1)} arrow>
+                <p style={parseTextColor(pick, 1)} className={`boss boss-${pick + 2}`}>
+                  {identity.timest1[pick]}
+                </p>
+              </Tooltip>
             );
           })}
         </div>
         <div className="grid newgrid sixteen">
-          <button style={{fontSize: 20}} onClick={() => {socket.send(JSON.stringify({
-            type: "get",
-            phase: "ban",
-            id: props.id
-          }))}}>
+          <button
+            style={{ fontSize: 20 }}
+            onClick={() => {
+              socket.send(
+                JSON.stringify({
+                  type: "get",
+                  phase: "ban",
+                  id: props.id,
+                })
+              );
+            }}
+          >
             Refresh All Game Info (only use if absolutely necessary)
           </button>
         </div>
@@ -1189,8 +1129,8 @@ export default function Game(props) {
           {picks.map((pick) => {
             return typeof identity.timest2 == "undefined" ||
               typeof identity.timest2[pick] == "undefined" ? null : (
-              <Tooltip key={pick} title={"times"}>
-                <p className={`boss boss-${pick + 2}`}>
+              <Tooltip key={pick} title={parseStatusTooltip(pick, 2)} arrow >
+                <p style={parseTextColor(pick, 2)} className={`boss boss-${pick + 2}`}>
                   {identity.timest2[pick]}
                 </p>
               </Tooltip>
@@ -1228,7 +1168,7 @@ export default function Game(props) {
         open={showT1Order == true ? true : false}
         players={identity.playerst1}
         picks={identity.pickst1}
-        progress={false}
+        progress={identity.result == "progress"}
         close={closeT1Order}
         reorder={changeTeamInfo}
       />
@@ -1238,7 +1178,7 @@ export default function Game(props) {
         open={showT2Order == true ? true : false}
         players={identity.playerst2}
         picks={identity.pickst2}
-        progress={false}
+        progress={identity.result == "progress"}
         close={closeT2Order}
         reorder={changeTeamInfo}
       />
