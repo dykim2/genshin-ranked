@@ -845,6 +845,7 @@ export default function Game(props) {
                 } else {
                   return (
                     <Fragment key={val}>
+                      
                       <p className={`pick pick-${2 * val + 2}`}>
                         {typeof identity.pickst1 == "undefined" ||
                         typeof identity.pickst1[val] == "undefined"
