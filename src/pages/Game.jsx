@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback, Fragment } from "react";
+import { useState, useEffect, useContext, Fragment } from "react";
 import { useCookies } from "react-cookie";
 import { Box } from "@mui/material";
 import "./css/Playing.css";
@@ -903,8 +903,7 @@ export default function Game(props) {
               </div>
               <div>
                 {showInfo == "character"
-                  ? 
-                    characters.map((char) => {
+                  ? characters.map((char) => {
                       return (
                         <Tooltip title={char.name} key={char._id} arrow>
                           <img
