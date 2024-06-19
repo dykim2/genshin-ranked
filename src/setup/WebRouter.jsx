@@ -44,7 +44,7 @@ export default function WebRouter() {
         }
       );
       gameData = await gameData.json();
-      setActive(gameData[0]);
+      setActive(gameData[0].reverse());
     }
     getChars();
     findActive();

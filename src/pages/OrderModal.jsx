@@ -8,7 +8,7 @@
 
 import { Box, Button, Modal, Menu, MenuItem, TextField } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 const styling = {
   position: "absolute",
   top: `30%`,
@@ -23,26 +23,25 @@ export default function OrderModal(props) {
     const [order, setOrder] = useState([0,1,2,3,4,5]); // taken from original pick order
     const [active, setActive] = useState([null, null, null, null, null, null]);
     const [names, setNames] = useState([...props.players])
-    const [teamName, setTeamName] = useState([props.teamName]);
+    const [teamName, setTeamName] = useState(props.teamName);
     const activeAnchors = active.map(menu => {return Boolean(menu);})
     const activateAnchor = (index, event) => {
-        let newActive = [...active];
-        newActive[index] = event.currentTarget;
-        setActive(newActive);
+      let newActive = [...active];
+      newActive[index] = event.currentTarget;
+      setActive(newActive);
     }
     const deactivateAnchor = (index) => {
-        let newActive = [...active];
-        newActive[index] = null;
-        setActive(newActive);
+      let newActive = [...active];
+      newActive[index] = null;
+      setActive(newActive);
     }
     // useref value for new order - updates on change, but actual dro
     
     const pickArr = props.picks.map(pick => {return pick.name;});
+    /**
+     * Sends the order information to the websocket.
+     */
     const verifyOrder = () => {
-      console.log("Player names");
-      console.log(names);
-      console.log("Pick order");
-      console.log(order);
       // check default
       let defaultVal = true;
       for(let i = 0; i < order.length; i++){
@@ -51,18 +50,18 @@ export default function OrderModal(props) {
           break;
         }
       }
-        if (!props.progress && !defaultVal) {
-          alert(
-            "Please wait to change character order until after picks are finished!"
-          );
-          return;
-        }
-        if((new Set(order)).size == order.length){
-          props.reorder(props.team, order, names, teamName);
-        }
-        else{
-          alert("Please make sure each player has two unique characters!")
-        }
+      if (!props.progress && !defaultVal) {
+        alert(
+          "Pick order cannot be changed until the game is in progress. All other changes will still take place."
+        );
+        setOrder([0, 1, 2, 3, 4, 5]); // reset order
+      }
+      else if((new Set(order)).size != order.length){
+        alert("Please make sure each player has two unique characters! All other changes will still take place.");
+      }
+      props.reorder(props.team, order, names, teamName);
+      alert("Team information updated successfully!")
+      props.close();
     }
     /**
      * Makes a shallow copy of names with the same objects, to edit accordingly.
@@ -70,24 +69,24 @@ export default function OrderModal(props) {
      * @param {*} e the event information
      */
     const updateNames = (index, e) => {
-        let newNames = [...names];
-        newNames[index] = e.target.value; 
-        setNames(newNames);
+      let newNames = [...names];
+      newNames[index] = e.target.value; 
+      setNames(newNames);
     }
     const updateOrder = (index, value) => {
-        if(value < 0 || value >= order.length){
-            // do literally, absolutely, utterly nothing
-            return;
-        }
-        let newOrder = [...order];
-        newOrder[index] = value;
-        setOrder(newOrder);
-        deactivateAnchor(index); // deactivate on selection
+      if(value < 0 || value >= order.length){
+          // do literally, absolutely, utterly nothing
+          return;
+      }
+      let newOrder = [...order];
+      newOrder[index] = value;
+      setOrder(newOrder);
+      deactivateAnchor(index); // deactivate on selection
     }
     /*
-        menu items should be from 1 to 6, 1 being the first pick and 6 being the last
+      menu items should be from 0 to 5, 0 being the first pick and 5 being the last
     */
-   // order is size 3 array
+    // order is size 3 array
     return (
       <Modal
         open={props.open}
@@ -137,7 +136,7 @@ export default function OrderModal(props) {
                     activateAnchor(2 * index, e);
                   }}
                 >
-                  {pickArr[2 * index]}
+                  {props.picks[order[2 * index]].name}
                   <ArrowDropDownIcon />
                 </Button>
                 <Menu
@@ -168,7 +167,7 @@ export default function OrderModal(props) {
                     activateAnchor(2 * index + 1, e);
                   }}
                 >
-                  {pickArr[2 * index + 1]}
+                  {props.picks[order[2 * index + 1]].name}
                   <ArrowDropDownIcon />
                 </Button>
                 <Menu
