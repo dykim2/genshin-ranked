@@ -10,6 +10,26 @@
     overflow-x: auto;
 }
 
+
+body *:not(#root)::-webkit-scrollbar {
+    height: 8px;
+    width: 8px; /* Width of the scrollbar */
+}
+
+body *:not(#root)::-webkit-scrollbar-track {
+    background: transparent; /* Make the track transparent */
+}
+
+body *:not(#root)::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #a39767; /* Color of the thumb */
+}
+
+body *:not(#root)::-webkit-scrollbar-thumb:hover {
+    border-radius: 10px;
+    background: #736b4b; /* Color of the thumb when hovering */
+}
+
 #root{
     overflow-x: hidden;
 }
