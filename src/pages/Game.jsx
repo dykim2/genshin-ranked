@@ -903,37 +903,37 @@ export default function Game(props) {
               </div>
               <div>
                 {showInfo == "character"
-                  ? useCallback(
-                      characters.map((char) => {
-                        return (
-                          <Tooltip title={char.name} key={char._id} arrow>
-                            <img
-                              width={IMG_SIZE}
-                              height={IMG_SIZE}
-                              src={char.icon}
-                              onClick={() => {
-                                setSelection({
-                                  type: "character",
-                                  id: char._id,
-                                  name: char.name,
-                                });
-                              }}
-                              style={{
-                                backgroundColor:
-                                  char._id == selection.id &&
-                                  selection.type == "character"
-                                    ? "red"
-                                    : typeof chosenChars != "undefined" &&
-                                      chosenChars.includes(char._id)
-                                    ? "black"
-                                    : "transparent",
-                                margin: 5,
-                              }}
-                            />
-                          </Tooltip>
-                        );
-                      })
-                    )
+                  ? 
+                    characters.map((char) => {
+                      return (
+                        <Tooltip title={char.name} key={char._id} arrow>
+                          <img
+                            width={IMG_SIZE}
+                            height={IMG_SIZE}
+                            src={char.icon}
+                            onClick={() => {
+                              setSelection({
+                                type: "character",
+                                id: char._id,
+                                name: char.name,
+                              });
+                            }}
+                            style={{
+                              backgroundColor:
+                                char._id == selection.id &&
+                                selection.type == "character"
+                                  ? "red"
+                                  : typeof chosenChars != "undefined" &&
+                                    chosenChars.includes(char._id)
+                                  ? "black"
+                                  : "transparent",
+                              margin: 5,
+                            }}
+                          />
+                        </Tooltip>
+                      );
+                    }
+                  )
                   : null}
               </div>
             </div>
