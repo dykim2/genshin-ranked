@@ -3,7 +3,7 @@ export default function Home(){
       <div style={{ marginLeft: 100, marginTop: 100 }}>
         
         <p>Welcome to genshin ranked!</p>
-        <p>This page is under construction.</p>
+        <p>We are working to bring you a new homepage. Please sit tight!</p>
       </div>
     ); 
 }

@@ -4,120 +4,65 @@ export default function Rules() {
       <meta charSet="UTF-8" />
       <meta content="IE=edge" httpEquiv="X-UA-Compatible" />
       <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-      <div style={{ color: "white" }}>
-        <h1>Genshin Ranked rulebook</h1>
-        <p style={{ fontsize: "18px" }}>
-          GENSHIN RANKED is a CO-OP 3v3 gamemode where players are organized in
-          teams of 3 to fight a series of bosses. Whichever team can kill the
-          bosses faster will win.
-        </p>
-        <b>
-          <p style={{ fontsize: "18px" }}>DIVISIONS:</p>
-        </b>
-        <p style={{ fontsize: "12px" }}>
-          Currently, there are THREE different divisions:{" "}
-          <span style={{ color: "lightgreen" }}>OPEN, </span>
-          <span style={{ color: "yellow" }}>ADVANCED, </span>
-          and <span style={{ color: "red" }}>PREMIER</span>
-          . These divisions are separated based off of INVESTMENT, and units in
-          the same division should perform similarly. During any division match,
-          all players may only use characters and weapons within that division
-          OR a lower division.
-          <br />
-          Refer to the{" "}
-          <a href="characters">
-            <span style={{ color: "wheat" }}>characters</span>
-          </a>{" "}
-          section on this website to determine your division. If you need
-          assistance, please join the DISCORD SERVER (discord.gg/fnGdP36E2Q) and
-          ask a member to help!
-        </p>
-        <b>
-          <p style={{ fontsize: "18px" }}>GAMEMODES:</p>
-        </b>
-        <p style={{ fontsize: "12px" }}>
-          RANKED has 2 different gamemodes:{" "}
-          <span style={{ color: "tomato" }}>DRAFT PICK</span> and
-          <span style={{ color: "lightblue" }}> BLIND PICK</span>
-          <br />
-          DRAFT PICK involves banning different characters for BOTH teams.
-          Additionally, the character picks across teams may NOT overlap.
-          <br />
-          BLIND PICK involves each team picking a set of characters to use, with
-          no bans. Character picks across teams may overlap.
-          <br />
-          It is generally recommended for newer players to start with BLIND
-          PICK, but the game may be played however you wish.
-          <br />
-          HAVE FUN!
-          <br />{" "}
-        </p>
-        <b>
-          <p style={{ fontsize: "18px" }}>
-            <u>GAMEPLAY 3V3 RULES</u>
-          </p>
-        </b>
-        <p style={{ fontsize: "12px" }}>
-          WL8, 1 ref per world, no consumables, no gadgets, no external
-          assistance.
-        </p>
-        <p style={{ fontsize: "16px" }}>
-          <u>BOSS PICKS</u>
-          <br />
-          Team 1 and Team 2 alternate boss picks. Each team chooses 3-4 boss, 
-          depending on division. In addition, each team has to fight the default boss, Ruin Drake first.
-          <br />
-        </p>
-        <u></u>
-        <p style={{ fontsize: "16px" }}>
-          <u>CHARACTER PICKS</u>
-          <br />
-          A ban completely removes the character from both teams' pools.
-          Currently, we do not allow duplicate characters. You have 30 seconds
-          to decide on a ban, else, it is forfeit.
-          <br />
-          You have 30 seconds to decide on a character. Team1 picks one character first, 
-          followed by two picks from Team2. Team1 then gets to pick two characters followed 
-          by one pick from Team2. Then Team2 bans one character followed by one character ban 
-          from Team1. Finally, Team2 gets one pick followed by two picks from Team1. Team2 then 
-          gets to pick 2 followed by one pick from Team1. 
-          Matches will be determined by a best 7 or 9, depending on the division. 
-          You may hover a selection by typing "hover" before a pick. Depending on draft or
-          blind, the pick order may be different. You must ONLY pick characters
-          that fall in your division or below based off the
-          <a href="/characters">
-            <span style={{ color: "wheat" }}>character</span>
-          </a>
-          archive.
-          <u></u>
-        </p>
-        <p style={{ fontsize: "16px" }}>
-          <u>MATCH START</u>
-          <br />
-          Prep phase is determined by division. Clean out the world if you need
-          to get places safely. During the 2 min roll call, showcase your
-          selected build on character profile and you may start with desired hp
-          and energy designate yourself as ready with "r" or "ready" ref will
-          type "Timer is ready, you have 15 seconds to begin" and you shall kill
-          the opponent as fast as you can. In cases of a solo ref, team 1 goes
-          first, then team 2
-        </p>
-        <u></u>
-        <p style={{ fontsize: "16px" }}>
-          <u>ACCIDENTS</u>
-          <br />
-          Do not respawn until the boss is complete. Do not heal or obtain
-          energy outside of combat. If both teams die, the team that survived
-          for the longest amount of time wins. Legal heals occur while the match
-          timer is active.
-        </p>
-        <u></u>
-        <p style={{ fontsize: "16px" }}>
-          <u>FREE RESET</u>
-          <br />
-          Every team is allowed one free reset to account for technical issues.
-          2 min roll call for HP and energy as desired
-        </p>
+      <div style={{ color: "white", marginLeft: 20 }}>
+        <h1>GENSHIN RANKED 3v3</h1>
+        <br />
+GAME FORMAT
+<br />
+Draft Phase: Prep
+
+If you are queuing an unscheduled match, 5 minutes of prep time will be given to both teams in order to discuss strategies and share rosters.
+<br />
+
+Draft Phase: Bosses
+<br />
+Teams will alternate between picking bosses, starting with Team 1. For Open and Advanced, each team picks 3 bosses. For Premier, each team picks 4 bosses.
+<br />
+Aeonblight Drake is the first boss.
+<br />
+Teams may not pick more than ONE premium boss. These include: Oceanid, all weekly bosses, and all local legends.
+
+Weekly bosses cannot be picked in Open and local legends cannot be picked in Open or Advanced.
+
+<br />
+<h2>Draft Phase: Characters</h2>
+<br />
+
+NOTE: The information below applies only to 3v3 draft. In blind, teams are given 3 minutes to freely choose their 6 characters. Duplicates are allowed between the teams (ex. both teams can choose Yelan) but not within one team (ex. one team cannot play two Yelans).
+
+Banning a character removes the character from both teams' pools. Picking a character removes the character from the other team, and picking duplicates is not allowed.
+
+Each character pick/ban is 30 seconds. If a ban is not made before 30 seconds, it is forfeit. 
+
+You may hover a selection by typing "hover" before a pick.
+
+Refer to the scoreboard for drafting boards and pick order.
+<br />
+ 
+Gameplay: Prep
+
+Bosses may not be killed in the ref world outside of designated prep time, including prep before draft, drafting, and roll call. If this rule is violated, prep time will be reduced.
+
+The amount of time allocated for boss prep is determined by division. Teams may do anything in the ref world during this time. The ref will start any domains/bosses that need host interaction.
+
+After this prep time, there is a 2 minute roll call. Refs will invite players to a domain to get energy, if necessary, and teams can set their HP and energy as desired.
+
+During the roll call, teams will tell the ref which two characters out of the six picks each player is going to use. Additionally, players will have to put both characters into their showcase, with show character details enabled.
+
+
+Gameplay: Bosses
+
+All bosses will be done in WL8. Gadgets, consumables, and external assistance are not allowed.
+
+When you are ready to start a boss, please type "r" or "ready" in the chat.
+
+Wait until the ref confirms the timer is ready before starting the boss. In the case of tech issues, players are free to let the ref know. Whether a retry is offered or not is up to the ref's discretion.
+
+If any player dies during the boss, do not respawn until the boss is complete, heal, or obtain energy. If both teams are teamwiped, the team who survived the longest will win the boss.
+
+Pre-casting is allowed, but players may not cast a healing ability before the boss is activated.
+
+Every team is allowed one free reset after all bosses have been completed. There is a 2 min roll call to obtain desired HP and energy. 
       </div>
     </>
   );

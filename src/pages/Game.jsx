@@ -11,25 +11,24 @@ import OrderModal from "./OrderModal.jsx";
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
-const swapToBansPickIndex = 2; // can change in future games :eyes:
+// const swapToBansPickIndex = 2; // can change in future games :eyes:
 
 function MyTurn(turnInfo, id) {
-  const [cookieInfo, setCookie] = useCookies(["player"]);
+  const [cookieInfo] = useCookies(["player"]);
   if ("" + turnInfo.turnInfo == cookieInfo.player.substring(0, 1)) {
-    return <p style={{ color: "red" }}>YOUR TURN!</p>;
+    return <p style={{ color: "red", fontSize: 28 }}>your turn!</p>;
   } else if (
     (cookieInfo.player.substring(0, 1) == "1" ||
       cookieInfo.player.substring(0, 1) == "2") &&
     turnInfo.turnInfo > 0
   ) {
-    return <p style={{ color: "red" }}>Opponent's turn!</p>;
+    return <p style={{ color: "red", fontSize: 28 }}>opponent's turn!</p>;
   } else {
     return (
-      <p style={{ color: "red" }}>It is team {turnInfo.turnInfo}'s turn!</p>
+      <p style={{ color: "red", fontSize: 28 }}>team {turnInfo.turnInfo}'s turn!</p>
     );
   }
 }
-
 const parseBoss = (data) => {
   // takes in a copy of local storage usestate
   // takes in a copy of data
@@ -199,7 +198,6 @@ const parseTimes = (data) => {
   if (data[0] == 1) {
     let newTimes = [...identity.timest1];
     newTimes[data[1]] = data[2];
-    console.log("new times: "+newTimes);
     return {
       ...identity,
       timest1: newTimes,
@@ -216,6 +214,11 @@ const parseTimes = (data) => {
 const parseUpdate = (data) => {
   const identity = JSON.parse(sessionStorage.getItem("game"));
   let newIden = null;
+  // arrange order
+  let newOrder = [];
+  for(let i = 0; i < identity.pickst1.length; i++){
+    newOrder.push(identity[`pickst${data.team}`][data.order[i]])
+  }
   if(data.team != 1 && data.team != 2){
     newIden = {...identity};
   }
@@ -224,7 +227,7 @@ const parseUpdate = (data) => {
       ...identity,
       [`playerst${data.team}`]: data.playerNames,
       [`team${data.team}`]: data.teamName,
-      [`pickst${data.team}`]: data.order
+      [`pickst${data.team}`]: newOrder
     }
   }
   return newIden;
@@ -284,9 +287,6 @@ const parseStatus = (data) => {
       }
       break;
   };
-  console.log(data);
-  console.log("-------");
-  console.log(newIden);
   return newIden;
 }
 
@@ -330,7 +330,6 @@ export default function Game(props) {
   }, [identity])
   */
   const forwardTimes = (boss, time, team) => {
-    console.log("yes");
     if (isNaN(parseFloat(time))) {
       // do error modal thing
       alert("Please enter a valid number or decimal for the time.");
@@ -416,6 +415,10 @@ export default function Game(props) {
     // boss, pick, etc
     let res = identity.result;
     let req = "";
+    if (bosses[selection.id].type == "legend" && identity.division != "premier") {
+      alert("You cannot pick legends in advanced or open division!");
+      return;
+    }
     if (res.toLowerCase() == "waiting") {
       // check bosses, see if picked
       if (!checkSelection(selection, "boss")) {
@@ -424,6 +427,7 @@ export default function Game(props) {
         );
         return;
       }
+      
       req = JSON.stringify({
         id: gameID,
         type: "add",
@@ -464,7 +468,6 @@ export default function Game(props) {
    */
   const updateStatusInfo = (team, boss, choice, type) => {
     // for the specified team, edit the [status] array for the [boss] information by sending a socket request with information [choice] and menu type [type].
-    console.log("time to update status info!");
     // return;
     socket.send(
       JSON.stringify({
@@ -540,18 +543,26 @@ export default function Game(props) {
       case 1:
         return {
           color: "red",
+          marginTop: 10,
+          textAlign: "end",
         };
       case 2:
         return {
           color: "blue",
+          marginTop: 10,
+          textAlign: "end",
         };
       case 3:
         return {
           color: "green",
+          marginTop: 10,
+          textAlign: "end",
         };
       default:
         return {
           color: "white",
+          marginTop: 10,
+          textAlign: "end"
         };
     }
   };
@@ -604,18 +615,53 @@ export default function Game(props) {
     socket.addEventListener("open", function (event) {
       // this does not load more than once
     });
+    if (typeof cookies.player == "undefined") {
+      setCookie("player", "spectate");
+    }
     if(socket.readyState == 1){
+      
       socket.send(JSON.stringify({
         type: "turn",
         id: props.id,
         getSelectionInfo: true
       }))
+      if (sessionStorage.getItem("game") == null) {
+        console.log("socket open");
+        socket.send(
+          JSON.stringify({
+            type: "get",
+            id: props.id,
+          })
+        ); // should work if first connection is to here
+      }
+      if (sessionStorage.getItem("bosses") == null) {
+        console.log("hihi");
+        socket.send(
+          JSON.stringify({
+            type: "find",
+            query: "boss",
+          })
+        );
+      }
     }
     // Listen for messages
     socket.addEventListener("message", function (event) {
-      // console.log(JSON.parse(event.data));
+      console.log(JSON.parse(event.data));
       // console.log("^^^^");
       let data = JSON.parse(event.data);
+      
+        
+      if (data.type === "query") { // since for some reason query is not equal to query in a switch statement
+        if (data.boss) {
+          sessionStorage.removeItem("bosses");
+          setBosses(data.bossList);
+          sessionStorage.setItem("bosses", JSON.stringify(data.bossList));
+        } else {
+          sessionStorage.removeItem("characters");
+          setCharacters(data.characterList);
+          sessionStorage.setItem("characters", data.characterList);
+        }
+      }
       if (data.message.toLowerCase() == "failure") {
         console.log(data);
         alert(data.error);
@@ -625,32 +671,29 @@ export default function Game(props) {
         return; // do nothing if game does not match
       }
       let res = null;
-      switch (data.type) {
+      switch (data.type.toString()) {
         case "create": {
           updateIdentity(data.game);
           break;
         }
         case "get": {
           updateIdentity(data.game);
-          console.log("game added?");
-          console.log(data.game);
           setTurn(data.game.turn);
           break;
         }
         case "turn": {
-          console.log(data.turn+" new turn on websocket reload")
           setTurn(data.turn);
-          if(typeof data.bosses != "undefined"){
+          if (typeof data.bosses != "undefined") {
             setChosenBosses(data.bosses);
           }
-          if(typeof data.chars != "undefined"){
-            setChosenChars(data.chars)
+          if (typeof data.chars != "undefined") {
+            setChosenChars(data.chars);
           }
           break;
         }
         case "boss": {
           res = parseBoss(data);
-          let newBossArr = [...chosenBosses]
+          let newBossArr = [...chosenBosses];
           console.log(newBossArr);
           newBossArr.push(data.boss);
           setChosenBosses(newBossArr);
@@ -659,10 +702,9 @@ export default function Game(props) {
         case "ban": {
           res = parseBan(data);
           let newCharArr = [...chosenChars];
-          newCharArr.push(data.ban)
+          newCharArr.push(data.ban);
           setChosenChars(newCharArr); // add id to list of chosen
-          if(data.nextTeam == -2 || data.nextTeam == -1){
-            console.log("data next team swap phase try")
+          if (data.nextTeam == -2 || data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
                 type: "switch",
@@ -686,8 +728,7 @@ export default function Game(props) {
                 phase: "progress",
               })
             );
-          }
-          else if(data.nextTeam == -2){
+          } else if (data.nextTeam == -2) {
             socket.send(
               JSON.stringify({
                 type: "switch",
@@ -703,18 +744,6 @@ export default function Game(props) {
           res = parseTimes(data.time);
           break;
         }
-        case "query": {
-          if (data.boss) {
-            sessionStorage.removeItem("bosses");
-            setBosses(data.bossList);
-            sessionStorage.setItem("bosses", data.bossList);
-          } else {
-            sessionStorage.removeItem("characters");
-            setCharacters(data.characterList);
-            sessionStorage.setItem("characters", data.characterList);
-          }
-          break;
-        }
         case "TeamUpdate": {
           res = parseUpdate(data);
           break;
@@ -726,7 +755,7 @@ export default function Game(props) {
         case "phase": {
           res = {
             ...JSON.parse(sessionStorage.getItem("game")),
-            result: data.newPhase
+            result: data.newPhase,
           };
           break;
         }
@@ -768,420 +797,426 @@ export default function Game(props) {
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
   let picks = [0, 2, 4, 6, 8, 1, 3, 5, 7];
   let bans = [0, 2, 5, 1, 3, 4];
+  let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let vertOrder = [1, 2, 3];
   return (
     <div>
-      <div className="container">
-        <div className="grid one">
-          {typeof identity.team1 == "undefined"
-            ? "team 1 Selections!"
-            : identity.team1 + " picks!"}
-        </div>
-        <div className="grid newgrid two">
-          <p className="boss boss-1">
-            {showInfo == "boss" ? "bosses:" : "characters:"}
-          </p>
-          <div className="boss boss-2">
-            <MyTurn turnInfo={turn == 1 ? 1 : 2} />
-          </div>
-          <p className="boss boss-3">
-            {"currently choosing: " + identity.result.toLowerCase()}
-          </p>
-          <Box className="boss boss-4">{/* add box information */}</Box>
-        </div>
-        <div className="grid three">
-          {typeof identity.team2 == "undefined"
-            ? "team 2 Selections!"
-            : identity.team2 + " picks!"}
-        </div>
-        <div className="grid four">
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((val) => {
-            if (val >= 6) {
-              return (
-                <p key={val} className={`pick pick-${4 * val - 23}`}>
-                  {typeof identity.playerst1 == "undefined" ||
-                  typeof identity.playerst1[val - 6] == "undefined"
-                    ? "player " + (val - 5)
-                    : identity.playerst1[val - 6]}
-                </p>
-              );
-            } else {
-              return (
-                <Fragment key={val}>
-                  <p className={`pick pick-${2 * val + 2}`}>
-                    {typeof identity.pickst1 == "undefined" ||
-                    typeof identity.pickst1[val] == "undefined"
-                      ? "pick " + (val + 1)
-                      : identity.pickst1[val].name}
-                  </p>
-                  <img
-                    className={`pick pick-${val + 13}`}
-                    width={IMG_SIZE}
-                    height={IMG_SIZE}
-                    src={
-                      typeof identity.pickst1 == "undefined" ||
-                      typeof identity.pickst1[val] == "undefined"
-                        ? null
-                        : identity.pickst1[val].icon
-                    }
-                  />
-                </Fragment>
-              );
-            }
-          })}
-        </div>
-        <div className="grid five">
-          <div>
-            {showInfo == "boss"
-              ? useCallback(
-                  bosses.map((boss) => {
-                    return boss._id != -1 ? (
-                      <Tooltip key={boss._id} title={boss.boss} arrow>
-                        <img
-                          width={IMG_SIZE}
-                          height={IMG_SIZE}
-                          src={boss.icon}
-                          onClick={() => {
-                            setSelection({
-                              type: "boss",
-                              id: boss._id,
-                              name: boss.boss,
-                            });
-                          }}
-                          style={{
-                            backgroundColor:
-                              boss._id == selection.id &&
-                              selection.type == "boss"
-                                ? "red"
-                                : typeof chosenBosses != "undefined" &&
-                                  chosenBosses.includes(boss._id)
-                                ? "black"
-                                : "transparent",
-                            margin: 5,
-                          }}
-                        />
-                      </Tooltip>
-                    ) : null;
-                  })
-                )
-              : null}
-          </div>
-          <div>
-            {showInfo == "character"
-              ? useCallback(
-                  characters.map((char) => {
-                    return (
-                      <Tooltip title={char.name} key={char._id} arrow>
-                        <img
-                          width={IMG_SIZE}
-                          height={IMG_SIZE}
-                          src={char.icon}
-                          onClick={() => {
-                            setSelection({
-                              type: "character",
-                              id: char._id,
-                              name: char.name,
-                            });
-                          }}
-                          style={{
-                            backgroundColor:
-                              char._id == selection.id &&
-                              selection.type == "character"
-                                ? "red"
-                                : typeof chosenChars != "undefined" &&
-                                  chosenChars.includes(char._id)
-                                ? "black"
-                                : "transparent",
-                            margin: 5,
-                          }}
-                        />
-                      </Tooltip>
-                    );
-                  })
-                )
-              : null}
-          </div>
-        </div>
-        <div className="grid seven">
-          {[0, 1, 2].map((val) => {
-            return (
-              <div
-                key={val}
-                className={`pick pick-${4 * val + 1}`}
-                style={{ textAlign: "center" }}
-              >
-                <p>
-                  {typeof identity.playerst2 == "undefined" ||
-                  typeof identity.playerst2[val] == "undefined"
-                    ? "player " + (val + 1)
-                    : identity.playerst2[val]}
-                </p>
+      {sessionStorage.getItem("game") == null ||
+      sessionStorage.getItem("bosses") == null ||
+      sessionStorage.getItem("characters") == null ||
+      identity.connected == [0, 0, 0]? (
+        <p>Your page is currently loading!</p>
+      ) : (
+        <Fragment>
+          <div className="container">
+            <div className="grid one">
+              {typeof identity.team1 == "undefined"
+                ? "team 1 Selections!"
+                : identity.team1 + " picks!"}
+            </div>
+            <div className="grid newgrid two">
+              <p className="boss boss-1">
+                {showInfo == "boss" ? "bosses:" : "characters:"}
+              </p>
+              <div className="boss boss-2">
+                <MyTurn turnInfo={turn == 1 ? 1 : 2} />
               </div>
-            );
-          })}
-          {[0, 1, 2, 3, 4, 5].map((val) => {
-            return (
-              <Fragment
-                key={val}
-                // className={`pick pick-${2 * val + 2}`}
-                // style={{
-                //  display: "flex",
-                //  flexDirection: "row",
-                //  alignItems: "center",
-                //  justifyContent: "end",
-                // }}
-              >
-                <p className={`pick pick-${2 * val + 2}`}>
-                  {typeof identity.pickst2 == "undefined" ||
-                  typeof identity.pickst2[val] == "undefined"
-                    ? "pick " + (val + 1)
-                    : identity.pickst2[val].name}
-                </p>
-                <img
-                  key={val}
-                  // className={`pick pick-${2 * val + 2}`}
-                  className={`pick pick-${val + 13}`}
-                  width={IMG_SIZE}
-                  height={IMG_SIZE}
-                  src={
-                    typeof identity.pickst2 == "undefined" ||
-                    typeof identity.pickst2[val] == "undefined"
-                      ? null
-                      : identity.pickst2[val].icon
-                  }
-                />
-              </Fragment>
-            );
-          })}
-        </div>
-        <div className="grid newgrid eight">
-          {cookies.player.charAt(0) == "1" ? (
-            <button
-              onClick={() => {
-                setOrderT1(true);
-              }}
-              style={{ fontSize: 20 }}
-            >
-              Adjust player picks
-            </button>
-          ) : cookies.player.charAt(0) == "r" ? (
-            <button
-              onClick={() => {
-                setShowT1(true);
-              }}
-              style={{ fontSize: 20 }}
-            >
-              Add T1 times
-            </button>
-          ) : null}
-        </div>
-        <div className="grid nine">
-          <p className="boss-1">{`Currently selected: ${selection.name}`}</p>
-          {cookies.player.charAt(0) == "r" ? (
-            <button
-              className="boss-3"
-              onClick={() => {
-                socket.send(
-                  JSON.stringify({
-                    type: "switch",
-                    phase: "finish",
-                    id: props.id,
-                  })
-                );
-              }}
-              disabled={identity.result != "progress"}
-            >
-              End Game
-            </button>
-          ) : (
-            <button
-              className="boss-3"
-              onClick={() => {
-                sendSelection(turn, selection);
-              }}
-              disabled={turn + "" != cookies.player.charAt(0)} //
-            >
-              Select
-            </button>
-          )}
-          <button
-            className="boss-2"
-            onClick={() => {
-              {
-                showInfo == "character"
-                  ? setShow("boss")
-                  : setShow("character");
-              }
-            }}
-          >
-            {showInfo == "character" ? "Show Bosses" : "Show Characters"}
-          </button>
-        </div>
-
-        <div className="grid newgrid ten">
-          {cookies.player.charAt(0) == "2" ? (
-            <button style={{ fontSize: 20 }} onClick={() => setOrderT2(true)}>
-              Adjust player picks
-            </button>
-          ) : cookies.player.charAt(0) == "r" ? (
-            <button style={{ fontSize: 20 }} onClick={() => setShowT2(true)}>
-              Add T2 times
-            </button>
-          ) : null}
-        </div>
-        <div className="grid newgrid eleven">
-          <p className="boss boss-1">bans:</p>
-          {bans.slice(0, 3).map((ban) => {
-            return (
-              <Tooltip
-                title={
-                  typeof identity.bans == "undefined"
-                    ? null
-                    : identity.bans[ban].name
+              <p className="boss boss-3">
+                {"select a " + identity.result.toLowerCase()}
+              </p>
+              <Box className="boss boss-4">{/* add box information */}</Box>
+            </div>
+            <div className="grid three">
+              {typeof identity.team2 == "undefined"
+                ? "team 2 Selections!"
+                : identity.team2 + " picks!"}
+            </div>
+            <div className="grid four">
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((val) => {
+                if (val >= 6) {
+                  return (
+                    <p key={val} className={`pick pick-${4 * val - 23}`}>
+                      {typeof identity.playerst1 == "undefined" ||
+                      typeof identity.playerst1[val - 6] == "undefined"
+                        ? "player " + (val - 5)
+                        : identity.playerst1[val - 6]}
+                    </p>
+                  );
+                } else {
+                  return (
+                    <Fragment key={val}>
+                      <p className={`pick pick-${2 * val + 2}`}>
+                        {typeof identity.pickst1 == "undefined" ||
+                        typeof identity.pickst1[val] == "undefined"
+                          ? "pick " + (val + 1)
+                          : identity.pickst1[val].name}
+                      </p>
+                      <img
+                        className={`pick pick-${val + 13}`}
+                        width={IMG_SIZE}
+                        height={IMG_SIZE}
+                        src={
+                          typeof identity.pickst1 == "undefined" ||
+                          typeof identity.pickst1[val] == "undefined"
+                            ? null
+                            : identity.pickst1[val].icon
+                        }
+                      />
+                    </Fragment>
+                  );
                 }
-                arrow
-                key={ban}
+              })}
+            </div>
+            <div className="grid five">
+              <div>
+                {showInfo == "boss"
+                  ? bosses.map((boss) => {
+                      return boss._id != -1 ? (
+                        <Tooltip key={boss._id} title={boss.boss} arrow>
+                          <img
+                            width={IMG_SIZE}
+                            height={IMG_SIZE}
+                            src={boss.icon}
+                            onClick={() => {
+                              setSelection({
+                                type: "boss",
+                                id: boss._id,
+                                name: boss.boss,
+                              });
+                            }}
+                            style={{
+                              backgroundColor:
+                                boss._id == selection.id &&
+                                selection.type == "boss"
+                                  ? "red"
+                                  : typeof chosenBosses != "undefined" &&
+                                    chosenBosses.includes(boss._id)
+                                  ? "black"
+                                  : "transparent",
+                              margin: 5,
+                            }}
+                          />
+                        </Tooltip>
+                      ) : null;
+                    })
+                  : null}
+              </div>
+              <div>
+                {showInfo == "character"
+                  ? useCallback(
+                      characters.map((char) => {
+                        return (
+                          <Tooltip title={char.name} key={char._id} arrow>
+                            <img
+                              width={IMG_SIZE}
+                              height={IMG_SIZE}
+                              src={char.icon}
+                              onClick={() => {
+                                setSelection({
+                                  type: "character",
+                                  id: char._id,
+                                  name: char.name,
+                                });
+                              }}
+                              style={{
+                                backgroundColor:
+                                  char._id == selection.id &&
+                                  selection.type == "character"
+                                    ? "red"
+                                    : typeof chosenChars != "undefined" &&
+                                      chosenChars.includes(char._id)
+                                    ? "black"
+                                    : "transparent",
+                                margin: 5,
+                              }}
+                            />
+                          </Tooltip>
+                        );
+                      })
+                    )
+                  : null}
+              </div>
+            </div>
+            <div className="grid seven">
+              {[0, 1, 2].map((val) => {
+                return (
+                  <div
+                    key={val}
+                    className={`pick pick-${4 * val + 1}`}
+                    style={{ textAlign: "center" }}
+                  >
+                    <p>
+                      {typeof identity.playerst2 == "undefined" ||
+                      typeof identity.playerst2[val] == "undefined"
+                        ? "player " + (val + 1)
+                        : identity.playerst2[val]}
+                    </p>
+                  </div>
+                );
+              })}
+              {[0, 1, 2, 3, 4, 5].map((val) => {
+                return (
+                  <Fragment
+                    key={val}
+                    // className={`pick pick-${2 * val + 2}`}
+                    // style={{
+                    //  display: "flex",
+                    //  flexDirection: "row",
+                    //  alignItems: "center",
+                    //  justifyContent: "end",
+                    // }}
+                  >
+                    <p className={`pick pick-${2 * val + 2}`}>
+                      {typeof identity.pickst2 == "undefined" ||
+                      typeof identity.pickst2[val] == "undefined"
+                        ? "pick " + (val + 1)
+                        : identity.pickst2[val].name}
+                    </p>
+                    <img
+                      key={val}
+                      // className={`pick pick-${2 * val + 2}`}
+                      className={`pick pick-${val + 13}`}
+                      width={IMG_SIZE}
+                      height={IMG_SIZE}
+                      src={
+                        typeof identity.pickst2 == "undefined" ||
+                        typeof identity.pickst2[val] == "undefined"
+                          ? null
+                          : identity.pickst2[val].icon
+                      }
+                    />
+                  </Fragment>
+                );
+              })}
+            </div>
+            <div className="grid newgrid eight">
+              {cookies.player.charAt(0) == "1" ? (
+                <button
+                  onClick={() => {
+                    setOrderT1(true);
+                  }}
+                  style={{ fontSize: 20 }}
+                >
+                  Adjust player picks
+                </button>
+              ) : cookies.player.charAt(0) == "r" ? (
+                <button
+                  onClick={() => {
+                    setShowT1(true);
+                  }}
+                  style={{ fontSize: 20 }}
+                >
+                  Add T1 times
+                </button>
+              ) : null}
+            </div>
+            <div className="grid nine">
+              <p className="boss-1">{`Currently selected: ${selection.name}`}</p>
+              {cookies.player.charAt(0) == "r" ? (
+                <button
+                  className="boss-3"
+                  onClick={() => {
+                    socket.send(
+                      JSON.stringify({
+                        type: "switch",
+                        phase: "finish",
+                        id: props.id,
+                      })
+                    );
+                  }}
+                  disabled={identity.result != "progress"}
+                >
+                  End Game
+                </button>
+              ) : (
+                <button
+                  className="boss-3"
+                  onClick={() => {
+                    sendSelection(turn, selection);
+                  }}
+                  disabled={turn + "" != cookies.player.charAt(0)} //
+                >
+                  Select
+                </button>
+              )}
+              <button
+                className="boss-2"
+                onClick={() => {
+                  {
+                    showInfo == "character"
+                      ? setShow("boss")
+                      : setShow("character");
+                  }
+                }}
               >
-                <img
-                  className={`boss ban-${ban}`}
-                  width={IMG_SIZE}
-                  height={IMG_SIZE}
-                  src={identity.bans[ban].icon}
-                />
-              </Tooltip>
-            );
-          })}
-        </div>
-        <div className="grid newgrid twelve">
-          <p className="boss boss-1">Bosses: </p>
-          {picks.map((pick) => {
-            return typeof identity.bosses == "undefined" ||
-              typeof identity.bosses[pick] == "undefined" ? null : (
-              <Tooltip title={identity.bosses[pick].boss} arrow key={pick}>
-                <img
-                  className={`boss boss-${pick + 2}`}
-                  width={IMG_SIZE}
-                  height={IMG_SIZE}
-                  src={identity.bosses[pick].icon}
-                />
-              </Tooltip>
-            );
-          })}
-        </div>
-        <div className="grid newgrid thirteen">
-          <p className="boss boss-1">bans:</p>
-          {bans.slice(3, 6).map((ban) => {
-            return typeof identity.bans == "undefined" ||
-              typeof identity.bans[ban] == "undefined" ? null : (
-              <Tooltip title={identity.bans[ban].name} arrow key={ban}>
-                <img
-                  className={`boss ban-${ban}`}
-                  width={IMG_SIZE}
-                  height={IMG_SIZE}
-                  src={identity.bans[ban].icon}
-                />
-              </Tooltip>
-            );
-          })}
-        </div>
-        <div className="grid fourteen">
-          <p
-            style={{
-              fontSize: 20,
-              fontFamily: "Roboto Mono",
-              alignItems: "center",
-            }}
-          >
-            {`You are playing game ID`} <b>{`${props.id}! `}</b>
-            Make sure everyone you are playing with joins this ID.
-          </p>
-        </div>
-        <div className="grid newgrid fifteen">
-          <p className="boss boss-1">T1 times: </p>
-          {picks.map((pick) => {
-            return typeof identity.timest1 == "undefined" ||
-              typeof identity.timest1[pick] == "undefined" ? null : (
-              <Tooltip key={pick} title={parseStatusTooltip(pick, 1)} arrow>
-                <p style={parseTextColor(pick, 1)} className={`boss boss-${pick + 2}`}>
-                  {identity.timest1[pick]}
-                </p>
-              </Tooltip>
-            );
-          })}
-        </div>
-        <div className="grid newgrid sixteen">
-          <button
-            style={{ fontSize: 20 }}
-            onClick={() => {
-              socket.send(
-                JSON.stringify({
-                  type: "get",
-                  phase: "ban",
-                  id: props.id,
-                })
-              );
-            }}
-          >
-            Refresh All Game Info (only use if absolutely necessary)
-          </button>
-        </div>
-        <div className="grid newgrid seventeen">
-          <p className="boss boss-1">T2 times: </p>
-          {picks.map((pick) => {
-            return typeof identity.timest2 == "undefined" ||
-              typeof identity.timest2[pick] == "undefined" ? null : (
-              <Tooltip key={pick} title={parseStatusTooltip(pick, 2)} arrow >
-                <p style={parseTextColor(pick, 2)} className={`boss boss-${pick + 2}`}>
-                  {identity.timest2[pick]}
-                </p>
-              </Tooltip>
-            );
-          })}
-        </div>
-      </div>
-      <TimesModal
-        times={identity.timest1}
-        bosses={identity.bosses}
-        playerNames={identity.playerst1}
-        penalty={identity.penaltyt1}
-        deaths={identity.deatht1}
-        open={showT1Modal}
-        close={closeT1Times}
-        updateTimes={forwardTimes}
-        team={1}
-        updateStatus={updateStatusInfo}
-      />
-      <TimesModal
-        times={identity.timest2}
-        bosses={identity.bosses}
-        playerNames={identity.playerst2}
-        penalty={identity.penaltyt2}
-        deaths={identity.deatht2}
-        open={showT2Modal}
-        close={closeT2Times}
-        updateTimes={forwardTimes}
-        team={2}
-        updateStatus={updateStatusInfo}
-      />
-      <OrderModal
-        team={1}
-        teamName={identity.team1}
-        open={showT1Order == true ? true : false}
-        players={identity.playerst1}
-        picks={identity.pickst1}
-        progress={identity.result == "progress"}
-        close={closeT1Order}
-        reorder={changeTeamInfo}
-      />
-      <OrderModal
-        team={2}
-        teamName={identity.team2}
-        open={showT2Order == true ? true : false}
-        players={identity.playerst2}
-        picks={identity.pickst2}
-        progress={identity.result == "progress"}
-        close={closeT2Order}
-        reorder={changeTeamInfo}
-      />
+                {showInfo == "character" ? "Show Bosses" : "Show Characters"}
+              </button>
+            </div>
+
+            <div className="grid newgrid ten">
+              {cookies.player.charAt(0) == "2" ? (
+                <button
+                  style={{ fontSize: 20 }}
+                  onClick={() => setOrderT2(true)}
+                >
+                  Adjust player picks
+                </button>
+              ) : cookies.player.charAt(0) == "r" ? (
+                <button
+                  style={{ fontSize: 20 }}
+                  onClick={() => setShowT2(true)}
+                >
+                  Add T2 times
+                </button>
+              ) : null}
+            </div>
+            <div className="grid newgrid eleven">
+              <p className="boss boss-1">bans:</p>
+              {bans.slice(0, 3).map((ban) => {
+                return (
+                  <Tooltip
+                    title={
+                      typeof identity.bans == "undefined"
+                        ? null
+                        : identity.bans[ban].name
+                    }
+                    arrow
+                    key={ban}
+                  >
+                    <img
+                      className={`boss ban-${ban}`}
+                      width={IMG_SIZE}
+                      height={IMG_SIZE}
+                      src={identity.bans[ban].icon}
+                    />
+                  </Tooltip>
+                );
+              })}
+            </div>
+            <div className="grid timesgrid twelve">
+              <div className="grid longgrid times-1">
+                <p style={{ marginTop: 15 }}>boss: </p>
+                <p style={{ marginTop: 36 }}>T1: </p>
+                <p style={{ marginTop: 12 }}>T2: </p>
+              </div>
+              {timeOrder.slice(0, -3).map((time) => {
+                return (
+                  <div className={`grid longgrid times-${time + 2}`} key={time}>
+                    <Tooltip title={identity.bosses[time].boss} arrow>
+                      <img
+                        width={IMG_SIZE}
+                        height={IMG_SIZE}
+                        className="end"
+                        src={identity.bosses[time].icon}
+                      />
+                    </Tooltip>
+                    <Tooltip title={parseStatusTooltip(time, 1)} arrow>
+                      <p style={parseTextColor(time, 1)}>
+                        {identity.timest1[time].toFixed(2)}
+                      </p>
+                    </Tooltip>
+                    <Tooltip title={parseStatusTooltip(time, 2)} arrow>
+                      <p style={parseTextColor(time, 2)}>
+                        {identity.timest2[time].toFixed(2)}
+                      </p>
+                    </Tooltip>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="grid newgrid thirteen">
+              <p className="boss boss-1">bans:</p>
+              {bans.slice(3, 6).map((ban) => {
+                return typeof identity.bans == "undefined" ||
+                  typeof identity.bans[ban] == "undefined" ? null : (
+                  <Tooltip title={identity.bans[ban].name} arrow key={ban}>
+                    <img
+                      className={`boss ban-${ban}`}
+                      width={IMG_SIZE}
+                      height={IMG_SIZE}
+                      src={identity.bans[ban].icon}
+                    />
+                  </Tooltip>
+                );
+              })}
+            </div>
+            <div className="grid fourteen">
+              <p
+                style={{
+                  fontSize: 20,
+                  fontFamily: "Roboto Mono",
+                  alignItems: "center",
+                }}
+              >
+                {`You are playing game ID`} <b>{`${props.id}! `}</b>
+                Make sure everyone you are playing with joins this ID.
+              </p>
+            </div>
+
+            <div className="grid newgrid sixteen">
+              <button
+                style={{ fontSize: 20 }}
+                onClick={() => {
+                  socket.send(
+                    JSON.stringify({
+                      type: "get",
+                      phase: "ban",
+                      id: props.id,
+                    })
+                  );
+                }}
+              >
+                Refresh Game Info
+              </button>
+            </div>
+            <div className="grid newgrid seventeen"></div>
+          </div>
+          <TimesModal
+            times={identity.timest1}
+            bosses={identity.bosses}
+            playerNames={identity.playerst1}
+            penalty={identity.penaltyt1}
+            deaths={identity.deatht1}
+            open={showT1Modal}
+            close={closeT1Times}
+            updateTimes={forwardTimes}
+            team={1}
+            updateStatus={updateStatusInfo}
+          />
+          <TimesModal
+            times={identity.timest2}
+            bosses={identity.bosses}
+            playerNames={identity.playerst2}
+            penalty={identity.penaltyt2}
+            deaths={identity.deatht2}
+            open={showT2Modal}
+            close={closeT2Times}
+            updateTimes={forwardTimes}
+            team={2}
+            updateStatus={updateStatusInfo}
+          />
+          <OrderModal
+            team={1}
+            teamName={identity.team1}
+            open={showT1Order == true ? true : false}
+            players={identity.playerst1}
+            picks={identity.pickst1}
+            progress={identity.result == "progress"}
+            close={closeT1Order}
+            reorder={changeTeamInfo}
+          />
+          <OrderModal
+            team={2}
+            teamName={identity.team2}
+            open={showT2Order == true ? true : false}
+            players={identity.playerst2}
+            picks={identity.pickst2}
+            progress={identity.result == "progress"}
+            close={closeT2Order}
+            reorder={changeTeamInfo}
+          />
+        </Fragment>
+      )}
     </div>
   );
 }

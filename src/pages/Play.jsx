@@ -72,11 +72,11 @@ export default function Play(){
             player: ""+playerChoice,
           }),
         })
+        let info = await res.json();
         if (res.status != 200) {
           valid = false;
-          alert("An error occured trying something.");
+          alert(info.message);
         }
-        res = await res.json();
       }
       else if(creating){
         let res = await fetch(
@@ -138,11 +138,11 @@ export default function Play(){
           <button className="playbutton" onClick={createGame}>
             New Game
           </button>
-          <button className="playbutton"  onClick={join}>
+          <button className="playbutton" onClick={join}>
             Join existing game
           </button>
           <button
-          className="playbutton"
+            className="playbutton"
             onClick={() => {
               removeCookie("player");
               forceRefresh();
@@ -204,16 +204,18 @@ export default function Play(){
               >
                 {refreshing ? "Please Wait" : "Refresh"}
               </button>
-              { <button
-                style={{
-                  width: 250,
-                  fontSize: 22,
-                  color: "blue",
-                }}
-                onClick={close}
-              >
-                Exit
-              </button> }
+              {
+                <button
+                  style={{
+                    width: 250,
+                    fontSize: 22,
+                    color: "blue",
+                  }}
+                  onClick={close}
+                >
+                  Exit
+                </button>
+              }
             </div>
           </Modal>
           <Modal
@@ -222,63 +224,74 @@ export default function Play(){
             contentLabel="Choosing what player"
             className="Modal"
           >
-            {readying ? <p style={{color: "white", fontSize: 20}}>Loading your game... You will be automatically redirected!</p> : <div className="modalcontent">
-              <h1 style={{ color: "white", textAlign:"center"}}>Choose your player:</h1>
-              <br />
-              <br />
-              <button
-                className="modalbuttons"
-                onClick={() => choosePlayer("1", status._id)}
-                disabled={
-                  typeof status.connected != "undefined" &&
-                  status.connected[0] == 1
-                    ? true
-                    : false
-                }
-              >
-                Player 1
-              </button>
-              <button
-                className="modalbuttons"
-                onClick={() => choosePlayer("2", status._id)}
-                disabled={
-                  typeof status.connected != "undefined" &&
-                  status.connected[1] == 1
-                    ? true
-                    : false
-                }
-              >
-                Player 2
-              </button>
-              <button
-                className="modalbuttons"
-                onClick={() => choosePlayer("ref", status._id)}
-                disabled={
-                  typeof status.connected != "undefined" &&
-                  status.connected[2] == 2
-                    ? true
-                    : false
-                }
-              >
-                Ref
-              </button>
-              <button
-                className="modalbuttons"
-                onClick={() => choosePlayer("spectate", status._id)}
-              >
-                Spectate
-              </button>
-              <button
-                className="modalbuttons"
-                onClick={() => {
-                  setChoosing(false); // stop choosing and remove game information
-                  setStatus({ connected: [0, 0, 0] }); // back to default
-                  sessionStorage.removeItem("game");
-                }}
-              >
-                Exit
-              </button>
-            </div>}
+            {readying ? (
+              <p style={{ color: "white", fontSize: 20 }}>
+                Loading your game... You will be automatically redirected!
+              </p>
+            ) : (
+              <div className="modalcontent">
+                <h1 style={{ color: "white", textAlign: "center" }}>
+                  Choose your player:
+                </h1>
+                <br />
+                <br />
+                <button
+                  className="modalbuttons"
+                  onClick={() => choosePlayer("1", status._id)}
+                  disabled={ (
+                    typeof status.connected != "undefined" &&
+                    status.connected[0] == 1
+                  )
+                      ? true
+                      : false
+                  }
+                >
+                  Player 1
+                </button>
+                <button
+                  className="modalbuttons"
+                  onClick={() => choosePlayer("2", status._id)}
+                  disabled={ (
+                    typeof status.connected != "undefined" &&
+                    status.connected[1] == 1 
+                  )
+                      ? true
+                      : false
+                  }
+                >
+                  Player 2
+                </button>
+                <button
+                  className="modalbuttons"
+                  onClick={() => choosePlayer("ref", status._id)}
+                  disabled={ (
+                    typeof status.connected != "undefined" &&
+                    status.connected[2] == 3 
+                  )
+                      ? true
+                      : false
+                  }
+                >
+                  Ref
+                </button>
+                <button
+                  className="modalbuttons"
+                  onClick={() => choosePlayer("spectate", status._id)}
+                >
+                  Spectate
+                </button>
+                <button
+                  className="modalbuttons"
+                  onClick={() => {
+                    setChoosing(false); // stop choosing and remove game information
+                    setStatus({ connected: [0, 0, 0] }); // back to default
+                    sessionStorage.removeItem("game");
+                  }}
+                >
+                  Exit
+                </button>
+              </div>
+            )}
           </Modal>
         </div>
       </div>
