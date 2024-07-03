@@ -29,3 +29,5 @@ eslint.config.js
 
 .eslintrc.cjs
 .eslintrc.json
+
+package-lock.json
