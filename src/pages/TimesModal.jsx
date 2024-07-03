@@ -39,7 +39,7 @@ export default function TimesModal(props){
   // props.penalty is an object, could just display as 2D array
   // in a useeffect set the values accordingly
 
-  const [penaltyInfo, setPenaltyInfo] = useState(Array.from({length: props.bosses.length}, () => (Array(6).fill(false)))); // toggles - now an object of arrays
+  const [penaltyInfo, setPenaltyInfo] = useState(Array.from({length: props.bosses.length}, () => (Array(7).fill(false)))); // toggles - now an object of arrays
   const [deathStatus, setDeathStatus] = useState(
     Array(props.bosses.length).fill("Deaths")
   );
@@ -71,7 +71,7 @@ export default function TimesModal(props){
   const statusField = (index, info = penaltyInfo) => {
     // information of what statuses are applied
     let text = "Status: ";
-    const newMenu = ["Retry", "DNF", "Ref Error", "VAR", "Forced RT", "Tech"];
+    const newMenu = ["Retry", "DNF", "Ref Error", "VAR", "VAR/Updated", "Forced RT", "Tech"];
     for (let i = 0; i < newMenu.length; i++) {
       if (info[index][i]) {
         text += newMenu[i] + ", ";
@@ -97,6 +97,7 @@ export default function TimesModal(props){
     "DNF",
     "Ref Error",
     "VAR",
+    "VAR/Updated",
     "Forced RT",
     "Tech"
   ];

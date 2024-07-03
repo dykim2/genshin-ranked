@@ -199,7 +199,7 @@ export default function Play(){
                     }
                   );
                   gameData = await gameData.json();
-                  setActive(gameData[0]);
+                  setActive(gameData[0].reverse());
                 }}
               >
                 {refreshing ? "Please Wait" : "Refresh"}
