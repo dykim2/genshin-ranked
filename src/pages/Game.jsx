@@ -1114,7 +1114,7 @@ export default function Game(props) {
    * @param {Boolean} boss whether the target array represents bosses or picks
    * @return an array displaying the corresponding picks
    */
-  const displayFilter = (info, boss = true) => {
+  const displayFilter = (info, boss = true) => { 
     let newInfo = [];
     if(boss){
       if(localStorage.getItem("display_boss") == null || localStorage.getItem("display_boss") == 0){
