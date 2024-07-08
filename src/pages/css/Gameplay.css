@@ -1,6 +1,6 @@
 .container {
     display: grid;
-    grid-template-columns: 1fr repeat(2, minmax(200px, max-content)) 1fr;
+    grid-template-columns: 1fr repeat(2, minmax(500px, max-content)) 1fr;
     grid-template-rows: auto;
     grid-gap: 4px;
     margin: 20px;
@@ -100,7 +100,7 @@
     grid-column: 2 / span 2;
     grid-row: row 3;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     grid-gap: 15px;
 }
 

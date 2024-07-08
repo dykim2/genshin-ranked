@@ -8,6 +8,7 @@ import { PlayingContext } from "../contexts/PlayingContext.js";
 import TimesModal from "./TimesModal.jsx";
 import OrderModal from "./OrderModal.jsx";
 import Countdown from "react-countdown";
+import FilterModal from "./FilterModal.jsx";
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
@@ -42,10 +43,19 @@ const parseBoss = (data) => {
   for (let i = 0; i < identity.bosses.length; i++) {
     if (identity.bosses[i]._id == -1) {
       newBosses[i] = bossList[data.boss];
-      if(bossList[data.boss].type == "long"){
+      if(bossList[data.boss].long){
         long = true;
       }
       break;
+    }
+  }
+  let longArr = [...identity.longBoss];
+  if(long){
+    if(data.nextTeam < 0){
+      longArr[1] = true;
+    }
+    else{
+      longArr[nextArr[data.nextTeam] - 1] = true;
     }
   }
   let returnVal = "";
@@ -53,12 +63,24 @@ const parseBoss = (data) => {
     alert(
       "Team 2 has selected " + bossList[data.boss].boss + " for their boss!"
     );
-    returnVal = {
-      ...identity,
-      result: "ban",
-      bosses: newBosses,
-      turn: 1,
-    };
+    if(long){
+      returnVal = {
+        ...identity,
+        result: "ban",
+        bosses: newBosses,
+        longBoss: longArr,
+        turn: 1,
+      };
+    }
+    else{
+      returnVal = {
+        ...identity,
+        result: "ban",
+        bosses: newBosses,
+        turn: 1,
+      };
+    }
+    
   } else {
     alert(
       "Team " +
@@ -67,11 +89,21 @@ const parseBoss = (data) => {
         bossList[data.boss].boss +
         " for their boss!"
     );
-    returnVal = {
-      ...identity,
-      bosses: newBosses,
-      turn: data.nextTeam,
-    };
+    if(long){
+      returnVal = {
+        ...identity,
+        bosses: newBosses,
+        longBoss: longArr,
+        turn: data.nextTeam,
+      };
+    }
+    else{
+      returnVal = {
+        ...identity,
+        bosses: newBosses,
+        turn: data.nextTeam,
+      };
+    }
   }
   // console.log("return");
   // console.log(returnVal);
@@ -92,11 +124,13 @@ const parseBan = (data) => {
     icon: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
     chosen: false
   };
+  let noBanChoice = false;
   for (let i = 0; i < identity.bans.length; i++) {
     if (identity.bans[i]._id == -1) {
       if(data.ban == -2){
         // no ban
         newBans[i] = noBan;
+        noBanChoice = true;
       }
       else{
         // valid ban, find the character info and insert it
@@ -112,7 +146,13 @@ const parseBan = (data) => {
     }
   }
   if (data.nextTeam == -2) {
-    alert("Team 2 has banned " + charList[index].name + "!");
+    if(noBanChoice){
+      alert("Team 2 decided to not ban a character!");
+    }
+    else{
+      alert("Team 2 has banned " + charList[index].name + "!");
+    }
+    
     return {
       ...identity,
       bans: newBans,
@@ -120,7 +160,11 @@ const parseBan = (data) => {
       turn: 1,
     };
   } else if (data.nextTeam == -1) {
-    alert("Team 1 has banned " + charList[index].name + "!");
+    if (noBanChoice) {
+      alert("Team 1 decided to not ban a character!");
+    } else {
+      alert("Team 1 has banned " + charList[index].name + "!");
+    }
     return {
       ...identity,
       bans: newBans,
@@ -128,13 +172,17 @@ const parseBan = (data) => {
       turn: 2,
     };
   } else {
-    alert(
-      "Team " +
-        nextArr[data.nextTeam] +
-        " has banned " +
-        charList[index].name +
-        "!"
-    );
+    if (noBanChoice) {
+      alert("Team " + nextArr[data.nextTeam] + " decided to not ban a character!");
+    } else {
+      alert(
+        "Team " +
+          nextArr[data.nextTeam] +
+          " has banned " +
+          charList[index].name +
+          "!"
+      );
+    }
     return {
       ...identity,
       bans: newBans,
@@ -330,9 +378,14 @@ export default function Game(props) {
   const [chosenBosses, setChosenBosses] = useState(sessionStorage.getItem("selected_bosses"));
   const [chosenChars, setChosenChars] = useState(sessionStorage.getItem("selected_characters"));
 
+  const [filtering, setFiltering] = useState(false);
+
   const [timer, setTimerValue] = useState(Date.now());
   const currentTime = useRef(0);
   currentTime.current = timer;
+
+  const [bossFilterActive, setBossFilter] = useState(false);
+  const [charFilterActive, setCharFilter] = useState(false);
 
   const updateTurn = (turn) => {
     setTurn(turn);
@@ -458,7 +511,7 @@ export default function Game(props) {
     let res = identity.result;
     let req = "";
     let found = false;
-    if (selection.type == "boss" && bosses[selection.id].type == "legend" && identity.division != "premier") {
+    if (selection.type == "boss" && bosses[selection.id].type == "legend" && identity.division.toLowerCase() != "premier") {
       if(timeout){
         alert("Time is up! Hovered boss is a local legend, which cannot be played in your division. A random boss will be selected.");
         found = true;
@@ -468,6 +521,14 @@ export default function Game(props) {
         return; 
       }
     }
+    if((selection.type == "boss" && identity.result.toLowerCase() != "boss") || (selection.type == "character" && (identity.result.toLowerCase() != "ban" && identity.result.toLowerCase() != "pick"))){
+      selection = {};
+    }
+    else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id].long == true && identity.division.toLowerCase() == "advanced"){
+      alert("You cannot pick more than one long boss in advanced division!")
+      return;
+    }
+    // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
     if(JSON.stringify(selection) == '{}'){
       alert("No selection was made! Random boss / pick or no ban is selected.")
       req = JSON.stringify({
@@ -709,6 +770,25 @@ export default function Game(props) {
     if(sessionStorage.getItem("chosen_picks") == null){
       sessionStorage.setItem("chosen_picks", JSON.stringify([]));
     }
+    if (
+      localStorage.getItem("display_boss") != null &&
+      localStorage.getItem("display_boss") != 0
+    ) {
+      setBossFilter(true);
+    }
+    [
+      "character_elements",
+      "character_rarity",
+      "character_region",
+      "character_weapons",
+    ].forEach((type) => {
+      if (
+        localStorage.getItem(type) != null &&
+        localStorage.getItem(type) != 0
+      ) {
+        setCharFilter(true);
+      }
+    });
     socket.addEventListener("open", function (event) {
       // this does not load more than once
     });
@@ -745,6 +825,9 @@ export default function Game(props) {
       console.log(JSON.parse(event.data));
       // console.log("^^^^");
       let data = JSON.parse(event.data);
+      if (data.id != props.id) {
+        return; // do nothing if game does not match
+      }
       if (data.type === "query") { // since for some reason query is not equal to query in a switch statement
         if (data.boss) {
           sessionStorage.removeItem("bosses");
@@ -761,11 +844,8 @@ export default function Game(props) {
         alert(data.error);
         return;
       }
-      if (data.id != props.id) {
-        return; // do nothing if game does not match
-      }
       let res = null;
-      switch (data.type.toString()) {
+      switch (data.type) {
         case "create": {
           updateIdentity(data.game);
           break;
@@ -817,7 +897,13 @@ export default function Game(props) {
         case "ban": {
           updateTimer(true, true);
           res = parseBan(data);
-          let newCharArr = [...chosenChars];
+          let newCharArr = [];
+          if(chosenChars != null){
+            newCharArr = [...chosenChars];
+          }
+          else{
+            newCharArr = [];
+          }
           newCharArr.push(data.ban);
           setChosenChars(newCharArr); // add id to list of chosen
           if (data.nextTeam == -2 || data.nextTeam == -1) {
@@ -834,7 +920,12 @@ export default function Game(props) {
         case "pick": {
           updateTimer(true, true);
           res = parsePick(data);
-          let newCharArr = [...chosenChars];
+          let newCharArr = [];
+          if (chosenChars != null) {
+            newCharArr = [...chosenChars];
+          } else {
+            newCharArr = [];
+          }
           newCharArr.push(data.pick);
           setChosenChars(newCharArr);
           if (data.nextTeam == -1) {
@@ -918,11 +1009,206 @@ export default function Game(props) {
   const closeT2Order = () => {
     setOrderT2(false);
   };
+
+  const filterStyles = () => {
+    if(charFilterActive || bossFilterActive){
+      return{
+        backgroundColor: "red"
+      }
+    }
+    else{
+      return{
+        backgroundColor: "white"
+      }
+    }
+  }
+
+  const filterText = () => {
+    if(charFilterActive || bossFilterActive){
+      return "Filtering active!"
+    }
+    else{
+      return "Filter bosses/characters"
+    }
+  }
+
+  const filterPicks = (conditions) => {
+    console.log(conditions)
+    const region = [
+      "Select a region:",
+      "Region: Any",
+      "Region: Mondstadt",
+      "Region: Liyue",
+      "Region: Inazuma",
+      "Region: Sumeru",
+      "Region: Fontaine",
+    ];
+    const elements = [
+      "Select an element:",
+      "Element: Any",
+      "Element: Pyro",
+      "Element: Hydro",
+      "Element: Electro",
+      "Element: Cryo",
+      "Element: Dendro",
+      "Element: Geo",
+      "Element: Anemo",
+    ];
+    const weapons = [
+      "Select a weapon:",
+      "Weapon: Any",
+      "Weapon: Sword",
+      "Weapon: Polearm",
+      "Weapon: Claymore",
+      "Weapon: Bow",
+      "Weapon: Catalyst",
+    ];
+    const rarity = [
+      "Select a rarity:",
+      "Rarity: Any",
+      "Rarity: 4-star",
+      "Rarity: 5-star"
+    ];
+    const filters = [region, elements, weapons, rarity];
+    const filterName = ["region", "elements", "weapons", "rarity"];
+      // filter boss pick
+      // for each region, if conditions[0] / conditions[1] is equal to regions[0] then set local storage to 0, otherwise if equal to regions[i] set local storage to i - 1
+    for(let j = 0; j < region.length; j++){
+      if(conditions[0] == region[j]){
+        if(j <= 1){
+          localStorage.setItem("display_boss", 0);
+          setBossFilter(false);
+        }
+        else{
+          localStorage.setItem("display_boss", j - 1);
+          setBossFilter(true);
+        }
+        break;
+      }
+    };
+    // filter character picks
+    let filtering = false;
+    for(let j = 0; j < filters.length; j++){
+      for(let k = 0; k < filters[j].length; k++){
+        if(conditions[j+1] == filters[j][k]){
+          if(k <= 1){
+            localStorage.setItem(`character_${filterName[j]}`, 0)
+          }
+          else{
+            localStorage.setItem(`character_${filterName[j]}`, k - 1);
+            filtering = true;
+          }
+          break;
+        }
+      }
+    }
+    setCharFilter(filtering);
+  }
+  /**
+   * 
+   * @param {*} info the array to display infomration with
+   * @param {Boolean} boss whether the target array represents bosses or picks
+   * @return an array displaying the corresponding picks
+   */
+  const displayFilter = (info, boss = true) => {
+    let newInfo = [];
+    if(boss){
+      if(localStorage.getItem("display_boss") == null || localStorage.getItem("display_boss") == 0){
+        newInfo = [...info];
+        // setBossFilter(false); // not filtering
+      }
+      else{
+        const regions = ["any", "mondstadt", "liyue", "inazuma", "sumeru", "fontaine", "natlan"];
+        info.forEach(bossChoice => {
+          if(bossChoice.region.toLowerCase() == regions[localStorage.getItem("display_boss")]){
+            newInfo.push(bossChoice);
+          }
+        })
+        // setBossFilter(true);
+      }
+    }
+    else{ 
+      // loop, runs 4 times, checks similar to boss
+      const region = [
+        "Any",
+        "Mondstadt",
+        "Liyue",
+        "Inazuma",
+        "Sumeru",
+        "Fontaine",
+      ];
+      const elements = [
+        "Any",
+        "Pyro",
+        "Hydro",
+        "Electro",
+        "Cryo",
+        "Dendro",
+        "Geo",
+        "Anemo",
+      ];
+      const weapons = [
+        "Any",
+        "Sword",
+        "Polearm",
+        "Claymore",
+        "Bow",
+        "Catalyst",
+      ];
+      const rarity = [
+        0,
+        4,
+        5
+      ];
+      const filterName = [
+        "character_region",
+        "character_elements",
+        "character_weapons",
+        "character_rarity",
+      ];
+      const charInfoFilter = [
+        "region",
+        "element",
+        "weapon",
+        "rarity"
+      ]
+      const filter = [region, elements, weapons, rarity];
+      info.forEach(charChoice => {
+        let valid = true;
+        for (let i = 0; i < filterName.length; i++) {
+          // nested if statements
+          // localstorage has index
+          // check to see if said value is null or 0
+          // if neither null or 0 check that the given character
+          let res = localStorage.getItem(filterName[i]);
+          if(res == null || res == 0){
+            continue;
+          }
+          else{
+            if(charInfoFilter[i] != "rarity" && charChoice[charInfoFilter[i]].toLowerCase() == filter[i][res].toLowerCase()){
+              continue;
+            }
+            else if(charInfoFilter[i] == "rarity" && charChoice[charInfoFilter[i]] == filter[i][res]){
+              continue;
+              // rarity might not always be last
+            }
+            else{
+              valid = false;
+              break;
+            }
+          }
+        }
+        if(valid){
+          newInfo.push(charChoice)
+        }
+      })
+      
+    }
+    return newInfo;
+  }
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
-  let picks = [0, 2, 4, 6, 8, 1, 3, 5, 7];
   let bans = [0, 2, 5, 1, 3, 4];
   let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  let vertOrder = [1, 2, 3];
   return (
     <div>
       {sessionStorage.getItem("game") == null ||
@@ -935,8 +1221,8 @@ export default function Game(props) {
           <div className="container">
             <div className="grid one">
               {typeof identity.team1 == "undefined"
-                ? "team 1 Selections!"
-                : identity.team1 + " picks!"}
+                ? "team 1 Selections"
+                : identity.team1 + " picks"}
             </div>
             <div className="grid newgrid two">
               <p className="boss boss-1">
@@ -955,13 +1241,13 @@ export default function Game(props) {
                   onComplete={() => {updateTimer(false, false);}}
                 />
               ) : (
-                <p className="boss boss-4">Timer inactive!</p>
+                <p className="boss boss-4">Timer inactive</p>
               )}
             </div>
             <div className="grid three">
               {typeof identity.team2 == "undefined"
-                ? "team 2 Selections!"
-                : identity.team2 + " picks!"}
+                ? "team 2 Selections"
+                : identity.team2 + " picks"}
             </div>
             <div className="grid four">
               {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((val) => {
@@ -1002,8 +1288,8 @@ export default function Game(props) {
             <div className="grid five">
               <div>
                 {showInfo == "boss"
-                  ? bosses.map((boss) => {
-                      return boss._id != -1 ? (
+                  ? displayFilter(bosses, true).map((boss) => {
+                      return boss._id > 0 ? (
                         <Tooltip key={boss._id} title={boss.boss} arrow>
                           <img
                             width={IMG_SIZE}
@@ -1036,7 +1322,7 @@ export default function Game(props) {
               </div>
               <div>
                 {showInfo == "character"
-                  ? characters.map((char) => {
+                  ? displayFilter(characters, false).map((char) => {
                       return (
                         <Tooltip title={char.name} key={char._id} arrow>
                           <img
@@ -1090,13 +1376,6 @@ export default function Game(props) {
                 return (
                   <Fragment
                     key={val}
-                    // className={`pick pick-${2 * val + 2}`}
-                    // style={{
-                    //  display: "flex",
-                    //  flexDirection: "row",
-                    //  alignItems: "center",
-                    //  justifyContent: "end",
-                    // }}
                   >
                     <p className={`pick pick-${2 * val + 2}`}>
                       {typeof identity.pickst2 == "undefined" ||
@@ -1145,11 +1424,12 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid nine">
-              <p className="boss-1">{`Currently selected: ${selection.name}`}</p>
+              <p className="boss-1">{`Selected: ${selection.name}`}</p>
+              <button className="boss-2" style={filterStyles()} onClick={() => {setFiltering(true)}}>{filterText()}</button>
               {cookies.player.charAt(0) == "r" ? (
                 identity.result != "waiting" ? (
                   <button
-                    className="boss-3"
+                    className="boss-4"
                     onClick={() => {
                       socket.send(
                         JSON.stringify({
@@ -1165,7 +1445,7 @@ export default function Game(props) {
                   </button>
                 ) : (
                   <button
-                    className="boss-3"
+                    className="boss-4"
                     onClick={() => {
                       socket.send(
                         JSON.stringify({
@@ -1181,7 +1461,7 @@ export default function Game(props) {
                 )
               ) : (
                 <button
-                  className="boss-3"
+                  className="boss-4"
                   onClick={() => {
                     sendSelection(turn, selection);
                   }}
@@ -1194,7 +1474,7 @@ export default function Game(props) {
                 </button>
               )}
               <button
-                className="boss-2"
+                className="boss-3"
                 onClick={() => {
                   {
                     showInfo == "character"
@@ -1370,6 +1650,11 @@ export default function Game(props) {
             progress={identity.result == "progress"}
             close={closeT2Order}
             reorder={changeTeamInfo}
+          />
+          <FilterModal
+            open={filtering}
+            close={() => {setFiltering(false)}} 
+            setOrder={filterPicks}
           />
         </Fragment>
       )}

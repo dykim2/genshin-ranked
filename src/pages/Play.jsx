@@ -103,6 +103,8 @@ export default function Play(){
       if(!valid){
         return; // don't go any further
       }
+      sessionStorage.setItem("selected_bosses", []);
+      sessionStorage.setItem("selected_characters", []);
       setCookie("player", ""+playerChoice+" game "+id);
       setChoosing(false);
       setReadying(false);
