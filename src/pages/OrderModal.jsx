@@ -36,8 +36,8 @@ export default function OrderModal(props) {
       setActive(newActive);
     }
     // useref value for new order - updates on change, but actual dro
-    console.log(props.picks);
-    console.log("picks")
+    // console.log(props.picks);
+    // console.log("picks")
     const pickArr = props.picks.map(pick => {return pick.name;});
     /**
      * Sends the order information to the websocket.

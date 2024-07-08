@@ -71,7 +71,6 @@ export default function FilterModal(props) {
    useEffect(() => {
     if(localStorage.getItem("display_boss") != null && localStorage.getItem("display_boss") != 0){
         setBossHighlight(region[localStorage.getItem("display_boss")])
-        console.log("hi");
     }
     let settingInfo = ["Select a region:", "Select an element:", "Select a weapon:", "Select a rarity:"]
     const filterName = [

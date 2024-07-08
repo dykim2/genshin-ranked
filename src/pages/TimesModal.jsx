@@ -252,6 +252,7 @@ export default function TimesModal(props){
                 variant="outlined"
                 onClick={() => {
                   sendStatus(index, data[index]);
+                  alert("Times entered successfully!")
                 }}
               >
                 Submit

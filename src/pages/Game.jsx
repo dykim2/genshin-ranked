@@ -276,8 +276,8 @@ const parseTimes = (data) => {
 };
 const parseUpdate = (data) => {
   const identity = JSON.parse(sessionStorage.getItem("game"));
-  console.log(identity);
-  console.log("identity");
+  // console.log(identity);
+  // console.log("identity");
   let newIden = null;
   // arrange order
   let newOrder = [];
@@ -705,14 +705,14 @@ export default function Game(props) {
     let color = "";
     let textColor = "white";
     if(timeDiff > 0.5 || (timeDiff > 0 && varChecked)){
-      color = "blue";
+      color = "red";
     }
     else if(timeDiff <= 0.5 && timeDiff >= -0.5 && !varChecked){ // 
       color = "yellow";
       textColor = "black";
     }
     else{
-      color = "red";
+      color = "green";
     }
     
     return {
@@ -1037,7 +1037,7 @@ export default function Game(props) {
   }
 
   const filterPicks = (conditions) => {
-    console.log(conditions)
+    // console.log(conditions)
     const region = [
       "Select a region:",
       "Region: Any",
