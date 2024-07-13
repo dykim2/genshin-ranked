@@ -1,30 +1,41 @@
-# React + TypeScript + Vite
+# Genshin Ranked
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Table of Contents:
+- Installation And Running Locally
+- Repository Standards
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Installation And Running Locally
+Make sure your Node version is `v20.15.1`. 
+```bash
+node -v # v20.15.1
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Clone the repository:
+```
+git clone git@github.com:dykim2/genshin-ranked.git
+```
+In `genshin-ranked/frontend` and `genshin-ranked/backend`:
+
+```bash
+# Install needed dependencies:
+npm install
+
+# Run locally:
+npm run dev
+```
+
+Configure any necessary environment variables in `/config.json`
+
+## Repository Standards
+
+We use `Prettier` and `ESLint` to keep a consistent code style and reduce code smell.
+
+When you `npm install` you'll have these packages installed locally. However, it is also helpful to set these tools up on your IDE as well. These following steps will be on the context of Visual Studio Code.
+
+1. Install [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) extensions.
+2. Go to settings in Visual Studio Code (`⌘ + ,` or `Ctrl + ,`).
+3. Search for the `Format On Save` setting and enable it.
+4. Search for the `Default Formatter` setting and set it to `Prettier - Code formatter`.
+5. Search for the `Editor: Format On Save Mode` setting and adjust it however you like. It is recommended to keep the default, `file`.
+
+Please ensure that before making a pull request, you eliminate all ESLint errors and ensure that your files are formatted correctly.
