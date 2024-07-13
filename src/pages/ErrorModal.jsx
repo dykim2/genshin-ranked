@@ -1,1 +1,0 @@
-// will create a modal for invalid picks
