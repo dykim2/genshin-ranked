@@ -32,7 +32,7 @@ export const GroupToggle = ({
 						value={option.imageFileName}
 						sx={{
 							padding: 1,
-							opacity: value === option.displayName ? 1 : 0.25,
+							opacity: value === option.imageFileName ? 1 : 0.25,
 							"&:hover": {
 								opacity: 0.75,
 							},
