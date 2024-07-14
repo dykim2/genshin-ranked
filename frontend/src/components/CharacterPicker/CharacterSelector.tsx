@@ -3,7 +3,7 @@
  */
 
 import { CHARACTER_NAME } from "@genshin-ranked/shared";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
 import { CharacterPicture } from "./CharacterPicture";
@@ -26,16 +26,22 @@ export const CharacterSelector = ({ character }: ICharacterSelector) => {
 	);
 };
 
-const WrapperBox = styled(Box)({
+const WrapperBox = styled(Button)({
 	display: "box",
 	flexDirection: "column",
 	alignItems: "center",
+	padding: 0,
+	borderRadius: 5,
+	overflow: "hidden",
 	justifyContent: "center",
+
+	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
 	width: 100,
 });
 
 const LabelBox = styled(Box)({
 	backgroundColor: "white",
 	padding: 1,
+	width: "100%",
 	textAlign: "center",
 });

@@ -60,7 +60,8 @@ const IconWrapper = styled(IconButton)({
 	padding: 0,
 });
 
+// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
 const IconImage = styled("img")({
 	width: 25,
-	height: 26,
+	height: 25,
 });
