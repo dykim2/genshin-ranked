@@ -16,7 +16,7 @@ interface ICharacterSelector {
 export const CharacterSelector = ({ character }: ICharacterSelector) => {
 	return (
 		<>
-			<WrapperBox>
+			<WrapperBox disableRipple>
 				<CharacterPicture character={character} />
 				<LabelBox>
 					<Typography>{CHARACTERS[character].displayName}</Typography>
