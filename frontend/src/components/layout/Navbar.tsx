@@ -20,6 +20,7 @@ export const MuiNavbar = () => {
 		<AppBar position="static">
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
+					{/* TODO: Use Genshin Ranked icon instead. */}
 					<StarsIcon
 						sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
 					/>
@@ -27,12 +28,13 @@ export const MuiNavbar = () => {
 						variant="h6"
 						noWrap
 						component="a"
-						// TODO: This should be using navigate("/") instead of href.
+						onClick={() => {
+							navigate("/");
+						}}
 						href="/"
 						sx={{
 							mr: 2,
 							display: { xs: "none", md: "flex" },
-							fontFamily: "monospace",
 							fontWeight: 700,
 							letterSpacing: ".3rem",
 							color: "inherit",
