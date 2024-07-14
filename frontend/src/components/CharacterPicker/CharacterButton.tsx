@@ -43,10 +43,10 @@ const WrapperBox = styled(Button)({
 
 const LabelBox = styled(Box)({
 	backgroundColor: "white",
-	padding: 1,
+	padding: "1px 5px",
 	width: "100%",
 	textAlign: "center",
-
+	whiteSpace: "nowrap",
 	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
 	// TODO: Need to find a way for flexible font sizes, refer to Arataki Itto within application, the Itto gets moved to the next line and is cut off.
 	maxHeight: 25,

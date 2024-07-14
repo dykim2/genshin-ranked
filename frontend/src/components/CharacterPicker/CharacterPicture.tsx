@@ -44,6 +44,7 @@ const GradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "center",
+	borderRadius: "8px 8px 15px 8px",
 	overflow: "hidden",
 }));
 
