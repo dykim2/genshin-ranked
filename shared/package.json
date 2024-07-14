@@ -1,5 +1,5 @@
 {
-	"name": "@boggame/shared",
+	"name": "@genshin-ranked/shared",
 	"version": "1.0.0",
 	"description": "",
 	"main": "src/index.js",
