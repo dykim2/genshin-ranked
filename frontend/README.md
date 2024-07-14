@@ -1,19 +1,24 @@
 # Genshin Ranked
 
 ## Table of Contents:
-- Installation And Running Locally
-- Repository Standards
+
+-   Installation And Running Locally
+-   Repository Standards
 
 ## Installation And Running Locally
-Make sure your Node version is `v20.15.1`. 
+
+Make sure your Node version is `v20.15.1`.
+
 ```bash
 node -v # v20.15.1
 ```
 
 Clone the repository:
+
 ```
 git clone git@github.com:dykim2/genshin-ranked.git
 ```
+
 In `genshin-ranked/frontend` and `genshin-ranked/backend`:
 
 ```bash
@@ -39,3 +44,7 @@ When you `npm install` you'll have these packages installed locally. However, it
 5. Search for the `Editor: Format On Save Mode` setting and adjust it however you like. It is recommended to keep the default, `file`.
 
 Please ensure that before making a pull request, you eliminate all ESLint errors and ensure that your files are formatted correctly.
+
+## Helpful Resources:
+
+-   [Choosing Between “type” and “interface” in React](https://medium.com/nerd-for-tech/choosing-between-type-and-interface-in-react-da1deae677c9)
