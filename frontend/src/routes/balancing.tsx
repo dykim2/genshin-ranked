@@ -1,7 +1,7 @@
 // The old /characters page, that discusses balancing of units.
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { CharacterSelector } from "../components/CharacterPicker/CharacterSelector";
+import { CharacterSelector } from "../components";
 
 export const Balancing = () => {
 	// const [selectedButton, setSelectedButton] = useState(null);
@@ -18,7 +18,7 @@ export const Balancing = () => {
 				sx={{
 					overflowY: "auto",
 					borderRight: "1px solid #ccc",
-					maxWidth: "33%",
+					width: "33%",
 				}}
 			>
 				<CharacterSelector />

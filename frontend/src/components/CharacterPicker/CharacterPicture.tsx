@@ -3,23 +3,23 @@
  */
 
 import {
-	CHARACTER_NAME,
+	CHARACTERS,
 	getCharacterElementImagePath,
 	getCharacterImagePath,
 	RARITY,
 } from "@genshin-ranked/shared";
-import { CHARACTERS } from "@genshin-ranked/shared/src/types/characters/details";
+import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 import { Box, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
 
 interface ICharacterPicture {
-	character: CHARACTER_NAME;
+	character: CHARACTERS;
 }
 
 export const CharacterPicture = ({ character }: ICharacterPicture) => {
 	return (
-		<GradientBox rarity={CHARACTERS[character].rarity}>
+		<GradientBox rarity={CHARACTER_INFO[character].rarity}>
 			<Image src={getCharacterImagePath(character)} />
 			<IconWrapper disabled>
 				<IconImage src={getCharacterElementImagePath(character)} />

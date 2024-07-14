@@ -2,7 +2,7 @@
  * ONlY contains character names. Associated data will appear in /details.tsx
  */
 
-export enum CHARACTER_NAME {
+export enum CHARACTERS {
 	Albedo = "Albedo",
 	Alhaitham = "Alhaitham",
 	Aloy = "Aloy",
