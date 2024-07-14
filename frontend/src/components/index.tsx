@@ -1,3 +1,3 @@
-export * from "./Layout";
+export * from "./layout";
 export * from "./CharacterPicker";
 export * from "./GroupToggle";
