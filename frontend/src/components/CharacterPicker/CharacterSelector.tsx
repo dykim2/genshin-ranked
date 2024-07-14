@@ -15,8 +15,6 @@ export const CharacterSelector = () => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 
-	console.log(searchFilter);
-
 	return (
 		<Stack direction="column">
 			<Stack direction="row" alignContent="center">
