@@ -47,7 +47,7 @@ export const CHARACTERS: CharacterMap = {
 		displayName: "Aloy",
 		element: ELEMENTS.cryo,
 		weapon: WEAPONS.bow,
-		rarity: RARITY.SpecialEvent,
+		rarity: RARITY.FiveStar,
 		imageFileName: "Aloy",
 	},
 	[CHARACTER_NAME.Amber]: {

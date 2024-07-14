@@ -9,7 +9,9 @@ export const Home = () => {
 		<>
 			<div>[WIP] HOME</div>
 
-			<CharacterSelector character={CHARACTER_NAME.albedo} />
+			{Object.values(CHARACTER_NAME).map((x) => (
+				<CharacterSelector character={x} />
+			))}
 		</>
 	);
 };

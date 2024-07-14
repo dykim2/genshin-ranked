@@ -31,7 +31,7 @@ const WrapperBox = styled(Button)({
 	flexDirection: "column",
 	alignItems: "center",
 	padding: 0,
-	borderRadius: 5,
+	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
 
@@ -44,4 +44,8 @@ const LabelBox = styled(Box)({
 	padding: 1,
 	width: "100%",
 	textAlign: "center",
+
+	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
+	// TODO: Need to find a way for flexible font sizes, refer to Arataki Itto within application, the Itto gets moved to the next line and is cut off.
+	maxHeight: 25,
 });
