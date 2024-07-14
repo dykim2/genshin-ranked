@@ -1,2 +1,2 @@
 export * from "./CharacterPicture";
-export * from "./CharacterSelector";
+export * from "./CharacterButton";
