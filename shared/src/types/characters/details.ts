@@ -3,26 +3,28 @@
  */
 
 import { ELEMENTS } from "../elements";
+import { RARITY } from "../rarity";
 import { WEAPONS } from "../weapons";
-import { CHARACTER_NAME } from "./names"
+import { CHARACTER_NAME } from "./names";
 
 type CharacterMap = {
-    [index in CHARACTER_NAME]: CharacterDetail
-}
+	[index in CHARACTER_NAME]: CharacterDetail;
+};
 
-type CharacterDetail = { 
-    fullName: string;
-    element: ELEMENTS;
-    weapon: WEAPONS;
-    imageFileName: string;
-}
+type CharacterDetail = {
+	displayName: string;
+	element: ELEMENTS;
+	weapon: WEAPONS;
+	rarity: RARITY;
+	imageFileName: string;
+};
 
-export const CHARACTERS:CharacterMap = {
-    [CHARACTER_NAME.albedo] : {
-        fullName: "Albedo",
-        element: ELEMENTS.geo,
-        weapon: WEAPONS.sword,
-        imageFileName: "albedo"
-    }
-
-}
+export const CHARACTERS: CharacterMap = {
+	[CHARACTER_NAME.albedo]: {
+		displayName: "Albedo",
+		element: ELEMENTS.geo,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Albedo",
+	},
+};
