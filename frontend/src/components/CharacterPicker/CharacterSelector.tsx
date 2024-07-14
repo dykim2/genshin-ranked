@@ -6,25 +6,50 @@ import {
 	// RARITY,
 	// RARITY_INFO,
 } from "@genshin-ranked/shared";
-import { Grid, Stack, TextField } from "@mui/material";
+import { Grid, InputAdornment, Stack, TextField } from "@mui/material";
 import { CharacterButton } from "./CharacterButton";
 import { GroupToggle } from "../GroupToggle";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
+import SearchIcon from '@mui/icons-material/Search';
 
 export const CharacterSelector = () => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
+	const [isFocused, setIsFocused] = useState(false);
 
 	return (
 		<Stack direction="column">
 			<Stack direction="row" alignContent="center">
 				<TextField
+					variant="outlined"
 					placeholder="Search"
+					size = 'small'
 					value={searchFilter}
 					onChange={(e) => {
 						setSearchFilter(e.target.value);
 					}}
+					onFocus={() => setIsFocused(true)}
+					onBlur={() => setIsFocused(false)}
+					sx={{
+						minWidth: 140,
+						// Customizing the input text color
+						'& .MuiOutlinedInput-root': {
+						'& fieldset': {borderColor: 'rgba(105,105,105,1)'},
+						// Hover state
+						'&:hover fieldset': {borderColor: 'white'},
+						// Focused state
+						'&.Mui-focused fieldset': {borderColor: 'white'},
+						},
+					}}
+					InputProps={{
+						startAdornment:(
+							<InputAdornment position="start">
+								{!isFocused && <SearchIcon sx={{ color: 'rgba(105,105,105,1)', padding:0}} />}
+							</InputAdornment>
+						)
+					}}
 				/>
+				
 				<GroupToggle
 					value={elementFilter}
 					setValue={setElementFilter}

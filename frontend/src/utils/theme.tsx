@@ -12,5 +12,10 @@ export const theme = createTheme({
 		secondary: {
 			main: green[500],
 		},
+		text: {
+            primary: "#ffffff", // Global text color
+            // secondary: "#cccccc", // Optional: Secondary text color
+            // disabled: "#999999", // Optional: Disabled text color
+        },
 	},
 });
