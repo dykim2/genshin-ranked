@@ -1241,7 +1241,7 @@ export default function Game(props) {
               {showTimer ? (
                 <Countdown
                   className="boss boss-4"
-                  date={timer + 30000}
+                  date={timer + 32000}
                   onComplete={() => {updateTimer(false, false);}}
                 />
               ) : (
