@@ -1,40 +1,23 @@
 {
-	"name": "server",
-	"private": true,
-	"version": "0.0.0",
-	"main": "index.js",
-	"type": "module",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "npx nodemon",
-		"start": "npm run build && node build/index.js",
-		"lint": "eslint .",
-		"lint:fix": "eslint --fix",
-		"format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" --config ./.prettierrc"
-	},
-	"dependencies": {
-		"@geckos.io/server": "^3.0.0",
-		"@genshin-ranked/shared": "file:../shared",
-		"axios": "^1.3.5",
-		"cors": "^2.8.5",
-		"dotenv": "^16.0.3",
-		"express": "^4.18.2",
-		"express-session": "^1.17.3",
-		"mongoose": "^8.5.1"
-	},
-	"devDependencies": {
-		"@types/cors": "^2.8.13",
-		"@types/express": "^4.17.17",
-		"@types/express-session": "^1.17.7",
-		"@types/node": "^18.15.11",
-		"@typescript-eslint/eslint-plugin": "^5.57.0",
-		"@typescript-eslint/parser": "^5.57.0",
-		"eslint": "^8.57.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
-		"nodemon": "^2.0.22",
-		"prettier": "^2.8.7",
-		"ts-node": "^10.9.1",
-		"typescript": "^5.0.2"
-	}
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "npx nodemon src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^9.7.0",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "express": "^4.19.2"
+  }
 }
