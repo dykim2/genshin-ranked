@@ -56,7 +56,7 @@ export const CharacterSelector = () => {
 					options={Object.values(ELEMENT_INFO)}
 				/>
 			</Stack>
-			<Grid container spacing={1} justifyContent="center">
+			<Grid container spacing={1} justifyContent="center" minWidth="300px" id="Character grid">
 				{/* TODO: Wrap this with useMemo to minimize unnessecary refiltering of these values */}
 				{Object.values(CHARACTERS)
 					.filter((char) => {

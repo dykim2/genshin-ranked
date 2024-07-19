@@ -36,7 +36,6 @@ const WrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
-
 	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
 	width: 100,
 });

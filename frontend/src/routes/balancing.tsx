@@ -12,7 +12,7 @@ export const Balancing = () => {
 	// };
 
 	return (
-		<Box sx={{ display: "flex", height: "100vh" }}>
+		<Box sx={{ display: "flex", height: "100vh" }} id="Outer123">
 			{/* Left Side: Button Grid */}
 			<Box
 				sx={{
@@ -20,6 +20,7 @@ export const Balancing = () => {
 					borderRight: "1px solid #ccc",
 					width: "33%",
 				}}
+				id="InnerBox123"
 			>
 				<CharacterSelector />
 			</Box>

@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Changelogs } from "./changelogs";
 import { Balancing } from "./balancing";
+import { Play } from "./play";
 import { Home } from "./home";
 
 type Page = {
@@ -16,6 +17,7 @@ export const pages: Page[] = [
 		component: <Balancing />,
 	},
 	{ name: "Changelogs", path: "/changelogs", component: <Changelogs /> },
+	{ name: "Play", path: "/play", component: <Play /> },
 ];
 
 export const RoutedContent = () => {
