@@ -22,7 +22,7 @@ export const Balancing = () => {
 			>
 				<CharacterSelector />
 			</Box>
-
+			{/* Avoid setting width of character selector but adding content to button details instead */}
 			{/* Right Side: Button Details */}
 			<Box sx={{ padding: 2 }}>
 				{selectedButton ? (
