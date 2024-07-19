@@ -1,6 +1,7 @@
 * {
 	box-sizing: border-box;
 }
+
 body,
 html {
 	margin: 0;
@@ -11,11 +12,11 @@ html {
 	text-align: left;
 	width: 100vw;
 	height: 100vh;
-	overflow: hidden;
 	background-color: #242323;
+	scrollbar-color: hsl(0, 0%, 67%) transparent;
 }
 
 #root {
 	height: 100vh;
-	overflow: hidden;
+	overflow: auto;
 }

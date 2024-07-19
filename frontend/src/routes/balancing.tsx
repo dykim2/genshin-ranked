@@ -12,15 +12,13 @@ export const Balancing = () => {
 	// };
 
 	return (
-		<Box sx={{ display: "flex", height: "100vh" }} id="Outer123">
+		<Box sx={{ display: "flex"}} id="balancing-page-parent-box">
 			{/* Left Side: Button Grid */}
 			<Box
 				sx={{
-					overflowY: "auto",
 					borderRight: "1px solid #ccc",
-					width: "33%",
 				}}
-				id="InnerBox123"
+				id="character-selector-container"
 			>
 				<CharacterSelector />
 			</Box>
