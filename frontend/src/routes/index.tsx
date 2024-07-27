@@ -4,6 +4,7 @@ import { Changelogs } from "./changelogs";
 import { Balancing } from "./balancing";
 import { Play } from "./play";
 import { Home } from "./home";
+import { PagesTwoTone } from "@mui/icons-material";
 
 type Page = {
 	name: string;
@@ -26,7 +27,7 @@ export const RoutedContent = () => {
 			<Route path="/" element={<Home />} />
 
 			{pages.map((page) => {
-				return <Route path={page.path} element={page.component} />;
+				return <Route key={page.name} path={page.path} element={page.component} />;
 			})}
 
 			{/* If route is not found, reroute to / */}

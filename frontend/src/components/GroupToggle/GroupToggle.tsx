@@ -29,6 +29,7 @@ export const GroupToggle = ({
 				return (
 					<ToggleButton
 						// TODO: Create appropriate enum field that associates to enum value
+						key={option.imageFileName}
 						value={option.imageFileName}
 						sx={{
 							padding: 1,

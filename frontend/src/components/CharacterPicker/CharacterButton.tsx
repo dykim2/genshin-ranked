@@ -16,7 +16,7 @@ interface ICharacterButton {
 export const CharacterButton = ({ character }: ICharacterButton) => {
 	return (
 		<>
-			<WrapperBox disableRipple>
+			<WrapperBox disableRipple onClick={() => console.log(CHARACTER_INFO[character].displayName)}>
 				<CharacterPicture character={character} />
 				<LabelBox>
 					<Typography sx={{textOverflow:"ellipsis", whiteSpace:"nowrap", overflow:"hidden"}}>
