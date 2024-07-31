@@ -8,6 +8,7 @@ export enum ELEMENTS {
 	geo = "geo",
 	hydro = "hydro",
 	pyro = "pyro",
+	physical = "physical"
 }
 
 type ElementMap = {
@@ -43,4 +44,8 @@ export const ELEMENT_INFO: ElementMap = {
 		displayName: "Pyro",
 		imageFileName: "pyro",
 	},
+	[ELEMENTS.physical]: {
+		displayName: "Physical",
+		imageFileName: "physical"
+	}
 };

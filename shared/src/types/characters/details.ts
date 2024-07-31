@@ -16,6 +16,7 @@ interface CharacterDetail extends GenericDetails {
 	element: ELEMENTS;
 	weapon: WEAPONS;
 	rarity: RARITY;
+	index: Number;
 }
 
 export const CHARACTER_INFO: CharacterMap = {
@@ -25,6 +26,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Albedo",
+		index: 26,
 	},
 	[CHARACTERS.Alhaitham]: {
 		displayName: "Alhaitham",
@@ -32,6 +34,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Alhaitham",
+		index: 61,
 	},
 	[CHARACTERS.Aloy]: {
 		displayName: "Aloy",
@@ -39,6 +42,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Aloy",
+		index: 37,
 	},
 	[CHARACTERS.Amber]: {
 		displayName: "Amber",
@@ -46,13 +50,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Amber",
+		index: 0,
 	},
 	[CHARACTERS.AratakiItto]: {
-		displayName: "Arataki Itto",
+		displayName: "Itto",
 		element: ELEMENTS.geo,
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "AratakiItto",
+		index: 43,
 	},
 	[CHARACTERS.Arlecchino]: {
 		displayName: "Arlecchino",
@@ -60,6 +66,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Arlecchino",
+		index: 80,
 	},
 	[CHARACTERS.Baizhu]: {
 		displayName: "Baizhu",
@@ -67,6 +74,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Baizhu",
+		index: 65,
 	},
 	[CHARACTERS.Barbara]: {
 		displayName: "Barbara",
@@ -74,6 +82,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Barbara",
+		index: 1,
 	},
 	[CHARACTERS.Beidou]: {
 		displayName: "Beidou",
@@ -81,6 +90,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Beidou",
+		index: 2,
 	},
 	[CHARACTERS.Bennett]: {
 		displayName: "Bennett",
@@ -88,6 +98,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Bennett",
+		index: 3,
 	},
 	[CHARACTERS.Candace]: {
 		displayName: "Candace",
@@ -95,6 +106,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Candace",
+		index: 54,
 	},
 	[CHARACTERS.Charlotte]: {
 		displayName: "Charlotte",
@@ -102,6 +114,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Charlotte",
+		index: 43
 	},
 	[CHARACTERS.Chevreuse]: {
 		displayName: "Chevreuse",
@@ -109,6 +122,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Chevreuse",
+		index: 75,
 	},
 	[CHARACTERS.Chiori]: {
 		displayName: "Chiori",
@@ -116,6 +130,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Chiori",
+		index: 79,
 	},
 	[CHARACTERS.Chongyun]: {
 		displayName: "Chongyun",
@@ -123,6 +138,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Chongyun",
+		index: 4,
 	},
 	[CHARACTERS.Clorinde]: {
 		displayName: "Clorinde",
@@ -130,6 +146,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Clorinde",
+		index: 81,
 	},
 	[CHARACTERS.Collei]: {
 		displayName: "Collei",
@@ -137,6 +154,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Collei",
+		index: 51,
 	},
 	[CHARACTERS.Cyno]: {
 		displayName: "Cyno",
@@ -144,6 +162,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Cyno",
+		index: 55,
 	},
 	[CHARACTERS.Dehya]: {
 		displayName: "Dehya",
@@ -151,6 +170,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Dehya",
+		index: 63,
 	},
 	[CHARACTERS.Diluc]: {
 		displayName: "Diluc",
@@ -158,6 +178,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Diluc",
+		index: 5,
 	},
 	[CHARACTERS.Diona]: {
 		displayName: "Diona",
@@ -165,6 +186,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Diona",
+		index: 22,
 	},
 	[CHARACTERS.Dori]: {
 		displayName: "Dori",
@@ -172,6 +194,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Dori",
+		index: 52,
 	},
 	[CHARACTERS.Eula]: {
 		displayName: "Eula",
@@ -179,6 +202,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Eula",
+		index: 31,
 	},
 	[CHARACTERS.Faruzan]: {
 		displayName: "Faruzan",
@@ -186,6 +210,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Faruzan",
+		index: 59,
+	},
+	[CHARACTERS.Fischl]: {
+		displayName: "Fischl",
+		element: ELEMENTS.electro,
+		weapon: WEAPONS.bow,
+		rarity: RARITY.FourStar,
+		imageFileName: "Fischl",
+		index: 6
 	},
 	[CHARACTERS.Freminet]: {
 		displayName: "Freminet",
@@ -193,6 +226,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Freminet",
+		index: 68,
 	},
 	[CHARACTERS.Furina]: {
 		displayName: "Furina",
@@ -200,6 +234,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Furina",
+		index: 74,
 	},
 	[CHARACTERS.Gaming]: {
 		displayName: "Gaming",
@@ -207,6 +242,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Gaming",
+		index: 77,
 	},
 	[CHARACTERS.Ganyu]: {
 		displayName: "Ganyu",
@@ -214,6 +250,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Ganyu",
+		index: 27,
 	},
 	[CHARACTERS.Gorou]: {
 		displayName: "Gorou",
@@ -221,6 +258,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Gorou",
+		index: 43,
 	},
 	[CHARACTERS.HuTao]: {
 		displayName: "Hu Tao",
@@ -228,6 +266,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "HuTao",
+		index: 28,
 	},
 	[CHARACTERS.Jean]: {
 		displayName: "Jean",
@@ -235,13 +274,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Jean",
+		index: 7,
 	},
 	[CHARACTERS.KaedeharaKazuha]: {
-		displayName: "Kaedehara Kazuha",
+		displayName: "Kazuha",
 		element: ELEMENTS.anemo,
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "KaedeharaKazuha",
+		index: 33,
 	},
 	[CHARACTERS.Kaeya]: {
 		displayName: "Kaeya",
@@ -249,20 +290,23 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Kaeya",
+		index: 8,
 	},
 	[CHARACTERS.KamisatoAyaka]: {
-		displayName: "Kamisato Ayaka",
+		displayName: "Ayaka",
 		element: ELEMENTS.cryo,
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "KamisatoAyaka",
+		index: 34,
 	},
 	[CHARACTERS.KamisatoAyato]: {
-		displayName: "Kamisato Ayato",
+		displayName: "Ayato",
 		element: ELEMENTS.hydro,
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "KamisatoAyato",
+		index: 47,
 	},
 	[CHARACTERS.Kaveh]: {
 		displayName: "Kaveh",
@@ -270,6 +314,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Kaveh",
+		index: 66,
 	},
 	[CHARACTERS.Keqing]: {
 		displayName: "Keqing",
@@ -277,6 +322,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Keqing",
+		index: 9,
 	},
 	[CHARACTERS.Kirara]: {
 		displayName: "Kirara",
@@ -284,6 +330,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Kirara",
+		index: 67,
 	},
 	[CHARACTERS.Klee]: {
 		displayName: "Klee",
@@ -291,20 +338,23 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Klee",
+		index: 18,
 	},
 	[CHARACTERS.KujouSara]: {
-		displayName: "Kujou Sara",
+		displayName: "Sara",
 		element: ELEMENTS.electro,
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "KujouSara",
+		index: 38,
 	},
 	[CHARACTERS.KukiShinobu]: {
-		displayName: "Kuki Shinobu",
+		displayName: "Shinobu",
 		element: ELEMENTS.electro,
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "KukiShinobu",
+		index: 48,
 	},
 	[CHARACTERS.Layla]: {
 		displayName: "Layla",
@@ -312,6 +362,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Layla",
+		index: 57,
 	},
 	[CHARACTERS.Lisa]: {
 		displayName: "Lisa",
@@ -319,6 +370,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Lisa",
+		index: 11,
+	},
+	[CHARACTERS.Lynette]: {
+		displayName: "Lynette",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.bow,
+		rarity: RARITY.FourStar,
+		imageFileName: "Lynette",
+		index: 69,
 	},
 	[CHARACTERS.Lyney]: {
 		displayName: "Lyney",
@@ -326,6 +386,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Lyney",
+		index: 70,
 	},
 	[CHARACTERS.Mika]: {
 		displayName: "Mika",
@@ -333,6 +394,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Mika",
+		index: 64,
 	},
 	[CHARACTERS.Mona]: {
 		displayName: "Mona",
@@ -340,6 +402,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Mona",
+		index: 12,
 	},
 	[CHARACTERS.Nahida]: {
 		displayName: "Nahida",
@@ -347,6 +410,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Nahida",
+		index: 58,
+	},
+	[CHARACTERS.Navia]: {
+		displayName: "Navia",
+		element: ELEMENTS.geo,
+		weapon: WEAPONS.claymore,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Navia",
+		index: 76,
 	},
 	[CHARACTERS.Neuvillette]: {
 		displayName: "Neuvillette",
@@ -354,6 +426,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Neuvillette",
+		index: 71,
 	},
 	[CHARACTERS.Nilou]: {
 		displayName: "Nilou",
@@ -361,6 +434,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Nilou",
+		index: 56,
 	},
 	[CHARACTERS.Ningguang]: {
 		displayName: "Ningguang",
@@ -368,6 +442,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Ningguang",
+		index: 13,
 	},
 	[CHARACTERS.Noelle]: {
 		displayName: "Noelle",
@@ -375,6 +450,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Noelle",
+		index: 14,
 	},
 	[CHARACTERS.Qiqi]: {
 		displayName: "Qiqi",
@@ -382,13 +458,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Qiqi",
+		index: 15,
 	},
 	[CHARACTERS.RaidenShogun]: {
-		displayName: "Raiden Shogun",
+		displayName: "Raiden",
 		element: ELEMENTS.electro,
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "RaidenShogun",
+		index: 39,
 	},
 	[CHARACTERS.Razor]: {
 		displayName: "Razor",
@@ -396,6 +474,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Razor",
+		index: 16,
 	},
 	[CHARACTERS.Rosaria]: {
 		displayName: "Rosaria",
@@ -403,13 +482,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Rosaria",
+		index: 30,
 	},
 	[CHARACTERS.SangonomiyaKokomi]: {
-		displayName: "Sangonomiya Kokomi",
+		displayName: "Kokomi",
 		element: ELEMENTS.hydro,
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "SangonomiyaKokomi",
+		index: 40,
 	},
 	[CHARACTERS.Sayu]: {
 		displayName: "Sayu",
@@ -417,6 +498,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Sayu",
+		index: 35,
 	},
 	[CHARACTERS.Sethos]: {
 		displayName: "Sethos",
@@ -424,6 +506,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Sethos",
+		index: 82,
 	},
 	[CHARACTERS.Shenhe]: {
 		displayName: "Shenhe",
@@ -431,13 +514,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Shenhe",
+		index: 44,
 	},
 	[CHARACTERS.ShikanoinHeizou]: {
-		displayName: "Shikanoin Heizou",
+		displayName: "Heizou",
 		element: ELEMENTS.anemo,
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "ShikanoinHeizou",
+		index: 50,
 	},
 	[CHARACTERS.Sigewinne]: {
 		displayName: "Sigewinne",
@@ -445,6 +530,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Sigewinne",
+		index: 83,
 	},
 	[CHARACTERS.Sucrose]: {
 		displayName: "Sucrose",
@@ -452,6 +538,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Sucrose",
+		index: 17,
 	},
 	[CHARACTERS.Tartaglia]: {
 		displayName: "Tartaglia",
@@ -459,6 +546,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Tartaglia",
+		index: 23,
 	},
 	[CHARACTERS.Thoma]: {
 		displayName: "Thoma",
@@ -466,6 +554,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Thoma",
+		index: 41,
 	},
 	[CHARACTERS.Tighnari]: {
 		displayName: "Tighnari",
@@ -473,6 +562,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Tighnari",
+		index: 53,
 	},
 	[CHARACTERS.Traveler]: {
 		displayName: "Traveler",
@@ -480,6 +570,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Traveler",
+		index: 18,
 	},
 	[CHARACTERS.Venti]: {
 		displayName: "Venti",
@@ -487,6 +578,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Venti",
+		index: 19,
 	},
 	[CHARACTERS.Wanderer]: {
 		displayName: "Wanderer",
@@ -494,6 +586,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Wanderer",
+		index: 60,
 	},
 	[CHARACTERS.Wriothesley]: {
 		displayName: "Wriothesley",
@@ -501,6 +594,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Wriothesley",
+		index: 72,
 	},
 	[CHARACTERS.Xiangling]: {
 		displayName: "Xiangling",
@@ -508,6 +602,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Xiangling",
+		index: 20,
 	},
 	[CHARACTERS.Xianyun]: {
 		displayName: "Xianyun",
@@ -515,6 +610,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Xianyun",
+		index: 70,
+	},
+	[CHARACTERS.Xiao]: {
+		displayName: "Xiao",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Xiao",
+		index: 29,
 	},
 	[CHARACTERS.Xingqiu]: {
 		displayName: "Xingqiu",
@@ -522,6 +626,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Xingqiu",
+		index: 21,
 	},
 	[CHARACTERS.Xinyan]: {
 		displayName: "Xinyan",
@@ -529,6 +634,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Xinyan",
+		index: 24,
+	},
+	[CHARACTERS.YaeMiko]: {
+		displayName: "Yae Miko",
+		element: ELEMENTS.electro,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FiveStar,
+		imageFileName: "YaeMiko",
+		index: 46,
 	},
 	[CHARACTERS.Yanfei]: {
 		displayName: "Yanfei",
@@ -536,6 +650,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Yanfei",
+		index: 32,
 	},
 	[CHARACTERS.Yaoyao]: {
 		displayName: "Yaoyao",
@@ -543,6 +658,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Yaoyao",
+		index: 62,
 	},
 	[CHARACTERS.Yelan]: {
 		displayName: "Yelan",
@@ -550,6 +666,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Yelan",
+		index: 49,
 	},
 	[CHARACTERS.Yoimiya]: {
 		displayName: "Yoimiya",
@@ -557,6 +674,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Yoimiya",
+		index: 36,
 	},
 	[CHARACTERS.YunJin]: {
 		displayName: "Yun Jin",
@@ -564,6 +682,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "YunJin",
+		index: 45,
 	},
 	[CHARACTERS.Zhongli]: {
 		displayName: "Zhongli",
@@ -571,5 +690,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Zhongli",
+		index: 28,
 	},
 };
