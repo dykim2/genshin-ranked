@@ -35,9 +35,9 @@ interface IGradientBox {
 	rarity: RARITY;
 }
 
-const FIVE_STAR_GRADIENT =
+export const FIVE_STAR_GRADIENT =
 	"linear-gradient(160deg, rgba(105, 84, 83, 1) 0%, rgba(161, 112, 78, 1) 39%, rgba(228, 171, 82, 1) 100%)";
-const FOUR_STAR_GRADIENT =
+export const FOUR_STAR_GRADIENT =
 	"linear-gradient(160deg, rgba(89, 84, 130, 1) 0%, rgba(120, 102, 157, 1) 39%, rgba(183, 133, 201, 1) 100%)";
 
 const GradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
