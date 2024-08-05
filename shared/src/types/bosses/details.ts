@@ -51,7 +51,7 @@ export const BOSS_DETAIL: BossMap = {
         index: 26,
     },
     [BOSSES.Coppelius]: {
-        displayName: "Coppellius",
+        displayName: "Coppelius",
         element: ELEMENTS.anemo,
         type: BOSS_TYPE.Standard,
         imageFileName: "Coppelius",
@@ -96,7 +96,7 @@ export const BOSS_DETAIL: BossMap = {
         displayName: "Enka Vishaps",
         element: ELEMENTS.electro,
         type: BOSS_TYPE.Standard,
-        imageFileName: "EnkaVishap",
+        imageFileName: "EnkaVishaps",
         index: 16,
     },
     [BOSSES.ExperimentalFieldGenerator]: {
@@ -222,7 +222,7 @@ export const BOSS_DETAIL: BossMap = {
         displayName: "Thunderbird",
         element: ELEMENTS.electro,
         type: BOSS_TYPE.Standard,
-        imageFileName: "THunderbird",
+        imageFileName: "Thunderbird",
         index: 14,
     },
     [BOSSES.Wenut]: {

@@ -5,6 +5,7 @@ import { Balancing } from "./balancing";
 import { Play } from "./play";
 import { Home } from "./home";
 import { PagesTwoTone } from "@mui/icons-material";
+import { BossDisplay } from "./bosses";
 
 type Page = {
 	name: string;
@@ -19,6 +20,7 @@ export const pages: Page[] = [
 	},
 	{ name: "Changelogs", path: "/changelogs", component: <Changelogs /> },
 	{ name: "Play", path: "/play", component: <Play /> },
+	{ name: "Bosses", path: "/bossdisplay", component: <BossDisplay />}
 ];
 
 export const RoutedContent = () => {

@@ -7,16 +7,20 @@ import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
 import { CharacterPicture } from "./CharacterPicture";
-import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
+import { CHARACTER_INFO, CharacterDetail } from "@genshin-ranked/shared/src/types/characters/details";
 
 interface ICharacterButton {
 	character: CHARACTERS;
 }
 
-export const CharacterButton = ({ character }: ICharacterButton) => {
+export const CharacterButton = ({ character }: ICharacterButton, select: any) => {
+	const doSelection = () => {
+		console.log(character);
+		select(character);
+	}
 	return (
 		<>
-			<WrapperBox disableRipple onClick={() => console.log(CHARACTER_INFO[character].displayName)}>
+			<WrapperBox disableRipple>
 				<CharacterPicture character={character} />
 				<LabelBox>
 					<Typography sx={{textOverflow:"ellipsis", whiteSpace:"nowrap", overflow:"hidden"}}>

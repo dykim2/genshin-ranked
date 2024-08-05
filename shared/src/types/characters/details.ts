@@ -12,7 +12,7 @@ type CharacterMap = {
 	[index in CHARACTERS]: CharacterDetail;
 };
 
-interface CharacterDetail extends GenericDetails {
+export interface CharacterDetail extends GenericDetails {
 	element: ELEMENTS;
 	weapon: WEAPONS;
 	rarity: RARITY;
@@ -58,7 +58,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "AratakiItto",
-		index: 43,
+		index: 42,
 	},
 	[CHARACTERS.Arlecchino]: {
 		displayName: "Arlecchino",
@@ -114,7 +114,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Charlotte",
-		index: 43
+		index: 73
 	},
 	[CHARACTERS.Chevreuse]: {
 		displayName: "Chevreuse",
@@ -338,7 +338,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Klee",
-		index: 18,
+		index: 10,
 	},
 	[CHARACTERS.KujouSara]: {
 		displayName: "Sara",
@@ -610,7 +610,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Xianyun",
-		index: 70,
+		index: 78,
 	},
 	[CHARACTERS.Xiao]: {
 		displayName: "Xiao",
@@ -690,6 +690,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Zhongli",
-		index: 28,
+		index: 25,
 	},
 };

@@ -9,10 +9,14 @@ import {
 import { Grid, InputAdornment, Stack, TextField } from "@mui/material";
 import { CharacterButton } from "./CharacterButton";
 import { GroupToggle } from "../GroupToggle";
-import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
+import { CHARACTER_INFO, CharacterDetail } from "@genshin-ranked/shared/src/types/characters/details";
 import SearchIcon from '@mui/icons-material/Search';
 
-export const CharacterSelector = () => {
+interface IInputSelection {
+	CharacterSelect: (arg0: CharacterDetail) => void;
+}
+
+export const CharacterSelector = (choice: any) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState(false);

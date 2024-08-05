@@ -7,6 +7,7 @@ export enum BOSSES {
     GeoCube="GeoCube",
     Oceanid="Oceanid",
     PrimoVishap="PrimoVishap",
+    CryoCube = "CryoCube",
     MaguuKenki="MaguuKenki",
     PMA="PMA",
     PyroCube="PyroCube",
