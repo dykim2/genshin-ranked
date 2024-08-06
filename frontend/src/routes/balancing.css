@@ -18,3 +18,16 @@
     -webkit-animation: spin-right 20s linear infinite;
     animation: spin-right 20s linear infinite;
 }
+
+.flowing-effect {
+    width: 150%;
+    position: absolute;
+    left: -25%;
+}
+
+.loading-border {
+    right: 18.75px;
+    position: absolute;
+    width: 73px;
+    height: 73px;
+}

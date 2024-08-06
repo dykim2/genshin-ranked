@@ -4,7 +4,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { CharacterSelector } from "../components";
-import './balancing.css';
+import "./balancing.css";
 import Avatar from "@mui/material/Avatar";
 import { FIVE_STAR_GRADIENT } from "../components/CharacterPicker/CharacterPicture";
 import styled from "@emotion/styled";
@@ -40,35 +40,49 @@ export const Balancing = () => {
 								position: "relative",
 								display: "flex",
 								alignItems: "center",
-								width: "250px", height: "100px",
+								width: "250px",
+								height: "80px",
 								overflow: "hidden",
 							}}
 						>
+							<Box
+								sx={{
+									position: "absolute",
+									top: "0px",
+									left: "0px",
+									width: "15px",
+									height: "100px",
+									background: "rgba(198,144,80,255)",
+								}}
+							></Box>
+							<Typography
+								variant="h6"
+								sx={{
+									paddingLeft: "15px",
+									position: "absolute",
+									width: "150px",
+									color: "#FFFFFF",
+									textAlign: "center",
+									fontStyle: "italic",
+								}}>
+								Raiden Shogun
+							</Typography>
 							<img
 								src="images\assets\flowing effect.gif"
 								alt=""
-								style={{
-									width: "150%",
-									position: "absolute",
-									left: "-25%",
-								}}
+								className="flowing-effect"
 							/>
 							<img
 								src="\images\assets\loading border.gif"
 								alt=""
-								style={{
-									right: "33.75px",
-									position: "absolute",
-									width: "73px",
-									height: "73px",
-								}}
+								className="loading-border"
 							/>
 							<Avatar
 								alt=""
-								src="\images\chars\Albedo.png"
+								src="\images\chars\Furina.png"
 								sx={{
 									position: "absolute",
-									right: "40px",
+									right: "25px",
 									width: "60px",
 									height: "60px",
 									background: FIVE_STAR_GRADIENT,
