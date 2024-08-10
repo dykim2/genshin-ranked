@@ -16,16 +16,9 @@ interface ICharacterButton {
 }
 
 export const CharacterButton = ({ character, updateCharacter }: ICharacterButton) => {
-	const [refresh, setRefresh] = React.useState(true);
 	const doUpdate = () => {
 		console.log(character);
 		updateCharacter(character);
-		if(refresh){
-			setRefresh(false);
-		}
-		else{
-			setRefresh(true);
-		}
 	};
 	return (
 		<>
