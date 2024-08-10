@@ -18,6 +18,7 @@ export const BossPicture = ({ boss }: IBossPicture, props: any) => {
 	const doUpdate = () => {
 		console.log("hi");
 		console.log(boss);
+		// can create a context, pass the information up via the context
 		props.update(boss);
 	}
     return(

@@ -9,7 +9,7 @@ import {
 	RARITY,
 } from "@genshin-ranked/shared";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
-import { Box, IconButton } from "@mui/material";
+import { Box, Icon, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
 
@@ -17,12 +17,13 @@ interface ICharacterPicture {
 	character: CHARACTERS;
 }
 
+
 export const CharacterPicture = ({ character }: ICharacterPicture) => {
 	return (
 		<Box sx={{backgroundColor: "white"}}>
 			<GradientBox rarity={CHARACTER_INFO[character].rarity}>
 			<Image src={getCharacterImagePath(character)} />
-			<IconWrapper disabled>
+			<IconWrapper>
 				<IconImage src={getCharacterElementImagePath(character)} />
 			</IconWrapper>
 		</GradientBox>
@@ -35,9 +36,9 @@ interface IGradientBox {
 	rarity: RARITY;
 }
 
-const FIVE_STAR_GRADIENT =
+export const FIVE_STAR_GRADIENT = 
 	"linear-gradient(160deg, rgba(105, 84, 83, 1) 0%, rgba(161, 112, 78, 1) 39%, rgba(228, 171, 82, 1) 100%)";
-const FOUR_STAR_GRADIENT =
+export const FOUR_STAR_GRADIENT =
 	"linear-gradient(160deg, rgba(89, 84, 130, 1) 0%, rgba(120, 102, 157, 1) 39%, rgba(183, 133, 201, 1) 100%)";
 
 const GradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
@@ -57,7 +58,7 @@ const Image = styled("img")({
 	objectFit: "cover",
 });
 
-const IconWrapper = styled(IconButton)({
+const IconWrapper = styled(Icon)({
 	position: "absolute",
 	top: 4,
 	left: 4,
