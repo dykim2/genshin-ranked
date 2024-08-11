@@ -6,21 +6,19 @@ import { BossPicture } from "./BossPicture";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 
 interface iBossButton {
-    boss: BOSSES
+    boss: BOSSES,
+	updateBoss: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const BossButton = ({boss}: iBossButton, props: any) => {
-	const doSelection = () => {
-		console.log("yes")
-	};
-	const bossProps = {
-		boss: boss,
-		update: doSelection
+export const BossButton = ({boss, updateBoss}: iBossButton) => {
+	const doUpdate = () => {
+		console.log(boss);
+		updateBoss(boss);
 	}
-    return(
+    return (
         <Fragment>
-            <WrapperBox disableRipple>
-                <BossPicture {...bossProps} />
+            <WrapperBox disableRipple onClick={doUpdate}>
+                <BossPicture boss={boss} />
                 <LabelBox>
                     <Typography sx={{textOverflow:"ellipsis", whiteSpace:"nowrap", overflow:"hidden"}}>
 						{BOSS_DETAIL[boss].displayName}

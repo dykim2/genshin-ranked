@@ -14,15 +14,9 @@ interface IBossPicture {
     boss: BOSSES;
 }
 
-export const BossPicture = ({ boss }: IBossPicture, props: any) => {
-	const doUpdate = () => {
-		console.log("hi");
-		console.log(boss);
-		// can create a context, pass the information up via the context
-		props.update(boss);
-	}
+export const BossPicture = ({ boss }: IBossPicture) => {
     return(
-        <Box sx={{backgroundColor: "white"}} onClick={doUpdate}>
+        <Box sx={{backgroundColor: "white"}}>
             <GradientBox type={BOSS_DETAIL[boss].type}>
             <Image src={getBossImagePath(boss)} />
             <IconWrapper disabled>
@@ -42,7 +36,7 @@ const LEGEND_GRADIENT =
 const WEEKLY_GRADIENT =
 	"linear-gradient(160deg, rgba(89, 84, 130, 1) 0%, rgba(120, 102, 157, 1) 39%, rgba(183, 133, 201, 1) 100%)";
 const STANDARD_GRADIENT =
-	"linear-gradient(160deg, rgba(89, 84, 130, 1) 0%, rgba(120, 102, 157, 1) 39%, rgba(183, 133, 201, 1) 100%)";
+	"linear-gradient(160deg, rgba(60, 84, 100, 1) 0%, rgba(100, 98, 140, 1) 39%, rgba(163, 103, 171, 1) 100%)";
 
 const GradientBox = styled(Box)(({ type }: IGradientBox) => ({
 	background: type == BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,

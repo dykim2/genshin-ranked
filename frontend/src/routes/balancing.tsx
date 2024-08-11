@@ -4,8 +4,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { CharacterSelector } from "../components";
-import { BOSSES, CHARACTERS } from "@genshin-ranked/shared";
-import { CharacterDetail } from "@genshin-ranked/shared/src/types/characters/details";
 
 import './balancing.css';
 import Avatar from "@mui/material/Avatar";
@@ -13,18 +11,7 @@ import { FIVE_STAR_GRADIENT } from "../components/CharacterPicker/CharacterPictu
 import styled from "@emotion/styled";
 
 export const Balancing = () => {
-	// const [selectedButton, setSelectedButton] = useState(null);
-	const selectedButton = false;
-
-	// const handleButtonClick = (button) => {
-	// 	setSelectedButton(button);
-	// };
 	const [selection, setSelection] = React.useState<string>("None");
-
-	const updateSelection = (info: CharacterDetail) => {
-		setSelection(info.displayName);
-	}
-
 	return (
 		<Box sx={{ display: "flex" }} id="balancing-page-parent-box">
 			{/* Left Side: Button Grid */}
@@ -38,69 +25,65 @@ export const Balancing = () => {
 			</Box>
 			{/* Right Side: Button Details */}
 			<Box sx={{ padding: 2, width: "500px" }}>
-				{selectedButton ? (
-					<Typography variant="h6">
-						{localStorage.getItem("character") }
-					</Typography>
-				) : (
-					<Typography variant="h6">
-						{`Currently selected: ${selection}`}
+				{
+				<Typography color={"white"} variant="h6">
+					{`Currently selected: ${selection}`}
+					<Box
+						sx={{
+							position: "relative",
+							display: "flex",
+							alignItems: "center",
+							width: "250px",
+							height: "80px",
+							overflow: "hidden",
+						}}
+					>
 						<Box
 							sx={{
-								position: "relative",
-								display: "flex",
-								alignItems: "center",
-								width: "250px",
-								height: "80px",
-								overflow: "hidden",
+								position: "absolute",
+								top: "0px",
+								left: "0px",
+								width: "15px",
+								height: "100px",
+								background: "rgba(198,144,80,255)",
 							}}
-						>
-							<Box
-								sx={{
-									position: "absolute",
-									top: "0px",
-									left: "0px",
-									width: "15px",
-									height: "100px",
-									background: "rgba(198,144,80,255)",
-								}}
-							></Box>
-							<Typography
-								variant="h6"
-								sx={{
-									paddingLeft: "15px",
-									position: "absolute",
-									width: "150px",
-									color: "#FFFFFF",
-									textAlign: "center",
-									fontStyle: "italic",
-								}}>
-								Raiden Shogun
-							</Typography>
-							<img
-								src="images\assets\flowing effect.gif"
-								alt=""
-								className="flowing-effect"
-							/>
-							<img
-								src="\images\assets\loading border.gif"
-								alt=""
-								className="loading-border"
-							/>
-							<Avatar
-								alt=""
-								src="\images\chars\Furina.png"
-								sx={{
-									position: "absolute",
-									right: "25px",
-									width: "60px",
-									height: "60px",
-									background: FIVE_STAR_GRADIENT,
-								}}
-							/>
-						</Box>
-					</Typography>
-				)}
+						></Box>
+						<Typography
+							variant="h6"
+							sx={{
+								paddingLeft: "15px",
+								position: "absolute",
+								width: "150px",
+								color: "#FFFFFF",
+								textAlign: "center",
+								fontStyle: "italic",
+							}}>
+							Raiden Shogun
+						</Typography>
+						<img
+							src="images\assets\flowing effect.gif"
+							alt=""
+							className="flowing-effect"
+						/>
+						<img
+							src="\images\assets\loading border.gif"
+							alt=""
+							className="loading-border"
+						/>
+						<Avatar
+							alt=""
+							src="\images\chars\Furina.png"
+							sx={{
+								position: "absolute",
+								right: "25px",
+								width: "60px",
+								height: "60px",
+								background: FIVE_STAR_GRADIENT,
+							}}
+						/>
+					</Box>
+				</Typography>
+				}
 			</Box>
 		</Box>
 	);

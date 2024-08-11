@@ -4,7 +4,7 @@ import {Box, Typography} from "@mui/material";
 import { BossSelector } from "../components";
 
 export const BossDisplay = () => {
-	const [selection, setSelection] = useState<String>();
+	const [selection, setSelection] = useState<string>("None");
     return (
 		<Box sx={{ display: "flex" }}>
 			<Box
@@ -13,11 +13,12 @@ export const BossDisplay = () => {
 				}}
 				id="boss-selection-box"
 			>
-				<BossSelector choice={setSelection} />
+				<BossSelector bossName={selection} updateBoss={setSelection} />
 			</Box>
+			{/* button details, other useful information for boss phase */}
 			<Box sx={{ padding: 2, width: "500px" }}>
-				<Typography variant="h6">
-					Current selection: {selection}
+				<Typography color={"white"} variant="h6">
+					{`Currently selected: ${selection}`}
 				</Typography>
 			</Box>
 		</Box>

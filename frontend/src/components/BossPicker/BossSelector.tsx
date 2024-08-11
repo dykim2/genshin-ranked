@@ -14,12 +14,18 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 
 // an exact copy of character selector applied for bosses - should make a selector component instead but this way gets the changes out faster
 
-export const BossSelector = (props: any) => {
+export interface IBoss {
+	bossName: string;
+	updateBoss: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const BossSelector = ({
+	bossName,
+	updateBoss
+}: IBoss) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState(false);
-
-	
 
 	return (
 		<Stack direction="column">
@@ -99,13 +105,9 @@ export const BossSelector = (props: any) => {
 						}
 					})
 					.map((x) => {
-						const bossProps = {
-							boss: x,
-							select: props.choice
-						}
 						return (
 							<Grid item padding={1} key={x}>
-								<BossButton boss={x} />
+								<BossButton boss={x} updateBoss={updateBoss} />
 							</Grid>
 						);
 					}
