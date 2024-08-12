@@ -196,6 +196,14 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Dori",
 		index: 52,
 	},
+	[CHARACTERS.Emilie]: {
+		displayName: "Emilie",
+		element: ELEMENTS.dendro,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Emilie",
+		index: 84
+	},
 	[CHARACTERS.Eula]: {
 		displayName: "Eula",
 		element: ELEMENTS.cryo,

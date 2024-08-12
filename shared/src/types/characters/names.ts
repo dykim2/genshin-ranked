@@ -45,6 +45,7 @@ export enum CHARACTERS {
 	Arlecchino = "Arlecchino",
 	Clorinde = "Clorinde",
 	Sigewinne = "Sigewinne",
+	Emilie = "Emilie",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 

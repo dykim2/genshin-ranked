@@ -21,68 +21,73 @@ export const Balancing = () => {
 				}}
 				id="character-selector-container"
 			>
-				<CharacterSelector characterName={selection} updateCharacter={setSelection} />
+				<CharacterSelector
+					characterName={selection}
+					updateCharacter={setSelection}
+				/>
 			</Box>
 			{/* Right Side: Button Details */}
 			<Box sx={{ padding: 2, width: "500px" }}>
 				{
-				<Typography color={"white"} variant="h6">
-					{`Currently selected: ${selection}`}
-					<Box
-						sx={{
-							position: "relative",
-							display: "flex",
-							alignItems: "center",
-							width: "250px",
-							height: "80px",
-							overflow: "hidden",
-						}}
-					>
-						<Box
-							sx={{
-								position: "absolute",
-								top: "0px",
-								left: "0px",
-								width: "15px",
-								height: "100px",
-								background: "rgba(198,144,80,255)",
-							}}
-						></Box>
-						<Typography
-							variant="h6"
-							sx={{
-								paddingLeft: "15px",
-								position: "absolute",
-								width: "150px",
-								color: "#FFFFFF",
-								textAlign: "center",
-								fontStyle: "italic",
-							}}>
-							Raiden Shogun
-						</Typography>
-						<img
-							src="images\assets\flowing effect.gif"
-							alt=""
-							className="flowing-effect"
-						/>
-						<img
-							src="\images\assets\loading border.gif"
-							alt=""
-							className="loading-border"
-						/>
-						<Avatar
-							alt=""
-							src="\images\chars\Furina.png"
-							sx={{
-								position: "absolute",
-								right: "25px",
-								width: "60px",
-								height: "60px",
-								background: FIVE_STAR_GRADIENT,
-							}}
-						/>
-					</Box>
-				</Typography>
+					<Typography color={"white"} variant="h6">
+						{`Currently selected: ${selection}`}
+						{/*
+							<Box
+								sx={{
+									position: "relative",
+									display: "flex",
+									alignItems: "center",
+									width: "250px",
+									height: "80px",
+									overflow: "hidden",
+								}}
+							>
+								<Box
+									sx={{
+										position: "absolute",
+										top: "0px",
+										left: "0px",
+										width: "15px",
+										height: "100px",
+										background: "rgba(198,144,80,255)",
+									}}
+								></Box>
+								<Typography
+									variant="h6"
+									sx={{
+										paddingLeft: "15px",
+										position: "absolute",
+										width: "150px",
+										color: "#FFFFFF",
+										textAlign: "center",
+										fontStyle: "italic",
+									}}>
+									Raiden Shogun
+								</Typography>
+								<img
+									src="images\assets\flowing effect.gif"
+									alt=""
+									className="flowing-effect"
+								/>
+								<img
+									src="\images\assets\loading border.gif"
+									alt=""
+									className="loading-border"
+								/>
+								<Avatar
+									alt=""
+									src="\images\chars\Furina.png"
+									sx={{
+										position: "absolute",
+										right: "25px",
+										width: "60px",
+										height: "60px",
+										background: FIVE_STAR_GRADIENT,
+									}}
+								/>
+							</Box>
+						*/}
+					</Typography>
 				}
 			</Box>
 		</Box>
