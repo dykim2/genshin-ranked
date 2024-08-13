@@ -1,0 +1,1 @@
+Shared types between backend and frontend. Allows a single source of truth for various purposes.

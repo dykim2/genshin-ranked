@@ -1,0 +1,33 @@
+@keyframes spin-right {
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.orbit-wrapper {
+    position: absolute;
+    right: 35px;
+    width: 70px;
+    height: 70px;
+    border: 5px #4A437F dashed;
+    border-radius: 100%;
+    -webkit-animation: spin-right 20s linear infinite;
+    animation: spin-right 20s linear infinite;
+}
+
+.flowing-effect {
+    width: 150%;
+    position: absolute;
+    left: -25%;
+}
+
+.loading-border {
+    right: 18.75px;
+    position: absolute;
+    width: 73px;
+    height: 73px;
+}
