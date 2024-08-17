@@ -49,6 +49,7 @@ export default function FilterModal(props) {
   const deactivateAnchor = (index) => {
     let newActive = [...active];
     newActive[index] = null;
+    
     setActive(newActive);
   };
   const updateSetting = (index, choice) => {

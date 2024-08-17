@@ -9,12 +9,15 @@ import TimesModal from "./TimesModal.jsx";
 import OrderModal from "./OrderModal.jsx";
 import Countdown from "react-countdown";
 import FilterModal from "./FilterModal.jsx";
+
+
+
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
-function MyTurn(turnInfo, id) {
+const MyTurn = (turnInfo) => {
   const [cookieInfo] = useCookies(["player"]);
   if ("" + turnInfo.turnInfo == cookieInfo.player.substring(0, 1)) {
     return <p style={{ color: "red", fontSize: 28 }}>your turn!</p>;
@@ -35,7 +38,7 @@ const parseBoss = (data) => {
   // takes in a copy of data
   // returns the value to add to sessionStorage
   // find first boss
-  const identity = JSON.parse(sessionStorage.getItem("game"));
+  const identity = JSON.parse(sessionStorage.getItem("game"));d
   const bossList = JSON.parse(sessionStorage.getItem("bosses"));
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
@@ -1291,7 +1294,7 @@ export default function Game(props) {
             </div>
             <div className="grid five">
               <div>
-                {showInfo == "boss"
+                {identity.result.toLowerCase() == "waiting" || identity.result.toLowerCase() == "boss"
                   ? displayFilter(bosses, true).map((boss) => {
                       return boss._id > 0 ? (
                         <Tooltip key={boss._id} title={boss.boss} arrow>
@@ -1322,10 +1325,10 @@ export default function Game(props) {
                         </Tooltip>
                       ) : null;
                     })
-                  : null}
+                  : null }
               </div>
               <div>
-                {showInfo == "character"
+                {identity.result.toLowerCase() == "ban" || identity.result.toLowerCase() == "pick"
                   ? displayFilter(characters, false).map((char) => {
                       return (
                         <Tooltip title={char.name} key={char._id} arrow>
@@ -1479,6 +1482,7 @@ export default function Game(props) {
               )}
               <button
                 className="boss-3"
+                disabled
                 onClick={() => {
                   {
                     showInfo == "character"
