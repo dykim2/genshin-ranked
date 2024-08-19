@@ -16,11 +16,11 @@ export const pages: Page[] = [
 	{
 		name: "Characters",
 		path: "/balancing",
-		component: <Balancing />,
+		component: <Balancing id={0} team={0} phase={"waiting"}/>, // since we will not be using this index page directly, team and id are not relevant
 	},
 	{ name: "Changelogs", path: "/changelogs", component: <Changelogs /> },
 	{ name: "Play", path: "/play", component: <Play /> },
-	{ name: "Bosses", path: "/bossdisplay", component: <BossDisplay />}
+	{ name: "Bosses", path: "/bossdisplay", component: <BossDisplay id={0} team={0} />} // again, will not be used from here
 ];
 
 export const RoutedContent = () => {

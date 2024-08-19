@@ -10,7 +10,8 @@ import OrderModal from "./OrderModal.jsx";
 import Countdown from "react-countdown";
 import FilterModal from "./FilterModal.jsx";
 
-
+import Balancing from "../../frontend/src/routes/balancing.tsx";
+import BossDisplay from "../../frontend/src/routes/bosses.tsx";
 
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
@@ -38,7 +39,7 @@ const parseBoss = (data) => {
   // takes in a copy of data
   // returns the value to add to sessionStorage
   // find first boss
-  const identity = JSON.parse(sessionStorage.getItem("game"));d
+  const identity = JSON.parse(sessionStorage.getItem("game"));
   const bossList = JSON.parse(sessionStorage.getItem("bosses"));
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
@@ -605,9 +606,15 @@ export default function Game(props) {
           found = true;
         }
         else{
-          alert(
-            "Invalid pick! Please select a boss (or character) that has not been chosen yet!"
-          );
+          if(selection.type == "boss"){
+            alert("This boss has been picked already!");
+          }
+          else if(identity.result == "ban"){
+            alert("This character is banned!");
+          }
+          else{
+            alert("This character has already been picked!");
+          }
           return false;
         }
       }
@@ -1295,7 +1302,7 @@ export default function Game(props) {
             <div className="grid five">
               <div>
                 {identity.result.toLowerCase() == "waiting" || identity.result.toLowerCase() == "boss"
-                  ? displayFilter(bosses, true).map((boss) => {
+                  ? /* displayFilter(bosses, true).map((boss) => {
                       return boss._id > 0 ? (
                         <Tooltip key={boss._id} title={boss.boss} arrow>
                           <img
@@ -1325,11 +1332,11 @@ export default function Game(props) {
                         </Tooltip>
                       ) : null;
                     })
-                  : null }
+                   */ <BossDisplay id={props.id} team={turn} phase={identity.result} /> : null }
               </div>
               <div>
                 {identity.result.toLowerCase() == "ban" || identity.result.toLowerCase() == "pick"
-                  ? displayFilter(characters, false).map((char) => {
+                  ? /* displayFilter(characters, false).map((char) => {
                       return (
                         <Tooltip title={char.name} key={char._id} arrow>
                           <img
@@ -1359,7 +1366,10 @@ export default function Game(props) {
                         </Tooltip>
                       );
                     })
-                  : null}
+                  */ <Balancing id={props.id} team={turn} /> : null}
+              </div>
+              <div>
+                {identity.result.toLowerCase() == "progress" ? <p>Thank you for drafting!</p> : null}
               </div>
             </div>
             <div className="grid seven">

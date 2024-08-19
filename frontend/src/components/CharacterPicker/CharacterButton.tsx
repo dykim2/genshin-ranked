@@ -8,7 +8,6 @@ import { styled } from "@mui/system";
 import React from "react";
 import { CharacterPicture } from "./CharacterPicture";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
-import { Pick } from "./CharacterSelector";
 
 interface ICharacterButton {
 	character: CHARACTERS;
@@ -18,7 +17,8 @@ interface ICharacterButton {
 export const CharacterButton = ({ character, updateCharacter }: ICharacterButton) => {
 	const doUpdate = () => {
 		console.log(character);
-		updateCharacter(character);
+		updateCharacter(CHARACTER_INFO[character].displayName);
+		localStorage.setItem("selection", `${CHARACTER_INFO[character].index}`)
 	};
 	return (
 		<>

@@ -8,7 +8,7 @@ import { RARITY } from "../rarity";
 import { WEAPONS } from "../weapons";
 import { CHARACTERS } from "./names";
 
-type CharacterMap = {
+export type CharacterMap = {
 	[index in CHARACTERS]: CharacterDetail;
 };
 
