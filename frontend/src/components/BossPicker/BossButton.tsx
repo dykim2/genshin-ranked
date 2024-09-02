@@ -13,7 +13,8 @@ interface iBossButton {
 export const BossButton = ({boss, updateBoss}: iBossButton) => {
 	const doUpdate = () => {
 		console.log(boss);
-		updateBoss(boss);
+		updateBoss(BOSS_DETAIL[boss].displayName);
+		sessionStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
 	}
     return (
         <Fragment>

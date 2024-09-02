@@ -13,6 +13,7 @@ import { Box, Icon, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
 
+
 interface ICharacterPicture {
 	character: CHARACTERS;
 }
@@ -24,7 +25,7 @@ export const CharacterPicture = ({ character }: ICharacterPicture) => {
 			<GradientBox rarity={CHARACTER_INFO[character].rarity}>
 			<Image src={getCharacterImagePath(character)} />
 			<IconWrapper>
-				<IconImage src={getCharacterElementImagePath(character)} />
+				<IconImage src={require(getCharacterElementImagePath(character))} />
 			</IconWrapper>
 		</GradientBox>
 		</Box>

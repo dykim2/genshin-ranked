@@ -10,8 +10,8 @@ import OrderModal from "./OrderModal.jsx";
 import Countdown from "react-countdown";
 import FilterModal from "./FilterModal.jsx";
 
-import Balancing from "../../frontend/src/routes/balancing.tsx";
-import BossDisplay from "../../frontend/src/routes/bosses.tsx";
+import {Balancing} from "../../frontend/src/routes/balancing.tsx";
+import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";

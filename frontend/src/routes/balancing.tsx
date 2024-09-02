@@ -25,11 +25,13 @@ const sendToSocket = (id: number, team: number) => {
 
 	if(socket.readyState == 1){
 		let chosenValue: number = -1;
-		if(sessionStorage.getItem("selection") == null){
+		if(sessionStorage.getItem("character") == null){
 			chosenValue = -1;
+			alert("Please select a character!");
+			return;
 		}
 		else{
-			chosenValue = parseInt(sessionStorage.getItem("selection")!)
+			chosenValue = parseInt(sessionStorage.getItem("character")!)
 		}
 		socket.send(JSON.stringify({
 			// force websocket to determine if current status is ban or pick, handle accordingly

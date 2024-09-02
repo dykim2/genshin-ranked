@@ -18,7 +18,7 @@ export const BossPicture = ({ boss }: IBossPicture) => {
     return(
         <Box sx={{backgroundColor: "white"}}>
             <GradientBox type={BOSS_DETAIL[boss].type}>
-            <Image src={getBossImagePath(boss)} />
+            <Image src={require(getBossImagePath(boss))} />
             <IconWrapper disabled>
                 <IconImage src={getBossElementImagePath(boss)} />
             </IconWrapper>
