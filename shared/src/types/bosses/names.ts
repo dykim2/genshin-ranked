@@ -31,6 +31,8 @@ export enum BOSSES {
     HydroTulpa="HydroTulpa",
     SolitarySuanii="SolitarySuanni",
     LegatusGolem="LegatusGolem",
+    MountainKing="MountainKing",
+    Ququsaur="Ququsaur",
 
     Azhdaha="Azhdaha",
     Apep="Apep",
