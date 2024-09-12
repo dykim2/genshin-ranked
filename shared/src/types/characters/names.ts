@@ -46,6 +46,8 @@ export enum CHARACTERS {
 	Clorinde = "Clorinde",
 	Sigewinne = "Sigewinne",
 	Emilie = "Emilie",
+	Kinich = "Kinich",
+	Mualani = "Mualani",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 
@@ -89,4 +91,5 @@ export enum CHARACTERS {
 	Freminet = "Freminet",
 	Charlotte = "Charlotte",
 	Chevreuse = "Chevreuse",
+	Kachina = "Kachina",
 }

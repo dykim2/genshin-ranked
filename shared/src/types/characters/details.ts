@@ -26,6 +26,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Albedo",
+		onlineFilePath: "https://thumbs4.imagebam.com/94/cb/3f/METQJBR_t.png",
 		index: 26,
 	},
 	[CHARACTERS.Alhaitham]: {
@@ -34,6 +35,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Alhaitham",
+		onlineFilePath: "https://thumbs4.imagebam.com/57/5e/59/METQJBT_t.png",
 		index: 61,
 	},
 	[CHARACTERS.Aloy]: {
@@ -42,6 +44,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Aloy",
+		onlineFilePath: "https://thumbs4.imagebam.com/91/7c/0d/METQJBQ_t.png",
 		index: 37,
 	},
 	[CHARACTERS.Amber]: {
@@ -50,6 +53,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Amber",
+		onlineFilePath: "https://thumbs4.imagebam.com/a8/dc/96/METQJBO_t.png",
 		index: 0,
 	},
 	[CHARACTERS.AratakiItto]: {
@@ -58,6 +62,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "AratakiItto",
+		onlineFilePath: "https://thumbs4.imagebam.com/f9/1e/15/METQJAG_t.png",
 		index: 42,
 	},
 	[CHARACTERS.Arlecchino]: {
@@ -66,6 +71,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Arlecchino",
+		onlineFilePath: "https://thumbs4.imagebam.com/8a/96/d0/METQJDD_t.png",
 		index: 80,
 	},
 	[CHARACTERS.Baizhu]: {
@@ -74,6 +80,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Baizhu",
+		onlineFilePath: "https://thumbs4.imagebam.com/b7/3a/ef/METQJBJ_t.png",
 		index: 65,
 	},
 	[CHARACTERS.Barbara]: {
@@ -82,6 +89,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Barbara",
+		onlineFilePath: "https://images4.imagebam.com/33/00/cb/METQJBM_o.png",
 		index: 1,
 	},
 	[CHARACTERS.Beidou]: {
@@ -90,6 +98,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Beidou",
+		onlineFilePath: "https://images4.imagebam.com/68/e6/47/METQJBL_o.png",
 		index: 2,
 	},
 	[CHARACTERS.Bennett]: {
@@ -98,6 +107,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Bennett",
+		onlineFilePath: "https://images4.imagebam.com/c3/a6/cb/METQJBK_o.png",
 		index: 3,
 	},
 	[CHARACTERS.Candace]: {
@@ -106,6 +116,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Candace",
+		onlineFilePath: "https://thumbs4.imagebam.com/6a/8e/08/METQJBI_t.png",
 		index: 54,
 	},
 	[CHARACTERS.Charlotte]: {
@@ -114,6 +125,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Charlotte",
+		onlineFilePath: "https://thumbs4.imagebam.com/3e/39/8a/METQJBD_t.png",
 		index: 73
 	},
 	[CHARACTERS.Chevreuse]: {
@@ -122,6 +134,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Chevreuse",
+		onlineFilePath: "https://thumbs4.imagebam.com/ed/35/9e/METS0VO_t.png",
 		index: 75,
 	},
 	[CHARACTERS.Chiori]: {
@@ -130,6 +143,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Chiori",
+		onlineFilePath: "https://thumbs4.imagebam.com/de/01/04/METS0VN_t.png",
 		index: 79,
 	},
 	[CHARACTERS.Chongyun]: {
@@ -138,6 +152,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Chongyun",
+		onlineFilePath: "https://thumbs4.imagebam.com/90/f5/2a/METQJBG_t.png",
 		index: 4,
 	},
 	[CHARACTERS.Clorinde]: {
@@ -146,6 +161,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Clorinde",
+		onlineFilePath: "https://images4.imagebam.com/41/11/8c/MEUJVCR_o.png",
 		index: 81,
 	},
 	[CHARACTERS.Collei]: {
@@ -154,6 +170,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Collei",
+		onlineFilePath: "https://thumbs4.imagebam.com/16/31/d8/METQJBE_t.png",
 		index: 51,
 	},
 	[CHARACTERS.Cyno]: {
@@ -162,6 +179,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Cyno",
+		onlineFilePath: "https://thumbs4.imagebam.com/f9/45/66/METQJB6_t.png",
 		index: 55,
 	},
 	[CHARACTERS.Dehya]: {
@@ -170,6 +188,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Dehya",
+		onlineFilePath: "https://thumbs4.imagebam.com/e6/0c/7f/METQJBB_t.png",
 		index: 63,
 	},
 	[CHARACTERS.Diluc]: {
@@ -178,6 +197,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Diluc",
+		onlineFilePath: "https://thumbs4.imagebam.com/4c/a5/b0/METQJB9_t.png",
 		index: 5,
 	},
 	[CHARACTERS.Diona]: {
@@ -186,6 +206,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Diona",
+		onlineFilePath: "https://thumbs4.imagebam.com/2e/90/08/METQJB8_t.png",
 		index: 22,
 	},
 	[CHARACTERS.Dori]: {
@@ -194,6 +215,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Dori",
+		onlineFilePath: "https://thumbs4.imagebam.com/0c/c1/f4/METQJAC_t.png",
 		index: 52,
 	},
 	[CHARACTERS.Emilie]: {
@@ -202,6 +224,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Emilie",
+		onlineFilePath: "https://thumbs4.imagebam.com/a8/c7/23/MEV7JII_t.png",
 		index: 84
 	},
 	[CHARACTERS.Eula]: {
@@ -210,6 +233,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Eula",
+		onlineFilePath: "https://thumbs4.imagebam.com/0e/dd/42/METQJB4_t.png",
 		index: 31,
 	},
 	[CHARACTERS.Faruzan]: {
@@ -218,6 +242,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Faruzan",
+		onlineFilePath: "https://thumbs4.imagebam.com/ed/0f/2f/METQJB2_t.png",
 		index: 59,
 	},
 	[CHARACTERS.Fischl]: {
@@ -226,6 +251,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Fischl",
+		onlineFilePath: "https://thumbs4.imagebam.com/70/64/fd/METQJAY_t.png",
 		index: 6
 	},
 	[CHARACTERS.Freminet]: {
@@ -234,6 +260,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Freminet",
+		onlineFilePath: "https://thumbs4.imagebam.com/8d/e1/0a/METQJAZ_t.png",
 		index: 68,
 	},
 	[CHARACTERS.Furina]: {
@@ -242,6 +269,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Furina",
+		onlineFilePath: "https://thumbs4.imagebam.com/a2/cd/6f/METQJAU_t.png",
 		index: 74,
 	},
 	[CHARACTERS.Gaming]: {
@@ -250,6 +278,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Gaming",
+		onlineFilePath: "https://thumbs4.imagebam.com/81/d2/b6/METQJD8_t.png",
 		index: 77,
 	},
 	[CHARACTERS.Ganyu]: {
@@ -258,6 +287,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Ganyu",
+		onlineFilePath: "https://thumbs4.imagebam.com/5e/dc/50/METQJAW_t.png",
 		index: 27,
 	},
 	[CHARACTERS.Gorou]: {
@@ -266,6 +296,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Gorou",
+		onlineFilePath: "https://thumbs4.imagebam.com/27/84/eb/METQJAT_t.png",
 		index: 43,
 	},
 	[CHARACTERS.HuTao]: {
@@ -274,6 +305,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "HuTao",
+		onlineFilePath: "https://thumbs4.imagebam.com/80/09/f3/METQJAJ_t.png",
 		index: 28,
 	},
 	[CHARACTERS.Jean]: {
@@ -282,7 +314,17 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Jean",
+		onlineFilePath: "https://thumbs4.imagebam.com/a0/73/98/METRZ3L_t.png",
 		index: 7,
+	},
+	[CHARACTERS.Kachina]: {
+		displayName: "Kachina",
+		element: ELEMENTS.geo,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FourStar,
+		imageFileName: "Kachina",
+		onlineFilePath: "https://images4.imagebam.com/56/5d/d4/MEVNLM6_o.png",
+		index: 85
 	},
 	[CHARACTERS.KaedeharaKazuha]: {
 		displayName: "Kazuha",
@@ -290,6 +332,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "KaedeharaKazuha",
+		onlineFilePath: "https://thumbs4.imagebam.com/d2/48/34/METQJAS_t.png",
 		index: 33,
 	},
 	[CHARACTERS.Kaeya]: {
@@ -298,6 +341,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Kaeya",
+		onlineFilePath: "https://thumbs4.imagebam.com/75/bc/ba/METQJAF_t.png",
 		index: 8,
 	},
 	[CHARACTERS.KamisatoAyaka]: {
@@ -306,6 +350,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "KamisatoAyaka",
+		onlineFilePath: "https://thumbs4.imagebam.com/05/d0/e7/METQJBW_t.png",
 		index: 34,
 	},
 	[CHARACTERS.KamisatoAyato]: {
@@ -314,6 +359,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "KamisatoAyato",
+		onlineFilePath: "https://thumbs4.imagebam.com/21/c4/cb/METQJBU_t.png",
 		index: 47,
 	},
 	[CHARACTERS.Kaveh]: {
@@ -322,6 +368,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Kaveh",
+		onlineFilePath: "https://thumbs4.imagebam.com/71/36/6c/METQJAD_t.png",
 		index: 66,
 	},
 	[CHARACTERS.Keqing]: {
@@ -330,7 +377,17 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Keqing",
+		onlineFilePath: "https://thumbs4.imagebam.com/13/18/96/METQJAR_t.png",
 		index: 9,
+	},
+	[CHARACTERS.Kinich]: {
+		displayName: "Kinich",
+		element: ELEMENTS.dendro,
+		weapon: WEAPONS.claymore,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Kinich",
+		onlineFilePath: "https://thumbs4.imagebam.com/83/2f/e8/MEVP9X3_t.png",
+		index: 86
 	},
 	[CHARACTERS.Kirara]: {
 		displayName: "Kirara",
@@ -338,6 +395,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Kirara",
+		onlineFilePath: "https://thumbs4.imagebam.com/73/52/07/METQJC1_t.png",
 		index: 67,
 	},
 	[CHARACTERS.Klee]: {
@@ -346,6 +404,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Klee",
+		onlineFilePath: "https://thumbs4.imagebam.com/04/1e/c0/METQJAL_t.png",
 		index: 10,
 	},
 	[CHARACTERS.KujouSara]: {
@@ -354,6 +413,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "KujouSara",
+		onlineFilePath: "https://thumbs4.imagebam.com/76/9f/7a/METQJCG_t.png",
 		index: 38,
 	},
 	[CHARACTERS.KukiShinobu]: {
@@ -362,6 +422,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "KukiShinobu",
+		onlineFilePath: "https://thumbs4.imagebam.com/0b/62/de/METQJCI_t.png",
 		index: 48,
 	},
 	[CHARACTERS.Layla]: {
@@ -370,6 +431,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Layla",
+		onlineFilePath: "https://thumbs4.imagebam.com/ab/67/dd/METQJAO_t.png",
 		index: 57,
 	},
 	[CHARACTERS.Lisa]: {
@@ -378,6 +440,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Lisa",
+		onlineFilePath: "https://thumbs4.imagebam.com/49/c8/75/METS28H_t.png",
 		index: 11,
 	},
 	[CHARACTERS.Lynette]: {
@@ -386,6 +449,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Lynette",
+		onlineFilePath: "https://thumbs4.imagebam.com/91/96/5f/METQJBY_t.png",
 		index: 69,
 	},
 	[CHARACTERS.Lyney]: {
@@ -394,7 +458,17 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Lyney",
+		onlineFilePath: "https://thumbs4.imagebam.com/f3/c0/c6/METQJAK_t.png",
 		index: 70,
+	},
+	[CHARACTERS.Mualani]: {
+		displayName: "Mualani",
+		element: ELEMENTS.hydro,
+		weapon: WEAPONS.bow,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Mualani",
+		onlineFilePath: "https://images4.imagebam.com/0a/a1/d5/MEVNRM0_o.png",
+		index: 87
 	},
 	[CHARACTERS.Mika]: {
 		displayName: "Mika",
@@ -402,6 +476,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Mika",
+		onlineFilePath: "https://thumbs4.imagebam.com/7d/f5/56/METQJBX_t.png",
 		index: 64,
 	},
 	[CHARACTERS.Mona]: {
@@ -410,6 +485,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Mona",
+		onlineFilePath: "https://images4.imagebam.com/0a/a1/d5/MEVNRM0_o.png",
 		index: 12,
 	},
 	[CHARACTERS.Nahida]: {
@@ -418,6 +494,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Nahida",
+		onlineFilePath: "https://thumbs4.imagebam.com/f0/62/cf/METQJC3_t.png",
 		index: 58,
 	},
 	[CHARACTERS.Navia]: {
@@ -426,6 +503,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Navia",
+		onlineFilePath: "https://thumbs4.imagebam.com/0b/cf/1f/METS0VM_t.png",
 		index: 76,
 	},
 	[CHARACTERS.Neuvillette]: {
@@ -434,6 +512,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Neuvillette",
+		onlineFilePath: "https://thumbs4.imagebam.com/92/5c/63/METQJC4_t.png",
 		index: 71,
 	},
 	[CHARACTERS.Nilou]: {
@@ -442,6 +521,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Nilou",
+		onlineFilePath: "https://thumbs4.imagebam.com/ef/72/d5/METQJC5_t.png",
 		index: 56,
 	},
 	[CHARACTERS.Ningguang]: {
@@ -450,6 +530,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Ningguang",
+		onlineFilePath: "https://thumbs4.imagebam.com/b7/0f/c8/METQJC7_t.png",
 		index: 13,
 	},
 	[CHARACTERS.Noelle]: {
@@ -458,6 +539,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Noelle",
+		onlineFilePath: "https://thumbs4.imagebam.com/a8/73/55/METQJC9_t.png",
 		index: 14,
 	},
 	[CHARACTERS.Qiqi]: {
@@ -466,6 +548,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Qiqi",
+		onlineFilePath: "https://thumbs4.imagebam.com/42/9d/6a/METQJCB_t.png",
 		index: 15,
 	},
 	[CHARACTERS.RaidenShogun]: {
@@ -474,6 +557,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "RaidenShogun",
+		onlineFilePath: "https://thumbs4.imagebam.com/22/94/bb/METQJCK_t.png",
 		index: 39,
 	},
 	[CHARACTERS.Razor]: {
@@ -482,6 +566,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Razor",
+		onlineFilePath: "https://thumbs4.imagebam.com/5b/8b/0e/METQJCC_t.png",
 		index: 16,
 	},
 	[CHARACTERS.Rosaria]: {
@@ -490,6 +575,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Rosaria",
+		onlineFilePath: "https://thumbs4.imagebam.com/e9/82/bb/METQJCF_t.png",
 		index: 30,
 	},
 	[CHARACTERS.SangonomiyaKokomi]: {
@@ -498,6 +584,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "SangonomiyaKokomi",
+		onlineFilePath: "https://thumbs4.imagebam.com/a3/7d/16/METQJAP_t.png",
 		index: 40,
 	},
 	[CHARACTERS.Sayu]: {
@@ -506,6 +593,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Sayu",
+		onlineFilePath: "https://thumbs4.imagebam.com/97/8b/17/METQJCH_t.png",
 		index: 35,
 	},
 	[CHARACTERS.Sethos]: {
@@ -514,6 +602,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
 		imageFileName: "Sethos",
+		onlineFilePath: "https://thumbs4.imagebam.com/84/f2/7e/MEU01T3_t.png",
 		index: 82,
 	},
 	[CHARACTERS.Shenhe]: {
@@ -522,6 +611,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Shenhe",
+		onlineFilePath: "https://thumbs4.imagebam.com/ec/bc/52/METS0IA_t.png",
 		index: 44,
 	},
 	[CHARACTERS.ShikanoinHeizou]: {
@@ -530,6 +620,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "ShikanoinHeizou",
+		onlineFilePath: "https://thumbs4.imagebam.com/f2/21/06/METQJAI_t.png",
 		index: 50,
 	},
 	[CHARACTERS.Sigewinne]: {
@@ -538,6 +629,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Sigewinne",
+		onlineFilePath: "https://thumbs4.imagebam.com/f3/c8/ec/MEU3RBW_t.png",
 		index: 83,
 	},
 	[CHARACTERS.Sucrose]: {
@@ -546,6 +638,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Sucrose",
+		onlineFilePath: "https://thumbs4.imagebam.com/ef/40/e5/METQJCM_t.png",
 		index: 17,
 	},
 	[CHARACTERS.Tartaglia]: {
@@ -554,6 +647,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Tartaglia",
+		onlineFilePath: "https://thumbs4.imagebam.com/05/fb/5c/METQJCN_t.png",
 		index: 23,
 	},
 	[CHARACTERS.Thoma]: {
@@ -562,6 +656,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Thoma",
+		onlineFilePath: "https://thumbs4.imagebam.com/24/62/90/METQJCS_t.png",
 		index: 41,
 	},
 	[CHARACTERS.Tighnari]: {
@@ -570,6 +665,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Tighnari",
+		onlineFilePath: "https://thumbs4.imagebam.com/e8/6f/ba/METQJCP_t.png",
 		index: 53,
 	},
 	[CHARACTERS.Traveler]: {
@@ -578,6 +674,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Traveler",
+		onlineFilePath: "https://thumbs4.imagebam.com/da/bf/b3/METS289_t.png",
 		index: 18,
 	},
 	[CHARACTERS.Venti]: {
@@ -586,6 +683,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Venti",
+		onlineFilePath: "https://thumbs4.imagebam.com/f1/cd/6b/METQJCO_t.png",
 		index: 19,
 	},
 	[CHARACTERS.Wanderer]: {
@@ -594,6 +692,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Wanderer",
+		onlineFilePath: "https://thumbs4.imagebam.com/bc/51/34/METQJCT_t.png",
 		index: 60,
 	},
 	[CHARACTERS.Wriothesley]: {
@@ -602,6 +701,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Wriothesley",
+		onlineFilePath: "https://thumbs4.imagebam.com/d4/f9/d7/METQJCW_t.png",
 		index: 72,
 	},
 	[CHARACTERS.Xiangling]: {
@@ -610,6 +710,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Xiangling",
+		onlineFilePath: "https://thumbs4.imagebam.com/08/18/10/METQJCU_t.png",
 		index: 20,
 	},
 	[CHARACTERS.Xianyun]: {
@@ -618,6 +719,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Xianyun",
+		onlineFilePath: "https://thumbs4.imagebam.com/a0/45/ef/METQJDB_t.png",
 		index: 78,
 	},
 	[CHARACTERS.Xiao]: {
@@ -626,6 +728,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Xiao",
+		onlineFilePath: "https://thumbs4.imagebam.com/e9/66/fc/METQJCX_t.png",
 		index: 29,
 	},
 	[CHARACTERS.Xingqiu]: {
@@ -634,6 +737,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
 		imageFileName: "Xingqiu",
+		onlineFilePath: "https://thumbs4.imagebam.com/a2/d4/57/METRZQ9_t.png",
 		index: 21,
 	},
 	[CHARACTERS.Xinyan]: {
@@ -642,6 +746,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FourStar,
 		imageFileName: "Xinyan",
+		onlineFilePath: "https://thumbs4.imagebam.com/1d/c6/db/METQJD1_t.png",
 		index: 24,
 	},
 	[CHARACTERS.YaeMiko]: {
@@ -650,6 +755,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "YaeMiko",
+		onlineFilePath: "https://thumbs4.imagebam.com/04/67/d4/METQJCZ_t.png",
 		index: 46,
 	},
 	[CHARACTERS.Yanfei]: {
@@ -658,6 +764,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FourStar,
 		imageFileName: "Yanfei",
+		onlineFilePath: "https://thumbs4.imagebam.com/e5/f9/6a/METQJB1_t.png",
 		index: 32,
 	},
 	[CHARACTERS.Yaoyao]: {
@@ -666,6 +773,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "Yaoyao",
+		onlineFilePath: "https://thumbs4.imagebam.com/92/84/cc/METQJD3_t.png",
 		index: 62,
 	},
 	[CHARACTERS.Yelan]: {
@@ -674,6 +782,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Yelan",
+		onlineFilePath: "https://thumbs4.imagebam.com/6d/cd/fb/METQJD4_t.png",
 		index: 49,
 	},
 	[CHARACTERS.Yoimiya]: {
@@ -682,6 +791,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Yoimiya",
+		onlineFilePath: "https://thumbs4.imagebam.com/30/06/d0/METQJD5_t.png",
 		index: 36,
 	},
 	[CHARACTERS.YunJin]: {
@@ -690,6 +800,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FourStar,
 		imageFileName: "YunJin",
+		onlineFilePath: "https://thumbs4.imagebam.com/2e/c7/ac/METQJD6_t.png",
 		index: 45,
 	},
 	[CHARACTERS.Zhongli]: {
@@ -698,6 +809,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Zhongli",
+		onlineFilePath: "https://thumbs4.imagebam.com/37/16/5c/METQJD7_t.png",
 		index: 25,
 	},
 };
