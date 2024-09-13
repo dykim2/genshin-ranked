@@ -52,7 +52,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.cryo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Coppelia",
-		onlineFilePath: "https://thumbs4.imagebam.com/2e/5e/7f/MEUJQHM_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/22/9d/bb/MEVUDKM_t.png",
 		index: 26,
 	},
 	[BOSSES.Coppelius]: {
@@ -60,7 +60,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.anemo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Coppelius",
-		onlineFilePath: "https://thumbs4.imagebam.com/26/cb/e0/MEUJQIH_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/79/b1/47/MEVUDKN_t.png",
 		index: 27,
 	},
 	[BOSSES.CryoCube]: {

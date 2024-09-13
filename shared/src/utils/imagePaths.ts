@@ -2,6 +2,7 @@ import { CHARACTERS, GenericDetails } from "../types";
 import { BOSSES } from "../types/bosses";
 import { CHARACTER_INFO } from "../types/characters/details";
 import { BOSS_DETAIL } from "../types/bosses/details";
+import { ELEMENT_INFO, ELEMENTS } from "../types/elements";
 
 export const ELEMENT_IMAGE_PATH = "/images/general/elements";
 export const WEAPON_IMAGE_PATH = "/images/general/billets";
@@ -17,12 +18,20 @@ export const getCharacterElementImagePath = (character: CHARACTERS) => {
 	return `${ELEMENT_IMAGE_PATH}/${CHARACTER_INFO[character].element}.png`;
 };
 
+export const getCharacterElementOnlinePath = (character: CHARACTERS) => {
+	return `${ELEMENT_INFO[CHARACTER_INFO[character].element].onlineFilePath}`;
+}
+
 export const getBossImagePath = (boss: BOSSES) => {
 	return `${BOSS_IMAGE_PATH}/${BOSS_DETAIL[boss].imageFileName}.png`
 }
 
 export const getBossElementImagePath = (boss: BOSSES) => {
 	return `${ELEMENT_IMAGE_PATH}/${BOSS_DETAIL[boss].element}.png`;
+}
+
+export const getBossElementOnlinePath = (boss: BOSSES) => {
+	return `${ELEMENT_INFO[BOSS_DETAIL[boss].element].onlineFilePath}`;
 }
 
 export const getElementImagePath = (elementDetail: GenericDetails) => {

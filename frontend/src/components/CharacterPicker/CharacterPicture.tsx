@@ -4,8 +4,7 @@
 
 import {
 	CHARACTERS,
-	getCharacterElementImagePath,
-	getCharacterImagePath,
+	getCharacterElementOnlinePath,
 	RARITY,
 } from "@genshin-ranked/shared";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
@@ -23,9 +22,9 @@ export const CharacterPicture = ({ character }: ICharacterPicture) => {
 	return (
 		<Box sx={{backgroundColor: "white"}}>
 			<GradientBox rarity={CHARACTER_INFO[character].rarity}>
-			<Image src={getCharacterImagePath(character)} />
+			<Image src={CHARACTER_INFO[character].onlineFilePath} />
 			<IconWrapper>
-				<IconImage src={require(getCharacterElementImagePath(character))} />
+				<IconImage src={require(getCharacterElementOnlinePath(character))} />
 			</IconWrapper>
 		</GradientBox>
 		</Box>

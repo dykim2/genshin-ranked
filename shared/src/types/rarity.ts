@@ -13,9 +13,11 @@ export const RARITY_INFO: RarityMap = {
 	[RARITY.FourStar]: {
 		displayName: "4*",
 		imageFileName: "FourStar",
+		onlineFilePath: ""
 	},
 	[RARITY.FiveStar]: {
 		displayName: "5*",
 		imageFileName: "FiveStar",
+		onlineFilePath: ""
 	},
 };
