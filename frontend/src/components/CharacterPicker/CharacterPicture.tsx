@@ -24,7 +24,7 @@ export const CharacterPicture = ({ character }: ICharacterPicture) => {
 			<GradientBox rarity={CHARACTER_INFO[character].rarity}>
 			<Image src={CHARACTER_INFO[character].onlineFilePath} />
 			<IconWrapper>
-				<IconImage src={require(getCharacterElementOnlinePath(character))} />
+				<IconImage src={getCharacterElementOnlinePath(character)} />
 			</IconWrapper>
 		</GradientBox>
 		</Box>

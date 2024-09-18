@@ -7,7 +7,7 @@ import { socket } from "../../../src/contexts/PlayingContext";
 const sendToSocket = (id: number, team: number) => {
 	// find the corresponding id of the character with this display name
 	// loop on the character information
-
+	
 	if(socket.readyState == 1){
 		let chosenValue: number = -1;
 		if(sessionStorage.getItem("boss") == null){
@@ -34,6 +34,15 @@ interface balance {
 
 export const BossDisplay = ({id, team}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
+	// get player turn from storage, verify it
+	const info = sessionStorage.getItem("game");
+	let newInfo: number;
+	if (info != null) {
+		newInfo = JSON.parse(info).turn;
+	} else {
+		newInfo = 0;
+	}
+	
     return (
 		<Box sx={{ display: "flex" }}>
 			<Box
@@ -51,7 +60,7 @@ export const BossDisplay = ({id, team}: balance) => {
 						<Typography color={"white"} variant="h6">
 							{`Currently selected: ${selection}`}
 						</Typography>
-						<Button onClick={() => {sendToSocket(id, team)}} disabled={false}>
+						<Button variant="contained" onClick={() => {sendToSocket(id, team)}} disabled={team != newInfo}>
 							<Typography color={"white"} variant="h6">
 								Choose Boss 
 							</Typography>
