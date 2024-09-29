@@ -13,6 +13,10 @@ import FilterModal from "./FilterModal.jsx";
 import {Balancing} from "../../frontend/src/routes/balancing.tsx";
 import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 
+import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
+import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts";
+// import { BOSSES } from "@genshin-ranked/shared";
+// 
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
@@ -395,6 +399,9 @@ export default function Game(props) {
   const [bossFilterActive, setBossFilter] = useState(false);
   const [charFilterActive, setCharFilter] = useState(false);
 
+  const characterRef = useRef();
+  const bossRef = useRef();
+
   const updateTurn = (turn) => {
     setTurn(turn);
     sessionStorage.setItem("turn", turn);
@@ -509,8 +516,11 @@ export default function Game(props) {
     let gameID = props.id;
     // use the selection variable
     // verify the same boss / pick is not already chosen
-    console.log("selection")
-    console.log(selection);
+    // console.log("selection")
+    // console.log(selection);
+
+    // set selection equal to the value hovered in session storage
+
     if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
       alert("identity error");
       return;
@@ -518,6 +528,24 @@ export default function Game(props) {
     // boss, pick, etc
     let res = identity.result;
     let req = "";
+    if(res.toLowerCase() == "boss"){
+      selection.type = "boss";
+      if(sessionStorage.getItem("character") == null){
+        selection = {};
+      }
+      else{
+        selection.id = sessionStorage.getItem("boss");
+      }
+    }
+    else if(res.toLowerCase() == "character" || res.toLowerCase() == "ban"){
+      selection.type = res.toLowerCase();
+      if(sessionStorage.getItem("boss") == null){
+        selection = {};
+      }
+      else{
+        selection.id = sessionStorage.getItem("character");
+      }
+    }
     let found = false;
     if (selection.type == "boss" && bosses[selection.id].type == "legend" && identity.division.toLowerCase() != "premier") {
       if(timeout){
@@ -529,7 +557,7 @@ export default function Game(props) {
         return; 
       }
     }
-    if((selection.type == "boss" && identity.result.toLowerCase() != "boss") || (selection.type == "character" && (identity.result.toLowerCase() != "ban" && identity.result.toLowerCase() != "pick"))){
+    if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick"))){
       selection = {};
     }
     else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id].long == true && identity.division.toLowerCase() == "advanced"){
@@ -643,7 +671,7 @@ export default function Game(props) {
       }
     }
     updateTimer(false, true);
-    console.log("sent from sendselection");
+    // console.log("sent from sendselection");
     socket.send(req);
     return true;
   };
@@ -778,10 +806,10 @@ export default function Game(props) {
     );
   };
   useEffect(() => {
-    if(sessionStorage.getItem("chosen_bosses") == null){
+    if (sessionStorage.getItem("chosen_bosses") == null) {
       sessionStorage.setItem("chosen_bosses", JSON.stringify([]));
     }
-    if(sessionStorage.getItem("chosen_picks") == null){
+    if (sessionStorage.getItem("chosen_picks") == null) {
       sessionStorage.setItem("chosen_picks", JSON.stringify([]));
     }
     if (
@@ -809,12 +837,14 @@ export default function Game(props) {
     if (typeof cookies.player == "undefined") {
       setCookie("player", "spectate");
     }
-    if(socket.readyState == 1){
-      socket.send(JSON.stringify({
-        type: "turn",
-        id: props.id,
-        getSelectionInfo: true
-      }))
+    if (socket.readyState == 1) {
+      socket.send(
+        JSON.stringify({
+          type: "turn",
+          id: props.id,
+          getSelectionInfo: true,
+        })
+      );
       if (sessionStorage.getItem("game") == null) {
         console.log("socket open");
         socket.send(
@@ -842,7 +872,8 @@ export default function Game(props) {
       if (data.id != props.id) {
         return; // do nothing if game does not match
       }
-      if (data.type === "query") { // since for some reason query is not equal to query in a switch statement
+      if (data.type === "query") {
+        // since for some reason query is not equal to query in a switch statement
         if (data.boss) {
           sessionStorage.removeItem("bosses");
           setBosses(data.bossList);
@@ -888,7 +919,10 @@ export default function Game(props) {
           */
           updateTurn(data.turn);
           if (typeof data.bosses != "undefined") {
-            sessionStorage.setItem("chosen_bosses", JSON.stringify(data.bosses))
+            sessionStorage.setItem(
+              "chosen_bosses",
+              JSON.stringify(data.bosses)
+            );
             setChosenBosses(data.bosses);
           }
           if (typeof data.chars != "undefined") {
@@ -900,8 +934,8 @@ export default function Game(props) {
           updateTimer(true, true);
           res = parseBoss(data);
           let newBossArr = [];
-          identity.bosses.forEach(boss => {
-            boss._id != -1 ? newBossArr.push(boss) : null
+          identity.bosses.forEach((boss) => {
+            boss._id != -1 ? newBossArr.push(boss) : null;
           });
           newBossArr.push(data.boss);
           sessionStorage.setItem("chosen_bosses", JSON.stringify(newBossArr));
@@ -912,10 +946,9 @@ export default function Game(props) {
           updateTimer(true, true);
           res = parseBan(data);
           let newCharArr = [];
-          if(chosenChars != null){
+          if (chosenChars != null) {
             newCharArr = [...chosenChars];
-          }
-          else{
+          } else {
             newCharArr = [];
           }
           newCharArr.push(data.ban);
@@ -975,11 +1008,10 @@ export default function Game(props) {
           break;
         }
         case "phase": {
-          if(data.newPhase == "boss"){
+          if (data.newPhase == "boss") {
             updateTimer(true, true);
-            alert("Draft starts now!")
-          }
-          else if(data.newPhase == "ban" || data.newPhase == "pick"){
+            alert("Draft starts now!");
+          } else if (data.newPhase == "ban" || data.newPhase == "pick") {
             updateTimer(true, true);
           }
           res = {
@@ -1004,6 +1036,29 @@ export default function Game(props) {
       socket.close();
     });
 
+    let bossList = [];
+    let bossIndexList = [];
+    for (const [name, boss] of Object.entries(BOSS_DETAIL)) {
+      bossList.push(name);
+      bossIndexList.push(boss.index);
+    }
+    const bossMap = new Map();
+    let charList = [];
+    let charIndexList = [];
+    for (const [name, char] of Object.entries(CHARACTER_INFO)) {
+      charList.push(name);
+      charIndexList.push(char.index);
+    }
+    const charMap = new Map();
+    for (let i = 0; i < charList.length; i++) {
+      if (i < bossList.length) {
+        bossMap.set(bossIndexList[i], bossList[i]);
+      }
+      charMap.set(charIndexList[i], charList[i]);
+    }
+    // map the pair and save it in useref
+    bossRef.current = bossMap;
+    characterRef.current = characterRef;
     return () => {
       if (socket.readyState === 1) {
         socket.close();
@@ -1120,7 +1175,7 @@ export default function Game(props) {
   }
   /**
    * 
-   * @param {*} info the array to display infomration with
+   * @param {*} info the array to display information with
    * @param {Boolean} boss whether the target array represents bosses or picks
    * @return an array displaying the corresponding picks
    */
@@ -1441,8 +1496,6 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid nine">
-              <p className="boss-1">{`Selected: ${selection.name}`}</p>
-              <button className="boss-2" style={filterStyles()} onClick={() => {setFiltering(true)}}>{filterText()}</button>
               {cookies.player.charAt(0) == "r" ? (
                 identity.result != "waiting" ? (
                   <button

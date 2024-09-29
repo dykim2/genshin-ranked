@@ -21,7 +21,7 @@ export const BossButton = ({boss, updateBoss}: iBossButton) => {
             <WrapperBox disableRipple onClick={doUpdate}>
                 <BossPicture boss={boss} />
                 <LabelBox>
-                    <Typography sx={{textOverflow:"ellipsis", whiteSpace:"nowrap", overflow:"hidden"}}>
+                    <Typography sx={{textOverflow:"ellipsis", whiteSpace:"nowrap", overflow:"hidden", fontSize: 14}}>
 						{BOSS_DETAIL[boss].displayName}
 					</Typography>
                 </LabelBox>
@@ -39,7 +39,7 @@ const WrapperBox = styled(Button)({
 	overflow: "hidden",
 	justifyContent: "center",
 	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
-	width: 100,
+	width: 120,
 });
 
 const LabelBox = styled(Box)({

@@ -25,7 +25,7 @@ export const CharacterButton = ({ character, updateCharacter }: ICharacterButton
 			<WrapperBox disableRipple onClick={doUpdate}>
 				<CharacterPicture character={character} />
 				<LabelBox>
-					<Typography sx={{textOverflow:"ellipsis", whiteSpace:"nowrap", overflow:"hidden"}}>
+					<Typography sx={{textOverflow:"ellipsis", whiteSpace:"wrap"}}>
 						{CHARACTER_INFO[character].displayName}
 					</Typography>
 				</LabelBox>

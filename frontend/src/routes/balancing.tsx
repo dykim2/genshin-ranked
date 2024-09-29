@@ -33,6 +33,9 @@ const sendToSocket = (id: number, team: number) => {
 		else{
 			chosenValue = parseInt(sessionStorage.getItem("character")!)
 		}
+		// check if the turn matches before sending
+		// 
+		
 		socket.send(JSON.stringify({
 			// force websocket to determine if current status is ban or pick, handle accordingly
 			type: "character",

@@ -24,7 +24,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 20,
 	},
 	[BOSSES.AnemoCube]: {
-		displayName: "AnemoCube",
+		displayName: "Anemo Cube",
 		element: ELEMENTS.anemo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "AnemoCube",
@@ -136,7 +136,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 15,
 	},
 	[BOSSES.HydroCube]: {
-		displayName: "HydroCube",
+		displayName: "Hydro Cube",
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "HydroCube",
@@ -144,7 +144,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 13,
 	},
 	[BOSSES.HydroTulpa]: {
-		displayName: "Tulpa",
+		displayName: "Hydro Tulpa",
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "HydroTulpa",
@@ -160,7 +160,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 19,
 	},
 	[BOSSES.LegatusGolem]: {
-		displayName: "Golem",
+		displayName: "Legatus Golem",
 		element: ELEMENTS.pyro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "LegatusGolem",
@@ -168,7 +168,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 38,
 	},
 	[BOSSES.MaguuKenki]: {
-		displayName: "Kenki",
+		displayName: "Maguu Kenki",
 		element: ELEMENTS.anemo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "MaguuKenki",
@@ -240,7 +240,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 40,
 	},
 	[BOSSES.RuinSerpent]: {
-		displayName: "Serpent",
+		displayName: "Ruin Serpent",
 		element: ELEMENTS.physical,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "RuinSerpent",
@@ -256,7 +256,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 31,
 	},
 	[BOSSES.SolitarySuanii]: {
-		displayName: "Suanni",
+		displayName: "Solitary Suanni",
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Suanni",
@@ -272,7 +272,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 14,
 	},
 	[BOSSES.Wenut]: {
-		displayName: "Wenut",
+		displayName: "Seketh Wenut",
 		element: ELEMENTS.anemo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Wenut",
@@ -296,7 +296,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 8,
 	},
 	[BOSSES.Knave]: {
-		displayName: "Knave",
+		displayName: "The Knave",
 		element: ELEMENTS.pyro,
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "Knave",
@@ -320,7 +320,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 29,
 	},
 	[BOSSES.ChizangVishaps]: {
-		displayName: "Chizang Vishaps",
+		displayName: "Chizang Vishap",
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Legend,
 		imageFileName: "ChizangVishaps",
