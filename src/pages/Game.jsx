@@ -45,6 +45,7 @@ const parseBoss = (data) => {
   // find first boss
   const identity = JSON.parse(sessionStorage.getItem("game"));
   const bossList = JSON.parse(sessionStorage.getItem("bosses")); // note that very first one is -1
+  // console.log(bossList)
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
   let long = false;
@@ -536,7 +537,7 @@ export default function Game(props) {
         selection = {};
       }
       else{
-        selection.id = localStorage.getItem("boss");
+        selection.id = parseInt(localStorage.getItem("boss"));
       }
     }
     else if(res.toLowerCase() == "character" || res.toLowerCase() == "ban"){
@@ -545,7 +546,7 @@ export default function Game(props) {
         selection = {};
       }
       else{
-        selection.id = localStorage.getItem("character");
+        selection.id = parseInt(localStorage.getItem("character"));
       }
     }
     let found = false;
@@ -892,6 +893,7 @@ export default function Game(props) {
         return;
       }
       let res = null;
+      console.log(data.type == "players")
       switch (data.type) {
         case "create": {
           updateIdentity(data.game);
@@ -1003,6 +1005,22 @@ export default function Game(props) {
         }
         case "TeamUpdate": {
           res = parseUpdate(data);
+          break;
+        }
+        case "players": {
+          console.log("here")
+          if(cookies.player.charAt(0) == 'r'){
+            let info = "";
+            for(let i = 0; i < data.playerStatus.length; i++){
+              if(i < 2){
+                info += `Player ${i+1} has joined: ${data.playerStatus[i]}\n`
+              }
+              else{
+                info += `Two or more refs have joined: ${data.playerStatus[i]}\n`
+              }
+            }
+            alert(info);
+          }
           break;
         }
         case "status": {
@@ -1303,13 +1321,17 @@ export default function Game(props) {
                 <MyTurn turnInfo={turn == 1 ? 1 : 2} />
               </div>
               <p className="boss boss-3">
-                {identity.result != "waiting" ? "select a " + identity.result.toLowerCase() : "Waiting to start"}
+                {identity.result != "waiting"
+                  ? "select a " + identity.result.toLowerCase()
+                  : "Waiting to start"}
               </p>
               {showTimer ? (
                 <Countdown
                   className="boss boss-4"
                   date={timer + 32000}
-                  onComplete={() => {updateTimer(false, false);}}
+                  onComplete={() => {
+                    updateTimer(false, false);
+                  }}
                 />
               ) : (
                 <p className="boss boss-4">Timer inactive</p>
@@ -1358,8 +1380,9 @@ export default function Game(props) {
             </div>
             <div className="grid five">
               <div>
-                {identity.result.toLowerCase() == "waiting" || identity.result.toLowerCase() == "boss"
-                  ? /* displayFilter(bosses, true).map((boss) => {
+                {identity.result.toLowerCase() == "waiting" ||
+                identity.result.toLowerCase() == "boss" ? (
+                  /* displayFilter(bosses, true).map((boss) => {
                       return boss._id > 0 ? (
                         <Tooltip key={boss._id} title={boss.boss} arrow>
                           <img
@@ -1389,11 +1412,17 @@ export default function Game(props) {
                         </Tooltip>
                       ) : null;
                     })
-                   */ <BossDisplay id={props.id} team={turn} pickSelection={sendSelection} /> : null }
+                   */ <BossDisplay
+                    id={props.id}
+                    team={turn}
+                    pickSelection={sendSelection}
+                  />
+                ) : null}
               </div>
               <div>
-                {identity.result.toLowerCase() == "ban" || identity.result.toLowerCase() == "pick"
-                  ? /* displayFilter(characters, false).map((char) => {
+                {identity.result.toLowerCase() == "ban" ||
+                identity.result.toLowerCase() == "pick" ? (
+                  /* displayFilter(characters, false).map((char) => {
                       return (
                         <Tooltip title={char.name} key={char._id} arrow>
                           <img
@@ -1423,10 +1452,18 @@ export default function Game(props) {
                         </Tooltip>
                       );
                     })
-                  */ <Balancing id={props.id} team={turn} phase={identity.result.toLowerCase()} pickSelection={sendSelection} /> : null}
+                  */ <Balancing
+                    id={props.id}
+                    team={turn}
+                    phase={identity.result.toLowerCase()}
+                    pickSelection={sendSelection}
+                  />
+                ) : null}
               </div>
               <div>
-                {identity.result.toLowerCase() == "progress" ? <p>Thank you for drafting!</p> : null}
+                {identity.result.toLowerCase() == "progress" ? (
+                  <p>Thank you for drafting!</p>
+                ) : null}
               </div>
             </div>
             <div className="grid seven">
@@ -1448,9 +1485,7 @@ export default function Game(props) {
               })}
               {[0, 1, 2, 3, 4, 5].map((val) => {
                 return (
-                  <Fragment
-                    key={val}
-                  >
+                  <Fragment key={val}>
                     <p className={`pick pick-${2 * val + 2}`}>
                       {typeof identity.pickst2 == "undefined" ||
                       typeof identity.pickst2[val] == "undefined"
@@ -1499,65 +1534,53 @@ export default function Game(props) {
             </div>
             <div className="grid nine">
               {cookies.player.charAt(0) == "r" ? (
-                identity.result != "waiting" ? (
-                  <button
-                    className="boss-4"
-                    onClick={() => {
-                      socket.send(
-                        JSON.stringify({
-                          type: "switch",
-                          phase: "finish",
-                          id: props.id,
-                        })
-                      );
-                    }}
-                    disabled={identity.result != "progress"}
-                  >
-                    End Game
-                  </button>
-                ) : (
-                  <button
-                    className="boss-4"
-                    onClick={() => {
-                      socket.send(
-                        JSON.stringify({
-                          type: "switch",
-                          phase: "boss",
-                          id: props.id,
-                        })
-                      );
-                    }}
-                  >
-                    Start Game
-                  </button>
-                )
-              ) : (
+                <Fragment>
+                  {identity.result != "waiting" ? (
+                    <button
+                      className="boss-4"
+                      onClick={() => {
+                        socket.send(
+                          JSON.stringify({
+                            type: "switch",
+                            phase: "finish",
+                            id: props.id,
+                          })
+                        );
+                      }}
+                      disabled={identity.result != "progress"}
+                    >
+                      End Game
+                    </button>
+                    ) : (
+                    <button
+                      className="boss-4"
+                      onClick={() => {
+                        socket.send(
+                          JSON.stringify({
+                            type: "switch",
+                            phase: "boss",
+                            id: props.id,
+                          })
+                        );
+                      }}
+                    >
+                      Start Game
+                    </button>
+                  )
+                }
                 <button
-                  className="boss-4"
+                  className="boss-3"
                   onClick={() => {
-                    sendSelection(turn, selection);
+                    socket.send(JSON.stringify({
+                      type: "players",
+                      id: props.id
+                    }))
                   }}
-                  disabled={
-                    turn + "" != cookies.player.charAt(0) ||
-                    identity.result == "waiting"
-                  } //
                 >
-                  Select
+                  Check players
                 </button>
-              )}
-              <button
-                className="boss-3"
-                disabled
-                onClick={() => {
-                  {
-                    showInfo == "character"
-                      ? setShow("boss")
-                      : setShow("character");
-                  }
-                }}
-              >
-                {showInfo == "character" ? "Show Bosses" : "Show Characters"}
-              </button>
+                </Fragment>
+              ) : null}
             </div>
 
             <div className="grid newgrid ten">
@@ -1610,7 +1633,10 @@ export default function Game(props) {
               </div>
               {timeOrder.slice(0, -3).map((time) => {
                 return (
-                  <div className={`grid longgrid end times-${time + 2}`} key={time}>
+                  <div
+                    className={`grid longgrid end times-${time + 2}`}
+                    key={time}
+                  >
                     <Tooltip title={identity.bosses[time].boss} arrow>
                       <img
                         width={IMG_SIZE}
@@ -1620,12 +1646,22 @@ export default function Game(props) {
                       />
                     </Tooltip>
                     <Tooltip title={parseStatusTooltip(time, 1)} arrow>
-                      <p style={parseTextColor(identity.timest1[time] - identity.timest2[time], identity.penaltyt1[time][4])}>
+                      <p
+                        style={parseTextColor(
+                          identity.timest1[time] - identity.timest2[time],
+                          identity.penaltyt1[time][4]
+                        )}
+                      >
                         {identity.timest1[time].toFixed(2)}
                       </p>
                     </Tooltip>
                     <Tooltip title={parseStatusTooltip(time, 2)} arrow>
-                      <p style={parseTextColor(identity.timest2[time] - identity.timest1[time], identity.penaltyt2[time][4])}>
+                      <p
+                        style={parseTextColor(
+                          identity.timest2[time] - identity.timest1[time],
+                          identity.penaltyt2[time][4]
+                        )}
+                      >
                         {identity.timest2[time].toFixed(2)}
                       </p>
                     </Tooltip>
@@ -1726,7 +1762,9 @@ export default function Game(props) {
           />
           <FilterModal
             open={filtering}
-            close={() => {setFiltering(false)}} 
+            close={() => {
+              setFiltering(false);
+            }}
             setOrder={filterPicks}
           />
         </Fragment>
