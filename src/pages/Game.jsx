@@ -520,8 +520,8 @@ export default function Game(props) {
     // verify the same boss / pick is not already chosen
     console.log("selection")
     console.log(selection);
-    console.log(teamNum)
-
+    // console.log(teamNum)
+    console.log(bosses);
     // set selection equal to the value hovered in session storage
 
     if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
@@ -550,7 +550,7 @@ export default function Game(props) {
       }
     }
     let found = false;
-    if (selection.type == "boss" && bosses[selection.id].type == "legend" && identity.division.toLowerCase() != "premier") {
+    if (selection.type == "boss" && bosses[selection.id + 1].type == "legend" && identity.division.toLowerCase() != "premier") {
       if(timeout){
         alert("Time is up! Hovered boss is a local legend, which cannot be played in your division. A random boss will be selected.");
         found = true;
@@ -563,7 +563,7 @@ export default function Game(props) {
     if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick"))){
       selection = {};
     }
-    else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id].long == true && identity.division.toLowerCase() == "advanced"){
+    else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id + 1].long == true && identity.division.toLowerCase() == "advanced"){
       alert("You cannot pick more than one long boss in advanced division!")
       return;
     }
@@ -893,7 +893,6 @@ export default function Game(props) {
         return;
       }
       let res = null;
-      console.log(data.type == "players")
       switch (data.type) {
         case "create": {
           updateIdentity(data.game);
