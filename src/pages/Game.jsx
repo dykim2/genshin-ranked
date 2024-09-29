@@ -44,14 +44,14 @@ const parseBoss = (data) => {
   // returns the value to add to sessionStorage
   // find first boss
   const identity = JSON.parse(sessionStorage.getItem("game"));
-  const bossList = JSON.parse(sessionStorage.getItem("bosses"));
+  const bossList = JSON.parse(sessionStorage.getItem("bosses")); // note that very first one is -1
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
   let long = false;
   for (let i = 0; i < identity.bosses.length; i++) {
     if (identity.bosses[i]._id == -1) {
-      newBosses[i] = bossList[data.boss];
-      if(bossList[data.boss].long){
+      newBosses[i] = bossList[data.boss + 1];
+      if(bossList[data.boss + 1].long){
         long = true;
       }
       break;
@@ -69,7 +69,7 @@ const parseBoss = (data) => {
   let returnVal = "";
   if (data.nextTeam == -1) {
     alert(
-      "Team 2 has selected " + bossList[data.boss].boss + " for their boss!"
+      "Team 2 has selected " + bossList[data.boss + 1].boss + " for their boss!"
     );
     if(long){
       returnVal = {
@@ -94,7 +94,7 @@ const parseBoss = (data) => {
       "Team " +
         nextArr[data.nextTeam] +
         " has selected " +
-        bossList[data.boss].boss +
+        bossList[data.boss + 1].boss +
         " for their boss!"
     );
     if(long){
@@ -473,7 +473,7 @@ export default function Game(props) {
   };
   const checkSelection = (selection, type) => {
     //
-    if (selection._id == -1) {
+    if (selection.id == -1) {
       console.log("none selected");
       return true;
     }
@@ -483,9 +483,9 @@ export default function Game(props) {
         let bossInfo = JSON.stringify(identity.bosses);
         // console.log(bossInfo);
         if (
-          bossInfo.includes(`"_id":${selection._id},`) ||
+          bossInfo.includes(`"_id":${selection.id},`) ||
           bossInfo.includes(selection.name) ||
-          checkBossStatus(selection._id)
+          checkBossStatus(selection.id)
         ) {
           console.log("boss fail");
           return false;
@@ -498,9 +498,9 @@ export default function Game(props) {
           JSON.stringify(identity.pickst1) +
           JSON.stringify(identity.pickst2);
         if (
-          charInfo.includes(`\"_id\":${selection._id},`) ||
+          charInfo.includes(`\"_id\":${selection.id},`) ||
           charInfo.includes(selection.name) ||
-          checkCharStatus(selection._id)
+          checkCharStatus(selection.id)
         ) {
           console.log("pick or ban fail");
           return false;
@@ -514,10 +514,12 @@ export default function Game(props) {
 
   const sendSelection = (teamNum, selection, timeout = false) => {
     let gameID = props.id;
+    // console.log(selection);
     // use the selection variable
     // verify the same boss / pick is not already chosen
-    // console.log("selection")
-    // console.log(selection);
+    console.log("selection")
+    console.log(selection);
+    console.log(teamNum)
 
     // set selection equal to the value hovered in session storage
 
@@ -530,20 +532,20 @@ export default function Game(props) {
     let req = "";
     if(res.toLowerCase() == "boss"){
       selection.type = "boss";
-      if(sessionStorage.getItem("character") == null){
+      if(localStorage.getItem("boss") == null){
         selection = {};
       }
       else{
-        selection.id = sessionStorage.getItem("boss");
+        selection.id = localStorage.getItem("boss");
       }
     }
     else if(res.toLowerCase() == "character" || res.toLowerCase() == "ban"){
       selection.type = res.toLowerCase();
-      if(sessionStorage.getItem("boss") == null){
+      if(localStorage.getItem("character") == null){
         selection = {};
       }
       else{
-        selection.id = sessionStorage.getItem("character");
+        selection.id = localStorage.getItem("character");
       }
     }
     let found = false;
@@ -1387,7 +1389,7 @@ export default function Game(props) {
                         </Tooltip>
                       ) : null;
                     })
-                   */ <BossDisplay id={props.id} team={turn} phase={identity.result} /> : null }
+                   */ <BossDisplay id={props.id} team={turn} pickSelection={sendSelection} /> : null }
               </div>
               <div>
                 {identity.result.toLowerCase() == "ban" || identity.result.toLowerCase() == "pick"
@@ -1421,7 +1423,7 @@ export default function Game(props) {
                         </Tooltip>
                       );
                     })
-                  */ <Balancing id={props.id} team={turn} /> : null}
+                  */ <Balancing id={props.id} team={turn} phase={identity.result.toLowerCase()} pickSelection={sendSelection} /> : null}
               </div>
               <div>
                 {identity.result.toLowerCase() == "progress" ? <p>Thank you for drafting!</p> : null}

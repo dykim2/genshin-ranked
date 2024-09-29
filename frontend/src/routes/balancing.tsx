@@ -4,12 +4,11 @@
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { CharacterSelector } from "../components";
-
 import {socket} from "../../../src/contexts/PlayingContext.js"
-
 import './balancing.css';
-import Avatar from "@mui/material/Avatar";
-import styled from "@emotion/styled";
+import { useCookies } from "react-cookie";
+// import Avatar from "@mui/material/Avatar";
+// import styled from "@emotion/styled";
 
 /*
 	to add to this page:
@@ -19,41 +18,52 @@ import styled from "@emotion/styled";
 	- 
 */
 
-const sendToSocket = (id: number, team: number) => {
-	// find the corresponding id of the character with this display name
-	// loop on the character information
-
-	if(socket.readyState == 1){
-		let chosenValue: number = -1;
-		if(sessionStorage.getItem("character") == null){
-			chosenValue = -1;
-			alert("Please select a character!");
-			return;
-		}
-		else{
-			chosenValue = parseInt(sessionStorage.getItem("character")!)
-		}
-		// check if the turn matches before sending
-		// 
-		
-		socket.send(JSON.stringify({
-			// force websocket to determine if current status is ban or pick, handle accordingly
-			type: "character",
-			id: id,
-			charId: chosenValue,
-			team: team
-		}))
-	}
-}
-
 interface balance {
 	id: number;
 	team: number;
 	phase: string;
+	pickSelection: (teamNum: number, selectedObj: object, timeout: boolean) => {};
 }
 
-export const Balancing = ({id, team, phase}: balance) => {
+export const Balancing = ({id, team, phase, pickSelection}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
+	const [cookieInfo] = useCookies(["player"]);
+	let matching = true;
+	if (cookieInfo.player.substring(0, 1) != team) {
+		matching = false;
+	}
+	const sendToSocket = () => {
+		// find the corresponding id of the character with this display name
+		// loop on the character information
+		let selectionInfo = {
+			type: phase.toLowerCase(),
+			id: -1,
+		};
+		if (socket.readyState == 1) {
+			let chosenValue: number = -1;
+			if (localStorage.getItem("character") == null) {
+				chosenValue = -1;
+				alert("Please select a character!");
+				return;
+			} else {
+				chosenValue = parseInt(localStorage.getItem("character")!);
+			}
+			selectionInfo.id = chosenValue;
+			pickSelection(team, selectionInfo, false);
+			/*
+			socket.send(
+				JSON.stringify({
+					// force websocket to determine if current status is ban or pick, handle accordingly
+					type: "character",
+					id: id,
+					charId: chosenValue,
+					team: team,
+				}),
+			);
+			*/
+		}
+	};
+	
 	return (
 		<Box sx={{ display: "flex" }} id="balancing-page-parent-box">
 			{/* Left Side: Button Grid */}
@@ -131,7 +141,7 @@ export const Balancing = ({id, team, phase}: balance) => {
 								</Box>
 							*/}
 						</Typography>
-						<Button onClick={() => {sendToSocket(id, team)}}>
+						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={(phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick`) || !matching}>
 							<Typography color={"white"} variant="h6">
 								{`Confirm ${phase.toLowerCase() == `ban` ? `Ban` : phase.toLowerCase() == `pick` ? `Pick` : `Nothing`}`}
 								{/* maybe change this based on the game phase, so "ban" when banning, etc */}

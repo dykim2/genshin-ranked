@@ -5,39 +5,13 @@ import { BossSelector } from "../components";
 import { socket } from "../../../src/contexts/PlayingContext";
 import {useCookies} from "react-cookie";
 
-const sendToSocket = (id: number, team: number, turn: number) => {
-	// find the corresponding id of the character with this display name
-	// loop on the character information
-	
-	if(socket.readyState == 1){
-		let chosenValue: number = -1;
-		if(sessionStorage.getItem("boss") == null){
-			chosenValue = -1;
-			alert("Please choose a boss!");
-			return;
-		}
-		else{
-			chosenValue = parseInt(sessionStorage.getItem("boss")!)
-		}
-		// verify team
-		// get the team from the main game, send it here, if they match then sure
-		
-
-		socket.send(JSON.stringify({
-			// force websocket to determine if current status is ban or pick, handle accordingly
-			type: "boss",
-			id: id,
-			bossId: chosenValue,
-			team: team
-		}))
-	}
-}
 interface balance {
-	id: number,
-	team: number
+	id: number; // game ID - useful but likely not needed
+	team: number;
+	pickSelection: ( teamNum: number, selectedObj: object, timeout: boolean ) => {};
 }
 
-export const BossDisplay = ({id, team}: balance) => {
+export const BossDisplay = ({id, team, pickSelection}: balance) => {
 	const [cookieInfo] = useCookies(["player"]);
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -52,11 +26,43 @@ export const BossDisplay = ({id, team}: balance) => {
 		let infoParse = JSON.parse(info);
 		newInfo = infoParse.turn;
 		currentResult = infoParse.result;
-		console.log("hi")
-		console.log(currentResult);
 	} else {
 		newInfo = 0;
 	}
+
+	const sendToSocket = () => {
+		// find the corresponding id of the character with this display name
+		// loop on the character information
+		let selectionInfo = {
+			type: "boss",
+			id: -1,
+		};
+		if (socket.readyState == 1) {
+			let chosenValue: number = -1;
+			if (localStorage.getItem("boss") == null) {
+				chosenValue = -1;
+				alert("Please choose a boss!");
+				return;
+			} else {
+				chosenValue = parseInt(localStorage.getItem("boss")!);
+			}
+			// transition to using the existing selection method, to keep things clean
+			selectionInfo.id = chosenValue;
+			pickSelection(team, selectionInfo, false);
+			/*
+			socket.send(
+				JSON.stringify({
+					// force websocket to determine if current status is ban or pick, handle accordingly
+					type: "boss",
+					id: id,
+					bossId: chosenValue,
+					team: team,
+				}),
+			);
+			*/
+		}
+	};
+
     return (
 		<Box sx={{ display: "flex" }}>
 			<Box
@@ -74,7 +80,7 @@ export const BossDisplay = ({id, team}: balance) => {
 						<Typography color={"white"} variant="h6">
 							{`Currently selected: ${selection}`}
 						</Typography>
-						<Button variant="contained" onClick={() => {sendToSocket(id, team, newInfo)}} disabled={team != newInfo || !matching || currentResult == "waiting"}>
+						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={team != newInfo || !matching || currentResult == "waiting"}>
 							<Typography color={"white"} variant="h6">
 								{currentResult != "waiting" ? "Choose Boss " : "Waiting to start"}
 							</Typography>

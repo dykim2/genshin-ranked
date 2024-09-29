@@ -16,7 +16,6 @@ interface ICharacterButton {
 
 export const CharacterButton = ({ character, updateCharacter }: ICharacterButton) => {
 	const doUpdate = () => {
-		console.log(character);
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`)
 	};
