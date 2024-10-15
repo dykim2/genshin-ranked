@@ -521,7 +521,7 @@ export default function Game(props) {
     console.log("selection")
     console.log(selection);
     // console.log(teamNum)
-    console.log(bosses);
+    // console.log(bosses);
     // set selection equal to the value hovered in session storage
 
     if (JSON.stringify(identity) == JSON.stringify({ connected: [0, 0, 0] })) {
@@ -540,7 +540,7 @@ export default function Game(props) {
         selection.id = parseInt(localStorage.getItem("boss"));
       }
     }
-    else if(res.toLowerCase() == "character" || res.toLowerCase() == "ban"){
+    else if(res.toLowerCase() == "pick" || res.toLowerCase() == "ban"){
       selection.type = res.toLowerCase();
       if(localStorage.getItem("character") == null){
         selection = {};
@@ -674,7 +674,7 @@ export default function Game(props) {
       }
     }
     updateTimer(false, true);
-    // console.log("sent from sendselection");
+    // console.log("sent from sendselectione");
     socket.send(req);
     return true;
   };
@@ -1327,7 +1327,7 @@ export default function Game(props) {
               {showTimer ? (
                 <Countdown
                   className="boss boss-4"
-                  date={timer + 32000}
+                  date={timer + 31000}
                   onComplete={() => {
                     updateTimer(false, false);
                   }}
