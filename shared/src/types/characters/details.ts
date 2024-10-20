@@ -485,7 +485,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		weapon: WEAPONS.catalyst,
 		rarity: RARITY.FiveStar,
 		imageFileName: "Mona",
-		onlineFilePath: "https://images4.imagebam.com/0a/a1/d5/MEVNRM0_o.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/75/44/9d/MEWLE3H_t.png",
 		index: 12,
 	},
 	[CHARACTERS.Nahida]: {
