@@ -126,7 +126,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FourStar,
 		imageFileName: "Charlotte",
 		onlineFilePath: "https://thumbs4.imagebam.com/3e/39/8a/METQJBD_t.png",
-		index: 73
+		index: 73,
 	},
 	[CHARACTERS.Chevreuse]: {
 		displayName: "Chevreuse",
@@ -225,7 +225,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Emilie",
 		onlineFilePath: "https://thumbs4.imagebam.com/a8/c7/23/MEV7JII_t.png",
-		index: 84
+		index: 84,
 	},
 	[CHARACTERS.Eula]: {
 		displayName: "Eula",
@@ -252,7 +252,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FourStar,
 		imageFileName: "Fischl",
 		onlineFilePath: "https://thumbs4.imagebam.com/70/64/fd/METQJAY_t.png",
-		index: 6
+		index: 6,
 	},
 	[CHARACTERS.Freminet]: {
 		displayName: "Freminet",
@@ -324,7 +324,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FourStar,
 		imageFileName: "Kachina",
 		onlineFilePath: "https://images4.imagebam.com/56/5d/d4/MEVNLM6_o.png",
-		index: 85
+		index: 85,
 	},
 	[CHARACTERS.KaedeharaKazuha]: {
 		displayName: "Kazuha",
@@ -387,7 +387,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Kinich",
 		onlineFilePath: "https://thumbs4.imagebam.com/83/2f/e8/MEVP9X3_t.png",
-		index: 86
+		index: 86,
 	},
 	[CHARACTERS.Kirara]: {
 		displayName: "Kirara",
@@ -468,7 +468,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Mualani",
 		onlineFilePath: "https://images4.imagebam.com/0a/a1/d5/MEVNRM0_o.png",
-		index: 87
+		index: 87,
 	},
 	[CHARACTERS.Mika]: {
 		displayName: "Mika",
@@ -730,6 +730,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Xiao",
 		onlineFilePath: "https://thumbs4.imagebam.com/e9/66/fc/METQJCX_t.png",
 		index: 29,
+	},
+	[CHARACTERS.Xilonen]: {
+		displayName: "Xilonen",
+		element: ELEMENTS.geo,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Xilonen",
+		onlineFilePath: "https://thumbs4.imagebam.com/d5/26/5e/MEWLE3G_t.png",
+		index: 88,
 	},
 	[CHARACTERS.Xingqiu]: {
 		displayName: "Xingqiu",

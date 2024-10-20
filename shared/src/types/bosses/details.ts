@@ -39,12 +39,20 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/01/74/0b/METS4W8_t.png",
 		index: 20,
 	},
+	[BOSSES.Automoton]: {
+		displayName: "Automoton",
+		element: ELEMENTS.electro,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Automoton",
+		onlineFilePath: "https://thumbs4.imagebam.com/dc/a7/c2/MEWLE3I_t.png",
+		index: 40
+	},
 	[BOSSES.IniquitousBaptist]: {
 		displayName: "Baptist",
 		element: ELEMENTS.physical,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Baptist",
-        onlineFilePath: "https://thumbs4.imagebam.com/e5/25/79/METS4W1_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/e5/25/79/METS4W1_t.png",
 		index: 24,
 	},
 	[BOSSES.Coppelia]: {
@@ -124,7 +132,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "GeoCube",
-        onlineFilePath: "https://thumbs4.imagebam.com/3c/2b/c6/METS4UU_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/3c/2b/c6/METS4UU_t.png",
 		index: 3,
 	},
 	[BOSSES.GoldenWolflord]: {
@@ -132,7 +140,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Wolflord",
-        onlineFilePath: "https://thumbs4.imagebam.com/3e/4b/8b/METS4VK_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/3e/4b/8b/METS4VK_t.png",
 		index: 14,
 	},
 	[BOSSES.HydroCube]: {
@@ -140,7 +148,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "HydroCube",
-        onlineFilePath: "https://images4.imagebam.com/84/5b/8e/METS4VH_o.png",
+		onlineFilePath: "https://images4.imagebam.com/84/5b/8e/METS4VH_o.png",
 		index: 12,
 	},
 	[BOSSES.HydroTulpa]: {
@@ -148,7 +156,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "HydroTulpa",
-        onlineFilePath: "https://thumbs4.imagebam.com/1d/15/89/METS4VP_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/1d/15/89/METS4VP_t.png",
 		index: 32,
 	},
 	[BOSSES.JadeplumeTerrorshroom]: {
@@ -156,7 +164,7 @@ export const BOSS_DETAIL: BossMap = {
 		element: ELEMENTS.dendro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "JadeplumeTerrorshroom",
-        onlineFilePath: "https://thumbs4.imagebam.com/f4/e7/b7/METS4WF_t.png",
+		onlineFilePath: "https://thumbs4.imagebam.com/f4/e7/b7/METS4WF_t.png",
 		index: 18,
 	},
 	[BOSSES.LegatusGolem]: {

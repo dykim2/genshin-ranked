@@ -48,6 +48,8 @@ export enum CHARACTERS {
 	Emilie = "Emilie",
 	Kinich = "Kinich",
 	Mualani = "Mualani",
+	Xilonen = "Xilonen",
+	// Chasca = "Chasca",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 
@@ -92,4 +94,5 @@ export enum CHARACTERS {
 	Charlotte = "Charlotte",
 	Chevreuse = "Chevreuse",
 	Kachina = "Kachina",
+	// Ororon = "Ororon"
 }
