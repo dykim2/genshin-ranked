@@ -14,18 +14,24 @@ import React from "react";
 
 
 interface ICharacterPicture {
-	character: CHARACTERS;
+	character: CHARACTERS,
+	banDisplay: string
 }
+let displayBan = false;
 
-
-export const CharacterPicture = ({ character }: ICharacterPicture) => {
+export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) => {
+	displayBan = (banDisplay == "ban");
 	return (
 		<Box sx={{backgroundColor: "white"}}>
 			<GradientBox rarity={CHARACTER_INFO[character].rarity}>
 			<Image src={CHARACTER_INFO[character].onlineFilePath} />
-			<IconWrapper>
-				<IconImage src={getCharacterElementOnlinePath(character)} />
-			</IconWrapper>
+			{
+				character != CHARACTERS.None ?
+				<IconWrapper>
+					<IconImage src={getCharacterElementOnlinePath(character)} />
+				</IconWrapper> : null
+			}
+			
 		</GradientBox>
 		</Box>
 		
@@ -36,14 +42,15 @@ interface IGradientBox {
 	rarity: RARITY;
 }
 
-export const FIVE_STAR_GRADIENT = 
+const FIVE_STAR_GRADIENT = 
 	"linear-gradient(160deg, rgba(105, 84, 83, 1) 0%, rgba(161, 112, 78, 1) 39%, rgba(228, 171, 82, 1) 100%)";
-export const FOUR_STAR_GRADIENT =
+const FOUR_STAR_GRADIENT =
 	"linear-gradient(160deg, rgba(89, 84, 130, 1) 0%, rgba(120, 102, 157, 1) 39%, rgba(183, 133, 201, 1) 100%)";
+const BANNED_GRADIENT =
+	"linear-gradient(90deg, rgba(212,212,212,1) 0%, rgba(154,154,154,1) 14%, rgba(112,112,112,1) 100%)";
 
 const GradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
-	background:
-		rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
+	background: displayBan ? BANNED_GRADIENT : rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
 	position: "relative",
 	display: "flex",
 	alignItems: "center",

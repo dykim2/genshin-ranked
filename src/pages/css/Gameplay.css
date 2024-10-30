@@ -11,7 +11,7 @@
     font-size: 105%;
     color: #fff;
     border-radius: 5px;
-    background-color: #444;
+    background-color: #101010;
 }
 
 .newgrid {
@@ -59,7 +59,7 @@
     grid-column: 1 / span 1;
     grid-row: row 2;
     display: grid;
-    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
     grid-gap: 15px;
     position: relative;
@@ -116,7 +116,9 @@
 
 .twelve {
     grid-column: 2 / span 2;
-    grid-row: row 4 / span 3;
+    grid-row: row 4 / span 1;
+    grid-gap: 10px;
+    /* change span row to 3 to add times back */
     overflow-x: scroll;
 }
 
@@ -271,36 +273,6 @@
 
 .pick-12 {
     grid-column: 2;
-    grid-row: 6;
-}
-
-.pick-13 {
-    grid-column: 3;
-    grid-row: 1;
-}
-
-.pick-14 {
-    grid-column: 3;
-    grid-row: 2;
-}
-
-.pick-15 {
-    grid-column: 3;
-    grid-row: 3;
-}
-
-.pick-16 {
-    grid-column: 3;
-    grid-row: 4;
-}
-
-.pick-17 {
-    grid-column: 3;
-    grid-row: 5;
-}
-
-.pick-18 {
-    grid-column: 3;
     grid-row: 6;
 }
 

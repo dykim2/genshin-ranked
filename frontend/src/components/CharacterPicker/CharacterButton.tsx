@@ -5,35 +5,78 @@
 import { CHARACTERS } from "@genshin-ranked/shared";
 import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import React from "react";
+import React, { Fragment } from "react";
 import { CharacterPicture } from "./CharacterPicture";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 
 interface ICharacterButton {
-	character: CHARACTERS;
-	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
+	character: CHARACTERS,
+	updateCharacter: React.Dispatch<React.SetStateAction<string>>,
+	banDisplay: string
 }
 
-export const CharacterButton = ({ character, updateCharacter }: ICharacterButton) => {
+export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICharacterButton) => {
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`)
 	};
-	return (
-		<>
-			<WrapperBox disableRipple onClick={doUpdate}>
-				<CharacterPicture character={character} />
-				<LabelBox>
-					<Typography sx={{textOverflow:"ellipsis", whiteSpace:"wrap"}}>
-						{CHARACTER_INFO[character].displayName}
-					</Typography>
-				</LabelBox>
-			</WrapperBox>
-		</>
-	);
+	switch (banDisplay) {
+		case "pick": {
+			return (
+				<PickWrapperBox disableRipple onClick={doUpdate}>
+					<InnerCharacter
+						character={character}
+						updateCharacter={updateCharacter}
+						banDisplay={banDisplay}
+					/>
+				</PickWrapperBox>
+			)
+		}
+		case "ban": {
+			return (
+				<BanWrapperBox disableRipple onClick={doUpdate}>
+					<InnerCharacter
+						character={character}
+						updateCharacter={updateCharacter}
+						banDisplay={banDisplay}
+					/>
+				</BanWrapperBox>
+			);
+		}
+		case "loadout": {
+			return (
+				<NormalWrapperBox disableRipple onClick={doUpdate}>
+					<InnerCharacter
+						character={character}
+						updateCharacter={updateCharacter}
+						banDisplay={banDisplay}
+					/>
+				</NormalWrapperBox>
+			);
+		}
+	}
 };
 
-const WrapperBox = styled(Button)({
+const InnerCharacter = ({character, updateCharacter, banDisplay}: ICharacterButton) => {
+	return (
+		<Fragment>
+			<CharacterPicture character={character} banDisplay={banDisplay} />
+			<LabelBox>
+				<Typography
+					sx={{
+						textOverflow: "ellipsis",
+						whiteSpace: "wrap",
+						fontSize: banDisplay ? 11 : 14,
+					}}
+				>
+					{CHARACTER_INFO[character].displayName}
+				</Typography>
+			</LabelBox>
+		</Fragment>
+	);
+}
+
+const NormalWrapperBox = styled(Button)({
 	display: "box",
 	flexDirection: "column",
 	alignItems: "center",
@@ -41,8 +84,29 @@ const WrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
-	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
-	width: 100,
+	width: 110,
+});
+
+const PickWrapperBox = styled(Button)({
+	display: "box",
+	flexDirection: "column",
+	alignItems: "center",
+	padding: 0,
+	borderRadius: 8,
+	overflow: "hidden",
+	justifyContent: "center",
+	width: 80,
+});
+
+const BanWrapperBox = styled(Button)({
+	display: "box",
+	flexDirection: "column",
+	alignItems: "center",
+	padding: 0,
+	borderRadius: 8,
+	overflow: "hidden",
+	justifyContent: "center",
+	width: 80,
 });
 
 const LabelBox = styled(Box)({

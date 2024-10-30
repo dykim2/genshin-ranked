@@ -15,6 +15,14 @@ interface BossInfo extends GenericDetails {
 // index is the way the server communicates to determine what boss to place on the screen
 
 export const BOSS_DETAIL: BossMap = {
+	[BOSSES.None]: {
+		displayName: "None",
+		element: ELEMENTS.physical,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "None",
+		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
+		index: -1
+	},
 	[BOSSES.AeonblightDrake]: {
 		displayName: "Drake",
 		element: ELEMENTS.physical,
@@ -45,7 +53,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Automoton",
 		onlineFilePath: "https://thumbs4.imagebam.com/dc/a7/c2/MEWLE3I_t.png",
-		index: 40
+		index: 40,
 	},
 	[BOSSES.IniquitousBaptist]: {
 		displayName: "Baptist",
@@ -120,7 +128,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 15,
 	},
 	[BOSSES.ExperimentalFieldGenerator]: {
-		displayName: "EFG",
+		displayName: "Field Generator",
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "EFG",
@@ -198,6 +206,14 @@ export const BOSS_DETAIL: BossMap = {
 		imageFileName: "Oceanid",
 		onlineFilePath: "https://thumbs4.imagebam.com/cd/58/d7/METS4UY_t.png",
 		index: 4,
+	},
+	[BOSSES.Papilla]: {
+		displayName: "Papilla",
+		element: ELEMENTS.physical,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Papilla",
+		onlineFilePath: "https://thumbs4.imagebam.com/e8/a7/0c/MEWPYUZ_t.png",
+		index: 41,
 	},
 	[BOSSES.PMA]: {
 		displayName: "PMA",

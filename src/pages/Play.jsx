@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from "react";
-import './css/Playing.css';
+import { useState, useEffect, useContext, Fragment, forwardRef, Slide } from "react";
+// import './css/Playing.css';
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import Modal from "react-modal";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemButton, ListItemText, Modal } from "@mui/material";
 import ActiveContext from "../contexts/ActiveContext.js";
 
 // start implementing redux!
@@ -10,7 +10,6 @@ import ActiveContext from "../contexts/ActiveContext.js";
 const gameInfo = () => JSON.stringify(sessionStorage.getItem("game")) || { connected: [0, 0, 0] };
 
 export default function Play(){
-  Modal.setAppElement("#root")
   const [refreshing, setRefresh] = useState(false); // for a refresh games option
   const [activeGames, setActive] = useContext(ActiveContext);
   const [open, setOpen] = useState(false);
@@ -51,6 +50,13 @@ export default function Play(){
       return navi(`/play/${id}`)
     }
     const choosePlayer = async(playerChoice, id) => {
+      if(playerChoice.includes("Player ")){
+        playerChoice = playerChoice.substring(playerChoice.length - 1)
+      }
+      if(playerChoice == "Spectator" && creating){
+        alert("You cannot create a game as a spectator!")
+        return
+      }
       setReadying(true);
       // set the player in the API
       let valid = true;
@@ -62,7 +68,7 @@ export default function Play(){
       );
       bosses = await bosses.json();
       sessionStorage.setItem("bosses", JSON.stringify(bosses[0]));
-      if(playerChoice != "spectate" && !creating){
+      if(playerChoice != "Spectator" && !creating){
         let res = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/players/${id}`, {
           method: "PUT",
           headers: {
@@ -112,10 +118,11 @@ export default function Play(){
       window.location.reload();
     }
     const createGame = async() => {
+      console.log("hi")
       // create the game here
       setCreating(true);
-     // once created, connect the game to the websocket api to allow for picks and bans
-     setChoosing(true);
+      // once created, connect the game to the websocket api to allow for picks and bans
+      setChoosing(true);
     }
     const centerStyle = {
       display: "flex",
@@ -125,6 +132,7 @@ export default function Play(){
       flexDirection: "column",
       fontFamily: "Roboto Mono"
     };
+    const limit = [1,1,3,-1];
     return (
       <div>
         {typeof cookies.player == "undefined" ? null : (
@@ -137,153 +145,115 @@ export default function Play(){
           <p style={{ fontSize: 50, marginBottom: 100 }}>
             Click to start a new game or join an existing one!
           </p>
-          <button className="playbutton" onClick={createGame}>
+          <Button
+            variant="contained"
+            sx={{ fontSize: 30 }}
+            onClick={createGame}
+          >
             New Game
-          </button>
-          <button className="playbutton" onClick={join}>
+          </Button>
+          <Button variant="contained" sx={{ fontSize: 30 }} onClick={join}>
             Join existing game
-          </button>
-          <button
-            className="playbutton"
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ fontSize: 30 }}
             onClick={() => {
               removeCookie("player");
               forceRefresh();
             }}
           >
             Quit existing game
-          </button>
-          <Modal
-            isOpen={open}
-            onRequestClose={close}
-            contentLabel="Finding a game"
-            className="Modal"
-          >
-            <h1 style={{ color: "white" }}>Current games:</h1>
-            {activeGames.map((game) => {
-              return (
-                <div
-                  key={game._id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    color: "white",
-                  }}
-                >
-                  <button
-                    style={{ fontSize: 18, width: 150 }}
-                    onClick={async () => {
-                      await playGame(game._id);
-                    }}
-                  >
-                    ID {game._id}
-                  </button>
-                  <p style={{ fontSize: 18 }}>
-                    {" (current status: " + game.result + ")"}
-                  </p>
-                </div>
-              );
-            })}
-            <div>
-              <button
-                disabled={refreshing}
-                style={{
-                  width: 250,
-                  fontSize: 22,
-                  color: "red",
-                }}
-                onClick={async () => {
-                  refreshGames();
-                  let gameData = await fetch(
-                    "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
-                    {
-                      method: "GET",
-                    }
-                  );
-                  gameData = await gameData.json();
-                  setActive(gameData[0].reverse());
-                }}
-              >
-                {refreshing ? "Please Wait" : "Refresh"}
-              </button>
-              {
-                <button
-                  style={{
-                    width: 250,
-                    fontSize: 22,
-                    color: "blue",
-                  }}
-                  onClick={close}
-                >
-                  Exit
-                </button>
-              }
-            </div>
-          </Modal>
-          <Modal
-            isOpen={choosing}
-            onRequestClose={close}
-            contentLabel="Choosing what player"
-            className="Modal"
-          >
-            {readying ? (
-              <p style={{ color: "white", fontSize: 20 }}>
-                Loading your game... You will be automatically redirected!
-              </p>
-            ) : (
-              <div className="modalcontent">
-                <h1 style={{ color: "white", textAlign: "center" }}>
-                  Choose your player:
-                </h1>
+          </Button>
+        </div>
+        <Dialog
+          open={open}
+          onClose={close}
+          scroll="paper"
+          PaperProps={{ style: { color: "white", backgroundColor: "black" } }}
+        >
+          <DialogTitle>Current games:</DialogTitle>
+          <DialogContent>
+            <List sx={{ pt: 0 }}>
+              {activeGames.map((game) => {
+                return (
+                  <ListItem disableGutters key={game._id}>
+                    <ListItemButton
+                      sx={{
+                        backgroundColor: "blue",
+                        maxWidth: "90px",
+                        minWidth: "90px",
+                      }}
+                      onClick={async () => {
+                        await playGame(game._id);
+                      }}
+                    >
+                      {`ID: ${game._id}`}
+                    </ListItemButton>
+                    <ListItemText primary={`current status: ${game.result}`} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={async () => {
+                refreshGames();
+                let gameData = await fetch(
+                  "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
+                  {
+                    method: "GET",
+                  }
+                );
+                gameData = await gameData.json();
+                setActive(gameData[0].reverse());
+              }}
+              disabled={refreshing}
+              sx={{ fontSize: 22, color: "red" }}
+            >
+              {refreshing ? "Please Wait" : "Refresh"}
+            </Button>
+            <Button onClick={close} sx={{ fontSize: 22, color: "blue" }}>
+              Exit
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={choosing}
+          onClose={close}
+          PaperProps={{ style: { color: "white", backgroundColor: "black" } }}
+        >
+          <DialogTitle>
+            {readying
+              ? "Loading your game... You will be automatically redirected!"
+              : "Choose your player:"}
+          </DialogTitle>
+          {readying ? null : (
+            <Fragment>
+              <DialogContent>
                 <br />
                 <br />
-                <button
-                  className="modalbuttons"
-                  onClick={() => choosePlayer("1", status._id)}
-                  disabled={ (
-                    typeof status.connected != "undefined" &&
-                    status.connected[0] == 1
-                  )
-                      ? true
-                      : false
-                  }
-                >
-                  Player 1
-                </button>
-                <button
-                  className="modalbuttons"
-                  onClick={() => choosePlayer("2", status._id)}
-                  disabled={ (
-                    typeof status.connected != "undefined" &&
-                    status.connected[1] == 1 
-                  )
-                      ? true
-                      : false
-                  }
-                >
-                  Player 2
-                </button>
-                <button
-                  className="modalbuttons"
-                  onClick={() => choosePlayer("ref", status._id)}
-                  disabled={ (
-                    typeof status.connected != "undefined" &&
-                    status.connected[2] == 3 
-                  )
-                      ? true
-                      : false
-                  }
-                >
-                  Ref
-                </button>
-                <button
-                  className="modalbuttons"
-                  onClick={() => choosePlayer("spectate", status._id)}
-                >
-                  Spectate
-                </button>
-                <button
-                  className="modalbuttons"
+                <List sx={{ pt: 0 }}>
+                  {["Player 1", "Player 2", "Ref", "Spectator"].map((player, index) => {
+                    return (
+                      <ListItem disableGutters key={player}>
+                        <ListItemButton
+                          onClick={() => choosePlayer(player, status._id)}
+                          disabled={
+                            typeof status.connected != "undefined" &&
+                            status.connected[index] == limit[index]
+                          }
+                        >
+                          {player}
+                        </ListItemButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </DialogContent>
+              <DialogActions>
+                <Button
                   onClick={() => {
                     setChoosing(false); // stop choosing and remove game information
                     setStatus({ connected: [0, 0, 0] }); // back to default
@@ -291,11 +261,11 @@ export default function Play(){
                   }}
                 >
                   Exit
-                </button>
-              </div>
-            )}
-          </Modal>
-        </div>
+                </Button>
+              </DialogActions>
+            </Fragment>
+          )}
+        </Dialog>
       </div>
     );
     

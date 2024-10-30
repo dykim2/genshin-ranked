@@ -32,7 +32,7 @@ export const BossSelector = ({
 			<Stack direction="row" alignContent="center">
 				<TextField
 					variant="outlined"
-					placeholder="Search"
+					placeholder="search"
 					size="small"
 					value={searchFilter}
 					onChange={(e) => {
@@ -42,6 +42,7 @@ export const BossSelector = ({
 					onBlur={() => setIsFocused(false)}
 					sx={{
 						minWidth: 140,
+						input: {color: "white"},
 						// Customizing the input text color
 						"& .MuiOutlinedInput-root": {
 							"& fieldset": {
@@ -59,7 +60,7 @@ export const BossSelector = ({
 								{!isFocused && (
 									<SearchIcon
 										sx={{
-											color: "rgba(105,105,105,1)",
+											color: "white",
 											padding: 0,
 										}}
 									/>
@@ -106,9 +107,10 @@ export const BossSelector = ({
 					})
 					.map((x) => {
 						return (
+							x != BOSSES.None ? 
 							<Grid item padding={1} key={x}>
-								<BossButton boss={x} updateBoss={updateBoss} />
-							</Grid>
+								<BossButton boss={x} updateBoss={updateBoss} banDisplay={false} />
+							</Grid> : null
 						);
 					}
 						

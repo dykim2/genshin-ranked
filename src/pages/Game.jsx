@@ -15,6 +15,7 @@ import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts";
+import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
 // import { BOSSES } from "@genshin-ranked/shared";
 // 
 const IMG_SIZE = 75;
@@ -22,7 +23,10 @@ const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
-const MyTurn = (turnInfo) => {
+const MyTurn = (turnInfo, draftOver) => {
+  if(draftOver){
+    return null;
+  }
   const [cookieInfo] = useCookies(["player"]);
   if ("" + turnInfo.turnInfo == cookieInfo.player.substring(0, 1)) {
     return <p style={{ color: "red", fontSize: 28 }}>your turn!</p>;
@@ -809,6 +813,18 @@ export default function Game(props) {
     );
   };
   useEffect(() => {
+    // console.log("yes")
+    const map = new Map();
+    for(const someName in BOSS_DETAIL){
+      // create a hashmap between index and some name
+      map.set(BOSS_DETAIL[someName].index, someName)
+    }
+    bossRef.current = map;
+    const newMap = new Map();
+    for(const someName in CHARACTER_INFO){
+      newMap.set(CHARACTER_INFO[someName].index, someName)
+    }
+    characterRef.current = newMap;
     if (sessionStorage.getItem("chosen_bosses") == null) {
       sessionStorage.setItem("chosen_bosses", JSON.stringify([]));
     }
@@ -1008,7 +1024,7 @@ export default function Game(props) {
         }
         case "players": {
           console.log("here")
-          if(cookies.player.charAt(0) == 'r'){
+          if(cookies.player.charAt(0) == 'R'){
             let info = "";
             for(let i = 0; i < data.playerStatus.length; i++){
               if(i < 2){
@@ -1054,7 +1070,7 @@ export default function Game(props) {
       console.log(event.data);
       socket.close();
     });
-
+    /*
     let bossList = [];
     let bossIndexList = [];
     for (const [name, boss] of Object.entries(BOSS_DETAIL)) {
@@ -1076,8 +1092,9 @@ export default function Game(props) {
       charMap.set(charIndexList[i], charList[i]);
     }
     // map the pair and save it in useref
-    bossRef.current = bossMap;
-    characterRef.current = characterRef;
+    // bossRef.current = bossMap;
+    // characterRef.current = characterRef;
+    */
     return () => {
       if (socket.readyState === 1) {
         socket.close();
@@ -1317,24 +1334,31 @@ export default function Game(props) {
                 {showInfo == "boss" ? "bosses:" : "characters:"}
               </p>
               <div className="boss boss-2">
-                <MyTurn turnInfo={turn == 1 ? 1 : 2} />
+                <MyTurn
+                  turnInfo={turn == 1 ? 1 : 2}
+                  draftOver={identity.result == "progress"}
+                />
               </div>
               <p className="boss boss-3">
-                {identity.result != "waiting"
+                {identity.result == "progress"
+                  ? "draft complete!"
+                  : identity.result != "waiting"
                   ? "select a " + identity.result.toLowerCase()
-                  : "Waiting to start"}
+                  : "waiting to start"}
               </p>
-              {showTimer ? (
-                <Countdown
-                  className="boss boss-4"
-                  date={timer + 31000}
-                  onComplete={() => {
-                    updateTimer(false, false);
-                  }}
-                />
-              ) : (
-                <p className="boss boss-4">Timer inactive</p>
-              )}
+              {identity.result != "progress" ? (
+                showTimer ? (
+                  <Countdown
+                    className="boss boss-4"
+                    date={timer + 30000}
+                    onComplete={() => {
+                      updateTimer(false, false);
+                    }}
+                  />
+                ) : (
+                  <p className="boss boss-4">timer inactive</p>
+                )
+              ) : null}
             </div>
             <div className="grid three">
               {typeof identity.team2 == "undefined"
@@ -1342,86 +1366,78 @@ export default function Game(props) {
                 : identity.team2 + " picks"}
             </div>
             <div className="grid four">
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((val) => {
-                if (val >= 6) {
-                  return (
-                    <p key={val} className={`pick pick-${4 * val - 23}`}>
-                      {typeof identity.playerst1 == "undefined" ||
-                      typeof identity.playerst1[val - 6] == "undefined"
-                        ? "player " + (val - 5)
-                        : identity.playerst1[val - 6]}
-                    </p>
-                  );
-                } else {
-                  return (
-                    <Fragment key={val}>
-                      <p className={`pick pick-${2 * val + 2}`}>
-                        {typeof identity.pickst1 == "undefined" ||
-                        typeof identity.pickst1[val] == "undefined"
-                          ? "pick " + (val + 1)
-                          : identity.pickst1[val].name}
+              {[0, 1, 2, 3, 4, 5].map((val) => {
+                return (
+                  <Fragment key={val}>
+                    {val % 2 == 0 ? (
+                      <p className={`pick pick-${2 * val + 1}`}>
+                        {typeof identity.playerst1 == "undefined" ||
+                        typeof identity.playerst1[val / 2] == "undefined"
+                          ? "player " + (val + 1)
+                          : identity.playerst1[val / 2]}
                       </p>
-                      <img
-                        className={`pick pick-${val + 13}`}
-                        width={IMG_SIZE}
-                        height={IMG_SIZE}
-                        src={
-                          typeof identity.pickst1 == "undefined" ||
-                          typeof identity.pickst1[val] == "undefined"
-                            ? null
-                            : identity.pickst1[val].icon
-                        }
-                      />
-                    </Fragment>
-                  );
-                }
+                    ) : null}
+                    <div className={`pick pick-${2 * val + 2}`}>
+                      {characterRef.current != undefined
+                        ? displayCharacter(
+                            characterRef.current.get(identity.pickst1[val]._id),
+                            true
+                          )
+                        : null}
+                    </div>
+                  </Fragment>
+                );
               })}
             </div>
             <div className="grid five">
               <div>
-                {identity.result.toLowerCase() == "waiting" ||
-                identity.result.toLowerCase() == "boss" ? (
-                  /* displayFilter(bosses, true).map((boss) => {
-                      return boss._id > 0 ? (
-                        <Tooltip key={boss._id} title={boss.boss} arrow>
-                          <img
-                            width={IMG_SIZE}
-                            height={IMG_SIZE}
-                            src={boss.icon}
-                            onClick={() => {
-                              setSelection({
-                                type: "boss",
-                                id: boss._id,
-                                name: boss.boss,
-                              });
-                            }}
-                            style={{
-                              backgroundColor:
-                                boss._id == selection.id &&
-                                selection.type == "boss"
-                                  ? "red"
-                                  : typeof chosenBosses != "undefined" &&
-                                    chosenBosses != null &&
-                                    chosenBosses.includes(boss._id)
-                                  ? "black"
-                                  : "transparent",
-                              margin: 5,
-                            }}
-                          />
-                        </Tooltip>
-                      ) : null;
-                    })
-                   */ <BossDisplay
-                    id={props.id}
-                    team={turn}
-                    pickSelection={sendSelection}
-                  />
+                {cookies.player.charAt(0) != "S" ? (
+                  identity.result.toLowerCase() == "waiting" ||
+                  identity.result.toLowerCase() == "boss" ? (
+                    /* displayFilter(bosses, true).map((boss) => {
+                        return boss._id > 0 ? (
+                          <Tooltip key={boss._id} title={boss.boss} arrow>
+                            <img
+                              width={IMG_SIZE}
+                              height={IMG_SIZE}
+                              src={boss.icon}
+                              onClick={() => {
+                                setSelection({
+                                  type: "boss",
+                                  id: boss._id,
+                                  name: boss.boss,
+                                });
+                              }}
+                              style={{
+                                backgroundColor:
+                                  boss._id == selection.id &&
+                                  selection.type == "boss"
+                                    ? "red"
+                                    : typeof chosenBosses != "undefined" &&
+                                      chosenBosses != null &&
+                                      chosenBosses.includes(boss._id)
+                                    ? "black"
+                                    : "transparent",
+                                margin: 5,
+                              }}
+                            />
+                          </Tooltip>
+                        ) : null;
+                      })
+                    */
+                    <BossDisplay
+                      id={props.id}
+                      team={turn}
+                      pickSelection={sendSelection}
+                    />
+                  ) : null
                 ) : null}
               </div>
               <div>
-                {identity.result.toLowerCase() == "ban" ||
-                identity.result.toLowerCase() == "pick" ? (
-                  /* displayFilter(characters, false).map((char) => {
+                {cookies.player.charAt(0) != "S" ? (
+                  identity.result.toLowerCase() == "ban" ||
+                  identity.result.toLowerCase() == "pick" ? (
+                    /* displayFilter(characters, false).map((char) => {
                       return (
                         <Tooltip title={char.name} key={char._id} arrow>
                           <img
@@ -1451,66 +1467,50 @@ export default function Game(props) {
                         </Tooltip>
                       );
                     })
-                  */ <Balancing
-                    id={props.id}
-                    team={turn}
-                    phase={identity.result.toLowerCase()}
-                    pickSelection={sendSelection}
-                  />
+                  */
+                    <Balancing
+                      id={props.id}
+                      team={turn}
+                      phase={identity.result.toLowerCase()}
+                      pickSelection={sendSelection}
+                    />
+                  ) : null
                 ) : null}
               </div>
               <div>
-                {identity.result.toLowerCase() == "progress" ? (
+                {identity.result.toLowerCase() == "progress" ||
+                cookies.player.charAt(0).toLowerCase() == "s" ? (
                   <p>Thank you for drafting!</p>
                 ) : null}
               </div>
             </div>
             <div className="grid seven">
-              {[0, 1, 2].map((val) => {
-                return (
-                  <div
-                    key={val}
-                    className={`pick pick-${4 * val + 1}`}
-                    style={{ textAlign: "center" }}
-                  >
-                    <p>
-                      {typeof identity.playerst2 == "undefined" ||
-                      typeof identity.playerst2[val] == "undefined"
-                        ? "player " + (val + 1)
-                        : identity.playerst2[val]}
-                    </p>
-                  </div>
-                );
-              })}
               {[0, 1, 2, 3, 4, 5].map((val) => {
                 return (
                   <Fragment key={val}>
-                    <p className={`pick pick-${2 * val + 2}`}>
-                      {typeof identity.pickst2 == "undefined" ||
-                      typeof identity.pickst2[val] == "undefined"
-                        ? "pick " + (val + 1)
-                        : identity.pickst2[val].name}
-                    </p>
-                    <img
-                      key={val}
-                      // className={`pick pick-${2 * val + 2}`}
-                      className={`pick pick-${val + 13}`}
-                      width={IMG_SIZE}
-                      height={IMG_SIZE}
-                      src={
-                        typeof identity.pickst2 == "undefined" ||
-                        typeof identity.pickst2[val] == "undefined"
-                          ? null
-                          : identity.pickst2[val].icon
-                      }
-                    />
+                    {val % 2 == 0 ? (
+                      <p className={`pick pick-${2 * val + 1}`}>
+                        {typeof identity.playerst2 == "undefined" ||
+                        typeof identity.playerst2[val / 2] == "undefined"
+                          ? "player " + (val + 1)
+                          : identity.playerst2[val / 2]}
+                      </p>
+                    ) : null}
+                    <div className={`pick pick-${2 * val + 2}`}>
+                      {characterRef.current != undefined
+                        ? displayCharacter(
+                            characterRef.current.get(identity.pickst2[val]._id),
+                            true
+                          )
+                        : null}
+                    </div>
                   </Fragment>
                 );
               })}
             </div>
             <div className="grid newgrid eight">
               {cookies.player.charAt(0) == "1" ||
-              cookies.player.charAt(0) == "r" ? (
+              cookies.player.charAt(0) == "R" ? (
                 <button
                   onClick={() => {
                     setOrderT1(true);
@@ -1520,7 +1520,7 @@ export default function Game(props) {
                   Adjust T1 picks
                 </button>
               ) : null}
-              {cookies.player.charAt(0) == "r" ? (
+              {cookies.player.charAt(0) == "R" ? (
                 <button
                   onClick={() => {
                     setShowT1(true);
@@ -1532,7 +1532,7 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid nine">
-              {cookies.player.charAt(0) == "r" ? (
+              {cookies.player.charAt(0) == "R" ? (
                 <Fragment>
                   {identity.result != "waiting" ? (
                     <button
@@ -1550,7 +1550,7 @@ export default function Game(props) {
                     >
                       End Game
                     </button>
-                    ) : (
+                  ) : (
                     <button
                       className="boss-4"
                       onClick={() => {
@@ -1565,26 +1565,27 @@ export default function Game(props) {
                     >
                       Start Game
                     </button>
-                  )
-                }
-                <button
-                  className="boss-3"
-                  onClick={() => {
-                    socket.send(JSON.stringify({
-                      type: "players",
-                      id: props.id
-                    }))
-                  }}
-                >
-                  Check players
-                </button>
+                  )}
+                  <button
+                    className="boss-3"
+                    onClick={() => {
+                      socket.send(
+                        JSON.stringify({
+                          type: "players",
+                          id: props.id,
+                        })
+                      );
+                    }}
+                  >
+                    Check players
+                  </button>
                 </Fragment>
               ) : null}
             </div>
 
             <div className="grid newgrid ten">
               {cookies.player.charAt(0) == "2" ||
-              cookies.player.charAt(0) == "r" ? (
+              cookies.player.charAt(0) == "R" ? (
                 <button
                   style={{ fontSize: 20 }}
                   onClick={() => setOrderT2(true)}
@@ -1592,7 +1593,7 @@ export default function Game(props) {
                   Adjust T2 picks
                 </button>
               ) : null}
-              {cookies.player.charAt(0) == "r" ? (
+              {cookies.player.charAt(0) == "R" ? (
                 <button
                   style={{ fontSize: 20 }}
                   onClick={() => setShowT2(true)}
@@ -1602,49 +1603,40 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid newgrid eleven">
-              <p className="boss boss-1">bans:</p>
+              {/* <p className="boss boss-1">bans:</p> */ }
               {bans.slice(0, 3).map((ban) => {
                 return (
-                  <Tooltip
-                    title={
-                      typeof identity.bans == "undefined"
-                        ? null
-                        : identity.bans[ban].name
-                    }
-                    arrow
-                    key={ban}
-                  >
-                    <img
-                      className={`boss ban-${ban}`}
-                      width={IMG_SIZE}
-                      height={IMG_SIZE}
-                      src={identity.bans[ban].icon}
-                    />
-                  </Tooltip>
+                  <div className={`boss ban-${ban}`}>
+                    {characterRef.current != undefined
+                      ? displayCharacter(
+                          characterRef.current.get(identity.bans[ban]._id),
+                          false
+                        )
+                      : null}
+                  </div>
                 );
               })}
             </div>
-            <div className="grid timesgrid twelve">
-              <div className="grid longgrid times-1">
-                <p style={{ marginTop: 15 }}>bosses: </p>
-                <p style={{ marginTop: 36 }}>T1 times: </p>
-                <p style={{ marginTop: 12 }}>T2 times: </p>
+            {}
+            <div className="grid newgrid twelve">
+              <div className="grid times-1">
+                {/*
+                  <p style={{ marginTop: 15 }}>bosses: </p>
+                  <p style={{ marginTop: 36 }}>T1 times: </p>
+                  <p style={{ marginTop: 12 }}>T2 times: </p>
+                */}
               </div>
               {timeOrder.slice(0, -3).map((time) => {
                 return (
-                  <div
-                    className={`grid longgrid end times-${time + 2}`}
-                    key={time}
-                  >
-                    <Tooltip title={identity.bosses[time].boss} arrow>
-                      <img
-                        width={IMG_SIZE}
-                        height={IMG_SIZE}
-                        className="end"
-                        src={identity.bosses[time].icon}
-                      />
-                    </Tooltip>
-                    <Tooltip title={parseStatusTooltip(time, 1)} arrow>
+                  <div className={`grid end times-${time + 1}`} key={time}>
+                    {bossRef.current != undefined
+                      ? displayBoss(
+                          bossRef.current.get(identity.bosses[time]._id),
+                          false
+                        )
+                      : null}
+                    {/*
+                      <Tooltip title={parseStatusTooltip(time, 1)} arrow>
                       <p
                         style={parseTextColor(
                           identity.timest1[time] - identity.timest2[time],
@@ -1664,23 +1656,24 @@ export default function Game(props) {
                         {identity.timest2[time].toFixed(2)}
                       </p>
                     </Tooltip>
+                    */}
                   </div>
                 );
               })}
             </div>
             <div className="grid newgrid thirteen">
-              <p className="boss boss-1">bans:</p>
+              {/*<p className="boss boss-1">bans:</p>*/}
               {bans.slice(3, 6).map((ban) => {
-                return typeof identity.bans == "undefined" ||
-                  typeof identity.bans[ban] == "undefined" ? null : (
-                  <Tooltip title={identity.bans[ban].name} arrow key={ban}>
-                    <img
-                      className={`boss ban-${ban}`}
-                      width={IMG_SIZE}
-                      height={IMG_SIZE}
-                      src={identity.bans[ban].icon}
-                    />
-                  </Tooltip>
+                // if needed add to return: typeof identity.bans == "undefined" || typeof identity.bans[ban] == "undefined" ? null :
+                return (
+                  <div className={`boss ban-${ban}`} key={ban}>
+                    {characterRef.current != undefined
+                      ? displayCharacter(
+                          characterRef.current.get(identity.bans[ban]._id),
+                          false
+                        )
+                      : null}
+                  </div>
                 );
               })}
             </div>
@@ -1713,7 +1706,6 @@ export default function Game(props) {
                 Refresh Game Info
               </button>
             </div>
-            <div className="grid newgrid seventeen"></div>
           </div>
           <TimesModal
             times={identity.timest1}
