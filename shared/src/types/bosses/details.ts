@@ -207,6 +207,7 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/cd/58/d7/METS4UY_t.png",
 		index: 4,
 	},
+	/*
 	[BOSSES.Papilla]: {
 		displayName: "Papilla",
 		element: ELEMENTS.physical,
@@ -215,6 +216,7 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/e8/a7/0c/MEWPYUZ_t.png",
 		index: 41,
 	},
+	*/
 	[BOSSES.PMA]: {
 		displayName: "PMA",
 		element: ELEMENTS.physical,
