@@ -10,30 +10,27 @@ import { styled } from "@mui/system";
 import React from "react";
 
 interface IBossPicture {
-    boss: BOSSES,
-	banDisplay: boolean
+    boss: BOSSES;
+	selectDisplay: boolean;
 }
-let displayBan = false
-export const BossPicture = ({ boss, banDisplay }: IBossPicture) => {
-	displayBan = banDisplay;
-    return(
-        <Box sx={{backgroundColor: "white"}}>
-            <GradientBox type={BOSS_DETAIL[boss].type}>
-            <Image src={BOSS_DETAIL[boss].onlineFilePath} />
-			{
-				boss != BOSSES.None ?
-				<IconWrapper disabled>
-                	<IconImage src={getBossElementOnlinePath(boss)} />
-				</IconWrapper> : null
-			}
-            
-        </GradientBox>
-        </Box>
-    )
+export const BossPicture = ({ boss, selectDisplay }: IBossPicture) => {
+    return (
+		<Box sx={{ backgroundColor: "white" }}>
+			<GradientBox type={BOSS_DETAIL[boss].type} displayBan={selectDisplay}>
+				<Image src={BOSS_DETAIL[boss].onlineFilePath} />
+				{boss != BOSSES.None ? (
+					<IconWrapper disabled>
+						<IconImage src={getBossElementOnlinePath(boss)} />
+					</IconWrapper>
+				) : null}
+			</GradientBox>
+		</Box>
+	);
 }
 
 interface IGradientBox {
 	type: BOSS_TYPE;
+	displayBan: boolean;
 }
 
 const LEGEND_GRADIENT =
@@ -46,7 +43,7 @@ const STANDARD_GRADIENT =
 const BANNED_GRADIENT = 
 	"linear-gradient(90deg, rgba(212,212,212,1) 0%, rgba(154,154,154,1) 14%, rgba(112,112,112,1) 100%)";
 
-const GradientBox = styled(Box)(({ type }: IGradientBox) => ({
+const GradientBox = styled(Box)(({ type, displayBan }: IGradientBox) => ({
 	background: displayBan ? BANNED_GRADIENT : type == BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,
 	position: "relative",
 	display: "flex",
@@ -60,6 +57,7 @@ const Image = styled("img")({
 	width: "100%",
 	height: "100%",
 	objectFit: "cover",
+	
 });
 
 const IconWrapper = styled(IconButton)({

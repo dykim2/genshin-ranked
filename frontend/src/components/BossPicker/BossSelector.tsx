@@ -109,7 +109,7 @@ export const BossSelector = ({
 						return (
 							x != BOSSES.None ? 
 							<Grid item padding={1} key={x}>
-								<BossButton boss={x} updateBoss={updateBoss} banDisplay={false} />
+								<BossButton boss={x} updateBoss={updateBoss} selectDisplay={false} />
 							</Grid> : null
 						);
 					}

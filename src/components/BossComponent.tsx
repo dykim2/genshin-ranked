@@ -11,11 +11,11 @@ import React from "react";
 // basically a BossButton, but without clicking
 
 export const displayBoss = (boss: BOSSES) => {
-    const banDisplay = true; // can be changed in future
+    const selecting = true; // can be changed in future
     const updateBoss = () => {
         // does nothing
     }
-    return <BossButton boss={boss} updateBoss={updateBoss} banDisplay={true}/>
+    return <BossButton boss={boss} updateBoss={updateBoss} selectDisplay={selecting}/>
 }
 
 export const displayCharacter = (character: CHARACTERS, isPick: boolean) => {

@@ -16,6 +16,10 @@ interface ICharacterButton {
 }
 
 export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICharacterButton) => {
+	console.log("character")
+	console.log(character)
+	console.log(CHARACTER_INFO[character])
+	console.log("end character")
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`)

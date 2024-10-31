@@ -17,29 +17,46 @@ interface ICharacterPicture {
 	character: CHARACTERS,
 	banDisplay: string
 }
-let displayBan = false;
-
 export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) => {
-	displayBan = (banDisplay == "ban");
 	return (
-		<Box sx={{backgroundColor: "white"}}>
-			<GradientBox rarity={CHARACTER_INFO[character].rarity}>
-			<Image src={CHARACTER_INFO[character].onlineFilePath} />
-			{
-				character != CHARACTERS.None ?
-				<IconWrapper>
-					<IconImage src={getCharacterElementOnlinePath(character)} />
-				</IconWrapper> : null
-			}
-			
-		</GradientBox>
+		<Box sx={{ backgroundColor: "white" }}>
+			<GradientBox
+				rarity={CHARACTER_INFO[character].rarity}
+				displayBan={banDisplay}
+			>
+				{banDisplay == "ban" ? (
+					<Image
+						src={CHARACTER_INFO[character].onlineFilePath}
+						sx={{ filter: "grayscale(100%)" }}
+					/>
+				) : (
+					<Image src={CHARACTER_INFO[character].onlineFilePath} />
+				)}
+				{character != CHARACTERS.None &&
+				character != CHARACTERS.NoBan ? (
+					banDisplay == "ban" ? (
+						<IconWrapper>
+							<IconImage
+								sx={{ filter: "grayscale(100%)" }}
+								src={getCharacterElementOnlinePath(character)}
+							/>
+						</IconWrapper>
+					) : (
+						<IconWrapper>
+							<IconImage
+								src={getCharacterElementOnlinePath(character)}
+							/>
+						</IconWrapper>
+					)
+				) : null}
+			</GradientBox>
 		</Box>
-		
 	);
 };
 
 interface IGradientBox {
 	rarity: RARITY;
+	displayBan: string;
 }
 
 const FIVE_STAR_GRADIENT = 
@@ -49,8 +66,8 @@ const FOUR_STAR_GRADIENT =
 const BANNED_GRADIENT =
 	"linear-gradient(90deg, rgba(212,212,212,1) 0%, rgba(154,154,154,1) 14%, rgba(112,112,112,1) 100%)";
 
-const GradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
-	background: displayBan ? BANNED_GRADIENT : rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
+const GradientBox = styled(Box)(({ rarity, displayBan }: IGradientBox) => ({
+	background: displayBan == "ban" ? BANNED_GRADIENT : rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
 	position: "relative",
 	display: "flex",
 	alignItems: "center",

@@ -8,20 +8,20 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 interface iBossButton {
     boss: BOSSES,
 	updateBoss: React.Dispatch<React.SetStateAction<string>>,
-	banDisplay: boolean
+	selectDisplay: boolean
 }
 
-export const BossButton = ({boss, updateBoss, banDisplay}: iBossButton) => {
+export const BossButton = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
 	}
-    return !banDisplay ? (
+    return !selectDisplay ? (
 		<NormalWrapperBox disableRipple onClick={doUpdate}>
 			<InnerBoss
 				boss={boss}
 				updateBoss={updateBoss}
-				banDisplay={banDisplay}
+				selectDisplay={selectDisplay}
 			/>
 		</NormalWrapperBox>
 	) : (
@@ -29,23 +29,23 @@ export const BossButton = ({boss, updateBoss, banDisplay}: iBossButton) => {
 			<InnerBoss
 				boss={boss}
 				updateBoss={updateBoss}
-				banDisplay={banDisplay}
+				selectDisplay={selectDisplay}
 			/>
 		</SelectedWrapperBox>
 	);
 }
-export const InnerBoss = ({boss, updateBoss, banDisplay}: iBossButton) => {
+export const InnerBoss = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 	return (
 		<Tooltip title={BOSS_DETAIL[boss].displayName} arrow>
 			<Fragment>
-				<BossPicture boss={boss} banDisplay={banDisplay} />
+				<BossPicture boss={boss} selectDisplay={selectDisplay} />
 				<LabelBox>
 					<Typography
 						sx={{
 							textOverflow: "ellipsis",
 							whiteSpace: "nowrap",
 							overflow: "hidden",
-							fontSize: banDisplay ? 11 : 14,
+							fontSize: selectDisplay ? 11 : 14,
 						}}
 					>
 						{BOSS_DETAIL[boss].displayName}

@@ -3,7 +3,6 @@ import { useCookies } from "react-cookie";
 import "./css/Playing.css";
 import "./css/Gameplay.css";
 import CharacterContext from "../contexts/CharacterContext.js";
-import Tooltip from "@mui/material/Tooltip";
 import { PlayingContext } from "../contexts/PlayingContext.js";
 import TimesModal from "./TimesModal.jsx";
 import OrderModal from "./OrderModal.jsx";
@@ -133,7 +132,7 @@ const parseBan = (data) => {
     _id: -2,
     name: "No Ban",
     image: "coming soon",
-    element: "dendro",
+    element: "physical",
     icon: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
     chosen: false
   };
@@ -1379,6 +1378,11 @@ export default function Game(props) {
                     ) : null}
                     <div className={`pick pick-${2 * val + 2}`}>
                       {characterRef.current != undefined
+                        ? console.log(
+                            characterRef.current.get(identity.pickst1[val]._id)
+                          )
+                        : null}
+                      {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.pickst1[val]._id),
                             true
@@ -1497,6 +1501,10 @@ export default function Game(props) {
                       </p>
                     ) : null}
                     <div className={`pick pick-${2 * val + 2}`}>
+                      {characterRef.current !=
+                        undefined ? console.log(
+                          characterRef.current.get(identity.pickst1[val]._id)
+                        ) : null}
                       {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.pickst2[val]._id),

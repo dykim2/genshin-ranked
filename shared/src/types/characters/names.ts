@@ -3,6 +3,7 @@
  */
 
 export enum CHARACTERS {
+	NoBan = "No Ban",
 	None = "None",
 
 	Diluc = "Diluc",

@@ -17,6 +17,6 @@
     "types": [ "node" ],
     "typeRoots": [ "../node_modules/@types" ]
   },
-  "include": ["src", "frontend", "shared", "./declaration.d.ts"], 
+  "include": ["src", "frontend", "shared", "d.ts"], 
   
 }
