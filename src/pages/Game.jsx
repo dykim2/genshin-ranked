@@ -15,6 +15,7 @@ import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts";
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
+import { Button, Typography } from "@mui/material";
 // import { BOSSES } from "@genshin-ranked/shared";
 // 
 const IMG_SIZE = 75;
@@ -1312,14 +1313,15 @@ export default function Game(props) {
   }
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
   let bans = [0, 2, 5, 1, 3, 4];
-  let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
   return (
     <div>
       {sessionStorage.getItem("game") == null ||
       sessionStorage.getItem("bosses") == null ||
       sessionStorage.getItem("characters") == null ||
       identity.connected == [0, 0, 0] ? (
-        <p>Your page is currently loading!</p>
+        <p>your page is currently loading!</p>
       ) : (
         <Fragment>
           <div className="container">
@@ -1335,11 +1337,13 @@ export default function Game(props) {
               <div className="boss boss-2">
                 <MyTurn
                   turnInfo={turn == 1 ? 1 : 2}
-                  draftOver={identity.result == "progress"}
+                  draftOver={
+                    identity.result == "progress" || identity.result == "finish"
+                  }
                 />
               </div>
               <p className="boss boss-3">
-                {identity.result == "progress"
+                {identity.result == "progress" || identity.result == "finish"
                   ? "draft complete!"
                   : identity.result != "waiting"
                   ? "select a " + identity.result.toLowerCase()
@@ -1484,7 +1488,7 @@ export default function Game(props) {
               <div>
                 {identity.result.toLowerCase() == "progress" ||
                 cookies.player.charAt(0).toLowerCase() == "s" ? (
-                  <p>Thank you for drafting!</p>
+                  <p>thank you for drafting!</p>
                 ) : null}
               </div>
             </div>
@@ -1501,10 +1505,11 @@ export default function Game(props) {
                       </p>
                     ) : null}
                     <div className={`pick pick-${2 * val + 2}`}>
-                      {characterRef.current !=
-                        undefined ? console.log(
-                          characterRef.current.get(identity.pickst1[val]._id)
-                        ) : null}
+                      {characterRef.current != undefined
+                        ? console.log(
+                            characterRef.current.get(identity.pickst1[val]._id)
+                          )
+                        : null}
                       {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.pickst2[val]._id),
@@ -1519,32 +1524,40 @@ export default function Game(props) {
             <div className="grid newgrid eight">
               {cookies.player.charAt(0) == "1" ||
               cookies.player.charAt(0) == "R" ? (
-                <button
+                <Button
                   onClick={() => {
                     setOrderT1(true);
                   }}
-                  style={{ fontSize: 20 }}
+                  sx={{
+                    backgroundColor: "black",
+                    color: "yellow"
+                  }}
                 >
-                  Adjust T1 picks
-                </button>
+                  <Typography textTransform="none">adjust t2 picks</Typography>
+                </Button>
               ) : null}
-              {cookies.player.charAt(0) == "R" ? (
-                <button
+              {/* cookies.player.charAt(0) == "R" ? (
+                <Button
                   onClick={() => {
                     setShowT1(true);
                   }}
-                  style={{ fontSize: 20 }}
+                  sx={{
+                    backgroundColor: "black",
+                    color: "yellow",
+                  }}
                 >
-                  Add T1 times
-                </button>
-              ) : null}
+                  <Typography textTransform="none">add t1 times</Typography>
+                </Button>
+              ) : null */}
+              {/* commented out as not needed, may be used in future */}
             </div>
             <div className="grid nine">
               {cookies.player.charAt(0) == "R" ? (
                 <Fragment>
                   {identity.result != "waiting" ? (
-                    <button
+                    <Button
                       className="boss-4"
+                      sx={{ backgroundColor: "black", color: "yellow" }}
                       onClick={() => {
                         socket.send(
                           JSON.stringify({
@@ -1556,11 +1569,12 @@ export default function Game(props) {
                       }}
                       disabled={identity.result != "progress"}
                     >
-                      End Game
-                    </button>
+                      <Typography textTransform="none">end game</Typography>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       className="boss-4"
+                      sx={{ backgroundColor: "black", color: "yellow" }}
                       onClick={() => {
                         socket.send(
                           JSON.stringify({
@@ -1571,10 +1585,10 @@ export default function Game(props) {
                         );
                       }}
                     >
-                      Start Game
-                    </button>
+                      <Typography textTransform="none">start game</Typography>
+                    </Button>
                   )}
-                  <button
+                  <Button
                     className="boss-3"
                     onClick={() => {
                       socket.send(
@@ -1584,37 +1598,50 @@ export default function Game(props) {
                         })
                       );
                     }}
+                    sx={{
+                      backgroundColor: "black",
+                      color: "yellow",
+                    }}
                   >
-                    Check players
-                  </button>
+                    <Typography textTransform="none">check players</Typography>
+                  </Button>
                 </Fragment>
               ) : null}
             </div>
-
             <div className="grid newgrid ten">
               {cookies.player.charAt(0) == "2" ||
               cookies.player.charAt(0) == "R" ? (
-                <button
-                  style={{ fontSize: 20 }}
+                <Button
+                  sx={{
+                    backgroundColor: "black",
+                    color: "yellow",
+                  }}
                   onClick={() => setOrderT2(true)}
                 >
-                  Adjust T2 picks
-                </button>
+                  <Typography textTransform="none">adjust t2 picks</Typography>
+                </Button>
               ) : null}
-              {cookies.player.charAt(0) == "R" ? (
-                <button
-                  style={{ fontSize: 20 }}
-                  onClick={() => setShowT2(true)}
+              {/* cookies.player.charAt(0) == "R" ? (
+                <Button
+                  onClick={() => {
+                    setShowT2(true);
+                  }}
+                  sx={{
+                    fontSize: 20,
+                    backgroundColor: "black",
+                    color: "yellow",
+                  }}
                 >
-                  Add T2 times
-                </button>
-              ) : null}
+                  <Typography textTransform="none">add t2 times</Typography>
+                </Button>
+              ) : null }
+              {/* commented out as not needed, may be used in future */}
             </div>
             <div className="grid newgrid eleven">
-              {/* <p className="boss boss-1">bans:</p> */ }
+              {/* <p className="boss boss-1">bans:</p> */}
               {bans.slice(0, 3).map((ban) => {
                 return (
-                  <div className={`boss ban-${ban}`}>
+                  <div key={ban} className={`boss ban-${ban}`}>
                     {characterRef.current != undefined
                       ? displayCharacter(
                           characterRef.current.get(identity.bans[ban]._id),
@@ -1625,7 +1652,6 @@ export default function Game(props) {
                 );
               })}
             </div>
-            {}
             <div className="grid newgrid twelve">
               <div className="grid times-1">
                 {/*
@@ -1634,7 +1660,7 @@ export default function Game(props) {
                   <p style={{ marginTop: 12 }}>T2 times: </p>
                 */}
               </div>
-              {timeOrder.slice(0, -3).map((time) => {
+              {timeOrder.slice(0, limit).map((time) => {
                 return (
                   <div className={`grid end times-${time + 1}`} key={time}>
                     {bossRef.current != undefined
@@ -1693,14 +1719,14 @@ export default function Game(props) {
                   alignItems: "center",
                 }}
               >
-                {`You are playing game ID`} <b>{`${props.id}! `}</b>
-                Make sure everyone you are playing with joins this ID.
+                {`you are playing game id`} <b>{`${props.id}! `}</b>
+                make sure everyone you are playing with joins this id.
               </p>
             </div>
 
             <div className="grid newgrid sixteen">
-              <button
-                style={{ fontSize: 20 }}
+              <Button
+                style={{ backgroundColor: "black", color: "yellow" }}
                 onClick={() => {
                   socket.send(
                     JSON.stringify({
@@ -1711,8 +1737,8 @@ export default function Game(props) {
                   );
                 }}
               >
-                Refresh Game Info
-              </button>
+                <Typography textTransform="none">refresh game info</Typography>
+              </Button>
             </div>
           </div>
           <TimesModal

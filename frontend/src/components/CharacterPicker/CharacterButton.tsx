@@ -16,10 +16,10 @@ interface ICharacterButton {
 }
 
 export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICharacterButton) => {
-	console.log("character")
-	console.log(character)
-	console.log(CHARACTER_INFO[character])
-	console.log("end character")
+	// console.log("character")
+	// console.log(character)
+	// console.log(CHARACTER_INFO[character])
+	// console.log("end character")
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`)
@@ -67,10 +67,12 @@ const InnerCharacter = ({character, updateCharacter, banDisplay}: ICharacterButt
 			<CharacterPicture character={character} banDisplay={banDisplay} />
 			<LabelBox>
 				<Typography
+					fontFamily={'Roboto Mono'}
 					sx={{
 						textOverflow: "ellipsis",
 						whiteSpace: "wrap",
 						fontSize: banDisplay ? 11 : 14,
+						fontWeight: 'bold'
 					}}
 				>
 					{CHARACTER_INFO[character].displayName}
@@ -88,6 +90,7 @@ const NormalWrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
+	color: "black",
 	width: 110,
 });
 
@@ -99,6 +102,7 @@ const PickWrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
+	color: "black",
 	width: 80,
 });
 
@@ -110,6 +114,7 @@ const BanWrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
+	color: "black",
 	width: 80,
 });
 

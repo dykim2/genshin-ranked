@@ -10,13 +10,7 @@ import { useCookies } from "react-cookie";
 // import Avatar from "@mui/material/Avatar";
 // import styled from "@emotion/styled";
 
-/*
-	to add to this page:
-	- display name, not internal name
-	- whether character / boss has been picked
-	- button for selection (send to socket)
-	- 
-*/
+// update some names to keep them consistent
 
 interface balance {
 	id: number;
@@ -82,8 +76,8 @@ export const Balancing = ({id, team, phase, pickSelection}: balance) => {
 			<Box sx={{ padding: 2, width: "500px" }}>
 				{
 					<React.Fragment>
-						<Typography color={"white"} variant="h6">
-							{`Currently selected: ${selection}`}
+						<Typography color={"white"} textTransform="none" variant="h6">
+							{`currently selected: ${selection}`}
 							{/*
 								<Box
 									sx={{
@@ -142,9 +136,8 @@ export const Balancing = ({id, team, phase, pickSelection}: balance) => {
 							*/}
 						</Typography>
 						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={(phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick`) || !matching}>
-							<Typography color={"white"} variant="h6">
-								{`Confirm ${phase.toLowerCase() == `ban` ? `Ban` : phase.toLowerCase() == `pick` ? `Pick` : `Nothing`}`}
-								{/* maybe change this based on the game phase, so "ban" when banning, etc */}
+							<Typography color={"yellow"} textTransform="none" variant="h6">
+								{`confirm ${phase.toLowerCase() == `ban` ? `Ban` : phase.toLowerCase() == `pick` ? `Pick` : `Nothing`}`}
 							</Typography>
 						</Button>
 					</React.Fragment>

@@ -3,7 +3,7 @@
     grid-template-columns: 400px repeat(2, minmax(300px, max-content)) 400px;
     grid-template-rows: auto;
     grid-gap: 4px;
-    margin: 20px;
+    margin: 10px;
 }
 
 .grid {
@@ -16,14 +16,13 @@
 
 .newgrid {
     display: grid;
-    grid-gap: 20px;
+    grid-gap: 1px;
     grid-template-columns: repeat(auto-fill, [col] 1fr);
-    padding: 20px;
+    padding: 15px;
 }
 
 .timesgrid {
     display: grid;
-    grid-gap: 10px;
     grid-template-columns: repeat(auto-fill, [col] 1fr);
     padding: 20px;
 }
@@ -362,18 +361,18 @@
 }
 
 .times-11 {
-    grid-column: 1;
-    grid-row: 2;
+    grid-column: 11;
+    grid-row: 1;
 }
 
 .times-12 {
-    grid-column: 2;
-    grid-row: 2;
+    grid-column: 12;
+    grid-row: 1;
 }
 
 .times-13 {
-    grid-column: 3;
-    grid-row: 2;
+    grid-column: 13;
+    grid-row: 1;
 }
 
 .times-14 {

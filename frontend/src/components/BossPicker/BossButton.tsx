@@ -5,10 +5,15 @@ import React, { Fragment } from "react";
 import { BossPicture } from "./BossPicture";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 
+/**
+ * @param boss the boss name to display
+ * @param updateBoss the state that is triggered when the user clicks on the boss
+ * @param selectDisplay 
+ */
 interface iBossButton {
-    boss: BOSSES,
-	updateBoss: React.Dispatch<React.SetStateAction<string>>,
-	selectDisplay: boolean
+    boss: BOSSES;
+	updateBoss: React.Dispatch<React.SetStateAction<string>>;
+	selectDisplay: boolean;
 }
 
 export const BossButton = ({boss, updateBoss, selectDisplay}: iBossButton) => {
@@ -38,14 +43,16 @@ export const InnerBoss = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 	return (
 		<Tooltip title={BOSS_DETAIL[boss].displayName} arrow>
 			<Fragment>
-				<BossPicture boss={boss} selectDisplay={selectDisplay} />
+				<BossPicture boss={boss} />
 				<LabelBox>
 					<Typography
+						fontFamily={"Roboto Mono"}
 						sx={{
 							textOverflow: "ellipsis",
 							whiteSpace: "nowrap",
 							overflow: "hidden",
-							fontSize: selectDisplay ? 11 : 14,
+							fontSize: selectDisplay ? 10.5 : 13,
+							fontWeight: "bold"
 						}}
 					>
 						{BOSS_DETAIL[boss].displayName}
@@ -65,6 +72,7 @@ const NormalWrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
+	color: "black",
 	width: 125,
 });
 
@@ -77,7 +85,8 @@ const SelectedWrapperBox = styled(Button)({
 	borderRadius: 8,
 	overflow: "hidden",
 	justifyContent: "center",
-	width: 85
+	color: "black",
+	width: 85,
 });
 
 const LabelBox = styled(Box)({

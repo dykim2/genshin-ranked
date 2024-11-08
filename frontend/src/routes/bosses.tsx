@@ -78,11 +78,11 @@ export const BossDisplay = ({id, team, pickSelection}: balance) => {
 				{
 					<React.Fragment>
 						<Typography color={"white"} variant="h6">
-							{`Currently selected: ${selection}`}
+							{`currently selected: ${selection}`}
 						</Typography>
 						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={team != newInfo || !matching || currentResult == "waiting"}>
-							<Typography color={"white"} variant="h6">
-								{currentResult != "waiting" ? "Choose Boss " : "Waiting to start"}
+							<Typography color={"yellow"} textTransform="none" variant="h6">
+								{currentResult != "waiting" ? "choose Boss " : "waiting to start"}
 							</Typography>
 						</Button>
 					</React.Fragment>
