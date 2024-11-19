@@ -22,67 +22,68 @@ export default function Play(){
   const [readying, setReadying] = useState(false);
   const [options, setOptions] = useState(false);
 
-  const [mode, setMode] = useState("standard")
+  const [mode, setMode] = useState("standard");
 
   const [extraBans, setExtraBans] = useState("no one");
   const [supportBans, setSupportBans] = useState("false"); // limit bans to be support or not
-  const [bans, setBans] = useState([0,0])
+  const [bans, setBans] = useState([0, 0]);
 
-  const [bonusParams, setParams] = useState([0,-2,-1,0])
+  const [bonusParams, setParams] = useState([0, -2, -1, 0]);
 
-  const [fearless, setFearless] = useState("false")
+  const [fearless, setFearless] = useState("false");
 
-  const latestBoss = useRef()
+  const latestBoss = useRef();
+  const api = "https://rankedapi-late-cherry-618.fly.dev"; // "https://rankedapi-late-cherry-618.fly.dev" or "http://localhost:3000"
 
   const refreshGames = () => {
     setRefresh(true);
-    setTimeout(() => {setRefresh(false)}, 10000) // wait 10 seconds between refreshes 
+    setTimeout(() => {
+      setRefresh(false);
+    }, 10000); // wait 10 seconds between refreshes
   };
   const updateFields = (index, value, isBan) => {
-    if(Number.isNaN(Number.parseInt(value))){
-      value = 0
+    if (Number.isNaN(Number.parseInt(value))) {
+      value = 0;
+    } else {
+      value = Number.parseInt(value);
     }
-    else{
-      value = Number.parseInt(value)
-    }
-    if(isBan){
+    if (isBan) {
       let newBans = [...bans];
       newBans[index - 1] = value;
       setBans(newBans);
-    }
-    else{
+    } else {
       // index is the corresponding array index
       // for extra bosses, between -2 and 4, if -2 that means 5 bosses; if 4 it means 11 bosses (why would you ever do that tho)
       let newParams = [...bonusParams];
       newParams[index] = value;
       setParams(newParams);
     }
-  }
+  };
 
-  useEffect( () => {
+  useEffect(() => {
     sessionStorage.setItem("game", JSON.stringify(status));
-  }, [status])
-  const playGame = async(id) => {
+  }, [status]);
+  const playGame = async (id) => {
     setCreating(false);
     setOpen(false);
     // call api to see if a player 1 / 2 / ref exists
     sessionStorage.removeItem("game");
-    let info = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/find/${id}`)
+    let info = await fetch(`${api}/gameAPI/find/${id}`);
     info = await info.json();
     setStatus(info[0]);
     sessionStorage.setItem("game", JSON.stringify(info[0]));
     // redirect to the new page (/play/id) - add to navigation
     setChoosing(true);
-  }
+  };
   const close = () => {
     setOpen(false);
-  }
+  };
   const join = () => {
     setOpen(true);
-  }
+  };
   const navigate = (id) => {
-    return navi(`/play/${id}`)
-  }
+    return navi(`/play/${id}`);
+  };
   const defaultInfo = {
     _id: -1,
     player: "1",
@@ -95,50 +96,47 @@ export default function Play(){
     fearless: fearless,
     fearlessID: fearless ? bonusParams[3] : -1,
   };
-  const choosePlayer = async(playerChoice, id, info = defaultInfo) => {
+  const choosePlayer = async (playerChoice, id, info = defaultInfo) => {
     info.player = playerChoice;
-    if(playerChoice == "Ref (Custom)"){
+    if (playerChoice == "Ref (Custom)") {
       setOptions(true);
       return;
     }
-    if(playerChoice.includes("Player ")){
-      playerChoice = playerChoice.substring(playerChoice.length - 1)
+    if (playerChoice.includes("Player ")) {
+      console.log("update player go");
+      playerChoice = playerChoice.substring(playerChoice.length - 1);
     }
-    if(playerChoice == "Spectator" && creating){
-      alert("You cannot create a game as a spectator!")
-      return
+    if (playerChoice == "Spectator" && creating) {
+      alert("You cannot create a game as a spectator!");
+      return;
     }
     setReadying(true);
     // set the player in the API
     let valid = true;
-    let bosses = await fetch(
-      "https://rankedapi-late-cherry-618.fly.dev/bossAPI/all",
-      {
-        method: "GET",
-      }
-    );
+    let bosses = await fetch(`${api}/bossAPI/all`, {
+      method: "GET",
+    });
     bosses = await bosses.json();
     sessionStorage.setItem("bosses", JSON.stringify(bosses[0]));
-    if(playerChoice != "Spectator" && !creating){
-      let res = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/players/${id}`, {
+    if (playerChoice != "Spectator" && !creating) {
+      let res = await fetch(`${api}/gameAPI/players/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          player: ""+playerChoice,
+          player: "" + playerChoice,
         }),
-      })
+      });
       let info = await res.json();
       if (res.status != 200) {
         valid = false;
         alert(info.message);
       }
-    }
-    else if(creating){
+    } else if (creating) {
       let res = null;
       // combine the info sent to the API - this allows me to add custom settings
-      res = await fetch(`https://rankedapi-late-cherry-618.fly.dev/gameAPI/`, {
+      res = await fetch(`${api}/gameAPI/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -149,63 +147,63 @@ export default function Play(){
       res = await res.json();
       console.log(res);
       setStatus(res[0]);
-      sessionStorage.setItem("game", JSON.stringify(res[0]))
+      sessionStorage.setItem("game", JSON.stringify(res[0]));
       id = res[0]._id;
     }
-    if(!valid){
+    if (!valid) {
       return; // don't go any further
     }
     sessionStorage.setItem("selected_bosses", []);
     sessionStorage.setItem("selected_characters", []);
-    setCookie("player", ""+playerChoice+" game "+id);
+    setCookie("player", "" + playerChoice + " game " + id);
     setCreating(false);
     setChoosing(false);
     setReadying(false);
     navigate(id);
     window.location.reload();
-  }
-  const createGame = async() => {
-    console.log("hi")
+  };
+  const createGame = async () => {
+    console.log("hi");
     // create the game here
     setCreating(true);
     // once created, connect the game to the websocket api to allow for picks and bans
     setChoosing(true);
-  }
+  };
   const centerStyle = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    whitespace: 'pre-line',
+    whitespace: "pre-line",
     flexDirection: "column",
-    fontFamily: "Roboto Mono"
+    fontFamily: "Roboto Mono",
   };
-  const submitCustom = async () => { 
+  const submitCustom = async () => {
     // playerChoice is always ref - ref must join and decide these
     // similar to create game, but adds the extra information to the stats
     // the chooseplayer stuff
     // gathers info then send it to chooseplayer
     // should only be enabled if creating is true anyways
-    for(let i = 0; i < bans.length; i++){
-      if(bans[i] < 0 || bans[i] > 3){
+    for (let i = 0; i < bans.length; i++) {
+      if (bans[i] < 0 || bans[i] > 3) {
         alert("extra bans count is invalid!");
         return;
       }
     }
-    if(bonusParams[0] < -2 || bonusParams[0] > 4){
+    if (bonusParams[0] < -2 || bonusParams[0] > 4) {
       alert("number of extra bosses is invalid!");
       return;
     }
     // ask server for latest boss
-    if(latestBoss.current == -1 || latestBoss.current == undefined){
-      let latest = await fetch(
-        `https://rankedapi-late-cherry-618.fly.dev/bossAPI/latest`
-      );
+    if (latestBoss.current == -1 || latestBoss.current == undefined) {
+      let latest = await fetch(`${api}/bossAPI/latest`);
       latest = await latest.json();
       latestBoss.current = latest.latest;
     }
-    for(let i = 0; i < 2; i++){
-      if(bonusParams[i+1] < -2 || bonusParams[i+1] > latestBoss){
-        alert("invalid boss chosen! visit the bosses page to view all boss ids.");
+    for (let i = 0; i < 2; i++) {
+      if (bonusParams[i + 1] < -2 || bonusParams[i + 1] > latestBoss) {
+        alert(
+          "invalid boss chosen! visit the bosses page to view all boss ids."
+        );
         return;
       }
     }
@@ -222,10 +220,10 @@ export default function Play(){
       fearless: fearless,
       fearlessID: fearless ? bonusParams[3] : -1,
     };
-    console.log(info)
+    console.log(info);
     await choosePlayer("Ref", -1, info);
-    
-      /* dialog for extra options for a ref 
+
+    /* dialog for extra options for a ref 
             The options:
             1. team gets extra bans - a series of radio buttons
             1.1. if a team gets extra bans, are they limited to support bans?
@@ -237,10 +235,11 @@ export default function Play(){
             4. premier mode
 
             5. fearless bosses (no picking the same bosses as a previous game)
+
+            eventually after midterm and homework: add fearless bosses and extra bans - the others can be added on their own
           */
-    
-  }
-  const limit = [1,1,3,-1,-1]; // ref (custom) is meant to only work for creating games
+  };
+  const limit = [1, 1, 3, -1, -1]; // ref (custom) is meant to only work for creating games
   return (
     <div>
       {typeof cookies.player == "undefined" ? null : (
@@ -305,12 +304,9 @@ export default function Play(){
           <Button
             onClick={async () => {
               refreshGames();
-              let gameData = await fetch(
-                "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
-                {
-                  method: "GET",
-                }
-              );
+              let gameData = await fetch("${api}/gameAPI/active", {
+                method: "GET",
+              });
               gameData = await gameData.json();
               setActive(gameData[0].reverse());
             }}
@@ -352,9 +348,9 @@ export default function Play(){
                       <ListItemButton
                         onClick={() => choosePlayer(player, status._id)}
                         disabled={
-                          player == "Ref (Custom)" || (
-                          typeof status.connected != "undefined" &&
-                          status.connected[index] == limit[index])
+                          player == "Ref4 (Custom)" ||
+                          (typeof status.connected != "undefined" &&
+                            status.connected[index] == limit[index])
                         }
                       >
                         {player}
@@ -401,26 +397,28 @@ export default function Play(){
             5. fearless bosses (no picking the same bosses as a previous game)
           */}
         <DialogContent>
+          <Typography>division</Typography>
           <FormControl>
-            <Typography>division</Typography>
-            <FormControl>
-              <RadioGroup
-                row
-                value={mode}
-                onChange={(event) => setMode(event.target.value)}
-              >
-                <FormControlLabel
-                  value={"standard"}
-                  control={<Radio />}
-                  label={"standard"}
-                />
-                <FormControlLabel
-                  value={"premier"}
-                  control={<Radio />}
-                  label={"premier"}
-                />
-              </RadioGroup>
-            </FormControl>
+            <RadioGroup
+              row
+              value={mode}
+              onChange={(event) => setMode(event.target.value)}
+            >
+              <FormControlLabel
+                value={"standard"}
+                control={<Radio />}
+                label={"standard"}
+              />
+              <FormControlLabel
+                value={"premier"}
+                control={<Radio />}
+                label={"premier"}
+              />
+            </RadioGroup>
+          </FormControl>
+          {/*
+           */}
+          <FormControl>
             <Typography>who gets extra bans?</Typography>
             <RadioGroup
               sx={{ color: "black" }}
@@ -452,23 +450,23 @@ export default function Play(){
           </FormControl>
           {extraBans == "team 1" || extraBans == "both" ? (
             <TextField
-              helperText="Extra bans are limited to at most 3!"
+              helperText="Extra bans are limited to at most 2!"
               label="Team 1's extra ban count"
               variant="outlined"
               autoFocus
               defaultValue={bans[0]}
               onChange={(e) => updateFields(1, e.target.value, true)}
-              error={bans[0] > 3 || bans[0] < 0}
+              error={bans[0] > 2 || bans[0] < 0}
             />
           ) : null}
           {extraBans == "team 2" || extraBans == "both" ? (
             <TextField
-              helperText="Extra bans are limited to at most 3!"
+              helperText="Extra bans are limited to at most 2!"
               label="Team 2's extra ban count"
               variant="outlined"
               defaultValue={bans[1]}
               onChange={(e) => updateFields(2, e.target.value, true)}
-              error={bans[1] > 3 || bans[1] < 0}
+              error={bans[1] > 2 || bans[1] < 0}
             />
           ) : null}
           <br />
@@ -510,7 +508,8 @@ export default function Play(){
           />
           <Typography>choose default bosses:</Typography>
           <Typography textTransform="none" fontSize="13px">
-            Enter the id of the boss. If -1. it assumes no default boss. If -2 (for the first boss only), assumes it is drake (the default boss).
+            Enter the id of the boss. If -1. it assumes no default boss. If -2
+            (for the first boss only), assumes it is drake (the default boss).
           </Typography>
           <br />
           <TextField
@@ -530,7 +529,8 @@ export default function Play(){
             error={bonusParams[2] < -1}
             onChange={(e) => updateFields(2, e.target.value, false)}
           />
-          <Typography textTransform="none">fearless bosses?</Typography>
+          {/* 
+            <Typography textTransform="none">fearless bosses?</Typography>
           <Typography textTransform="none" fontSize="13px">
             enabling fearless bosses with a game id means the bosses from said
             game id cannot be directly picked in this game.
@@ -563,10 +563,11 @@ export default function Play(){
               onChange={(e) => {
                 updateFields(3, e.target.value, false);
               }}
-            >
-              {/* for the id of fearless boss - game must be either in the "progress" or the "finish" state */}
-            </TextField>
+            ></TextField>
           ) : null}
+          */}
+
+          {/* for the id of fearless boss - game must be either in the "progress" or the "finish" state */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => console.log("standard start")}>
@@ -592,7 +593,6 @@ export default function Play(){
       </Dialog>
     </div>
   );
-    
 }
 
 

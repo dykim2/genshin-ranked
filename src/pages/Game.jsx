@@ -208,6 +208,7 @@ const parsePick = (data) => {
   const identity = JSON.parse(sessionStorage.getItem("game"));
   let returnInfo = "";
   let index = -1;
+  // sererate extra bans here from the rest - need to implement to websocket
   if (data.team == 1) {
     let newPicks = [...identity.pickst1];
     for (let i = 0; i < identity.pickst1.length; i++) {
@@ -560,15 +561,15 @@ export default function Game(props) {
         found = true;
       }
       else{
-        alert("You cannot pick legends in advanced or open division!");
+        alert("You cannot pick legends in standard division!");
         return; 
       }
     }
     if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick"))){
       selection = {};
     }
-    else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id + 1].long == true && identity.division.toLowerCase() == "advanced"){
-      alert("You cannot pick more than one long boss in advanced division!")
+    else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id + 1].long){
+      alert("You cannot pick more than one long boss in standard division (two in premier division)!")
       return;
     }
     // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
@@ -1530,10 +1531,10 @@ export default function Game(props) {
                   }}
                   sx={{
                     backgroundColor: "black",
-                    color: "yellow"
+                    color: "yellow",
                   }}
                 >
-                  <Typography textTransform="none">adjust t2 picks</Typography>
+                  <Typography textTransform="none">adjust t1 picks</Typography>
                 </Button>
               ) : null}
               {/* cookies.player.charAt(0) == "R" ? (
@@ -1711,7 +1712,9 @@ export default function Game(props) {
                 );
               })}
             </div>
-            <div className="grid fourteen">
+            <div className="grid fourteen">extra bans (team 1)</div>
+            <div className="grid sixteen">extra bans (team 2)</div>
+            <div className="grid seventeen">
               <p
                 style={{
                   fontSize: 20,
@@ -1724,7 +1727,7 @@ export default function Game(props) {
               </p>
             </div>
 
-            <div className="grid newgrid sixteen">
+            <div className="grid newgrid nineteen">
               <Button
                 style={{ backgroundColor: "black", color: "yellow" }}
                 onClick={() => {

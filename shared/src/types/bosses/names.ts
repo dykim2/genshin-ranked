@@ -35,8 +35,7 @@ export enum BOSSES {
     MountainKing="MountainKing",
     Ququsaur="Ququsaur",
     Automoton="Automoton",
-    // new boss
-    // Papilla="Papilla",
+    Papilla="Papilla",
 
     Azhdaha="Azhdaha",
     Apep="Apep",

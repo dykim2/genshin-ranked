@@ -164,7 +164,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/de/01/04/METS0VN_t.png",
 		index: 79,
 	},
-	/*
 	[CHARACTERS.Chasca]: {
 		displayName: "Chasca",
 		element: ELEMENTS.anemo,
@@ -174,7 +173,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/19/28/0e/MEWPYV1_t.png",
 		index: 89,
 	},
-	*/
 	[CHARACTERS.Chongyun]: {
 		displayName: "Chongyun",
 		element: ELEMENTS.cryo,
@@ -571,7 +569,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/a8/73/55/METQJC9_t.png",
 		index: 14,
 	},
-	/*
 	[CHARACTERS.Ororon]: {
 		displayName: "Ororon",
 		element: ELEMENTS.electro,
@@ -581,7 +578,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/15/47/b5/MEWPYV3_t.png",
 		index: 90,
 	},
-	*/
 	[CHARACTERS.Qiqi]: {
 		displayName: "Qiqi",
 		element: ELEMENTS.cryo,

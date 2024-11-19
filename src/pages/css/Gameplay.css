@@ -130,8 +130,6 @@
 .fourteen {
     grid-column: 1 / span 1;
     grid-row: row 5 / span 1;
-    align-self: center;
-    background-color: black;
 }
 
 .fifteen {
@@ -143,13 +141,17 @@
 .sixteen {
     grid-column: 4 / span 1;
     grid-row: row 5 / span 1;
-    background-color: black;
 }
 
 .seventeen {
-    grid-column: 2 / span 2;
+    grid-column: 1 / span 1;
     grid-row: row 6 / span 1;
-    overflow-x: scroll;
+}
+
+.nineteen {
+    grid-column: 4 / span 1;
+    grid-row: row 6 / span 1;
+    align-self: center;
 }
 
 .boss {
