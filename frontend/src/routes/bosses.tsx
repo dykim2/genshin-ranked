@@ -82,7 +82,7 @@ export const BossDisplay = ({id, team, pickSelection}: balance) => {
 						</Typography>
 						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={team != newInfo || !matching || currentResult == "waiting"}>
 							<Typography color={"yellow"} textTransform="none" variant="h6">
-								{currentResult != "waiting" ? "choose Boss " : "waiting to start"}
+								{currentResult != "waiting" ? "choose boss " : "waiting to start"}
 							</Typography>
 						</Button>
 					</React.Fragment>

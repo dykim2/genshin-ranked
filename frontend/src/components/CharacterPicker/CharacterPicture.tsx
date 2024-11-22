@@ -14,13 +14,13 @@ import React from "react";
 
 
 interface ICharacterPicture {
-	character: CHARACTERS,
+	character: CHARACTERS, 
 	banDisplay: string
 }
 export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) => {
 	return (
 		<Box sx={{ backgroundColor: "white" }}>
-			{!banDisplay ? (
+			{banDisplay != "ban" ? (
 				<NormalGradientBox rarity={CHARACTER_INFO[character].rarity}>
 					<Image src={CHARACTER_INFO[character].onlineFilePath} />
 					{character != CHARACTERS.None &&

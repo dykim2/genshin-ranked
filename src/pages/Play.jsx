@@ -304,7 +304,7 @@ export default function Play(){
           <Button
             onClick={async () => {
               refreshGames();
-              let gameData = await fetch("${api}/gameAPI/active", {
+              let gameData = await fetch(`${api}/gameAPI/active`, {
                 method: "GET",
               });
               gameData = await gameData.json();

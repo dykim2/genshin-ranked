@@ -21,13 +21,14 @@ import { Button, Typography } from "@mui/material";
 const IMG_SIZE = 75;
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
+const TOTAL_TIME = 31250;
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
 const MyTurn = (turnInfo, draftOver) => {
-  if(draftOver){
+  if(draftOver == true){
     return null;
   }
-  const [cookieInfo] = useCookies(["player"]);
+  const [cookieInfo] = useCookies("player");
   if ("" + turnInfo.turnInfo == cookieInfo.player.substring(0, 1)) {
     return <p style={{ color: "red", fontSize: 28 }}>your turn!</p>;
   } else if (
@@ -1336,6 +1337,7 @@ export default function Game(props) {
                 {showInfo == "boss" ? "bosses:" : "characters:"}
               </p>
               <div className="boss boss-2">
+                {console.log(identity.result == "progress" || identity.result == "finish")}
                 <MyTurn
                   turnInfo={turn == 1 ? 1 : 2}
                   draftOver={
@@ -1354,7 +1356,7 @@ export default function Game(props) {
                 showTimer ? (
                   <Countdown
                     className="boss boss-4"
-                    date={timer + 30000}
+                    date={timer + TOTAL_TIME}
                     onComplete={() => {
                       updateTimer(false, false);
                     }}

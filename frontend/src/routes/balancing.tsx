@@ -137,7 +137,7 @@ export const Balancing = ({id, team, phase, pickSelection}: balance) => {
 						</Typography>
 						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={(phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick`) || !matching}>
 							<Typography color={"yellow"} textTransform="none" variant="h6">
-								{`confirm ${phase.toLowerCase() == `ban` ? `Ban` : phase.toLowerCase() == `pick` ? `Pick` : `Nothing`}`}
+								{`confirm ${phase.toLowerCase() == `ban` ? `ban` : phase.toLowerCase() == `pick` ? `pick` : `Nothing`}`}
 							</Typography>
 						</Button>
 					</React.Fragment>
