@@ -45,7 +45,7 @@ const MyTurn = (turnInfo, draftOver) => {
     );
   }
 }
-const parseBoss = (data, alert = true) => {
+const parseBoss = (data, alerted = true) => {
   // takes in a copy of local storage usestate
   // takes in a copy of data
   // returns the value to add to sessionStorage
@@ -76,7 +76,7 @@ const parseBoss = (data, alert = true) => {
   }
   let returnVal = "";
   if (data.nextTeam == -1) {
-    if(alert){
+    if(alerted){
       alert(
       "Team 2 has selected " + bossList[data.boss + 1].boss + " for their boss!"
     );
@@ -100,7 +100,7 @@ const parseBoss = (data, alert = true) => {
     }
     
   } else {
-    if(alert){
+    if(alerted){
       alert(
       "Team " +
         nextArr[data.nextTeam] +
@@ -129,7 +129,7 @@ const parseBoss = (data, alert = true) => {
   // console.log(returnVal);
   return returnVal;
 };
-const parseBan = (data, alert = true) => {
+const parseBan = (data, alerted = true) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   // check accordingly
@@ -166,7 +166,7 @@ const parseBan = (data, alert = true) => {
     }
   }
   if (data.nextTeam == -2) {
-    if(alert){
+    if(alerted){
       if(noBanChoice){
         alert("Team 2 decided to not ban a character!");
       }
@@ -181,12 +181,12 @@ const parseBan = (data, alert = true) => {
       turn: 1,
     };
   } else if (data.nextTeam == -1) {
-    if(alert){
+    if(alerted){
       if (noBanChoice) {
       alert("Team 1 decided to not ban a character!");
-    } else {
-      alert("Team 1 has banned " + charList[index].name + "!");
-    }
+      } else {
+        alert("Team 1 has banned " + charList[index].name + "!");
+      }
     }
     return {
       ...identity,
@@ -195,7 +195,7 @@ const parseBan = (data, alert = true) => {
       turn: 2,
     };
   } else {
-    if(alert){
+    if(alerted){
       if (noBanChoice) {
         alert("Team " + nextArr[data.nextTeam] + " decided to not ban a character!");
       } else {
@@ -215,7 +215,7 @@ const parseBan = (data, alert = true) => {
     };
   }
 };
-const parsePick = (data, alert = true) => {
+const parsePick = (data, alerted = true) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   let returnInfo = "";
@@ -268,12 +268,12 @@ const parsePick = (data, alert = true) => {
       result: "play",
       turn: -1,
     };
-    if(alert){
+    if(alerted){
       alert("Team 1 has selected " + charList[index].name + "!");
     }
   } else if (data.nextTeam == -2) {
     // second phase of bans
-    if(alert){
+    if(alerted){
       alert("Team 2 has selected " + charList[index].name + "!");
     }
     returnInfo = {
@@ -282,7 +282,7 @@ const parsePick = (data, alert = true) => {
       turn: 2,
     };
   } else {
-    if(alert){
+    if(alerted){
       alert("Team " + data.team + " has selected " + charList[index].name + "!");
     }
   }
@@ -970,7 +970,7 @@ export default function Game(props) {
         }
         case "boss": {
           updateTimer(true, true);
-          res = parseBoss(data);
+          res = parseBoss(data, cookies.player.charAt(0).toLowerCase() != "s");
           let newBossArr = [];
           identity.bosses.forEach((boss) => {
             boss._id != -1 ? newBossArr.push(boss) : null;
@@ -982,7 +982,7 @@ export default function Game(props) {
         }
         case "ban": {
           updateTimer(true, true);
-          res = parseBan(data);
+          res = parseBan(data, cookies.player.charAt(0).toLowerCase() != "s");
           let newCharArr = [];
           if (chosenChars != null) {
             newCharArr = [...chosenChars];
@@ -1004,7 +1004,7 @@ export default function Game(props) {
         }
         case "pick": {
           updateTimer(true, true);
-          res = parsePick(data);
+          res = parsePick(data, cookies.player.charAt(0).toLowerCase() != "s");
           let newCharArr = [];
           if (chosenChars != null) {
             newCharArr = [...chosenChars];
@@ -1064,7 +1064,9 @@ export default function Game(props) {
         case "phase": {
           if (data.newPhase == "boss") {
             updateTimer(true, true);
-            alert("Draft starts now!");
+            if(cookies.player.charAt(0).toLowerCase() != "s"){
+              alert("Draft starts now!");
+            }
           } else if (data.newPhase == "ban" || data.newPhase == "pick") {
             updateTimer(true, true);
           }
