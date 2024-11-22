@@ -24,6 +24,8 @@ const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
 const TOTAL_TIME = 31250;
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
+// to make sure people don't refresh website to stall, maybe i can re-implement the turn thing, where a random pick is made if server says its their turn and the init is ran
+
 const MyTurn = (turnInfo, draftOver) => {
   if(draftOver == true){
     return null;
@@ -43,7 +45,7 @@ const MyTurn = (turnInfo, draftOver) => {
     );
   }
 }
-const parseBoss = (data) => {
+const parseBoss = (data, alert = true) => {
   // takes in a copy of local storage usestate
   // takes in a copy of data
   // returns the value to add to sessionStorage
@@ -74,9 +76,11 @@ const parseBoss = (data) => {
   }
   let returnVal = "";
   if (data.nextTeam == -1) {
-    alert(
+    if(alert){
+      alert(
       "Team 2 has selected " + bossList[data.boss + 1].boss + " for their boss!"
     );
+    }
     if(long){
       returnVal = {
         ...identity,
@@ -96,13 +100,15 @@ const parseBoss = (data) => {
     }
     
   } else {
-    alert(
+    if(alert){
+      alert(
       "Team " +
         nextArr[data.nextTeam] +
         " has selected " +
         bossList[data.boss + 1].boss +
         " for their boss!"
     );
+    }
     if(long){
       returnVal = {
         ...identity,
@@ -123,7 +129,7 @@ const parseBoss = (data) => {
   // console.log(returnVal);
   return returnVal;
 };
-const parseBan = (data) => {
+const parseBan = (data, alert = true) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   // check accordingly
@@ -160,13 +166,14 @@ const parseBan = (data) => {
     }
   }
   if (data.nextTeam == -2) {
-    if(noBanChoice){
-      alert("Team 2 decided to not ban a character!");
-    }
-    else{
-      alert("Team 2 has banned " + charList[index].name + "!");
-    }
-    
+    if(alert){
+      if(noBanChoice){
+        alert("Team 2 decided to not ban a character!");
+      }
+      else{
+        alert("Team 2 has banned " + charList[index].name + "!");
+      }
+    }    
     return {
       ...identity,
       bans: newBans,
@@ -174,10 +181,12 @@ const parseBan = (data) => {
       turn: 1,
     };
   } else if (data.nextTeam == -1) {
-    if (noBanChoice) {
+    if(alert){
+      if (noBanChoice) {
       alert("Team 1 decided to not ban a character!");
     } else {
       alert("Team 1 has banned " + charList[index].name + "!");
+    }
     }
     return {
       ...identity,
@@ -186,16 +195,18 @@ const parseBan = (data) => {
       turn: 2,
     };
   } else {
-    if (noBanChoice) {
-      alert("Team " + nextArr[data.nextTeam] + " decided to not ban a character!");
-    } else {
-      alert(
-        "Team " +
-          nextArr[data.nextTeam] +
-          " has banned " +
-          charList[index].name +
-          "!"
-      );
+    if(alert){
+      if (noBanChoice) {
+        alert("Team " + nextArr[data.nextTeam] + " decided to not ban a character!");
+      } else {
+        alert(
+          "Team " +
+            nextArr[data.nextTeam] +
+            " has banned " +
+            charList[index].name +
+            "!"
+        );
+      }
     }
     return {
       ...identity,
@@ -204,7 +215,7 @@ const parseBan = (data) => {
     };
   }
 };
-const parsePick = (data) => {
+const parsePick = (data, alert = true) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   let returnInfo = "";
@@ -257,17 +268,23 @@ const parsePick = (data) => {
       result: "play",
       turn: -1,
     };
-    alert("Team 1 has selected " + charList[index].name + "!");
+    if(alert){
+      alert("Team 1 has selected " + charList[index].name + "!");
+    }
   } else if (data.nextTeam == -2) {
     // second phase of bans
-    alert("Team 2 has selected " + charList[index].name + "!");
+    if(alert){
+      alert("Team 2 has selected " + charList[index].name + "!");
+    }
     returnInfo = {
       ...returnInfo,
       result: "ban",
       turn: 2,
     };
   } else {
-    alert("Team " + data.team + " has selected " + charList[index].name + "!");
+    if(alert){
+      alert("Team " + data.team + " has selected " + charList[index].name + "!");
+    }
   }
   return returnInfo;
 };

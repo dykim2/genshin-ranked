@@ -21,6 +21,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "None",
 		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
+		// have restrictions here
 		index: -1
 	},
 	[BOSSES.AeonblightDrake]: {
