@@ -41,7 +41,7 @@ export const GroupToggle = ({
 					>
 						<Box
 							component="img"
-							src={option.onlineFilePath}
+							src={getElementImagePath(option)}
 							sx={{
 								width: 30,
 								height: 30,

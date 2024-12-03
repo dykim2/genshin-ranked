@@ -6,11 +6,12 @@ import {
 	// RARITY,
 	// RARITY_INFO,
 } from "@genshin-ranked/shared";
-import { Grid, InputAdornment, Stack, TextField } from "@mui/material";
+import { InputAdornment, Stack, TextField } from "@mui/material";
 import { CharacterButton } from "./CharacterButton";
 import { GroupToggle } from "../GroupToggle";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 import SearchIcon from '@mui/icons-material/Search';
+import Grid from "@mui/material/Grid2";
 
 export interface Pick {
 	characterName: string;
@@ -49,22 +50,26 @@ export const CharacterSelector = ({
 							// Hover state
 							"&:hover fieldset": { borderColor: "white" },
 							// Focused state
-							"&.Mui-focused fieldset": { borderColor: "rgba(105,105,105,1)", },
+							"&.Mui-focused fieldset": {
+								borderColor: "rgba(105,105,105,1)",
+							},
 						},
 					}}
-					InputProps={{
-						startAdornment: (
-							<InputAdornment position="start">
-								{!isFocused && (
-									<SearchIcon
-										sx={{
-											color: "white",
-											padding: 0,
-										}}
-									/>
-								)}
-							</InputAdornment>
-						),
+					slotProps={{
+						input: {
+							startAdornment: (
+								<InputAdornment position="start">
+									{!isFocused && (
+										<SearchIcon
+											sx={{
+												color: "white",
+												padding: 0,
+											}}
+										/>
+									)}
+								</InputAdornment>
+							),
+						},
 					}}
 				/>
 
@@ -104,16 +109,17 @@ export const CharacterSelector = ({
 							return true;
 						}
 					})
-					.map((x) => (
-						x != CHARACTERS.None && x != CHARACTERS.NoBan ? 
-						<Grid item padding={1} key={x}>
-							<CharacterButton
-								character={x}
-								updateCharacter={updateCharacter}
-								banDisplay={"loadout"}
-							/>
-						</Grid> : null
-					))}
+					.map((x) =>
+						x != CHARACTERS.None && x != CHARACTERS.NoBan ? (
+							<Grid padding={1} key={x}>
+								<CharacterButton
+									character={x}
+									updateCharacter={updateCharacter}
+									banDisplay={"loadout"}
+								/>
+							</Grid>
+						) : null,
+					)}
 			</Grid>
 		</Stack>
 	);

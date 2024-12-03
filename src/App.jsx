@@ -1,5 +1,5 @@
 import "./App.css";
-import WebRouter from "./setup/WebRouter";
+import WebRouter from "./setup/WebRouter.tsx";
 import {useState} from "react";
 import CharacterContext from "./contexts/CharacterContext";
 import ActiveContext from "./contexts/ActiveContext";

@@ -8,20 +8,28 @@ export default function NaviBar(){
         <header>
           <nav className="navigation">
             <ul>
-              <li style={{display: 'flex', alignItems: 'center', justifyContent: "center"}}>
-                <b><i><p>RANKED </p></i></b>
-                <img
-                  src={icon}
-                  alt="Ranked Icon"
-                  width="20"
-                  height="20"
-                />
+              <li
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <b>
+                  <i>
+                    <p>RANKED </p>
+                  </i>
+                </b>
+                <img src={icon} alt="Ranked Icon" width="20" height="20" />
               </li>
               <li>
                 <NavLink to="/">Home</NavLink>
               </li>
               <li>
                 <NavLink to="/characters">Characters</NavLink>
+              </li>
+              <li>
+                <NavLink to="/bosses">Bosses</NavLink>
               </li>
               <li>
                 <NavLink to="/rules">Rules</NavLink>

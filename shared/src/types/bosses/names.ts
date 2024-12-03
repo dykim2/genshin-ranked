@@ -32,8 +32,8 @@ export enum BOSSES {
     HydroTulpa="HydroTulpa",
     SolitarySuanii="SolitarySuanni",
     LegatusGolem="LegatusGolem",
+    Goldflame="Goldflame",
     MountainKing="MountainKing",
-    Ququsaur="Ququsaur",
     Automoton="Automoton",
     Papilla="Papilla",
 
@@ -42,7 +42,21 @@ export enum BOSSES {
     Narwhal="Narwhal",
     Knave="Knave",
 
+    // 4.0
+    Vivianne="Vivianne",
+    // 4.1
     ArrayMek="ArrayMek",
+    // 4.2
+    Deianeira="Deianeira",
+    Rocky="Rocky",
+    // 4.4
     ChizangVishaps="ChizangVishaps",
-    Cineas="Cineas"
+    // 4.6
+    Cineas="Cineas",
+    // 5.0
+    Balachko="Balachko",
+    Cocijo="Cocijo",
+    Polychrome="PolychromeTriStars",
+    // 5.2
+    Bronzelock="Bronzelock"
 }

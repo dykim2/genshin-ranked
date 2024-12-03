@@ -1,7 +1,8 @@
 // need gradents for regular (blue), weekly (purple) and legend (gold)
 import {
     BOSSES,
-    getBossElementOnlinePath,
+    getBossElementImagePath,
+	getBossImagePath,
 } from "@genshin-ranked/shared";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 import { BOSS_TYPE } from "@genshin-ranked/shared/src/types/level";
@@ -16,10 +17,10 @@ export const BossPicture = ({ boss }: IBossPicture) => {
     return (
 		<Box sx={{ backgroundColor: "white" }}>
 			<GradientBox type={BOSS_DETAIL[boss].type}>
-				<Image src={BOSS_DETAIL[boss].onlineFilePath} />
+				<Image src={getBossImagePath(boss)} />
 				{boss != BOSSES.None ? (
 					<IconWrapper disabled>
-						<IconImage src={getBossElementOnlinePath(boss)} />
+						<IconImage src={getBossElementImagePath(boss)} />
 					</IconWrapper>
 				) : null}
 			</GradientBox>

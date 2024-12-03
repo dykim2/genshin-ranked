@@ -235,15 +235,13 @@ export default function Play(){
             4. premier mode
 
             5. fearless bosses (no picking the same bosses as a previous game)
-
-            eventually after midterm and homework: add fearless bosses and extra bans - the others can be added on their own
           */
   };
   const limit = [1, 1, 3, -1, -1]; // ref (custom) is meant to only work for creating games
   return (
     <div>
       {typeof cookies.player == "undefined" ? null : (
-        <p style={{ fontSize: 20, color: "blue" }}>
+        <p style={{ fontSize: 20, color: "white" }}>
           You are currently in the middle of a game.
         </p>
       )}
@@ -529,8 +527,8 @@ export default function Play(){
             error={bonusParams[2] < -1}
             onChange={(e) => updateFields(2, e.target.value, false)}
           />
-          {/* 
-            <Typography textTransform="none">fearless bosses?</Typography>
+          
+          <Typography textTransform="none">fearless bosses?</Typography>
           <Typography textTransform="none" fontSize="13px">
             enabling fearless bosses with a game id means the bosses from said
             game id cannot be directly picked in this game.
@@ -565,7 +563,7 @@ export default function Play(){
               }}
             ></TextField>
           ) : null}
-          */}
+          
 
           {/* for the id of fearless boss - game must be either in the "progress" or the "finish" state */}
         </DialogContent>

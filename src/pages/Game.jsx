@@ -15,7 +15,9 @@ import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts";
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
+import { BOSSES, CHARACTERS, getBossImagePath, getCharacterImagePath } from "@genshin-ranked/shared";
 import { Button, Typography } from "@mui/material";
+import { GifPlay } from "../components/gIFplay.tsx";
 // import { BOSSES } from "@genshin-ranked/shared";
 // 
 const IMG_SIZE = 75;
@@ -76,11 +78,13 @@ const parseBoss = (data, alerted = true) => {
   }
   let returnVal = "";
   if (data.nextTeam == -1) {
+    /*
     if(alerted){
       alert(
-      "Team 2 has selected " + bossList[data.boss + 1].boss + " for their boss!"
-    );
+        "Team 2 has selected " + bossList[data.boss + 1].boss + " for their boss!"
+      );
     }
+    */
     if(long){
       returnVal = {
         ...identity,
@@ -100,6 +104,7 @@ const parseBoss = (data, alerted = true) => {
     }
     
   } else {
+    /*
     if(alerted){
       alert(
       "Team " +
@@ -109,6 +114,7 @@ const parseBoss = (data, alerted = true) => {
         " for their boss!"
     );
     }
+    */
     if(long){
       returnVal = {
         ...identity,
@@ -166,6 +172,7 @@ const parseBan = (data, alerted = true) => {
     }
   }
   if (data.nextTeam == -2) {
+    /*
     if(alerted){
       if(noBanChoice){
         alert("Team 2 decided to not ban a character!");
@@ -173,7 +180,8 @@ const parseBan = (data, alerted = true) => {
       else{
         alert("Team 2 has banned " + charList[index].name + "!");
       }
-    }    
+    }
+    */
     return {
       ...identity,
       bans: newBans,
@@ -181,6 +189,7 @@ const parseBan = (data, alerted = true) => {
       turn: 1,
     };
   } else if (data.nextTeam == -1) {
+    /*
     if(alerted){
       if (noBanChoice) {
       alert("Team 1 decided to not ban a character!");
@@ -188,6 +197,7 @@ const parseBan = (data, alerted = true) => {
         alert("Team 1 has banned " + charList[index].name + "!");
       }
     }
+    */
     return {
       ...identity,
       bans: newBans,
@@ -195,6 +205,7 @@ const parseBan = (data, alerted = true) => {
       turn: 2,
     };
   } else {
+    /*
     if(alerted){
       if (noBanChoice) {
         alert("Team " + nextArr[data.nextTeam] + " decided to not ban a character!");
@@ -208,6 +219,7 @@ const parseBan = (data, alerted = true) => {
         );
       }
     }
+    */
     return {
       ...identity,
       bans: newBans,
@@ -268,23 +280,29 @@ const parsePick = (data, alerted = true) => {
       result: "play",
       turn: -1,
     };
+    /*
     if(alerted){
       alert("Team 1 has selected " + charList[index].name + "!");
     }
+    */
   } else if (data.nextTeam == -2) {
     // second phase of bans
+    /*
     if(alerted){
       alert("Team 2 has selected " + charList[index].name + "!");
     }
+    */
     returnInfo = {
       ...returnInfo,
       result: "ban",
       turn: 2,
     };
   } else {
+    /*
     if(alerted){
       alert("Team " + data.team + " has selected " + charList[index].name + "!");
     }
+    */
   }
   return returnInfo;
 };
@@ -387,15 +405,13 @@ const parseStatus = (data) => {
       break;
   };
   return newIden;
-}
+} 
 
 export default function Game(props) {
   // the actual meat of the game, including picks / bans / etc
   const [identity, setIdentity] = useState(gameInfo());
   const [characters, setCharacters] = useContext(CharacterContext);
   const [selection, setSelection] = useState({}); // what character they choose
-
-  const [showInfo, setShow] = useState("boss"); // show bosses, characters, or neither (character, boss, none)
   // const [update, setUpdate] = useState(false);
   const [bosses, setBosses] = useState(
     JSON.parse(sessionStorage.getItem("bosses"))
@@ -411,8 +427,8 @@ export default function Game(props) {
   const [showT2Order, setOrderT2] = useState(false);
 
   const [showTimer, setTimerVisible] = useState(false);
-  const [chosenBosses, setChosenBosses] = useState(sessionStorage.getItem("selected_bosses"));
-  const [chosenChars, setChosenChars] = useState(sessionStorage.getItem("selected_characters"));
+  // const [chosenBosses, setChosenBosses] = useState(sessionStorage.getItem("selected_bosses"));
+  // const [chosenChars, setChosenChars] = useState(sessionStorage.getItem("selected_characters"));
 
   const [filtering, setFiltering] = useState(false);
 
@@ -422,6 +438,11 @@ export default function Game(props) {
 
   const [bossFilterActive, setBossFilter] = useState(false);
   const [charFilterActive, setCharFilter] = useState(false);
+
+  const [alertChar, setAlert] = useState("")
+  const [alertLink, setLink] = useState("")
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [alertBan, setAlertBan] = useState(false)
 
   const characterRef = useRef();
   const bossRef = useRef();
@@ -570,6 +591,16 @@ export default function Game(props) {
       }
       else{
         selection.id = parseInt(localStorage.getItem("character"));
+      }
+    }
+    if(identity.fearless){
+      if (
+        selection.id >= 0 &&
+        selection.type == "boss" &&
+        identity.fearlessBosses.includes(selection.id)
+      ) {
+        alert("This boss was picked in the previous match and may not be picked again!");
+        return;
       }
     }
     let found = false;
@@ -831,6 +862,35 @@ export default function Game(props) {
       </Fragment>
     );
   };
+  const showSelectionAlert = (id, boss = false, ban = false) => {
+    /*
+    1. get character or boss from id
+    2. get link by using character display name and append ".png"
+    3. display the modal
+    4. 2.5 seconds later, hide the modal
+    */
+    let path = "";
+    let selection = "";
+    if(boss){
+      selection = bossRef.current.get(id);
+      path = getBossImagePath(selection);
+      selection = BOSS_DETAIL[selection].displayName
+    }
+    else{
+      selection = characterRef.current.get(id);
+      path = getCharacterImagePath(selection);
+      if(ban){
+        setAlertBan(true);
+      }
+      selection = CHARACTER_INFO[selection].displayName
+    }
+    setAlert(selection)
+    setLink(path);
+    setAlertOpen(true);
+    setTimeout(() => {
+      setAlertOpen(false)
+    }, 1750); // shows for 1.75 seconds, can be changed
+  }
   useEffect(() => {
     // console.log("yes")
     const map = new Map();
@@ -956,6 +1016,7 @@ export default function Game(props) {
           }
           */
           updateTurn(data.turn);
+          /*
           if (typeof data.bosses != "undefined") {
             sessionStorage.setItem(
               "chosen_bosses",
@@ -966,11 +1027,13 @@ export default function Game(props) {
           if (typeof data.chars != "undefined") {
             setChosenChars(data.chars);
           }
+          */
           break;
         }
         case "boss": {
           updateTimer(true, true);
           res = parseBoss(data, cookies.player.charAt(0).toLowerCase() != "s");
+          /*
           let newBossArr = [];
           identity.bosses.forEach((boss) => {
             boss._id != -1 ? newBossArr.push(boss) : null;
@@ -978,19 +1041,24 @@ export default function Game(props) {
           newBossArr.push(data.boss);
           sessionStorage.setItem("chosen_bosses", JSON.stringify(newBossArr));
           setChosenBosses(newBossArr);
+          */
+          showSelectionAlert(data.boss, true, false)
           break;
         }
         case "ban": {
           updateTimer(true, true);
           res = parseBan(data, cookies.player.charAt(0).toLowerCase() != "s");
+          /*I
           let newCharArr = [];
           if (chosenChars != null) {
             newCharArr = [...chosenChars];
           } else {
             newCharArr = [];
           }
+            
           newCharArr.push(data.ban);
           setChosenChars(newCharArr); // add id to list of chosen
+          */
           if (data.nextTeam == -2 || data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
@@ -1005,6 +1073,7 @@ export default function Game(props) {
         case "pick": {
           updateTimer(true, true);
           res = parsePick(data, cookies.player.charAt(0).toLowerCase() != "s");
+          /*
           let newCharArr = [];
           if (chosenChars != null) {
             newCharArr = [...chosenChars];
@@ -1013,6 +1082,7 @@ export default function Game(props) {
           }
           newCharArr.push(data.pick);
           setChosenChars(newCharArr);
+          */
           if (data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
@@ -1353,7 +1423,7 @@ export default function Game(props) {
             </div>
             <div className="grid newgrid two">
               <p className="boss boss-1">
-                {showInfo == "boss" ? "bosses:" : "characters:"}
+                {identity.result == "boss" ? "bosses:" : "characters:"}
               </p>
               <div className="boss boss-2">
                 {console.log(identity.result == "progress" || identity.result == "finish")}
@@ -1459,6 +1529,7 @@ export default function Game(props) {
                       id={props.id}
                       team={turn}
                       pickSelection={sendSelection}
+                      inGame={true}
                     />
                   ) : null
                 ) : null}
@@ -1503,6 +1574,8 @@ export default function Game(props) {
                       team={turn}
                       phase={identity.result.toLowerCase()}
                       pickSelection={sendSelection}
+                      isGame={true}
+                      bonusInfo={""}
                     />
                   ) : null
                 ) : null}
@@ -1816,6 +1889,7 @@ export default function Game(props) {
             }}
             setOrder={filterPicks}
           />
+          <GifPlay link={alertLink} selection={alertChar} isOpen={alertOpen} onClose={() => {}} ban={alertBan} />
         </Fragment>
       )}
     </div>

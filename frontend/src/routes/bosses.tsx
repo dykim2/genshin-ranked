@@ -8,10 +8,11 @@ import {useCookies} from "react-cookie";
 interface balance {
 	id: number; // game ID - useful but likely not needed
 	team: number;
-	pickSelection: ( teamNum: number, selectedObj: object, timeout: boolean ) => {};
+	pickSelection: ( teamNum: number, selectedObj: object, timeout: boolean ) => void;
+	inGame: boolean
 }
 
-export const BossDisplay = ({id, team, pickSelection}: balance) => {
+export const BossDisplay = ({id, team, pickSelection, inGame}: balance) => {
 	const [cookieInfo] = useCookies(["player"]);
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -85,6 +86,12 @@ export const BossDisplay = ({id, team, pickSelection}: balance) => {
 								{currentResult != "waiting" ? "choose boss " : "waiting to start"}
 							</Typography>
 						</Button>
+						<br />
+						<Typography variant="h6">
+							{
+								(localStorage.getItem("boss") != undefined && !inGame) ? `Selected boss id (for custom game purposes): ${localStorage.getItem("boss")}` : null
+							}
+						</Typography>
 					</React.Fragment>
 				}
 			</Box>

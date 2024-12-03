@@ -6,7 +6,8 @@ import {
 	// RARITY,
 	// RARITY_INFO,
 } from "@genshin-ranked/shared";
-import { Grid, InputAdornment, Stack, TextField } from "@mui/material";
+import { InputAdornment, Stack, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { BossButton } from "./BossButton";
 import { GroupToggle } from "../GroupToggle";
 import SearchIcon from "@mui/icons-material/Search";
@@ -42,7 +43,7 @@ export const BossSelector = ({
 					onBlur={() => setIsFocused(false)}
 					sx={{
 						minWidth: 140,
-						input: {color: "white"},
+						input: { color: "white" },
 						// Customizing the input text color
 						"& .MuiOutlinedInput-root": {
 							"& fieldset": {
@@ -54,19 +55,21 @@ export const BossSelector = ({
 							"&.Mui-focused fieldset": { borderColor: "white" },
 						},
 					}}
-					InputProps={{
-						startAdornment: (
-							<InputAdornment position="start">
-								{!isFocused && (
-									<SearchIcon
-										sx={{
-											color: "white",
-											padding: 0,
-										}}
-									/>
-								)}
-							</InputAdornment>
-						),
+					slotProps={{
+						input: {
+							startAdornment: (
+								<InputAdornment position="start">
+									{!isFocused && (
+										<SearchIcon
+											sx={{
+												color: "white",
+												padding: 0,
+											}}
+										/>
+									)}
+								</InputAdornment>
+							),
+						},
 					}}
 				/>
 
@@ -81,6 +84,7 @@ export const BossSelector = ({
 				spacing={1}
 				minWidth="470px"
 				maxWidth="50vw"
+				minHeight="1000px"
 				id="char-selector-grid"
 			>
 				{/* TODO: Wrap this with useMemo to minimize unnessecary refiltering of these values */}
@@ -106,15 +110,16 @@ export const BossSelector = ({
 						}
 					})
 					.map((x) => {
-						return (
-							x != BOSSES.None ? 
-							<Grid item padding={1} key={x}>
-								<BossButton boss={x} updateBoss={updateBoss} selectDisplay={false} />
-							</Grid> : null
-						);
-					}
-						
-					)}
+						return x != BOSSES.None ? (
+							<Grid padding={1} key={x}>
+								<BossButton
+									boss={x}
+									updateBoss={updateBoss}
+									selectDisplay={false}
+								/>
+							</Grid>
+						) : null;
+					})}
 			</Grid>
 		</Stack>
 	);

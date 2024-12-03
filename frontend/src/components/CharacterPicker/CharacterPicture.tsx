@@ -4,7 +4,8 @@
 
 import {
 	CHARACTERS,
-	getCharacterElementOnlinePath,
+	getCharacterElementImagePath,
+	getCharacterImagePath,
 	RARITY,
 } from "@genshin-ranked/shared";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
@@ -22,12 +23,12 @@ export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) =
 		<Box sx={{ backgroundColor: "white" }}>
 			{banDisplay != "ban" ? (
 				<NormalGradientBox rarity={CHARACTER_INFO[character].rarity}>
-					<Image src={CHARACTER_INFO[character].onlineFilePath} />
+					<Image src={getCharacterImagePath(character)} />
 					{character != CHARACTERS.None &&
 					character != CHARACTERS.NoBan ? (
 						<IconWrapper>
 							<IconImage
-								src={getCharacterElementOnlinePath(character)}
+								src={getCharacterElementImagePath(character)}
 							/>
 						</IconWrapper>
 					) : null}
@@ -35,7 +36,7 @@ export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) =
 			) : (
 				<BannedGradientBox>
 					<Image
-						src={CHARACTER_INFO[character].onlineFilePath}
+						src={getCharacterImagePath(character)}
 						sx={{ filter: "grayscale(100%)" }}
 					/>
 					{character != CHARACTERS.None &&
@@ -43,7 +44,7 @@ export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) =
 						<IconWrapper>
 							<IconImage
 								sx={{ filter: "grayscale(100%)" }}
-								src={getCharacterElementOnlinePath(character)}
+								src={getCharacterElementImagePath(character)}
 							/>
 						</IconWrapper>
 					) : null}
@@ -92,8 +93,8 @@ const Image = styled("img")({
 
 const IconWrapper = styled(IconButton)({
 	position: "absolute",
-	top: 2,
-	left: 2,
+	top: 1,
+	left: 1,
 	padding: 0,
 });
 

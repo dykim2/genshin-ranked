@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // The old /characters page, that discusses balancing of units.
-import React from "react";
+import React, { Fragment } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { CharacterSelector } from "../components";
 import {socket} from "../../../src/contexts/PlayingContext.js"
@@ -13,13 +13,14 @@ import { useCookies } from "react-cookie";
 // update some names to keep them consistent
 
 interface balance {
-	id: number;
 	team: number;
 	phase: string;
-	pickSelection: (teamNum: number, selectedObj: object, timeout: boolean) => {};
+	pickSelection: (teamNum: number, selectedObj: object, timeout: boolean) => void;
+	inGame: boolean;
+	bonusInfo: string[];
 }
 
-export const Balancing = ({id, team, phase, pickSelection}: balance) => {
+export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
 	const [cookieInfo] = useCookies(["player"]);
 	let matching = true;
@@ -135,11 +136,31 @@ export const Balancing = ({id, team, phase, pickSelection}: balance) => {
 								</Box>
 							*/}
 						</Typography>
-						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={(phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick`) || !matching}>
+						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={inGame && ((phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick`) || !matching)}>
 							<Typography color={"yellow"} textTransform="none" variant="h6">
-								{`confirm ${phase.toLowerCase() == `ban` ? `ban` : phase.toLowerCase() == `pick` ? `pick` : `Nothing`}`}
+								{inGame ? `confirm ${phase.toLowerCase() == `ban` ? `ban` : phase.toLowerCase() == `pick` ? `pick` : `Nothing`}` : `Show Restrictions`}
 							</Typography>
 						</Button>
+						{
+							
+							bonusInfo.map((val: string) => {
+								
+								return (
+									<Fragment key={val}>
+										<Typography
+											color={"white"}
+											textTransform="none"
+											variant="h6"
+										>
+											{val}
+										</Typography>
+										<br />
+									</Fragment>
+								);
+							})
+							
+						}
+						
 					</React.Fragment>
 					
 				}
