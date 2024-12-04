@@ -16,8 +16,9 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts"
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts"; 
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
 import {getBossImagePath, getCharacterImagePath} from "../../shared/src/utils/imagePaths.ts"
+
 import { Button, Typography } from "@mui/material";
-import { GifPlay } from "../components/gIFplay.tsx";
+import { GifPlay } from "../components/GifPlay.tsx";
 // import { BOSSES } from "@genshin-ranked/shared";
 // 
 const IMG_SIZE = 75;
