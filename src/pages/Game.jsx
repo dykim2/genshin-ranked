@@ -13,9 +13,9 @@ import {Balancing} from "../../frontend/src/routes/balancing.tsx";
 import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
-import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts";
+import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts"; 
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
-import { BOSSES, CHARACTERS, getBossImagePath, getCharacterImagePath } from "@genshin-ranked/shared";
+import {getBossImagePath, getCharacterImagePath} from "../../shared/src/utils/imagePaths.ts"
 import { Button, Typography } from "@mui/material";
 import { GifPlay } from "../components/gIFplay.tsx";
 // import { BOSSES } from "@genshin-ranked/shared";
