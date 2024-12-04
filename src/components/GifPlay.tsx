@@ -23,7 +23,6 @@ export const GifPlay = ({link, selection, isOpen, onClose, ban = true}: play) =>
               width: 300,
             }}
           >
-            <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
             {ban ? (
                 <Fragment>
                 <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>

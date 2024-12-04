@@ -1423,7 +1423,7 @@ export default function Game(props) {
             </div>
             <div className="grid newgrid two">
               <p className="boss boss-1">
-                {identity.result == "boss" ? "bosses:" : "characters:"}
+                {identity.fearless && (identity.result.toLowerCase() == "waiting" || identity.result.toLowerCase() == "boss") ? "fearless bosses active!" : null}
               </p>
               <div className="boss boss-2">
                 {console.log(identity.result == "progress" || identity.result == "finish")}
