@@ -30,10 +30,11 @@ export default function Play(){
 
   const [bonusParams, setParams] = useState([0, -2, -1, 0]);
 
-  const [fearless, setFearless] = useState("false");
+  const [fearless, setFearless] = useState(false);
 
   const latestBoss = useRef();
-  const api = "https://rankedapi-late-cherry-618.fly.dev"; // "https://rankedapi-late-cherry-618.fly.dev" or "http://localhost:3000"
+  const api_list = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
+  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
 
   const refreshGames = () => {
     setRefresh(true);
@@ -540,19 +541,19 @@ export default function Play(){
               onChange={(event) => setFearless(event.target.value)}
             >
               <FormControlLabel
-                value={"true"}
+                value={true}
                 control={<Radio />}
                 label={"yes"}
               />
               <FormControlLabel
-                value={"false"}
+                value={false}
                 control={<Radio />}
                 label={"no"}
               />
             </RadioGroup>
           </FormControl>
           <br />
-          {fearless == "true" ? (
+          {fearless ? (
             <TextField
               helperText="the id of the game you want bosses from"
               label="game id"
