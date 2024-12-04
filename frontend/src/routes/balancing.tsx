@@ -24,7 +24,8 @@ export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo}: balan
 	const [selection, setSelection] = React.useState<string>("None");
 	const [cookieInfo] = useCookies(["player"]);
 	let matching = true;
-	if (cookieInfo.player.substring(0, 1) != team) {
+
+	if (cookieInfo.player != undefined && cookieInfo.player.substring(0, 1) != team) {
 		matching = false;
 	}
 	const sendToSocket = () => {

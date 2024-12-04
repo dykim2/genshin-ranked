@@ -17,7 +17,7 @@ export const BossDisplay = ({id, team, pickSelection, inGame}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
 	let matching = true;
-	if (cookieInfo.player.substring(0, 1) != team) {
+	if (cookieInfo.player != undefined && cookieInfo.player.substring(0, 1) != team) {
 		matching = false;
 	}
 	const info = sessionStorage.getItem("game");
