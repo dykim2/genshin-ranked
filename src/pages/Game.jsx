@@ -1573,10 +1573,11 @@ export default function Game(props) {
                     })
                   */
                     <Balancing
+                      id={props.id}
                       team={turn}
                       phase={identity.result.toLowerCase()}
                       pickSelection={sendSelection}
-                      inGame={true}
+                      isGame={true}
                       bonusInfo={[""]}
                     />
                   ) : null

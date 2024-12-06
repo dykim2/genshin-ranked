@@ -361,10 +361,10 @@ export const BOSS_DETAIL: BossMap = {
 		index: 47,
 	},
 	[BOSSES.ChizangVishaps]: {
-		displayName: "Chizhang Vishaps",
+		displayName: "Chizang Vishaps",
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Legend,
-		imageFileName: "ChizhangVishaps",
+		imageFileName: "ChizangVishaps",
 		onlineFilePath: "https://thumbs4.imagebam.com/b9/46/85/METS4UI_t.png",
 		index: 36,
 	},
