@@ -1115,7 +1115,6 @@ export default function Game(props) {
           break;
         }
         case "players": {
-          console.log("here")
           if(cookies.player.charAt(0) == 'R'){
             let info = "";
             for(let i = 0; i < data.playerStatus.length; i++){
@@ -1429,7 +1428,7 @@ export default function Game(props) {
                 {identity.fearless && (identity.result.toLowerCase() == "waiting" || identity.result.toLowerCase() == "boss") ? "fearless bosses active!" : null}
               </p>
               <div className="boss boss-2">
-                {console.log(identity.result == "progress" || identity.result == "finish")}
+                {/* console.log(identity.result == "progress" || identity.result == "finish") */}
                 <MyTurn
                   turnInfo={turn == 1 ? 1 : 2}
                   draftOver={
@@ -1476,11 +1475,11 @@ export default function Game(props) {
                       </p>
                     ) : null}
                     <div className={`pick pick-${2 * val + 2}`}>
-                      {characterRef.current != undefined
+                      {/* characterRef.current != undefined
                         ? console.log(
                             characterRef.current.get(identity.pickst1[val]._id)
                           )
-                        : null}
+                        : null */}
                       {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.pickst1[val]._id),
@@ -1602,11 +1601,11 @@ export default function Game(props) {
                       </p>
                     ) : null}
                     <div className={`pick pick-${2 * val + 2}`}>
-                      {characterRef.current != undefined
+                      {/* characterRef.current != undefined
                         ? console.log(
                             characterRef.current.get(identity.pickst1[val]._id)
                           )
-                        : null}
+                        : null */}
                       {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.pickst2[val]._id),

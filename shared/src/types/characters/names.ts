@@ -24,14 +24,14 @@ export enum CHARACTERS {
 	Yelan = "Yelan",
 	Baizhu = "Baizhu",
 	Xianyun = "Xianyun",
-	KaedeharaKazuha = "KaedeharaKazuha",
-	KamisatoAyaka = "KamisatoAyaka",
+	Kazuha = "KaedeharaKazuha",
+	Ayaka = "KamisatoAyaka",
 	Yoimiya = "Yoimiya",
-	RaidenShogun = "RaidenShogun",
-	SangonomiyaKokomi = "SangonomiyaKokomi",
-	AratakiItto = "AratakiItto",
+	Raiden = "Raiden",
+	Kokomi = "SangonomiyaKokomi",
+	Itto = "Itto",
 	YaeMiko = "YaeMiko",
-	KamisatoAyato = "KamisatoAyato",
+	Ayato = "KamisatoAyato",
 	Chiori = "Chiori",
 	Tighnari = "Tighnari",
 	Cyno = "Cyno",
@@ -100,5 +100,5 @@ export enum CHARACTERS {
 	Chevreuse = "Chevreuse",
 	Kachina = "Kachina",
 	Ororon = "Ororon",
-	// LanYan = "LanYan"s
+	// LanYan = "LanYan"
 }
