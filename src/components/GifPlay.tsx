@@ -7,9 +7,9 @@ interface play {
     onClose: any;
     ban: boolean
 }
-
+//  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>
+//  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
 export const GifPlay = ({link, selection, isOpen, onClose, ban = true}: play) => {
-    console.log("banned: "+ban)
     return (
       <React.Fragment>
         {/* turn this in to a component, maybe by providing a state variable*/}
@@ -25,13 +25,11 @@ export const GifPlay = ({link, selection, isOpen, onClose, ban = true}: play) =>
           >
             {ban ? (
                 <Fragment>
-                <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>
-                <img src={link} width="300" height="300" style={{filter: "grayscale(70%)"}} />
+                <img src={link} width="1024" height="300" style={{filter: "grayscale(70%)"}} />
               </Fragment>
             ) : (
               <Fragment>
-                <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
-                <img src={link} width="300" height="300" />
+                <img src={link} width="1024" height="300" />
               </Fragment>
             )}
           </Box>

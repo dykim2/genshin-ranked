@@ -27,7 +27,7 @@ export enum BOSSES {
     Coppelia="Coppelia",
     Coppelius="Coppelius",
     PyroCrab="PyroCrab",
-    ExperimentalFieldGenerator="ExperimentalFieldGenerator",
+    EFG="ExperimentalFieldGenerator",
     MillenialPearlSeahorse="MillenialPearlSeahorse",
     HydroTulpa="HydroTulpa",
     SolitarySuanii="SolitarySuanni",

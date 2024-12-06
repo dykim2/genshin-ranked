@@ -22,6 +22,10 @@ export const getCharacterElementOnlinePath = (character: CHARACTERS) => {
 	return `${ELEMENT_INFO[CHARACTER_INFO[character].element].onlineFilePath}`;
 }
 
+export const getCharacterGifPath = (character: CHARACTERS) => {
+	return `${CHARACTER_IMAGE_PATH}/selections/${CHARACTER_INFO[character].imageFileName}.gif`;
+};
+
 export const getBossImagePath = (boss: BOSSES) => {
 	return `${BOSS_IMAGE_PATH}/${BOSS_DETAIL[boss].imageFileName}.png`
 }
@@ -32,6 +36,10 @@ export const getBossElementImagePath = (boss: BOSSES) => {
 
 export const getBossElementOnlinePath = (boss: BOSSES) => {
 	return `${ELEMENT_INFO[BOSS_DETAIL[boss].element].onlineFilePath}`;
+}
+
+export const getBossGifPath = (boss: BOSSES) => {
+	return `${BOSS_IMAGE_PATH}/selections/${BOSS_DETAIL[boss].imageFileName}.gif`;
 }
 
 export const getElementImagePath = (elementDetail: GenericDetails) => {

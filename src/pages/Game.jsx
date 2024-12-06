@@ -15,7 +15,7 @@ import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts"; 
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
-import {getBossImagePath, getCharacterImagePath} from "../../shared/src/utils/imagePaths.ts"
+import {getBossGifPath, getBossImagePath, getCharacterGifPath, getCharacterImagePath} from "../../shared/src/utils/imagePaths.ts"
 
 import { Button, Typography } from "@mui/material";
 import { GifPlay } from "../components/GifPlay.tsx";
@@ -874,12 +874,12 @@ export default function Game(props) {
     let selection = "";
     if(boss){
       selection = bossRef.current.get(id);
-      path = getBossImagePath(selection);
+      path = getBossGifPath(selection);
       selection = BOSS_DETAIL[selection].displayName
     }
     else{
       selection = characterRef.current.get(id);
-      path = getCharacterImagePath(selection);
+      path = getCharacterGifPath(selection);
       if(ban){
         setAlertBan(true);
       }
@@ -1060,6 +1060,7 @@ export default function Game(props) {
           newCharArr.push(data.ban);
           setChosenChars(newCharArr); // add id to list of chosen
           */
+          showSelectionAlert(data.ban, false, true)
           if (data.nextTeam == -2 || data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
@@ -1084,6 +1085,7 @@ export default function Game(props) {
           newCharArr.push(data.pick);
           setChosenChars(newCharArr);
           */
+          showSelectionAlert(data.pick, false, false)
           if (data.nextTeam == -1) {
             socket.send(
               JSON.stringify({
