@@ -881,7 +881,14 @@ export default function Game(props) {
       selection = characterRef.current.get(id);
       path = getCharacterGifPath(selection);
       if(ban){
-        setAlertBan(true);
+        if(!alertBan){
+          setAlertBan(true);
+        }
+      }
+      else{
+        if(alertBan){
+          setAlertBan(false);
+        }
       }
       selection = CHARACTER_INFO[selection].displayName
     }
@@ -1578,7 +1585,7 @@ export default function Game(props) {
                       phase={identity.result.toLowerCase()}
                       pickSelection={sendSelection}
                       isGame={true}
-                      bonusInfo={""}
+                      bonusInfo={[""]}
                     />
                   ) : null
                 ) : null}
