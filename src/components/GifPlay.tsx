@@ -2,14 +2,13 @@ import { Box, Modal, Typography } from "@mui/material";
 import React, { Fragment } from "react";
 interface play {
     link: string; // should either end in .gif or .png or other image format
-    selection: string;
     isOpen: boolean;
     onClose: any;
     ban: boolean
 }
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
-export const GifPlay = ({link, selection, isOpen, onClose, ban = true}: play) => {
+export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
     return (
       <React.Fragment>
         {/* turn this in to a component, maybe by providing a state variable*/}

@@ -22,6 +22,10 @@ export const getCharacterElementOnlinePath = (character: CHARACTERS) => {
 	return `${ELEMENT_INFO[CHARACTER_INFO[character].element].onlineFilePath}`;
 }
 
+export const getCharacterBanPath = (character: CHARACTERS) => {
+	return `${CHARACTER_IMAGE_PATH}/bans/${CHARACTER_INFO[character].imageFileName}Ban.gif`;
+}
+
 export const getCharacterGifPath = (character: CHARACTERS) => {
 	return `${CHARACTER_IMAGE_PATH}/selections/${CHARACTER_INFO[character].imageFileName}.gif`;
 };

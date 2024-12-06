@@ -15,13 +15,13 @@ import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts"; 
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
-import {getBossGifPath, getBossImagePath, getCharacterGifPath, getCharacterImagePath} from "../../shared/src/utils/imagePaths.ts"
+import {getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "../../shared/src/utils/imagePaths.ts"
 
 import { Button, Typography } from "@mui/material";
 import { GifPlay } from "../components/GifPlay.tsx";
 // import { BOSSES } from "@genshin-ranked/shared";
 // 
-const IMG_SIZE = 75;
+const IMG_SIZE = 75; // use eventually
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
 const TOTAL_TIME = 31250;
@@ -440,7 +440,6 @@ export default function Game(props) {
   const [bossFilterActive, setBossFilter] = useState(false);
   const [charFilterActive, setCharFilter] = useState(false);
 
-  const [alertChar, setAlert] = useState("")
   const [alertLink, setLink] = useState("")
   const [alertOpen, setAlertOpen] = useState(false)
   const [alertBan, setAlertBan] = useState(false)
@@ -879,20 +878,14 @@ export default function Game(props) {
     }
     else{
       selection = characterRef.current.get(id);
-      path = getCharacterGifPath(selection);
       if(ban){
-        if(!alertBan){
-          setAlertBan(true);
-        }
+        path = getCharacterBanPath(selection);
       }
       else{
-        if(alertBan){
-          setAlertBan(false);
-        }
+        path = getCharacterGifPath(selection);
       }
       selection = CHARACTER_INFO[selection].displayName
     }
-    setAlert(selection)
     setLink(path);
     setAlertOpen(true);
     setTimeout(() => {
@@ -1899,7 +1892,7 @@ export default function Game(props) {
             }}
             setOrder={filterPicks}
           />
-          <GifPlay link={alertLink} selection={alertChar} isOpen={alertOpen} onClose={() => {}} ban={alertBan} />
+          <GifPlay link={alertLink} isOpen={alertOpen} onClose={() => {}} ban={alertBan} />
         </Fragment>
       )}
     </div>
