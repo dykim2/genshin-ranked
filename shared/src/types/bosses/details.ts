@@ -360,11 +360,11 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/77/ff/51/MEXSPGL_t.png",
 		index: 47,
 	},
-	[BOSSES.ChizangVishaps]: {
-		displayName: "Chizang Vishaps",
+	[BOSSES.ChizhangVishaps]: {
+		displayName: "Chizhang Vishaps",
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Legend,
-		imageFileName: "ChizangVishaps",
+		imageFileName: "ChizhangVishaps",
 		onlineFilePath: "https://thumbs4.imagebam.com/b9/46/85/METS4UI_t.png",
 		index: 36,
 	},

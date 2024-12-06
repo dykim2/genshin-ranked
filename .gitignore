@@ -28,3 +28,4 @@ dist-ssr
 
 # package
 package-lock.json
+package.json

@@ -50,7 +50,7 @@ export enum BOSSES {
     Deianeira="Deianeira",
     Rocky="Rocky",
     // 4.4
-    ChizangVishaps="ChizangVishaps",
+    ChizhangVishaps="ChizangVishaps",
     // 4.6
     Cineas="Cineas",
     // 5.0
