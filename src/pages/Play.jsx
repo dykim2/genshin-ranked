@@ -34,7 +34,7 @@ export default function Play(){
 
   const latestBoss = useRef();
   const api_list = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
-  const api = api_list[1]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
+  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
 
   const refreshGames = () => {
     setRefresh(true);
