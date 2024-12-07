@@ -16,19 +16,18 @@ export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
           <Box
             sx={{
               position: "absolute",
-              top: "50%",
-              left: "50%",
+              top: "40%",
+              left: "20%",
               transform: "translate(-50%, -50%)",
-              width: 300,
             }}
           >
             {ban ? (
                 <Fragment>
-                <img src={link} width="1024" height="300" style={{filter: "grayscale(70%)"}} />
+                <img src={link} width="1080" height="256" style={{filter: "grayscale(70%)"}} />
               </Fragment>
             ) : (
               <Fragment>
-                <img src={link} width="1024" height="300" />
+                <img src={link} width="1080" height="256" />
               </Fragment>
             )}
           </Box>
