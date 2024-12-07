@@ -34,7 +34,7 @@ export enum BOSSES {
     LegatusGolem="LegatusGolem",
     Goldflame="Goldflame",
     MountainKing="MountainKing",
-    Automoton="Automoton",
+    Automaton="Automaton",
     Papilla="Papilla",
 
     Azhdaha="Azhdaha",

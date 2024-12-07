@@ -48,11 +48,11 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/01/74/0b/METS4W8_t.png",
 		index: 20,
 	},
-	[BOSSES.Automoton]: {
-		displayName: "Automoton",
+	[BOSSES.Automaton]: {
+		displayName: "Automaton",
 		element: ELEMENTS.electro,
 		type: BOSS_TYPE.Standard,
-		imageFileName: "Automoton",
+		imageFileName: "Automaton",
 		onlineFilePath: "https://thumbs4.imagebam.com/dc/a7/c2/MEWLE3I_t.png",
 		index: 46,
 	},
