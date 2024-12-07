@@ -24,7 +24,7 @@ import { GifPlay } from "../components/GifPlay.tsx";
 const IMG_SIZE = 75; // use eventually
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
-const TOTAL_TIME = 31250;
+const TOTAL_TIME = 35500;
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
 // to make sure people don't refresh website to stall, maybe i can re-implement the turn thing, where a random pick is made if server says its their turn and the init is ran
@@ -890,7 +890,7 @@ export default function Game(props) {
     setAlertOpen(true);
     setTimeout(() => {
       setAlertOpen(false)
-    }, 1750); // shows for 1.75 seconds, can be changed
+    }, 5000); // shows for 5 seconds, can be changed
   }
   useEffect(() => {
     // console.log("yes")
@@ -1425,7 +1425,11 @@ export default function Game(props) {
             </div>
             <div className="grid newgrid two">
               <p className="boss boss-1">
-                {identity.fearless && (identity.result.toLowerCase() == "waiting" || identity.result.toLowerCase() == "boss") ? "fearless bosses active!" : null}
+                {identity.fearless &&
+                (identity.result.toLowerCase() == "waiting" ||
+                  identity.result.toLowerCase() == "boss")
+                  ? "fearless bosses active!"
+                  : null}
               </p>
               <div className="boss boss-2">
                 {/* console.log(identity.result == "progress" || identity.result == "finish") */}
@@ -1491,7 +1495,31 @@ export default function Game(props) {
                 );
               })}
             </div>
-            <div className="grid five">
+            <div
+              ref={(el) => { // borrowed code
+                if (!el) return;
+                let prevValue = JSON.stringify(el.getBoundingClientRect());
+                const start = Date.now();
+                const handle = setInterval(() => {
+                  let nextValue = JSON.stringify(el.getBoundingClientRect());
+                  if (nextValue === prevValue) {
+                    clearInterval(handle);
+                    /*
+                    console.log(
+                      `width stopped changing in ${
+                        Date.now() - start
+                      }ms. final width:`,
+                      el.getBoundingClientRect().width
+                    );
+                    */
+                    localStorage.setItem("width", el.getBoundingClientRect().width);
+                  } else {
+                    prevValue = nextValue;
+                  }
+                }, 100);
+              }}
+              className="grid five"
+            >
               <div>
                 {cookies.player.charAt(0) != "S" ? (
                   identity.result.toLowerCase() == "waiting" ||
@@ -1890,7 +1918,12 @@ export default function Game(props) {
             }}
             setOrder={filterPicks}
           />
-          <GifPlay link={alertLink} isOpen={alertOpen} onClose={() => {}} ban={alertBan} />
+          <GifPlay
+            link={alertLink}
+            isOpen={alertOpen}
+            onClose={() => {}}
+            ban={alertBan}
+          />
         </Fragment>
       )}
     </div>

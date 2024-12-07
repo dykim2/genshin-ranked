@@ -6,7 +6,7 @@ import { CHARACTERS } from "@genshin-ranked/shared";
 import { Typography } from "@mui/material";
 
 export default function CharacterList() { 
-    const charRef = useRef<Map<number, any>>();
+    const charRef = useRef<Map<number, any>>(null);
     const [info, setInfo] = useState<string[]>([""]);
     const displayInfo = (_teamNum: number, selectedObj: any, _timeout: boolean = false) => {
         console.log("test")

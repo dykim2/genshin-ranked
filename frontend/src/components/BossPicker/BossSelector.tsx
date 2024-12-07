@@ -32,8 +32,8 @@ export const BossSelector = ({
 		if(componentRef.current){
 			const {width, height} = componentRef.current.getBoundingClientRect();
 			console.log(`center: ${width/2}, ${height/2}`)
-			localStorage.setItem("width", `${width}`)
-			localStorage.setItem("height", `${height}`)
+			// localStorage.setItem("width", `${width}`)
+			// localStorage.setItem("height", `${height}`)
 		}
 	}, []) 
 	return (

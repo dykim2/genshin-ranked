@@ -159,7 +159,6 @@ export default function TimesModal(props){
     <Modal
       open={props.open}
       onClose={props.close}
-      aria-label="input times"
       aria-description="a modal to update time and pick information for players of a team"
     >
       <Box sx={styling}>
@@ -234,7 +233,6 @@ export default function TimesModal(props){
                 onClose={() => {
                   deactivateAnchor(2 * index + 1);
                 }}
-                MenuListProps={{ "aria-labelledby": "death-button" }}
               >
                 {deathMenu.map((player, ind) => {
                   return (

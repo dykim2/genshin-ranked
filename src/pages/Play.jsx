@@ -421,7 +421,6 @@ export default function Play(){
             <Typography>who gets extra bans?</Typography>
             <RadioGroup
               sx={{ color: "black" }}
-              aria-labelledby="who-gets-bans"
               name="extra-bans-group"
               row
               value={extraBans}

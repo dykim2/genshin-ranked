@@ -92,7 +92,6 @@ export default function OrderModal(props) {
       <Modal
         open={props.open}
         onClose={props.close}
-        aria-label="Order characters modal"
         aria-description="a modal to allow players of each team to change the order of their picks, to better represent who is and who plays who"
       >
         <Box sx={styling}>

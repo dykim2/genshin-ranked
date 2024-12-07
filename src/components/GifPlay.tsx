@@ -25,7 +25,7 @@ export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
             sx={{
               position: "absolute",
               top: "40%",
-              left: width,
+              left: width, // 2560 - 
             }}
           >
             {ban ? (
