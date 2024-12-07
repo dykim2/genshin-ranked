@@ -22,7 +22,7 @@ export default function Home(){
           fontFamily: "Roboto Mono",
           flexDirection: "column",
         }}
-      >
+      > 
         <Typography sx={{ fontSize: 60 }}>
           {`Welcome to the homepage of the Ranked website!`}
         </Typography>

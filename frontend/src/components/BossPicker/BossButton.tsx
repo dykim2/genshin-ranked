@@ -41,25 +41,23 @@ export const BossButton = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 }
 export const InnerBoss = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 	return (
-		<Tooltip title={BOSS_DETAIL[boss].displayName} arrow>
-			<Fragment>
-				<BossPicture boss={boss} />
-				<LabelBox>
-					<Typography
-						fontFamily={"Roboto Mono"}
-						sx={{
-							textOverflow: "ellipsis",
-							whiteSpace: "nowrap",
-							overflow: "hidden",
-							fontSize: selectDisplay ? 10.5 : 13,
-							fontWeight: "bold"
-						}}
-					>
-						{BOSS_DETAIL[boss].displayName}
-					</Typography>
-				</LabelBox>
-			</Fragment>
-		</Tooltip>
+		<Fragment>
+			<BossPicture boss={boss} />
+			<LabelBox>
+				<Typography
+					fontFamily={"Roboto Mono"}
+					sx={{
+						textOverflow: "ellipsis",
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						fontSize: selectDisplay ? 10.5 : 13,
+						fontWeight: "bold"
+					}}
+				>
+					{BOSS_DETAIL[boss].displayName}
+				</Typography>
+			</LabelBox>
+		</Fragment>
 	);
 }
 

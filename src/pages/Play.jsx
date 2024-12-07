@@ -34,7 +34,7 @@ export default function Play(){
 
   const latestBoss = useRef();
   const api_list = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
-  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
+  const api = api_list[1]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
 
   const refreshGames = () => {
     setRefresh(true);
@@ -100,11 +100,12 @@ export default function Play(){
   const choosePlayer = async (playerChoice, id, info = defaultInfo) => {
     info.player = playerChoice;
     if (playerChoice == "Ref (Custom)") {
+      info.player = "Ref";
       setOptions(true);
       return;
     }
     if (playerChoice.includes("Player ")) {
-      console.log("update player go");
+      info.player = playerChoice.substring(playerChoice.length - 1);
       playerChoice = playerChoice.substring(playerChoice.length - 1);
     }
     if (playerChoice == "Spectator" && creating) {
@@ -129,10 +130,10 @@ export default function Play(){
           player: "" + playerChoice,
         }),
       });
-      let info = await res.json();
+      let newInfo = await res.json();
       if (res.status != 200) {
         valid = false;
-        alert(info.message);
+        alert(newInfo.message);
       }
     } else if (creating) {
       let res = null;
