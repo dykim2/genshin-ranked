@@ -284,7 +284,7 @@ export const BOSS_DETAIL: BossMap = {
 		displayName: "Solitary Suanni",
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
-		imageFileName: "SolitarySuanni",
+		imageFileName: "Suanni",
 		onlineFilePath: "https://thumbs4.imagebam.com/66/f5/88/METS4V6_t.png",
 		index: 37,
 	},

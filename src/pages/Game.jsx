@@ -1512,13 +1512,14 @@ export default function Game(props) {
                       el.getBoundingClientRect().width
                     );
                     */
-                    localStorage.setItem("width", el.getBoundingClientRect().width);
+                    localStorage.setItem("x", el.getBoundingClientRect().x)
                   } else {
                     prevValue = nextValue;
                   }
                 }, 100);
               }}
               className="grid five"
+              style={{minWidth: 1080}}
             >
               <div>
                 {cookies.player.charAt(0) != "S" ? (

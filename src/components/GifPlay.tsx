@@ -1,5 +1,7 @@
 import { Box, Modal, Typography } from "@mui/material";
 import React, { Fragment } from "react";
+import { useCookies } from "react-cookie";
+import useScreenSize from "../hooks/useScreenSize.js"
 interface play {
     link: string; // should either end in .gif or .png or other image format
     isOpen: boolean;
@@ -11,11 +13,12 @@ interface play {
 export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
   let height = 500
   let width = 1000
-  if(localStorage.getItem("width") != null){
-    width = parseInt(localStorage.getItem("width")!) - 540
+  const [cookies, setCookies] = useCookies(["player"])
+  if(localStorage.getItem("x") != null && cookies.player.charAt(0).toLowerCase() == "s"){
+    width = parseInt(localStorage.getItem("x")!)
   }
-  if(localStorage.getItem("height") != undefined){
-    height = parseInt(localStorage.getItem("height")!) - 128
+  else{
+    width = (useScreenSize().width / 2) - 540
   }
     return (
       <React.Fragment>
@@ -24,7 +27,7 @@ export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
           <Box
             sx={{
               position: "absolute",
-              top: "40%",
+              top: "35%",
               left: width, // 2560 - 
             }}
           >
