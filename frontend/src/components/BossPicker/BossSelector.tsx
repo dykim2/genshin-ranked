@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     BOSSES,
 	ELEMENT_INFO,
@@ -27,7 +27,15 @@ export const BossSelector = ({
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState(false);
-
+	const componentRef: any = useRef(null)
+	useEffect(() => {
+		if(componentRef.current){
+			const {width, height} = componentRef.current.getBoundingClientRect();
+			console.log(`center: ${width/2}, ${height/2}`)
+			localStorage.setItem("width", `${width}`)
+			localStorage.setItem("height", `${height}`)
+		}
+	}, []) 
 	return (
 		<Stack direction="column">
 			<Stack direction="row" alignContent="center">
@@ -76,7 +84,7 @@ export const BossSelector = ({
 				<GroupToggle
 					value={elementFilter}
 					setValue={setElementFilter}
-					options={Object.values(ELEMENT_INFO)}
+					options={Object.values(ELEMENT_INFO)} 
 				/>
 			</Stack>
 			<Grid
@@ -86,6 +94,7 @@ export const BossSelector = ({
 				maxWidth="50vw"
 				minHeight="1000px"
 				id="char-selector-grid"
+				ref={componentRef}
 			>
 				{/* TODO: Wrap this with useMemo to minimize unnessecary refiltering of these values */}
 				{Object.values(BOSSES)

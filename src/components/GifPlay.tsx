@@ -9,6 +9,14 @@ interface play {
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
 export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
+  let height = 500
+  let width = 1000
+  if(localStorage.getItem("width") != null){
+    width = parseInt(localStorage.getItem("width")!) - 540
+  }
+  if(localStorage.getItem("height") != undefined){
+    height = parseInt(localStorage.getItem("height")!) - 128
+  }
     return (
       <React.Fragment>
         {/* turn this in to a component, maybe by providing a state variable*/}
@@ -17,8 +25,7 @@ export const GifPlay = ({link, isOpen, onClose, ban = false}: play) => {
             sx={{
               position: "absolute",
               top: "40%",
-              left: "20%",
-              transform: "translate(-50%, -50%)",
+              left: width,
             }}
           >
             {ban ? (
