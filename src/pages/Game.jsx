@@ -1496,7 +1496,8 @@ export default function Game(props) {
               })}
             </div>
             <div
-              ref={(el) => { // borrowed code
+              ref={(el) => {
+                // borrowed code
                 if (!el) return;
                 let prevValue = JSON.stringify(el.getBoundingClientRect());
                 const start = Date.now();
@@ -1512,94 +1513,32 @@ export default function Game(props) {
                       el.getBoundingClientRect().width
                     );
                     */
-                    localStorage.setItem("x", el.getBoundingClientRect().x)
+                    localStorage.setItem("x", el.getBoundingClientRect().x);
                   } else {
                     prevValue = nextValue;
                   }
                 }, 100);
               }}
               className="grid five"
-              style={{minWidth: 1080}}
+              style={
+                identity.result.toLowerCase() == "progress" ||
+                cookies.player.charAt(0).toLowerCase() == "s" ? (
+                  {minWidth: 1080}
+                ) : null
+              }
             >
               <div>
                 {cookies.player.charAt(0) != "S" ? (
                   identity.result.toLowerCase() == "waiting" ||
                   identity.result.toLowerCase() == "boss" ? (
-                    /* displayFilter(bosses, true).map((boss) => {
-                        return boss._id > 0 ? (
-                          <Tooltip key={boss._id} title={boss.boss} arrow>
-                            <img
-                              width={IMG_SIZE}
-                              height={IMG_SIZE}
-                              src={boss.icon}
-                              onClick={() => {
-                                setSelection({
-                                  type: "boss",
-                                  id: boss._id,
-                                  name: boss.boss,
-                                });
-                              }}
-                              style={{
-                                backgroundColor:
-                                  boss._id == selection.id &&
-                                  selection.type == "boss"
-                                    ? "red"
-                                    : typeof chosenBosses != "undefined" &&
-                                      chosenBosses != null &&
-                                      chosenBosses.includes(boss._id)
-                                    ? "black"
-                                    : "transparent",
-                                margin: 5,
-                              }}
-                            />
-                          </Tooltip>
-                        ) : null;
-                      })
-                    */
                     <BossDisplay
                       id={props.id}
                       team={turn}
                       pickSelection={sendSelection}
                       inGame={true}
                     />
-                  ) : null
-                ) : null}
-              </div>
-              <div>
-                {cookies.player.charAt(0) != "S" ? (
-                  identity.result.toLowerCase() == "ban" ||
-                  identity.result.toLowerCase() == "pick" ? (
-                    /* displayFilter(characters, false).map((char) => {
-                      return (
-                        <Tooltip title={char.name} key={char._id} arrow>
-                          <img
-                            width={IMG_SIZE}
-                            height={IMG_SIZE}
-                            src={char.icon}
-                            onClick={() => {
-                              setSelection({
-                                type: "character",
-                                id: char._id,
-                                name: char.name,
-                              });
-                            }}
-                            style={{
-                              backgroundColor:
-                                char._id == selection.id &&
-                                selection.type == "character"
-                                  ? "red"
-                                  : typeof chosenChars != "undefined" &&
-                                    chosenChars != null && 
-                                    chosenChars.includes(char._id)
-                                  ? "black"
-                                  : "transparent",
-                              margin: 5,
-                            }}
-                          />
-                        </Tooltip>
-                      );
-                    })
-                  */
+                  ) : identity.result.toLowerCase() == "ban" ||
+                    identity.result.toLowerCase() == "pick" ? (
                     <Balancing
                       team={turn}
                       phase={identity.result.toLowerCase()}
@@ -1778,13 +1717,6 @@ export default function Game(props) {
               })}
             </div>
             <div className="grid newgrid twelve">
-              <div className="grid times-1">
-                {/*
-                  <p style={{ marginTop: 15 }}>bosses: </p>
-                  <p style={{ marginTop: 36 }}>T1 times: </p>
-                  <p style={{ marginTop: 12 }}>T2 times: </p>
-                */}
-              </div>
               {timeOrder.slice(0, limit).map((time) => {
                 return (
                   <div className={`grid end times-${time + 1}`} key={time}>
@@ -1924,6 +1856,7 @@ export default function Game(props) {
             isOpen={alertOpen}
             onClose={() => {}}
             ban={alertBan}
+            progress={identity.result == "progress" || identity.result == "finish"}
           />
         </Fragment>
       )}

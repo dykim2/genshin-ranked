@@ -50,7 +50,7 @@ export const BossSelector = ({
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
 					sx={{
-						minWidth: 140,
+						minWidth: 240,
 						input: { color: "white" },
 						// Customizing the input text color
 						"& .MuiOutlinedInput-root": {

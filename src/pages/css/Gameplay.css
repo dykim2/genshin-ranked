@@ -68,10 +68,6 @@
 .five {
     grid-column: 2 / span 2;
     grid-row: row 2;
-    display: grid;
-    grid-gap: 5px;
-    grid-template-columns: auto-fill;
-    grid-template-rows: auto;
     overflow-x: scroll;
 }
 

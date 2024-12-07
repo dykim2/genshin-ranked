@@ -14,4 +14,4 @@ export default function Bosses() {
         <BossDisplay id={0} team={0} pickSelection={select} inGame={false} />
       </Fragment>
     );
-}
+} 
