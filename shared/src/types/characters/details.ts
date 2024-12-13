@@ -340,7 +340,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		element: ELEMENTS.pyro,
 		weapon: WEAPONS.polearm,
 		rarity: RARITY.FiveStar,
-		imageFileName: "HuTao",
+		imageFileName: "Hu Tao",
 		onlineFilePath: "https://thumbs4.imagebam.com/80/09/f3/METQJAJ_t.png",
 		index: 28,
 	},
