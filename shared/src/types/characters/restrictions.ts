@@ -30,7 +30,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
         differences: [-1],
         restrictions: [""]
     },
-    [CHARACTERS.AratakiItto]: {
+    [CHARACTERS.Itto]: {
         limit: 6,
         differences: [5, 6],
         restrictions: ["Redhorn Stonethresher | R3+ Serpent Spine", "Any 5* Weapon | Serpent Spine | Whiteblind"]
@@ -185,7 +185,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
         differences: [-1],
         restrictions: [""]
     },
-    [CHARACTERS.KaedeharaKazuha]: {
+    [CHARACTERS.Kazuha]: {
         limit: 6,
         differences: [6],
         restrictions: ["Any 4* Weapon"]
@@ -195,12 +195,12 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
         differences: [-1],
         restrictions: [""]
     },
-    [CHARACTERS.KamisatoAyaka]: {
+    [CHARACTERS.Ayaka]: {
         limit: 6,
         differences: [2, 3, 4],
         restrictions: ["Mistsplitter Reforged", "Any 5* Weapon | R3+ Wolf-Fang", "Any 2* Weapon"]
     },
-    [CHARACTERS.KamisatoAyato]: {
+    [CHARACTERS.Ayato]: {
         limit: 6,
         differences: [3, 6],
         restrictions: ["Haran Geppaku Futsu | Jade Cutter", "Any 4* Weapon | Harbinger of Dawn"]
@@ -315,7 +315,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
         differences: [-1],
         restrictions: [""]
     },
-    [CHARACTERS.RaidenShogun]: {
+    [CHARACTERS.Raiden]: {
         limit: 6,
         differences: [4, 6],
         restrictions: ["Any 5* Weapon | Wavebreaker's Fin | Deathmatch", "The Catch | Ballad of The Fjords"]
@@ -330,7 +330,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
         differences: [-1],
         restrictions: [""]
     },
-    [CHARACTERS.SangonomiyaKokomi]: {
+    [CHARACTERS.Kokomi]: {
         limit: 6,
         differences: [-1],
         restrictions: [""]
@@ -350,7 +350,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
         differences: [-1],
         restrictions: [""]
     },
-    [CHARACTERS.ShikanoinHeizou]: {
+    [CHARACTERS.Heizou]: {
         limit: 6,
         differences: [-1],
         restrictions: [""]

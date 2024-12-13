@@ -1856,7 +1856,6 @@ export default function Game(props) {
             isOpen={alertOpen}
             onClose={() => {}}
             ban={alertBan}
-            progress={identity.result == "progress" || identity.result == "finish"}
           />
         </Fragment>
       )}

@@ -435,7 +435,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		index: 10,
 	},
 	[CHARACTERS.KujouSara]: {
-		displayName: "Sara",
+		displayName: "Kujou Sara",
 		element: ELEMENTS.electro,
 		weapon: WEAPONS.bow,
 		rarity: RARITY.FourStar,
@@ -444,7 +444,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		index: 38,
 	},
 	[CHARACTERS.KukiShinobu]: {
-		displayName: "Shinobu",
+		displayName: "Kuki Shinobu",
 		element: ELEMENTS.electro,
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
@@ -650,7 +650,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/ec/bc/52/METS0IA_t.png",
 		index: 44,
 	},
-	[CHARACTERS.ShikanoinHeizou]: {
+	[CHARACTERS.Heizou]: {
 		displayName: "Heizou",
 		element: ELEMENTS.anemo,
 		weapon: WEAPONS.catalyst,
