@@ -12,33 +12,35 @@ export default function CharacterList() {
     const alertLink = useRef<string>("");
     const [open, setOpen] = useState(false)
     const displayInfo = (_teamNum: number, selectedObj: any, _timeout: boolean = false) => {
-        if (charRef.current == undefined) {
-          const newMap = new Map();
-          for (const someName in CHARACTER_INFO) {
-            newMap.set(CHARACTER_INFO[someName].index, someName);
-          }
-          charRef.current = newMap;
+      if (charRef.current == undefined) {
+        const newMap = new Map();
+        for (const someName in CHARACTER_INFO) {
+          newMap.set(CHARACTER_INFO[someName].index, someName);
         }
-        // get character using id from charRef
-        // get their restrictions
-        if(charRef.current != undefined){
-          let char_name: CHARACTERS = charRef.current.get(selectedObj.id);
-          let restrict: string[] = CHARACTER_RESTRICTIONS[char_name].restrictions
-          let limits: number[] = CHARACTER_RESTRICTIONS[char_name].differences;
-          let infoArr: string[] = [
-            `maximum constellation level allowed: ${CHARACTER_RESTRICTIONS[char_name].limit}`,
-          ];
-          for(let i: number = 0; i < limits.length; i++){
-              infoArr.push(limits[i] == -1 ? `No banned weapons` :`C${limits[i]}+ banned weapons: ${restrict[i]}`)
-          }
-          setInfo(infoArr)
+        charRef.current = newMap;
+      }
+      // get character using id from charRef
+      // get their restrictions
+      if(charRef.current != undefined){
+        let char_name: CHARACTERS = charRef.current.get(selectedObj.id);
+        let restrict: string[] = CHARACTER_RESTRICTIONS[char_name].restrictions
+        let limits: number[] = CHARACTER_RESTRICTIONS[char_name].differences;
+        let infoArr: string[] = [
+          `maximum constellation level allowed: ${CHARACTER_RESTRICTIONS[char_name].limit}`,
+        ];
+        for(let i: number = 0; i < limits.length; i++){
+            infoArr.push(limits[i] == -1 ? `No banned weapons` :`C${limits[i]}+ banned weapons: ${restrict[i]}`)
+        }
+        setInfo(infoArr)
+        /* // comment out for now, uncomment another time, this way the gifplay component doesnt appear at all 
           alertLink.current = getCharacterGifPath(char_name);
           setOpen(true)
           setTimeout(() => {
             setOpen(false)
           }, 5000); 
-          // bug fix the timer resetting
-        }
+        */
+        // bug fix the timer resetting
+      }
         
     }
     return (
@@ -54,12 +56,14 @@ export default function CharacterList() {
           inGame={false}
           bonusInfo={info}
         />
-        <GifPlay
+        {/*
+          <GifPlay
           link={alertLink.current}
           isOpen={open}
           onClose={() => {}}
           ban={false}
         />
+          */}
       </Fragment>
     );
 };
