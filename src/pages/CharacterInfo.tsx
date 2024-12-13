@@ -48,7 +48,7 @@ export default function CharacterList() {
         <Typography sx={{ fontSize: 60 }}>
           view character restrictions here!
         </Typography>
-        <Button>Show GIF for test</Button>
+        {/* <Button>Show GIF for test</Button>*/}
         <Balancing
           team={0}
           phase={""}
