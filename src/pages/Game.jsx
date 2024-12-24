@@ -335,8 +335,6 @@ const parseUpdate = (data) => {
   for(let i = 0; i < identity.pickst1.length; i++){
     newOrder.push(identity[`pickst${data.team}`][data.order[i]])
   }
-  console.log("new order");
-  console.log(newOrder);
   if(data.team != 1 && data.team != 2){
     newIden = {...identity};
   }
