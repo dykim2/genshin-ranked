@@ -16,11 +16,13 @@ import Grid from "@mui/material/Grid2";
 export interface Pick {
 	characterName: string;
 	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
+	selectedChars: number[]; // the selected characters; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
 }	
 
 export const CharacterSelector = ({
 	characterName,
-	updateCharacter
+	updateCharacter,
+	selectedChars
 }: Pick) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
@@ -116,6 +118,7 @@ export const CharacterSelector = ({
 									character={x}
 									updateCharacter={updateCharacter}
 									banDisplay={"loadout"}
+									isChosen={CHARACTER_INFO[x].index}
 								/>
 							</Grid>
 						) : null,

@@ -191,6 +191,17 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/90/f5/2a/METQJBG_t.png",
 		index: 4,
 	},
+	/*
+	[CHARACTERS.Citlali]: {
+		displayName: "Citlali",
+		element: ELEMENTS.cryo,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Citlali",
+		onlineFilePath: "https://thumbs4.imagebam.com/3a/76/7c/MEYIHI5_t.png",
+		index: 91,
+	},
+	*/
 	[CHARACTERS.Clorinde]: {
 		displayName: "Clorinde",
 		element: ELEMENTS.electro,
@@ -488,6 +499,17 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/f3/c0/c6/METQJAK_t.png",
 		index: 70,
 	},
+	/*
+	[CHARACTERS.Mavuika]: {
+		displayName: "Mavuika",
+		element: ELEMENTS.pyro,
+		weapon: WEAPONS.claymore,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Mavuika",
+		onlineFilePath: "https://thumbs4.imagebam.com/9d/2b/d7/MEYIHI3_t.png",
+		index: 12,
+	},
+	*/
 	[CHARACTERS.Mualani]: {
 		displayName: "Mualani",
 		element: ELEMENTS.hydro,

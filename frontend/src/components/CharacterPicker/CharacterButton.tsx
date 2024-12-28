@@ -12,10 +12,11 @@ import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/deta
 interface ICharacterButton {
 	character: CHARACTERS,
 	updateCharacter: React.Dispatch<React.SetStateAction<string>>,
-	banDisplay: string
+	banDisplay: string;
+	isChosen: boolean;
 }
 
-export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICharacterButton) => {
+export const CharacterButton = ({ character, updateCharacter, banDisplay, isChosen }: ICharacterButton) => {
 	// console.log("character")
 	// console.log(character)
 	// console.log(CHARACTER_INFO[character])
@@ -32,9 +33,10 @@ export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICha
 						character={character}
 						updateCharacter={updateCharacter}
 						banDisplay={banDisplay}
+						isChosen={isChosen}
 					/>
 				</PickWrapperBox>
-			)
+			);
 		}
 		case "ban": {
 			return (
@@ -43,6 +45,7 @@ export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICha
 						character={character}
 						updateCharacter={updateCharacter}
 						banDisplay={banDisplay}
+						isChosen={isChosen}
 					/>
 				</BanWrapperBox>
 			);
@@ -54,6 +57,7 @@ export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICha
 						character={character}
 						updateCharacter={updateCharacter}
 						banDisplay={banDisplay}
+						isChosen={isChosen}
 					/>
 				</NormalWrapperBox>
 			);
@@ -61,7 +65,7 @@ export const CharacterButton = ({ character, updateCharacter, banDisplay }: ICha
 	}
 };
 
-const InnerCharacter = ({character, updateCharacter, banDisplay}: ICharacterButton) => {
+const InnerCharacter = ({character, updateCharacter, banDisplay, isChosen}: ICharacterButton) => {
 	return (
 		<Fragment>
 			<CharacterPicture character={character} banDisplay={banDisplay} />

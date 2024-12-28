@@ -100,5 +100,5 @@ export enum CHARACTERS {
 	Chevreuse = "Chevreuse",
 	Kachina = "Kachina",
 	Ororon = "Ororon",
-	// LanYan = "LanYan"
+	// LanYan = "Lan Yan"
 }

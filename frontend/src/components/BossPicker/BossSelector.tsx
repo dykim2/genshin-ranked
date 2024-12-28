@@ -125,6 +125,7 @@ export const BossSelector = ({
 									boss={x}
 									updateBoss={updateBoss}
 									selectDisplay={false}
+									selectable={false}								
 								/>
 							</Grid>
 						) : null;
@@ -133,3 +134,4 @@ export const BossSelector = ({
 		</Stack>
 	);
 };
+// in line 128, replace selectable with all of the ids that have been chosen

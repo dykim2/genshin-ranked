@@ -2,6 +2,7 @@
  * Picture of a character, including the backdrop and element. Does NOT include name of character.
  */
 
+import React from "react";
 import {
 	CHARACTERS,
 	getCharacterElementImagePath,
@@ -11,8 +12,6 @@ import {
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 import { Box, Icon, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
-import React from "react";
-
 
 interface ICharacterPicture {
 	character: CHARACTERS, 

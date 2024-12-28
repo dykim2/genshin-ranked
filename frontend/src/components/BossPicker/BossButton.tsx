@@ -14,9 +14,10 @@ interface iBossButton {
     boss: BOSSES;
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 	selectDisplay: boolean;
+	selectable: boolean; // can this boss be chosen? if not grey it out
 }
 
-export const BossButton = ({boss, updateBoss, selectDisplay}: iBossButton) => {
+export const BossButton = ({boss, updateBoss, selectDisplay, selectable}: iBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
@@ -27,6 +28,7 @@ export const BossButton = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 				boss={boss}
 				updateBoss={updateBoss}
 				selectDisplay={selectDisplay}
+				selectable={selectable}
 			/>
 		</NormalWrapperBox>
 	) : (
@@ -35,11 +37,12 @@ export const BossButton = ({boss, updateBoss, selectDisplay}: iBossButton) => {
 				boss={boss}
 				updateBoss={updateBoss}
 				selectDisplay={selectDisplay}
+				selectable={true}
 			/>
 		</SelectedWrapperBox>
 	);
 }
-export const InnerBoss = ({boss, updateBoss, selectDisplay}: iBossButton) => {
+export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable}: iBossButton) => {
 	return (
 		<Fragment>
 			<BossPicture boss={boss} />

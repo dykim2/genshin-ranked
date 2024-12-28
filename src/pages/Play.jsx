@@ -7,7 +7,7 @@ import ActiveContext from "../contexts/ActiveContext.js";
 
 // start implementing redux!
 
-const gameInfo = () => JSON.stringify(sessionStorage.getItem("game")) || { connected: [0, 0, 0] };
+const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || { connected: [0, 0, 0] };
 
 export default function Play(){
   const [refreshing, setRefresh] = useState(false); // for a refresh games option
@@ -29,7 +29,7 @@ export default function Play(){
   const [bans, setBans] = useState([0, 0]);
 
   const [bonusParams, setParams] = useState([0, -2, -1, 0]);
-
+  const [creatingBO2, setBO2] = useState(false);
   const [fearless, setFearless] = useState(false);
 
   const latestBoss = useRef();
@@ -102,6 +102,11 @@ export default function Play(){
     if (playerChoice == "Ref (Custom)") {
       info.player = "Ref";
       setOptions(true);
+      return;
+    }
+    else if(playerChoice == "Ref (default BO2)"){
+      info.player = "Ref";
+      setBO2(true);
       return;
     }
     if (playerChoice.includes("Player ")) {
@@ -179,6 +184,28 @@ export default function Play(){
     flexDirection: "column",
     fontFamily: "Roboto Mono",
   };
+  const submitBO2 = async () => {
+    // assumes no initial bans
+    setBO2(false);
+    if(bonusParams[3] < -1){
+      alert("Please choose a valid game id for fearless bosses!");
+      return;
+    }
+    let info = {
+      _id: -1,
+      player: "1",
+      extrabanst1: 0,
+      extrabanst2: 0,
+      supportBans: "false",
+      bossCount: -1,
+      initialBosses: [-1, -1],
+      division: "advanced",
+      fearless: fearless,
+      fearlessID: fearless ? bonusParams[3] : -1,
+    };
+    await choosePlayer("Ref", -1, info);
+  }
+
   const submitCustom = async () => {
     // playerChoice is always ref - ref must join and decide these
     // similar to create game, but adds the extra information to the stats
@@ -340,6 +367,7 @@ export default function Play(){
                   "Player 1",
                   "Player 2",
                   "Ref",
+                  "Ref (default BO2)",
                   "Ref (Custom)",
                   "Spectator",
                 ].map((player, index) => {
@@ -348,9 +376,9 @@ export default function Play(){
                       <ListItemButton
                         onClick={() => choosePlayer(player, status._id)}
                         disabled={
-                          player == "Ref4 (Custom)" ||
+                          player == "Refe (Custom)" || // if i want to disable custom ref game i can do this in future
                           (typeof status.connected != "undefined" &&
-                            status.connected[index] == limit[index])
+                            status.connected[index] >= limit[index])
                         }
                       >
                         {player}
@@ -528,7 +556,7 @@ export default function Play(){
             error={bonusParams[2] < -1}
             onChange={(e) => updateFields(2, e.target.value, false)}
           />
-          
+
           <Typography textTransform="none">fearless bosses?</Typography>
           <Typography textTransform="none" fontSize="13px">
             enabling fearless bosses with a game id means the bosses from said
@@ -559,12 +587,12 @@ export default function Play(){
               label="game id"
               variant="outlined"
               defaultValue={bonusParams[3]}
+              error={bonusParams[3] < 0}
               onChange={(e) => {
                 updateFields(3, e.target.value, false);
               }}
             ></TextField>
           ) : null}
-          
 
           {/* for the id of fearless boss - game must be either in the "progress" or the "finish" state */}
         </DialogContent>
@@ -585,7 +613,42 @@ export default function Play(){
           </Button>
           <Button onClick={() => setOptions(false)}>
             <Typography textTransform="none" fontWeight="bold">
-              back
+              Cancel
+            </Typography>
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={creatingBO2}
+        onClose={() => {
+          setBO2(false);
+        }}
+        PaperProps={{style:{color: "black",backgroundColor: "#46bdc6"}}}
+      >
+        <DialogTitle>
+          <Typography textTransform="none">What id, if applicable, for fearless bosses?</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            helperText="the id of the game you want bosses from, or -1 for no fearless bosses"
+            label="game id"
+            variant="outlined"
+            defaultValue={bonusParams[3]}
+            error={bonusParams[3] < -1}
+            onChange={(e) => {
+              updateFields(3, e.target.value, false);
+            }}
+          ></TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={submitBO2}>
+            <Typography textTransform="none" fontWeight="bold">
+              Create BO2
+            </Typography>
+          </Button>
+          <Button onClick={() => setBO2(false)}>
+            <Typography textTransform="none" fontWeight="bold">
+              Cancel
             </Typography>
           </Button>
         </DialogActions>

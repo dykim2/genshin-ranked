@@ -417,7 +417,7 @@ export default function Game(props) {
   );
   const [turn, setTurn] = useState(identity.turn != undefined ? identity.turn : 1); // current turn
   const [cookies, setCookie] = useCookies(["player"]);
-  const socket = useContext(PlayingContext);
+  const socket = useRef(null);
 
   const [showT1Modal, setShowT1] = useState(false);
   const [showT2Modal, setShowT2] = useState(false);
@@ -445,6 +445,8 @@ export default function Game(props) {
   const characterRef = useRef();
   const bossRef = useRef();
 
+  const intentionalClose = useRef(false);
+
   const updateTurn = (turn) => {
     setTurn(turn);
     sessionStorage.setItem("turn", turn);
@@ -470,6 +472,7 @@ export default function Game(props) {
   // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
     // console.log(info);
+    console.log("identity");
     sessionStorage.removeItem('game');
     sessionStorage.setItem("game", JSON.stringify(info));
     setIdentity(info);
@@ -487,7 +490,7 @@ export default function Game(props) {
       alert("Please enter a valid number or decimal for the time.");
       return;
     }
-    socket.send(
+    socket.current.send(
       JSON.stringify({
         type: "times",
         id: props.id,
@@ -556,6 +559,10 @@ export default function Game(props) {
   };
 
   const sendSelection = (teamNum, selection, timeout = false) => {
+    if(socket.current.readyState != 1){
+      alert("Please refresh the page and try again!");
+      return;
+    }
     let gameID = props.id;
     // console.log(selection);
     // use the selection variable
@@ -632,7 +639,7 @@ export default function Game(props) {
           team: teamNum,
         },
       });
-      socket.send(req);
+      socket.current.send(req);
       updateTimer(false, true);
       return;
     }
@@ -727,7 +734,7 @@ export default function Game(props) {
     }
     updateTimer(false, true);
     // console.log("sent from sendselectione");
-    socket.send(req);
+    socket.current.send(req);
     return true;
   };
   /**
@@ -740,7 +747,7 @@ export default function Game(props) {
   const updateStatusInfo = (team, boss, choice, type) => {
     // for the specified team, edit the [status] array for the [boss] information by sending a socket request with information [choice] and menu type [type].
     // return;
-    socket.send(
+    socket.current.send(
       JSON.stringify({
         type: "status",
         menu: type,
@@ -775,7 +782,7 @@ export default function Game(props) {
         team == 1 ? (names[i] = playerst1[i]) : (names[i] = playerst2[i]);
       }
     }
-    socket.send(
+    socket.current.send(
       JSON.stringify({
         type: "team",
         team: team,
@@ -909,7 +916,7 @@ export default function Game(props) {
     if (sessionStorage.getItem("chosen_picks") == null) {
       sessionStorage.setItem("chosen_picks", JSON.stringify([]));
     }
-    if (
+    if ( // this
       localStorage.getItem("display_boss") != null &&
       localStorage.getItem("display_boss") != 0
     ) {
@@ -928,94 +935,86 @@ export default function Game(props) {
         setCharFilter(true);
       }
     });
-    socket.addEventListener("open", function (event) {
-      // this does not load more than once
-    });
-    if (typeof cookies.player == "undefined") {
-      setCookie("player", "spectate");
-    }
-    if (socket.readyState == 1) {
-      socket.send(
-        JSON.stringify({
-          type: "turn",
-          id: props.id,
-          getSelectionInfo: true,
-        })
-      );
-      if (sessionStorage.getItem("game") == null) {
-        console.log("socket open");
-        socket.send(
-          JSON.stringify({
-            type: "get",
-            id: props.id,
-          })
-        ); // should work if first connection is to here
+    const createSocket = () => {
+      let socket = new WebSocket("wss://rankedwebsocketapi.fly.dev/");
+      socket.addEventListener("open", function (event) {
+        // this does not load more than once
+        // build a reconnection algorithm here
+        console.log("socket opened here");
+        if (window.timer) {
+          clearInterval(window.timer);
+          window.timer = 0;
+        }
+      });
+      if (typeof cookies.player == "undefined") {
+        setCookie("player", "spectate");
       }
-      if (sessionStorage.getItem("bosses") == null) {
-        console.log("hihi");
+      if (socket.readyState == 1) {
         socket.send(
           JSON.stringify({
-            type: "find",
-            query: "boss",
+            type: "turn",
+            id: props.id,
+            getSelectionInfo: true,
           })
         );
-      }
-    }
-    // Listen for messages
-    socket.addEventListener("message", function (event) {
-      console.log(JSON.parse(event.data));
-      // console.log("^^^^");
-      let data = JSON.parse(event.data);
-      if (data.id != props.id) {
-        return; // do nothing if game does not match
-      }
-      if (data.type === "query") {
-        // since for some reason query is not equal to query in a switch statement
-        if (data.boss) {
-          sessionStorage.removeItem("bosses");
-          setBosses(data.bossList);
-          sessionStorage.setItem("bosses", JSON.stringify(data.bossList));
-        } else {
-          sessionStorage.removeItem("characters");
-          setCharacters(data.characterList);
-          sessionStorage.setItem("characters", data.characterList);
+        if (sessionStorage.getItem("game") == null) {
+          console.log("socket open");
+          socket.send(
+            JSON.stringify({
+              type: "get",
+              id: props.id,
+            })
+          ); // should work if first connection is to here
+        }
+        if (sessionStorage.getItem("bosses") == null) {
+          console.log("hihi");
+          socket.send(
+            JSON.stringify({
+              type: "find",
+              query: "boss",
+            })
+          );
         }
       }
-      if (data.message.toLowerCase() == "failure") {
-        console.log(data);
-        alert(data.error);
-        return;
-      }
-      let res = null;
-      switch (data.type) {
-        case "create": {
-          updateIdentity(data.game);
-          break;
-        }
-        case "get": {
-          updateIdentity(data.game);
-          updateTurn(data.game.turn);
-          break;
-        }
-        case "turn": {
-          /*
-          if(sessionStorage.getItem("turn") == data.turn && identity.result != "waiting" && identity.result != "progress"){
-            // refresh the page when picking
-            alert("If you refresh the page without picking, you will enter a random boss or pick and no ban.")
-            socket.send(JSON.stringify({
-              id: props._id,
-              type: "add",
-              changed: identity.result,
-              data: {
-                character: -3,
-                boss: -3,
-                team: data.turn,
-              },
-            }))
+      // Listen for messages
+      socket.addEventListener("message", function (event) {
+        console.log(JSON.parse(event.data));
+        // console.log("^^^^");
+        let data = JSON.parse(event.data);
+        if (data.id != props.id) {
+          return; // do nothing if game does not match
+        } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
+        if (data.type === "query") {
+          // since for some reason query is not equal to query in a switch statement
+          if (data.boss) {
+            sessionStorage.removeItem("bosses");
+            setBosses(data.bossList);
+            sessionStorage.setItem("bosses", JSON.stringify(data.bossList));
+          } else {
+            sessionStorage.removeItem("characters");
+            setCharacters(data.characterList);
+            sessionStorage.setItem("characters", data.characterList);
           }
-          */
-          updateTurn(data.turn);
-          /*
+        }
+        if (data.message.toLowerCase() == "failure") {
+          console.log(data);
+          alert(data.error);
+          return;
+        }
+        let res = null;
+        switch (data.type) {
+          case "create": {
+            updateIdentity(data.game);
+            break;
+          }
+          case "get": {
+            updateIdentity(data.game);
+            updateTurn(data.game.turn);
+            break;
+          }
+          case "turn": {
+            updateTurn(data.turn);
+            /*
           if (typeof data.bosses != "undefined") {
             sessionStorage.setItem(
               "chosen_bosses",
@@ -1027,12 +1026,15 @@ export default function Game(props) {
             setChosenChars(data.chars);
           }
           */
-          break;
-        }
-        case "boss": {
-          updateTimer(true, true);
-          res = parseBoss(data, cookies.player.charAt(0).toLowerCase() != "s");
-          /*
+            break;
+          }
+          case "boss": {
+            updateTimer(true, true);
+            res = parseBoss(
+              data,
+              cookies.player.charAt(0).toLowerCase() != "s"
+            );
+            /*
           let newBossArr = [];
           identity.bosses.forEach((boss) => {
             boss._id != -1 ? newBossArr.push(boss) : null;
@@ -1041,13 +1043,13 @@ export default function Game(props) {
           sessionStorage.setItem("chosen_bosses", JSON.stringify(newBossArr));
           setChosenBosses(newBossArr);
           */
-          showSelectionAlert(data.boss, true, false)
-          break;
-        }
-        case "ban": {
-          updateTimer(true, true);
-          res = parseBan(data, cookies.player.charAt(0).toLowerCase() != "s");
-          /*I
+            showSelectionAlert(data.boss, true, false);
+            break;
+          }
+          case "ban": {
+            updateTimer(true, true);
+            res = parseBan(data, cookies.player.charAt(0).toLowerCase() != "s");
+            /*I
           let newCharArr = [];
           if (chosenChars != null) {
             newCharArr = [...chosenChars];
@@ -1058,22 +1060,25 @@ export default function Game(props) {
           newCharArr.push(data.ban);
           setChosenChars(newCharArr); // add id to list of chosen
           */
-          showSelectionAlert(data.ban, false, true)
-          if (data.nextTeam == -2 || data.nextTeam == -1) {
-            socket.send(
-              JSON.stringify({
-                type: "switch",
-                phase: "pick",
-                id: props.id,
-              })
-            );
+            showSelectionAlert(data.ban, false, true);
+            if (data.nextTeam == -2 || data.nextTeam == -1) {
+              socket.send(
+                JSON.stringify({
+                  type: "switch",
+                  phase: "pick",
+                  id: props.id,
+                })
+              );
+            }
+            break;
           }
-          break;
-        }
-        case "pick": {
-          updateTimer(true, true);
-          res = parsePick(data, cookies.player.charAt(0).toLowerCase() != "s");
-          /*
+          case "pick": {
+            updateTimer(true, true);
+            res = parsePick(
+              data,
+              cookies.player.charAt(0).toLowerCase() != "s"
+            );
+            /*
           let newCharArr = [];
           if (chosenChars != null) {
             newCharArr = [...chosenChars];
@@ -1083,84 +1088,93 @@ export default function Game(props) {
           newCharArr.push(data.pick);
           setChosenChars(newCharArr);
           */
-          showSelectionAlert(data.pick, false, false)
-          if (data.nextTeam == -1) {
-            socket.send(
-              JSON.stringify({
-                type: "switch",
-                id: props.id,
-                phase: "progress",
-              })
-            );
-          } else if (data.nextTeam == -2) {
-            socket.send(
-              JSON.stringify({
-                type: "switch",
-                phase: "ban",
-                id: props.id,
-              })
-            );
-          }
-          break;
-        }
-        case "times": {
-          // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
-          res = parseTimes(data.time);
-          break;
-        }
-        case "TeamUpdate": {
-          res = parseUpdate(data);
-          break;
-        }
-        case "players": {
-          if(cookies.player.charAt(0) == 'R'){
-            let info = "";
-            for(let i = 0; i < data.playerStatus.length; i++){
-              if(i < 2){
-                info += `Player ${i+1} has joined: ${data.playerStatus[i]}\n`
-              }
-              else{
-                info += `Two or more refs have joined: ${data.playerStatus[i]}\n`
-              }
+            showSelectionAlert(data.pick, false, false);
+            if (data.nextTeam == -1) {
+              socket.send(
+                JSON.stringify({
+                  type: "switch",
+                  id: props.id,
+                  phase: "progress",
+                })
+              );
+            } else if (data.nextTeam == -2) {
+              socket.send(
+                JSON.stringify({
+                  type: "switch",
+                  phase: "ban",
+                  id: props.id,
+                })
+              );
             }
-            alert(info);
+            break;
           }
-          break;
-        }
-        case "status": {
-          res = parseStatus(data);
-          break;
-        }
-        case "phase": {
-          if (data.newPhase == "boss") {
-            updateTimer(true, true);
-            if(cookies.player.charAt(0).toLowerCase() != "s"){
-              alert("Draft starts now!");
+          case "times": {
+            // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
+            res = parseTimes(data.time);
+            break;
+          }
+          case "TeamUpdate": {
+            res = parseUpdate(data);
+            break;
+          }
+          case "players": {
+            if (cookies.player.charAt(0) == "R") {
+              let info = "";
+              for (let i = 0; i < data.playerStatus.length; i++) {
+                if (i < 2) {
+                  info += `Player ${i + 1} has joined: ${
+                    data.playerStatus[i]
+                  }\n`;
+                } else {
+                  info += `Two or more refs have joined: ${data.playerStatus[i]}\n`;
+                }
+              }
+              alert(info);
             }
-          } else if (data.newPhase == "ban" || data.newPhase == "pick") {
-            updateTimer(true, true);
+            break;
           }
-          res = {
-            ...JSON.parse(sessionStorage.getItem("game")),
-            result: data.newPhase,
-          };
-          break;
+          case "status": {
+            res = parseStatus(data);
+            break;
+          }
+          case "phase": {
+            if (data.newPhase == "boss") {
+              updateTimer(true, true);
+              if (cookies.player.charAt(0).toLowerCase() != "s") {
+                alert("Draft starts now!");
+              }
+            } else if (data.newPhase == "ban" || data.newPhase == "pick") {
+              updateTimer(true, true);
+            }
+            res = {
+              ...JSON.parse(sessionStorage.getItem("game")),
+              result: data.newPhase,
+            };
+            break;
+          }
         }
-      }
-      if (res != null) {
-        updateIdentity(res);
-        updateTurn(res.turn);
-      }
-    });
-    socket.addEventListener("close", function (event) {
-      console.log("closed");
-      socket.close();
-    });
-    socket.addEventListener("error", function (event) {
-      console.log("An error occured");
-      console.log(event.data);
-      socket.close();
-    });
+        if (res != null) {
+          updateIdentity(res);
+          updateTurn(res.turn);
+        }
+      });
+      socket.addEventListener("close", function (event) {
+        console.log("closed");
+        if (!window.timer) {
+          window.timer = setInterval(() => {socket = createSocket()}, 5000);
+        }
+        socket.close();
+      });
+      socket.addEventListener("error", function (event) {
+        console.log("An error occured");
+        console.log(event.data);
+        socket.close();
+      });
+      // console.log("socket build")
+      console.log(socket);
+      return socket;
+    }
+    socket.current = createSocket()
     /*
     let bossList = [];
     let bossIndexList = [];
@@ -1621,7 +1635,7 @@ export default function Game(props) {
                       className="boss-4"
                       sx={{ backgroundColor: "black", color: "yellow" }}
                       onClick={() => {
-                        socket.send(
+                        socket.current.send(
                           JSON.stringify({
                             type: "switch",
                             phase: "finish",
@@ -1638,7 +1652,7 @@ export default function Game(props) {
                       className="boss-4"
                       sx={{ backgroundColor: "black", color: "yellow" }}
                       onClick={() => {
-                        socket.send(
+                        socket.current.send(
                           JSON.stringify({
                             type: "switch",
                             phase: "boss",
@@ -1653,7 +1667,7 @@ export default function Game(props) {
                   <Button
                     className="boss-3"
                     onClick={() => {
-                      socket.send(
+                      socket.current.send(
                         JSON.stringify({
                           type: "players",
                           id: props.id,
@@ -1785,7 +1799,7 @@ export default function Game(props) {
               <Button
                 style={{ backgroundColor: "black", color: "yellow" }}
                 onClick={() => {
-                  socket.send(
+                  socket.current.send(
                     JSON.stringify({
                       type: "get",
                       phase: "ban",
