@@ -15,12 +15,26 @@ interface iBossButton {
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 	selectDisplay: boolean;
 	selectable: boolean; // can this boss be chosen? if not grey it out
+	isChosen?: boolean;
 }
 
-export const BossButton = ({boss, updateBoss, selectDisplay, selectable}: iBossButton) => {
+export const BossButton = ({boss, updateBoss, selectDisplay, selectable, isChosen}: iBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
+	}
+	if(isChosen){
+		return(
+			<NormalWrapperBox disableRipple onClick={doUpdate}>
+				<InnerBoss
+					boss={boss}
+					updateBoss={updateBoss}
+					selectDisplay={selectDisplay}
+					selectable={selectable}
+					isChosen={true}
+				/>
+			</NormalWrapperBox>
+		)
 	}
     return !selectDisplay ? (
 		<NormalWrapperBox disableRipple onClick={doUpdate}>
@@ -29,6 +43,7 @@ export const BossButton = ({boss, updateBoss, selectDisplay, selectable}: iBossB
 				updateBoss={updateBoss}
 				selectDisplay={selectDisplay}
 				selectable={selectable}
+				isChosen={isChosen}
 			/>
 		</NormalWrapperBox>
 	) : (
@@ -38,14 +53,15 @@ export const BossButton = ({boss, updateBoss, selectDisplay, selectable}: iBossB
 				updateBoss={updateBoss}
 				selectDisplay={selectDisplay}
 				selectable={true}
+				isChosen={isChosen}
 			/>
 		</SelectedWrapperBox>
 	);
 }
-export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable}: iBossButton) => {
+export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable, isChosen}: iBossButton) => {
 	return (
 		<Fragment>
-			<BossPicture boss={boss} />
+			<BossPicture boss={boss} isChosen={isChosen} />
 			<LabelBox>
 				<Typography
 					fontFamily={"Roboto Mono"}
@@ -54,7 +70,7 @@ export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable}: iBossBu
 						whiteSpace: "nowrap",
 						overflow: "hidden",
 						fontSize: selectDisplay ? 10.5 : 13,
-						fontWeight: "bold"
+						fontWeight: "bold",
 					}}
 				>
 					{BOSS_DETAIL[boss].displayName}

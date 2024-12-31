@@ -16,7 +16,7 @@ export interface CharacterDetail extends GenericDetails {
 	element: ELEMENTS;
 	weapon: WEAPONS;
 	rarity: RARITY;
-	index: Number;
+	index: number;
 }
 
 export const CHARACTER_INFO: CharacterMap = {
@@ -191,7 +191,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/90/f5/2a/METQJBG_t.png",
 		index: 4,
 	},
-	/*
 	[CHARACTERS.Citlali]: {
 		displayName: "Citlali",
 		element: ELEMENTS.cryo,
@@ -201,7 +200,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/3a/76/7c/MEYIHI5_t.png",
 		index: 91,
 	},
-	*/
 	[CHARACTERS.Clorinde]: {
 		displayName: "Clorinde",
 		element: ELEMENTS.electro,
@@ -463,6 +461,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/0b/62/de/METQJCI_t.png",
 		index: 48,
 	},
+	[CHARACTERS.LanYan]: {
+		displayName: "Lan Yan",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FourStar,
+		imageFileName: "LanYan",
+		onlineFilePath: "https://thumbs4.imagebam.com/69/ba/fa/MEYIHI6_t.png",
+		index: 92,
+	},
 	[CHARACTERS.Layla]: {
 		displayName: "Layla",
 		element: ELEMENTS.cryo,
@@ -499,7 +506,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/f3/c0/c6/METQJAK_t.png",
 		index: 70,
 	},
-	/*
+
 	[CHARACTERS.Mavuika]: {
 		displayName: "Mavuika",
 		element: ELEMENTS.pyro,
@@ -507,9 +514,9 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Mavuika",
 		onlineFilePath: "https://thumbs4.imagebam.com/9d/2b/d7/MEYIHI3_t.png",
-		index: 12,
+		index: 93,
 	},
-	*/
+
 	[CHARACTERS.Mualani]: {
 		displayName: "Mualani",
 		element: ELEMENTS.hydro,

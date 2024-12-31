@@ -9,10 +9,11 @@ interface balance {
 	id: number; // game ID - useful but likely not needed
 	team: number;
 	pickSelection: ( teamNum: number, selectedObj: object, timeout: boolean ) => void;
-	inGame: boolean
+	inGame: boolean;
+	selections: number[];
 }
 
-export const BossDisplay = ({id, team, pickSelection, inGame}: balance) => {
+export const BossDisplay = ({id, team, pickSelection, inGame, selections}: balance) => {
 	const [cookieInfo] = useCookies(["player"]);
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -23,7 +24,7 @@ export const BossDisplay = ({id, team, pickSelection, inGame}: balance) => {
 	const info = sessionStorage.getItem("game");
 	let newInfo: number;
 	let currentResult: string = "";
-	if (info != null) {
+	if (info != null && info != undefined && info != "") {
 		let infoParse = JSON.parse(info);
 		newInfo = infoParse.turn;
 		currentResult = infoParse.result;
@@ -72,7 +73,7 @@ export const BossDisplay = ({id, team, pickSelection, inGame}: balance) => {
 				}}
 				id="boss-selection-box"
 			>
-				<BossSelector bossName={selection} updateBoss={setSelection} />
+				<BossSelector updateBoss={setSelection} selections={selections} />
 			</Box>
 			{/* button details, other useful information for boss phase */}
 			<Box sx={{ padding: 2, width: "500px" }}>

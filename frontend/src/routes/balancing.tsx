@@ -18,9 +18,10 @@ interface balance {
 	pickSelection: (teamNum: number, selectedObj: object, timeout: boolean) => void;
 	inGame: boolean;
 	bonusInfo: string[];
+	selections: number[]
 }
 
-export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo}: balance) => {
+export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo, selections}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
 	const [cookieInfo] = useCookies(["player"]);
 	let matching = true;
@@ -65,13 +66,14 @@ export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo}: balan
 			{/* Left Side: Button Grid */}
 			<Box
 				sx={{
-					borderRight: "1px solid #ccc",
+					borderRight: "1px solid #ccc",	
 				}}
 				id="character-selector-container"
 			>
 				<CharacterSelector
 					characterName={selection}
 					updateCharacter={setSelection}
+					selectedChars={selections}
 				/>
 			</Box>
 			{/* Right Side: Button Details */}

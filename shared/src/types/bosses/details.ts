@@ -10,7 +10,7 @@ type BossMap = {
 interface BossInfo extends GenericDetails {
     element: ELEMENTS;
     type: BOSS_TYPE;
-    index: Number;
+    index: number;
 }
 // index is the way the server communicates to determine what boss to place on the screen
 

@@ -32,6 +32,9 @@ export default function NaviBar(){
                 <NavLink to="/bosses">Bosses</NavLink>
               </li>
               <li>
+                <NavLink to="/guide">Guide</NavLink>
+              </li>
+              <li>
                 <NavLink to="/rules">Rules</NavLink>
               </li>
               <li>

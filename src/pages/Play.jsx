@@ -371,7 +371,7 @@ export default function Play(){
                   "Ref (Custom)",
                   "Spectator",
                 ].map((player, index) => {
-                  return creating || (!creating && player != "Ref (Custom)") ? (
+                  return creating || (!creating && player != "Ref (Custom)" && player != "Ref (default BO2)") ? (
                     <ListItem disableGutters key={player}>
                       <ListItemButton
                         onClick={() => choosePlayer(player, status._id)}

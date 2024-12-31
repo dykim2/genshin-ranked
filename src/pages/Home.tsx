@@ -22,7 +22,7 @@ export default function Home(){
           fontFamily: "Roboto Mono",
           flexDirection: "column",
         }}
-      > 
+      >
         <Typography sx={{ fontSize: 60 }}>
           {`Welcome to the homepage of the Ranked website!`}
         </Typography>
@@ -41,9 +41,16 @@ export default function Home(){
           <Button
             variant="contained"
             sx={{ fontSize: 30 }}
-            href="https://docs.google.com/spreadsheets/d/11syVe0tiQUvVxWnL17SpD_Z7WTrQ1EkDboVGFDXkSXo/edit?gid=960982211#gid=960982211"
+            href="https://docs.google.com/spreadsheets/d/1pKupoKUxiT_pFFgL53yDEgtMZWdPCYetk9OZiF2-474/edit?gid=2094575644#gid=2094575644"
           >
-            Ranked League Season 2 Sheet
+            Player Spreadsheet (casual)
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ fontSize: 30 }}
+            href="https://docs.google.com/spreadsheets/d/1uQ6sFSPISXJIOyb9M7UYFSTq-iJQ2RtSph4aDAmlD_8/edit?gid=458647158#gid=458647158"
+          >
+            Ranked Statistics sheet
           </Button>
           <Button
             variant="contained"

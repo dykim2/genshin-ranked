@@ -16,26 +16,30 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 // an exact copy of character selector applied for bosses - should make a selector component instead but this way gets the changes out faster
 
 export interface IBoss {
-	bossName: string;
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
+	selections: number[]; // the selected bosses; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
 }
 
 export const BossSelector = ({
-	bossName,
-	updateBoss
+	updateBoss,
+	selections
 }: IBoss) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
-	const [isFocused, setIsFocused] = useState(false);
+	const [isFocused, setIsFocused] = useState<boolean>(false);
+	const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selections changes
 	const componentRef: any = useRef(null)
 	useEffect(() => {
+		/*
 		if(componentRef.current){
 			const {width, height} = componentRef.current.getBoundingClientRect();
 			console.log(`center: ${width/2}, ${height/2}`)
 			// localStorage.setItem("width", `${width}`)
 			// localStorage.setItem("height", `${height}`)
 		}
-	}, []) 
+		*/
+		setCount(count => count + 1);
+	}, [selections]) 
 	return (
 		<Stack direction="column">
 			<Stack direction="row" alignContent="center">
@@ -125,7 +129,8 @@ export const BossSelector = ({
 									boss={x}
 									updateBoss={updateBoss}
 									selectDisplay={false}
-									selectable={false}								
+									selectable={false}
+									isChosen={selections.includes(BOSS_DETAIL[x].index)}						
 								/>
 							</Grid>
 						) : null;

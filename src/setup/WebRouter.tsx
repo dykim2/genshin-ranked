@@ -14,8 +14,9 @@ import ActiveContext from "../contexts/ActiveContext.js";
 import { PlayingContext, socket } from "../contexts/PlayingContext.js";
 import React from "react";
 import { BossDisplay } from "../../frontend/src/routes/bosses.tsx";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Bosses from "../pages/BossInfo.tsx";
+import { Guide } from "../pages/Guide.tsx";
 
 export default function WebRouter() {
   const [characters, setCharacters] = useContext(CharacterContext);
@@ -53,21 +54,26 @@ export default function WebRouter() {
     getChars();
     findActive();
   }, []);
-  const centerStyle = {
+  const centerStyle: React.CSSProperties = {
+    marginTop: 200,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    whitespace: "pre-line",
-    marginTop: 300,
+    whiteSpace: "pre-line",
+    fontFamily: "Roboto Mono",
+    flexDirection: "column",
   };
   function ErrorPage() {
     return (
       <div style={centerStyle}>
         <h1 style={{ fontSize: 65 }}>Oh no, something went wrong!</h1>
         <p style={{ fontSize: 50 }}>
-          Navigate to / to return home, and please send a bug report explaining
+          Press the button below to return home, and please send a bug report explaining
           how you got to this screen.
         </p>
+        <Button variant="contained" sx={{ fontSize: 30 }} href="/">
+          Return Home
+        </Button>
       </div>
     );
   }
@@ -96,6 +102,7 @@ export default function WebRouter() {
         />
         <Route path="/test" element={<Player />} />
         <Route path="/redirect" element={<Redirect />} />
+        <Route path="/guide" element={<Guide />} />
         {/*
         {characters.map((char: { _id: React.Key | null | undefined; name: string; image: string; }) => {
           return (

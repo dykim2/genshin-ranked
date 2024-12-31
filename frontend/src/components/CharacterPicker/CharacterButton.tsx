@@ -25,6 +25,18 @@ export const CharacterButton = ({ character, updateCharacter, banDisplay, isChos
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`)
 	};
+	if(isChosen){
+		return(
+			<NormalWrapperBox disableRipple onClick={doUpdate}>
+				<InnerCharacter
+					character={character}
+					updateCharacter={updateCharacter}
+					banDisplay={"ban"}
+					isChosen={isChosen}
+				/>
+			</NormalWrapperBox>
+		)
+	}
 	switch (banDisplay) {
 		case "pick": {
 			return (

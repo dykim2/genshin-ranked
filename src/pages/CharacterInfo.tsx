@@ -55,8 +55,9 @@ export default function CharacterList() {
           pickSelection={displayInfo}
           inGame={false}
           bonusInfo={info}
+          selections={[]}
         />
-        {/*
+        {/* empty selections as this section is for display purposes only.
           <GifPlay
           link={alertLink.current}
           isOpen={open}

@@ -18,7 +18,6 @@ export const GifPlay = ({
 }: play) => {
   let width = 1000;
   const [cookies, setCookies] = useCookies(["player"]);
-  console.log("cookies");
   if (
     cookies.player != undefined &&
     localStorage.getItem("x") != null &&

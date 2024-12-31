@@ -12,24 +12,41 @@ import React from "react";
 
 interface IBossPicture {
     boss: BOSSES;
+	isChosen?: boolean;
 }
-export const BossPicture = ({ boss }: IBossPicture) => {
+export const BossPicture = ({ boss, isChosen }: IBossPicture) => {
     return (
 		<Box sx={{ backgroundColor: "white" }}>
-			<GradientBox type={BOSS_DETAIL[boss].type}>
-				<Image src={getBossImagePath(boss)} />
-				{boss != BOSSES.None ? (
-					<IconWrapper disabled>
-						<IconImage src={getBossElementImagePath(boss)} />
-					</IconWrapper>
-				) : null}
-			</GradientBox>
+			{isChosen ? (
+				<GradientBox type={null}>
+					<Image
+						src={getBossImagePath(boss)}
+						sx={{ filter: "grayscale(100%)" }}
+					/>
+					{boss != BOSSES.None ? (
+						<IconWrapper disabled>
+							<IconImage src={getBossElementImagePath(boss)} />
+						</IconWrapper>
+					) : null}
+				</GradientBox>
+			) : (
+				<GradientBox type={BOSS_DETAIL[boss].type}>
+					<Image
+						src={getBossImagePath(boss)}
+					/>
+					{boss != BOSSES.None ? (
+						<IconWrapper disabled>
+							<IconImage src={getBossElementImagePath(boss)} />
+						</IconWrapper>
+					) : null}
+				</GradientBox>
+			)}
 		</Box>
 	);
 }
 
 interface IGradientBox {
-	type: BOSS_TYPE;
+	type: BOSS_TYPE | null;
 }
 
 const LEGEND_GRADIENT =
@@ -38,9 +55,11 @@ const WEEKLY_GRADIENT =
 	"linear-gradient(160deg, rgba(89, 84, 130, 1) 0%, rgba(120, 102, 157, 1) 39%, rgba(183, 133, 201, 1) 100%)";
 const STANDARD_GRADIENT =
 	"linear-gradient(160deg, rgba(60, 84, 100, 1) 0%, rgba(100, 98, 140, 1) 39%, rgba(163, 103, 171, 1) 100%)";
+const BANNED_GRADIENT =
+	"linear-gradient(90deg, rgba(212,212,212,1) 0%, rgba(154,154,154,1) 14%, rgba(112,112,112,1) 100%)";
 
 const GradientBox = styled(Box)(({ type }: IGradientBox) => ({
-	background:type == BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,
+	background: type == null ? BANNED_GRADIENT : BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,
 	position: "relative",
 	display: "flex",
 	alignItems: "center",

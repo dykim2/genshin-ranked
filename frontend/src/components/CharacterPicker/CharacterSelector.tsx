@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import {
 	CHARACTERS,
 	ELEMENT_INFO,
@@ -27,7 +27,10 @@ export const CharacterSelector = ({
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState<Boolean>(false);
-
+	const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selectedChars changes
+	useEffect(() => {
+		setCount(count => count + 1);
+	}, [selectedChars])
 	return (
 		<Stack direction="column">
 			<Stack direction="row" alignContent="center">
@@ -118,7 +121,7 @@ export const CharacterSelector = ({
 									character={x}
 									updateCharacter={updateCharacter}
 									banDisplay={"loadout"}
-									isChosen={CHARACTER_INFO[x].index}
+									isChosen={selectedChars.includes(CHARACTER_INFO[x].index)}
 								/>
 							</Grid>
 						) : null,

@@ -111,13 +111,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
-	/*
 	[CHARACTERS.Citlali]: {
 		limit: 6,
 		differences: [-1],
 		restrictions: ["To be determined"],
 	},
-	*/
 	[CHARACTERS.Clorinde]: {
 		limit: 2,
 		differences: [0, 1, 2],
@@ -283,6 +281,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
+	[CHARACTERS.LanYan]: {
+		limit: 6,
+		differences: [-1],
+		restrictions: [""],
+	},
 	[CHARACTERS.Layla]: {
 		limit: 6,
 		differences: [-1],
@@ -313,13 +316,13 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
-	/*
+	
 	[CHARACTERS.Mavuika]: {
 		limit: 6,
-		differences: [-1],
+		differences: [0],
 		restrictions: ["To be determined"],
 	},
-	*/
+	
 	[CHARACTERS.Mualani]: {
 		limit: 1,
 		differences: [1],
