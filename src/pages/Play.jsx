@@ -200,8 +200,8 @@ export default function Play(){
       bossCount: -1,
       initialBosses: [-1, -1],
       division: "advanced",
-      fearless: fearless,
-      fearlessID: fearless ? bonusParams[3] : -1,
+      fearless: bonusParams[3] > -1,
+      fearlessID: bonusParams[3] > -1 ? bonusParams[3] : -1,
     };
     await choosePlayer("Ref", -1, info);
   }
@@ -497,7 +497,8 @@ export default function Play(){
             />
           ) : null}
           <br />
-          <Typography>are the extra bans for supports only?</Typography>
+          {/* remove support bans exclusivity for now */}
+          {/*<Typography>are the extra bans for supports only?</Typography>
           <Typography textTransform="none" fontSize="13px">
             support characters include kazuha, xilonen, furina, and nahida.
           </Typography>
@@ -518,7 +519,7 @@ export default function Play(){
                 label={"no"}
               />
             </RadioGroup>
-          </FormControl>
+          </FormControl>*/}
           <Typography>how many extra bosses?</Typography>
           <Typography textTransform="none" fontSize="13px">
             the default number of bosses is 7. the minimum is 5 and the maximum

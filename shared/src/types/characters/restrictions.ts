@@ -112,9 +112,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [""],
 	},
 	[CHARACTERS.Citlali]: {
-		limit: 6,
+		limit: 1,
 		differences: [-1],
-		restrictions: ["To be determined"],
+		restrictions: [],
 	},
 	[CHARACTERS.Clorinde]: {
 		limit: 2,
@@ -316,13 +316,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
-	
 	[CHARACTERS.Mavuika]: {
-		limit: 6,
-		differences: [0],
-		restrictions: ["To be determined"],
+		limit: 1,
+		differences: [0,1],
+		restrictions: ["A Thousand Blazing Suns | Beacon of the Reed Sea | Serpent Spine R3+", "Any 5* Weapon | Serpent Spine"],
 	},
-	
 	[CHARACTERS.Mualani]: {
 		limit: 1,
 		differences: [1],

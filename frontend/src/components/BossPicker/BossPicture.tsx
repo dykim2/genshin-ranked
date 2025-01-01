@@ -8,7 +8,6 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 import { BOSS_TYPE } from "@genshin-ranked/shared/src/types/level";
 import { Box, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
-import React from "react";
 
 interface IBossPicture {
     boss: BOSSES;
@@ -18,7 +17,7 @@ export const BossPicture = ({ boss, isChosen }: IBossPicture) => {
     return (
 		<Box sx={{ backgroundColor: "white" }}>
 			{isChosen ? (
-				<GradientBox type={null}>
+				<ChosenBox>
 					<Image
 						src={getBossImagePath(boss)}
 						sx={{ filter: "grayscale(100%)" }}
@@ -28,7 +27,7 @@ export const BossPicture = ({ boss, isChosen }: IBossPicture) => {
 							<IconImage src={getBossElementImagePath(boss)} />
 						</IconWrapper>
 					) : null}
-				</GradientBox>
+				</ChosenBox>
 			) : (
 				<GradientBox type={BOSS_DETAIL[boss].type}>
 					<Image
@@ -58,8 +57,17 @@ const STANDARD_GRADIENT =
 const BANNED_GRADIENT =
 	"linear-gradient(90deg, rgba(212,212,212,1) 0%, rgba(154,154,154,1) 14%, rgba(112,112,112,1) 100%)";
 
+const ChosenBox = styled(Box)(() => ({
+	background: BANNED_GRADIENT,
+	position: "relative",
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	borderRadius: "8px 8px 15px 0px",
+	overflow: "hidden",
+}))
 const GradientBox = styled(Box)(({ type }: IGradientBox) => ({
-	background: type == null ? BANNED_GRADIENT : BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,
+	background: type == BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,
 	position: "relative",
 	display: "flex",
 	alignItems: "center",

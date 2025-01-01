@@ -288,6 +288,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/66/f5/88/METS4V6_t.png",
 		index: 37,
 	},
+	[BOSSES.Spiritspeaker]: {
+		displayName: "Spiritspeaker",
+		element: ELEMENTS.cryo,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Spiritspeaker",
+		onlineFilePath: "https://thumbs4.imagebam.com/ba/18/2c/MEYMYLP_t.png",
+		index: 49,
+	},
 	[BOSSES.Thunderbird]: {
 		displayName: "Thunderbird",
 		element: ELEMENTS.electro,

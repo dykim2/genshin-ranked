@@ -79,29 +79,43 @@ const parseBoss = (data) => {
   }
   let returnVal = "";
   if (data.nextTeam == -1) {
-    /*
-    if(alerted){
-      alert(
-        "Team 2 has selected " + bossList[data.boss + 1].boss + " for their boss!"
-      );
-    }
-    */
     if(long){
-      returnVal = {
-        ...identity,
-        result: "ban",
-        bosses: newBosses,
-        longBoss: longArr,
-        turn: 1,
-      };
+      if(identity.extrabans.length > 0){
+        returnVal = {
+          ...identity,
+          result: "extraban",
+          bosses: newBosses,
+          longBoss: longArr,
+          turn: identity.extrabanst1 > 0 ? 1 : 2,
+        };
+      }
+      else{
+        returnVal = {
+          ...identity,
+          result: "ban",
+          bosses: newBosses,
+          longBoss: longArr,
+          turn: 1,
+        };
+      }
     }
     else{
-      returnVal = {
-        ...identity,
-        result: "ban",
-        bosses: newBosses,
-        turn: 1,
-      };
+      if(identity.extrabans.length > 0){
+        returnVal = {
+          ...identity,
+          result: "extraban",
+          bosses: newBosses,
+          turn: identity.extrabanst1 > 0 ? 1 : 2, // 1 if short boss, 2 if long
+        };
+      }
+      else{
+        returnVal = {
+          ...identity,
+          result: "ban",
+          bosses: newBosses,
+          turn: 1,
+        };
+      }
     }
     
   } else {
@@ -136,12 +150,25 @@ const parseBoss = (data) => {
   // console.log(returnVal);
   return returnVal;
 };
-const parseBan = (data, alerted = true) => {
+/**
+ * 
+ * @param {Object} data the data returned from the server
+ * @param {boolean} extra whether this ban is an extra ban or not
+ * @returns a copy of the game information, with the extra information added
+ */
+const parseBan = (data, extra = false) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   // check accordingly
-  let newBans = [...identity.bans];
-  let nextArr = [0, 2, 1];
+  let newBans = [];
+  if(extra){
+    newBans = [...identity.extrabans];
+    console.log(newBans);
+  }
+  else{
+    newBans = [...identity.bans];
+    console.log(newBans);
+  }
   let index = -1;
   let noBan = {
     _id: -2,
@@ -151,54 +178,67 @@ const parseBan = (data, alerted = true) => {
     icon: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
     chosen: false
   };
-  let noBanChoice = false;
-  for (let i = 0; i < identity.bans.length; i++) {
-    if (identity.bans[i]._id == -1) {
-      if(data.ban == -2){
-        // no ban
-        newBans[i] = noBan;
-        noBanChoice = true;
-      }
-      else{
-        // valid ban, find the character info and insert it
-        for (let j = 0; j < charList.length; j++) {
-          if (charList[j]._id == data.ban) {
-            newBans[i] = charList[j];
-            index = j;
-            break;
+  if(extra){ // add to extra bans over normal bans
+    for (let i = 0; i < identity.extrabans.length; i++) {
+      if (identity.extrabans[i]._id == -1) {
+        if (data.extraban == -2) {
+          // no ban
+          newBans[i] = noBan;
+          noBanChoice = true;
+        } else {
+          // valid ban, find the character info and insert it
+          for (let j = 0; j < charList.length; j++) {
+            if (charList[j]._id == data.extraban) {
+              newBans[i] = charList[j];
+              index = j;
+              break;
+            }
           }
         }
+        break;
       }
-      break;
+    }
+  }
+  else{
+    for (let i = 0; i < identity.bans.length; i++) {
+      if (identity.bans[i]._id == -1) {
+        if (data.ban == -2) {
+          // no ban
+          newBans[i] = noBan;
+          noBanChoice = true;
+        } else {
+          // valid ban, find the character info and insert it
+          for (let j = 0; j < charList.length; j++) {
+            if (charList[j]._id == data.ban) {
+              newBans[i] = charList[j];
+              index = j;
+              break;
+            }
+          }
+        }
+        break;
+      }
     }
   }
   if (data.nextTeam == -2) {
-    /*
-    if(alerted){
-      if(noBanChoice){
-        alert("Team 2 decided to not ban a character!");
-      }
-      else{
-        alert("Team 2 has banned " + charList[index].name + "!");
-      }
+    if(extra){
+      return {
+        ...identity,
+        extrabans: newBans,
+        result: "ban",
+        turn: 1,
+      };
     }
-    */
-    return {
-      ...identity,
-      bans: newBans,
-      result: "pick",
-      turn: 1,
-    };
+    else{
+      return {
+        ...identity,
+        bans: newBans,
+        result: "pick",
+        turn: 1,
+      };
+    }
   } else if (data.nextTeam == -1) {
-    /*
-    if(alerted){
-      if (noBanChoice) {
-      alert("Team 1 decided to not ban a character!");
-      } else {
-        alert("Team 1 has banned " + charList[index].name + "!");
-      }
-    }
-    */
+    // extra ban should never trigger here - second phase of bans -> picks
     return {
       ...identity,
       bans: newBans,
@@ -206,29 +246,24 @@ const parseBan = (data, alerted = true) => {
       turn: 2,
     };
   } else {
-    /*
-    if(alerted){
-      if (noBanChoice) {
-        alert("Team " + nextArr[data.nextTeam] + " decided to not ban a character!");
-      } else {
-        alert(
-          "Team " +
-            nextArr[data.nextTeam] +
-            " has banned " +
-            charList[index].name +
-            "!"
-        );
-      }
+    if(extra){
+      console.log("sent from parseban");
+      return {
+        ...identity,
+        extrabans: newBans,
+        turn: data.nextTeam,
+      };
     }
-    */
-    return {
-      ...identity,
-      bans: newBans,
-      turn: data.nextTeam,
-    };
+    else{
+      return {
+        ...identity,
+        bans: newBans,
+        turn: data.nextTeam,
+      };
+    }
   }
 };
-const parsePick = (data, alerted = true) => {
+const parsePick = (data) => {
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   let returnInfo = "";
@@ -278,32 +313,16 @@ const parsePick = (data, alerted = true) => {
     console.log("sent from parsepick");
     returnInfo = {
       ...returnInfo,
-      result: "play",
+      result: "progress",
       turn: -1,
     };
-    /*
-    if(alerted){
-      alert("Team 1 has selected " + charList[index].name + "!");
-    }
-    */
   } else if (data.nextTeam == -2) {
     // second phase of bans
-    /*
-    if(alerted){
-      alert("Team 2 has selected " + charList[index].name + "!");
-    }
-    */
     returnInfo = {
       ...returnInfo,
       result: "ban",
       turn: 2,
     };
-  } else {
-    /*
-    if(alerted){
-      alert("Team " + data.team + " has selected " + charList[index].name + "!");
-    }
-    */
   }
   return returnInfo;
 };
@@ -473,6 +492,7 @@ export default function Game(props) {
   const updateIdentity = (info) => {
     // console.log(info);
     console.log("identity");
+    console.log(info)
     sessionStorage.removeItem('game');
     sessionStorage.setItem("game", JSON.stringify(info));
     setIdentity(info);
@@ -533,13 +553,14 @@ export default function Game(props) {
           bossInfo.includes(selection.name) ||
           checkBossStatus(selection.id)
         ) {
-          console.log("boss fail");
           return false;
         }
         break;
       case "ban":
       case "pick":
+      case "extraban":
         let charInfo =
+          JSON.stringify(identity.extrabans) +
           JSON.stringify(identity.bans) +
           JSON.stringify(identity.pickst1) +
           JSON.stringify(identity.pickst2);
@@ -548,7 +569,7 @@ export default function Game(props) {
           charInfo.includes(selection.name) ||
           checkCharStatus(selection.id)
         ) {
-          console.log("pick or ban fail");
+          // pick is already chosen or banned
           return false;
         }
         break;
@@ -589,7 +610,7 @@ export default function Game(props) {
         selection.id = parseInt(localStorage.getItem("boss"));
       }
     }
-    else if(res.toLowerCase() == "pick" || res.toLowerCase() == "ban"){
+    else if(res.toLowerCase() == "pick" || res.toLowerCase() == "ban" || res.toLowerCase() == "extraban"){
       selection.type = res.toLowerCase();
       if(localStorage.getItem("character") == null){
         selection = {};
@@ -619,7 +640,7 @@ export default function Game(props) {
         return; 
       }
     }
-    if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick"))){
+    if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick" && res.toLowerCase() != "extraban"))){
       selection = {};
     }
     else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id + 1].long){
@@ -699,7 +720,7 @@ export default function Game(props) {
           if(selection.type == "boss"){
             alert("This boss has been picked already!");
           }
-          else if(identity.result == "ban"){
+          else if(identity.result == "ban" || identity.result == "extraban"){
             alert("This character is banned!");
           }
           else{
@@ -899,13 +920,12 @@ export default function Game(props) {
     }, 5000); // shows for 5 seconds, can be changed
   }
   /**
-   * Updates the selected ref objects to highlight grayscale objects
-   * @param {number} option the choice of what to add to selected, default is 5 (all), 1 is bosses, 2 is bans, 3 and 4 are team 1 and team 2 picks respective
+   * Updates the selected ref objects to highlight grayscale objects.
+   * @param {number} option the choice of what to add to selected, default is 6 (all). 1 is bosses, 2 is extra bans, 3 is bans, 4 and 5 are team 1 and team 2 picks respective
    */
-  const updateSelected = (option = 5) => {
-
+  const updateSelected = (option = 6) => {
     // option 1: update boss
-    if(option == 1 || option == 5){
+    if (option == 1 || option == 6) {
       for (let i = 0; i < identity.bosses.length; i++) {
         if (
           identity.bosses[i]._id != -1 &&
@@ -914,9 +934,30 @@ export default function Game(props) {
           selectedBosses.current.push(identity.bosses[i]._id);
         }
       }
+      if (identity.fearless) {
+        for (let i = 0; i < identity.fearlessBosses.length; i++) {
+          if (
+            identity.fearlessBosses[i] != -1 &&
+            selectedBosses.current.indexOf(identity.fearlessBosses[i]) == -1
+          ) {
+            selectedBosses.current.push(identity.fearlessBosses[i]);
+          }
+        }
+      }
     }
-    // option 2: update bans
-    if(option == 2 || option == 5){
+    // option 2: update extra bans
+    if (option == 2 || option == 6) {
+      for (let i = 0; i < identity.extrabans.length; i++) {
+        if (
+          identity.extrabans[i]._id > -1 && // could be higher than -1
+          selectedChars.current.indexOf(identity.extrabans[i]._id) == -1
+        ) {
+          selectedChars.current.push(identity.extrabans[i]._id);
+        }
+      }
+    }
+    // option 3: update bans
+    if (option == 3 || option == 6) {
       for (let i = 0; i < identity.bans.length; i++) {
         if (
           identity.bans[i]._id > -1 && // could be higher than -1
@@ -926,15 +967,15 @@ export default function Game(props) {
         }
       }
     }
-    // option 3: update team 1 picks
-    // option 4: update team 2 picks
-    if(option == 3 || option == 4 || option == 5){
+    // option 4: update team 1 picks
+    // option 5: update team 2 picks
+    if (option == 4 || option == 5 || option == 6) {
       for (let i = 0; i < identity.pickst1.length; i++) {
         // both picks arrays are the same length
         if (
           identity.pickst1[i]._id != -1 &&
           selectedChars.current.indexOf(identity.pickst1[i]._id) == -1 &&
-          option != 4
+          option != 5
         ) {
           selectedChars.current.push(identity.pickst1[i]._id);
         }
@@ -942,31 +983,41 @@ export default function Game(props) {
         if (
           identity.pickst2[i]._id != -1 &&
           selectedChars.current.indexOf(identity.pickst2[i]._id) == -1 &&
-          option != 3
+          option != 4
         ) {
           selectedChars.current.push(identity.pickst2[i]._id);
         }
       }
     }
-    // option 5: update everything
+    // option 6: update everything
   }
 
   const updateSelectedDirect = (id, option) => {
     // option 1: update boss
     if(option == 1){
       selectedBosses.current.push(id);
-      console.log(selectedBosses.current);
     }
-    else if(option >= 2 && option <= 4){
+    else if(option >= 2 && option <= 5){
       selectedChars.current.push(id);
     }
-
   }
-
+  const compare = (one, two) => {
+    // compare characters
+    if (one._id == "undefined") {
+      throw new Error("Please only compare characters.");
+    }
+    if (one._id < two._id) {
+      return -1;
+    } else if (one._id > two._id) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
   useEffect(() => {
     // console.log("yes")
     // adds selected characters and bosses to the ref objects
-    updateSelected(5);
+    updateSelected(6);
     const map = new Map();
     for(const someName in BOSS_DETAIL){
       // create a hashmap between index and some name
@@ -1004,7 +1055,7 @@ export default function Game(props) {
       }
     });
     const createSocket = () => {
-      let socket = new WebSocket("wss://rankedwebsocketapi.fly.dev/");
+      let socket = new WebSocket("wss://rankedwebsocketapi.fly.dev"); // wss://rankedwebsocketapi.fly.dev
       socket.addEventListener("open", function (event) {
         // this does not load more than once
         // build a reconnection algorithm here
@@ -1026,7 +1077,6 @@ export default function Game(props) {
           })
         );
         if (sessionStorage.getItem("game") == null) {
-          console.log("socket open");
           socket.send(
             JSON.stringify({
               type: "get",
@@ -1058,9 +1108,17 @@ export default function Game(props) {
             setBosses(data.bossList);
             sessionStorage.setItem("bosses", JSON.stringify(data.bossList));
           } else {
+            newList = [];
+            data.characterList.map((char) => {
+              if (char._id >= 0) {
+                newList.push(char);
+              }
+            });
+            newList.sort(compare);
             sessionStorage.removeItem("characters");
-            setCharacters(data.characterList);
-            sessionStorage.setItem("characters", data.characterList);
+            // sort by _id - eventually
+            setCharacters(newList);
+            sessionStorage.setItem("characters", newList);
           }
         }
         if (data.message.toLowerCase() == "failure") {
@@ -1077,7 +1135,7 @@ export default function Game(props) {
           case "get": {
             updateIdentity(data.game);
             updateTurn(data.game.turn);
-            updateSelected(5);
+            updateSelected(6);
             break;
           }
           case "turn": {
@@ -1103,47 +1161,26 @@ export default function Game(props) {
             showSelectionAlert(data.boss, true, false);
             break;
           }
+          // should only execute if extra ban setting is enabled
+          case "extraban":
           case "ban": {
             updateTimer(true, true);
-            res = parseBan(data, cookies.player.charAt(0).toLowerCase() != "s");
-            updateSelectedDirect(data.ban, 2);
-            showSelectionAlert(data.ban, false, true);
-            if (data.nextTeam == -2 || data.nextTeam == -1) {
-              socket.send(
-                JSON.stringify({
-                  type: "switch",
-                  phase: "pick",
-                  id: props.id,
-                })
-              );
+            res = parseBan(data, data.type == "extraban");
+            if(data.type == "extraban"){
+              updateSelectedDirect(data.extraban, 2);
+              showSelectionAlert(data.extraban, false, true);
+            }
+            else{
+              updateSelectedDirect(data.ban, 2);
+              showSelectionAlert(data.ban, false, true);
             }
             break;
           }
           case "pick": {
             updateTimer(true, true);
-            res = parsePick(
-              data,
-              cookies.player.charAt(0).toLowerCase() != "s"
-            );
+            res = parsePick(data);
             updateSelectedDirect(data.pick, 3);
             showSelectionAlert(data.pick, false, false);
-            if (data.nextTeam == -1) {
-              socket.send(
-                JSON.stringify({
-                  type: "switch",
-                  id: props.id,
-                  phase: "progress",
-                })
-              );
-            } else if (data.nextTeam == -2) {
-              socket.send(
-                JSON.stringify({
-                  type: "switch",
-                  phase: "ban",
-                  id: props.id,
-                })
-              );
-            }
             break;
           }
           case "times": {
@@ -1199,7 +1236,9 @@ export default function Game(props) {
       socket.addEventListener("close", function (event) {
         console.log("closed");
         if (!window.timer) {
-          window.timer = setInterval(() => {socket = createSocket()}, 5000);
+          window.timer = setInterval(() => {
+            socket = createSocket();
+          }, 5000);
         }
         socket.close();
       });
@@ -1365,6 +1404,22 @@ export default function Game(props) {
   let bans = [0, 2, 5, 1, 3, 4];
   let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
+  let extraBanCounter = 0;
+  let extraBanOrder = [[], []];
+  if(identity.extrabans.length > 0){
+    // creates extra ban order based on the number of extra bans of each team
+    // alternates 1 - 2 - 1 - 2 - 1 - 2 until a team runs out of extra bans, which then the rest are the other team's
+    for(let i = 0; i < Math.max(identity.extrabanst1, identity.extrabanst2); i++){
+      if(i < identity.extrabanst1){
+        extraBanOrder[0].push(extraBanCounter);
+        extraBanCounter++;
+      }
+      if(i < identity.extrabanst2){
+        extraBanOrder[1].push(extraBanCounter);
+        extraBanCounter++;
+      }
+    }
+  }
   return (
     <div>
       {sessionStorage.getItem("game") == null ||
@@ -1479,9 +1534,9 @@ export default function Game(props) {
               className="grid five"
               style={
                 identity.result.toLowerCase() == "progress" ||
-                cookies.player.charAt(0).toLowerCase() == "s" ? (
-                  {minWidth: 1080}
-                ) : null
+                cookies.player.charAt(0).toLowerCase() == "s"
+                  ? { minWidth: 1080 }
+                  : null
               }
             >
               <div>
@@ -1496,7 +1551,8 @@ export default function Game(props) {
                       selections={selectedBosses.current}
                     />
                   ) : identity.result.toLowerCase() == "ban" ||
-                    identity.result.toLowerCase() == "pick" ? (
+                    identity.result.toLowerCase() == "pick" || 
+                    identity.result.toLowerCase() == "extraban" ? (
                     <Balancing
                       team={turn}
                       phase={identity.result.toLowerCase()}
@@ -1678,7 +1734,7 @@ export default function Game(props) {
             <div className="grid newgrid twelve">
               {timeOrder.slice(0, limit).map((time) => {
                 return (
-                  <div className={`grid end times-${time + 1}`} key={time}>
+                  <div className={`grid center times-${time + 1}`} key={time}>
                     {bossRef.current != undefined
                       ? displayBoss(
                           bossRef.current.get(identity.bosses[time]._id),
@@ -1729,7 +1785,44 @@ export default function Game(props) {
             </div>
             <div className="grid fourteen">extra bans (team 1)</div>
             <div className="grid sixteen">extra bans (team 2)</div>
-            <div className="grid seventeen">
+            <div className="grid newgrid seventeen">
+              {identity.extrabanst1 > 0
+                ? extraBanOrder[0].map((ban, index) => {
+                    return (
+                      <div className={`boss ban-${index + 1}`} key={index}>
+                        {characterRef.current != undefined
+                          ? displayCharacter(
+                              characterRef.current.get(
+                                identity.extrabans[ban]._id
+                              ),
+                              false
+                            )
+                          : null}
+                      </div>
+                    );
+                  })
+                : null}
+            </div>
+            <div className="grid newgrid nineteen">
+              {/* extra bans */}
+              {identity.extrabanst2 > 0
+                ? extraBanOrder[1].map((ban, index) => {
+                    return (
+                      <div className={`boss ban-${index + 1}`} key={index}>
+                        {characterRef.current != undefined
+                          ? displayCharacter(
+                              characterRef.current.get(
+                                identity.extrabans[ban]._id
+                              ),
+                              false
+                            )
+                          : null}
+                      </div>
+                    );
+                  })
+                : null}
+            </div>
+            <div className="grid newgrid twenty">
               <p
                 style={{
                   fontSize: 20,
@@ -1741,8 +1834,7 @@ export default function Game(props) {
                 make sure everyone you are playing with joins this id.
               </p>
             </div>
-
-            <div className="grid newgrid nineteen">
+            <div className="grid newgrid twentytwo">
               <Button
                 style={{ backgroundColor: "black", color: "yellow" }}
                 onClick={() => {

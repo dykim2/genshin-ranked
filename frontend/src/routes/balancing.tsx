@@ -139,9 +139,9 @@ export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo, select
 								</Box>
 							*/}
 						</Typography>
-						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={inGame && ((phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick`) || !matching)}>
+						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={inGame && ((phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick` && phase.toLowerCase() != "extraban") || !matching)}>
 							<Typography color={"yellow"} textTransform="none" variant="h6">
-								{inGame ? `confirm ${phase.toLowerCase() == `ban` ? `ban` : phase.toLowerCase() == `pick` ? `pick` : `Nothing`}` : `Show Restrictions`}
+								{inGame ? `confirm ${phase.toLowerCase() == 'extraban' ? 'extra ban' : phase.toLowerCase() == "ban" ? `ban` : phase.toLowerCase() == `pick` ? `pick` : `Nothing`}` : `Show Restrictions`}
 							</Typography>
 						</Button>
 						{

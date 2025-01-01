@@ -116,7 +116,7 @@ export const CharacterSelector = ({
 					})
 					.map((x) =>
 						x != CHARACTERS.None && x != CHARACTERS.NoBan ? (
-							<Grid padding={1} key={x}>
+							<Grid padding={0} key={x}>
 								<CharacterButton
 									character={x}
 									updateCharacter={updateCharacter}

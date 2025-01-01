@@ -179,13 +179,13 @@ export default function WebRouter() {
 
 const compare = (one: any, two: any) => {
   // compare characters
-  if(one.name == "undefined"){
+  if(one._id == "undefined"){
     throw new Error("Please only compare characters.")
   }
-  if(one.name < two.name){
+  if(one._id < two._id){
     return -1;
   }
-  else if(one.name > two.name){
+  else if(one._id > two._id){
     return 1;
   }
   else{

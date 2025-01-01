@@ -36,6 +36,7 @@ export enum BOSSES {
     MountainKing="MountainKing",
     Automaton="Automaton",
     Papilla="Papilla",
+    Spiritspeaker="Spiritspeaker",
 
     Azhdaha="Azhdaha",
     Apep="Apep",
