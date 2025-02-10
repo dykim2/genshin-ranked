@@ -42,6 +42,7 @@ export enum BOSSES {
     Apep="Apep",
     Narwhal="Narwhal",
     Knave="Knave",
+    ErodedLord="ErodedLord",
 
     // 4.0
     Vivianne="Vivianne",

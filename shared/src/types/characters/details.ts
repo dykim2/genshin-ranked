@@ -535,6 +535,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/7d/f5/56/METQJBX_t.png",
 		index: 64,
 	},
+	[CHARACTERS.Mizuki]: {
+		displayName: "Mizuki",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Mizuki",
+		onlineFilePath: "https://thumbs4.imagebam.com/50/62/92/MEZJO45_t.png",
+		index: 89,
+	},
 	[CHARACTERS.Mona]: {
 		displayName: "Mona",
 		element: ELEMENTS.hydro,

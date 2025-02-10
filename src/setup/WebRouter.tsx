@@ -1,4 +1,4 @@
-import {Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import {BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import Characters from "../pages/CharacterInfo.tsx";
 import Home from "../pages/Home.tsx";
 import Rules from "../pages/Rules.jsx";
@@ -80,43 +80,6 @@ export default function WebRouter() {
   const select = (teamNum: number, selectedObj: object, timeout: boolean) => {
     
   }
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
-        <Route index element={<Home />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/play" element={<Play />} />
-        {active.map((game: { _id: React.Key | null | undefined; }) => {
-          return (
-            <Route
-              key={game._id}
-              path={`/play/${game._id}`}
-              element={<Game id={game._id} />}
-            />
-          );
-        })}
-        <Route path="/characters" element={<Characters />} />
-        <Route
-          path="/bosses"
-          element={<Bosses />}
-        />
-        <Route path="/test" element={<Player />} />
-        <Route path="/redirect" element={<Redirect />} />
-        <Route path="/guide" element={<Guide />} />
-        {/*
-        {characters.map((char: { _id: React.Key | null | undefined; name: string; image: string; }) => {
-          return (
-            <Route
-              key={char._id}
-              path={`/characters/${char.name}`}
-              element={<OneCharacter name={char.name} img={char.image} />}
-            />
-          );
-        })} */}
-        <Route path="*" element={<InvalidPage />} />
-      </Route>
-    )
-  );
   /*
     createRoutesFromElements(
       <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
@@ -172,7 +135,40 @@ export default function WebRouter() {
   ]);
   return (
     <PlayingContext.Provider value={socket}>
-      <RouterProvider router={router} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
+            <Route index element={<Home />} />
+            <Route path="/rules" element={<Rules />} />
+            <Route path="/play" element={<Play />} />
+            {active.map((game: { _id: React.Key | null | undefined }) => {
+              return (
+                <Route
+                  key={game._id}
+                  path={`/play/${game._id}`}
+                  element={<Game id={game._id} />}
+                />
+              );
+            })}
+            <Route path="/characters" element={<Characters />} />
+            <Route path="/bosses" element={<Bosses />} />
+            <Route path="/test" element={<Player />} />
+            <Route path="/redirect" element={<Redirect />} />
+            <Route path="/guide" element={<Guide />} />
+            {/*
+        {characters.map((char: { _id: React.Key | null | undefined; name: string; image: string; }) => {
+          return (
+            <Route
+              key={char._id}
+              path={`/characters/${char.name}`}
+              element={<OneCharacter name={char.name} img={char.image} />}
+            />
+          );
+        })} */}
+            <Route path="*" element={<InvalidPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </PlayingContext.Provider>
   );
 }

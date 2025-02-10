@@ -55,6 +55,7 @@ export enum CHARACTERS {
 	Chasca = "Chasca",
 	Mavuika = "Mavuika",
 	Citlali = "Citlali",
+	Mizuki = "Mizuki",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 

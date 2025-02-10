@@ -184,7 +184,6 @@ const parseBan = (data, extra = false) => {
         if (data.extraban == -2) {
           // no ban
           newBans[i] = noBan;
-          noBanChoice = true;
         } else {
           // valid ban, find the character info and insert it
           for (let j = 0; j < charList.length; j++) {
@@ -205,7 +204,6 @@ const parseBan = (data, extra = false) => {
         if (data.ban == -2) {
           // no ban
           newBans[i] = noBan;
-          noBanChoice = true;
         } else {
           // valid ban, find the character info and insert it
           for (let j = 0; j < charList.length; j++) {
@@ -588,7 +586,6 @@ export default function Game(props) {
     // console.log(selection);
     // use the selection variable
     // verify the same boss / pick is not already chosen
-    console.log("selection")
     console.log(selection);
     // console.log(teamNum)
     // console.log(bosses);
@@ -641,12 +638,15 @@ export default function Game(props) {
       }
     }
     if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick" && res.toLowerCase() != "extraban"))){
+      console.log("invalid selection");
       selection = {};
     }
     else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id + 1].long){
+      console.log("ree")
       alert("You cannot pick more than one long boss in standard division (two in premier division)!")
       return;
     }
+    console.log("test")
     // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
     if(JSON.stringify(selection) == '{}'){
       alert("No selection was made! Random boss / pick or no ban is selected.")

@@ -75,7 +75,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		limit: 6,
 		differences: [5],
 		restrictions: [
-			"Any 674 Base Atk Weapon | Haran Geppaku Futsu | Freedom-Sworn | Peak Patrol Song,",
+			"Mistsplitter Reforged | Absolution | Freedom-Sworn | Peak Patrol Song",
 		],
 	},
 	[CHARACTERS.Candace]: {
@@ -122,7 +122,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [
 			"Absolution",
 			"Any 5* Weapon | The Black Sword | Sturdy Bone | Lion's Roar",
-			"Any 3* Weapon",
+			"Any 3* Weapon\nAllowed: Skyrider Sword",
 		],
 	},
 	[CHARACTERS.Collei]: {
@@ -218,7 +218,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [5, 6],
 		restrictions: [
 			"Redhorn Stonethresher | R3+ Serpent Spine",
-			"Any 5* Weapon | Serpent Spine | Whiteblind",
+			"Any 4* Weapon | White Iron Greatsword | Ferrous Shadow,\nAllowed: Favonius Greatsword",
 		],
 	},
 	[CHARACTERS.Jean]: {
@@ -234,7 +234,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Kazuha]: {
 		limit: 6,
 		differences: [6],
-		restrictions: ["Any 4* Weapon"],
+		restrictions: ["Any 5* Weapon"],
 	},
 	[CHARACTERS.Kaeya]: {
 		limit: 6,
@@ -302,14 +302,19 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [""],
 	},
 	[CHARACTERS.Lyney]: {
-		limit: 1,
+		limit: 2,
 		differences: [1],
-		restrictions: ["Any 5* Weapon | Flower Wreathed Feathers"],
+		restrictions: ["Astral Vulture's Crimson Plumage", "The First Great Magic", "Thundering Pulse", "Aqua Simulacra"],
 	},
 	[CHARACTERS.Mika]: {
 		limit: 6,
 		differences: [-1],
 		restrictions: [""],
+	},
+	[CHARACTERS.Mizuki]: {
+		limit: 5,
+		differences: [2],
+		restrictions: ["Any Elemental Mastery Weapon"],
 	},
 	[CHARACTERS.Mona]: {
 		limit: 6,
@@ -319,7 +324,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Mavuika]: {
 		limit: 1,
 		differences: [0,1],
-		restrictions: ["A Thousand Blazing Suns | Beacon of the Reed Sea | Serpent Spine R3+", "Any 5* Weapon | Serpent Spine"],
+		restrictions: ["A Thousand Blazing Suns | Beacon of the Reed Sea | Serpent Spine R3+", "Any 5* Weapon | Serpent Spine | Mailed Flower"],
 	},
 	[CHARACTERS.Mualani]: {
 		limit: 1,
@@ -339,8 +344,8 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Navia]: {
 		limit: 1,
-		differences: [0, 1],
-		restrictions: ["Verdict", "R3+ Serpent Spine"],
+		differences: [1, 2],
+		restrictions: ["Verdict, A Thousand Blazing Suns", "Any 4* Weapon"],
 	},
 	[CHARACTERS.Neuvillette]: {
 		limit: 2,
@@ -426,8 +431,8 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Tartaglia]: {
 		limit: 6,
-		differences: [6],
-		restrictions: ["Polar Star"],
+		differences: [-1],
+		restrictions: [""],
 	},
 	[CHARACTERS.Thoma]: {
 		limit: 6,
@@ -460,7 +465,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Wriothesley]: {
 		limit: 3,
 		differences: [1, 3],
-		restrictions: ["Any 5* Weapon", "Any 4* Weapon"],
+		restrictions: ["Any CRIT 5* Weapon, A Thousand Floating Dreams,\nAllowed: Kagura's Verity", "Any 4* Weapon"],
 	},
 	[CHARACTERS.Xiangling]: {
 		limit: 6,
@@ -468,9 +473,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [""],
 	},
 	[CHARACTERS.Xianyun]: {
-		limit: 1,
-		differences: [-1],
-		restrictions: [""],
+		limit: 6,
+		differences: [2],
+		restrictions: ["Any 3* Weapon"],
 	},
 	[CHARACTERS.Xiao]: {
 		limit: 6,

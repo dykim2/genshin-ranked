@@ -136,6 +136,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/2d/68/26/METS4WG_t.png",
 		index: 15,
 	},
+	[BOSSES.ErodedLord]: {
+		displayName: "Eroded Lord",
+		element: ELEMENTS.pyro,
+		type: BOSS_TYPE.Weekly,
+		imageFileName: "ErodedLord",
+		onlineFilePath: "https://thumbs4.imagebam.com/d5/66/de/MEZJO44_t.png",
+		index: 50,
+	},
 	[BOSSES.GeoCube]: {
 		displayName: "Geo Cube",
 		element: ELEMENTS.geo,
