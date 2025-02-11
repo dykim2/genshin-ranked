@@ -542,7 +542,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Mizuki",
 		onlineFilePath: "https://thumbs4.imagebam.com/50/62/92/MEZJO45_t.png",
-		index: 89,
+		index: 94,
 	},
 	[CHARACTERS.Mona]: {
 		displayName: "Mona",
