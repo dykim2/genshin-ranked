@@ -152,6 +152,7 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/3c/2b/c6/METS4UU_t.png",
 		index: 3,
 	},
+	/*
 	[BOSSES.GoldenWolflord]: {
 		displayName: "Wolflord",
 		element: ELEMENTS.geo,
@@ -160,6 +161,7 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/3e/4b/8b/METS4VK_t.png",
 		index: 14,
 	},
+	*/
 	[BOSSES.Goldflame]: {
 		displayName: "Goldflame",
 		element: ELEMENTS.pyro,

@@ -21,12 +21,14 @@ import { Guide } from "../pages/Guide.tsx";
 export default function WebRouter() {
   const [characters, setCharacters] = useContext(CharacterContext);
   const [active, setActive] = useContext(ActiveContext);
+  const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
+  const api = api_choice[0];
   
   useEffect(() => {
     // obtain list of characters, save them to a context
     async function getChars() {
       let charData = await fetch(
-        "https://rankedapi-late-cherry-618.fly.dev/charAPI/",
+        `${api}/charAPI/`,
         {
           method: "GET",
         }
@@ -42,14 +44,11 @@ export default function WebRouter() {
       sessionStorage.setItem("characters", JSON.stringify(arr));
     }
     async function findActive() {
-      let gameData = await fetch(
-        "https://rankedapi-late-cherry-618.fly.dev/gameAPI/active",
-        {
-          method: "GET",
-        }
-      );
+      let gameData = await fetch(`${api}/gameAPI/active`, {
+        method: "GET",
+      });
       gameData = await gameData.json();
-      setActive(gameData[0].reverse());
+      setActive(gameData[0]);
     }
     getChars();
     findActive();

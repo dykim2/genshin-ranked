@@ -14,7 +14,7 @@ export enum BOSSES {
     PyroCube="PyroCube",
     HydroCube="HydroCube",
     Thunderbird="Thunderbird",
-    GoldenWolflord="GoldenWolflord",
+    // GoldenWolflord="GoldenWolflord",
     EnkaVishaps="EnkaVishaps",
     RuinSerpent="RuinSerpent",
     ElectroVine="ElectroVine",

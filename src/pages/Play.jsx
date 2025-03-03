@@ -300,7 +300,7 @@ export default function Play(){
         open={open}
         onClose={close}
         scroll="paper"
-        PaperProps={{ style: { color: "white", backgroundColor: "black" } }}
+        slotProps={{paper: { style: { color: "white", backgroundColor: "black" } }}}
       >
         <DialogTitle>select a game by its id:</DialogTitle>
         <DialogContent>
@@ -335,7 +335,7 @@ export default function Play(){
                 method: "GET",
               });
               gameData = await gameData.json();
-              setActive(gameData[0].reverse());
+              setActive(gameData[0]);
             }}
             disabled={refreshing}
             sx={{ fontSize: 22, color: "red" }}
@@ -350,7 +350,7 @@ export default function Play(){
       <Dialog
         open={choosing}
         onClose={close}
-        PaperProps={{ style: { color: "white", backgroundColor: "black" } }}
+        slotProps={{paper: { style: { color: "white", backgroundColor: "black" } }}}
       >
         <DialogTitle>
           {readying
@@ -371,7 +371,10 @@ export default function Play(){
                   "Ref (Custom)",
                   "Spectator",
                 ].map((player, index) => {
-                  return creating || (!creating && player != "Ref (Custom)" && player != "Ref (default BO2)") ? (
+                  return creating ||
+                    (!creating &&
+                      player != "Ref (Custom)" &&
+                      player != "Ref (default BO2)") ? (
                     <ListItem disableGutters key={player}>
                       <ListItemButton
                         onClick={() => choosePlayer(player, status._id)}
@@ -406,7 +409,7 @@ export default function Play(){
       <Dialog
         open={options}
         onClose={() => setOptions(false)}
-        PaperProps={{ style: { color: "black", backgroundColor: "#46bdc6" } }}
+        slotProps={{paper: {style: { color: "black", backgroundColor: "#46bdc6" }} }}
       >
         <DialogTitle>
           <Typography fontWeight="bold">bonus ref options</Typography>
@@ -624,10 +627,12 @@ export default function Play(){
         onClose={() => {
           setBO2(false);
         }}
-        PaperProps={{style:{color: "black",backgroundColor: "#46bdc6"}}}
+         slotProps={{paper: {style: { color: "black", backgroundColor: "#46bdc6" }} }}
       >
         <DialogTitle>
-          <Typography textTransform="none">What id, if applicable, for fearless bosses?</Typography>
+          <Typography textTransform="none">
+            What id, if applicable, for fearless bosses?
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <TextField

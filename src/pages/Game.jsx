@@ -1052,6 +1052,7 @@ export default function Game(props) {
         localStorage.getItem(type) != 0
       ) {
         setCharFilter(true);
+        // here
       }
     });
     const createSocket = () => {
@@ -1140,18 +1141,6 @@ export default function Game(props) {
           }
           case "turn": {
             updateTurn(data.turn);
-            /*
-          if (typeof data.bosses != "undefined") {
-            sessionStorage.setItem(
-              "chosen_bosses",
-              JSON.stringify(data.bosses)
-            );
-            setChosenBosses(data.bosses);
-          }
-          if (typeof data.chars != "undefined") {
-            setChosenChars(data.chars);
-          }
-          */
             break;
           }
           case "boss": {
@@ -1229,6 +1218,7 @@ export default function Game(props) {
           }
         }
         if (res != null) {
+          console.log(res);
           updateIdentity(res);
           updateTurn(res.turn);
         }
@@ -1250,32 +1240,7 @@ export default function Game(props) {
       // console.log("socket build")
       return socket;
     }
-    socket.current = createSocket()
-    /*
-    let bossList = [];
-    let bossIndexList = [];
-    for (const [name, boss] of Object.entries(BOSS_DETAIL)) {
-      bossList.push(name);
-      bossIndexList.push(boss.index);
-    }
-    const bossMap = new Map();
-    let charList = [];
-    let charIndexList = [];
-    for (const [name, char] of Object.entries(CHARACTER_INFO)) {
-      charList.push(name);
-      charIndexList.push(char.index);
-    }
-    const charMap = new Map();
-    for (let i = 0; i < charList.length; i++) {
-      if (i < bossList.length) {
-        bossMap.set(bossIndexList[i], bossList[i]);
-      }
-      charMap.set(charIndexList[i], charList[i]);
-    }
-    // map the pair and save it in useref
-    // bossRef.current = bossMap;
-    // characterRef.current = characterRef;
-    */
+    socket.current = createSocket();
     return () => {
       if (socket.readyState === 1) {
         socket.close();
@@ -1295,111 +1260,6 @@ export default function Game(props) {
   const closeT2Order = () => {
     setOrderT2(false);
   };
- 
-  /**
-   * 
-   * @param {*} info the array to display information with
-   * @param {Boolean} boss whether the target array represents bosses or picks
-   * @return an array displaying the corresponding picks
-   */
-  /*
-  const displayFilter = (info, boss = true) => { 
-    let newInfo = [];
-    if(boss){
-      if(localStorage.getItem("display_boss") == null || localStorage.getItem("display_boss") == 0){
-        newInfo = [...info];
-        // setBossFilter(false); // not filtering
-      }
-      else{
-        const regions = ["any", "mondstadt", "liyue", "inazuma", "sumeru", "fontaine", "natlan"];
-        info.forEach(bossChoice => {
-          if(bossChoice.region.toLowerCase() == regions[localStorage.getItem("display_boss")]){
-            newInfo.push(bossChoice);
-          }
-        })
-        // setBossFilter(true);
-      }
-    }
-    else{ 
-      // loop, runs 4 times, checks similar to boss
-      const region = [
-        "Any",
-        "Mondstadt",
-        "Liyue",
-        "Inazuma",
-        "Sumeru",
-        "Fontaine",
-      ];
-      const elements = [
-        "Any",
-        "Pyro",
-        "Hydro",
-        "Electro",
-        "Cryo",
-        "Dendro",
-        "Geo",
-        "Anemo",
-      ];
-      const weapons = [
-        "Any",
-        "Sword",
-        "Polearm",
-        "Claymore",
-        "Bow",
-        "Catalyst",
-      ];
-      const rarity = [
-        0,
-        4,
-        5
-      ];
-      const filterName = [
-        "character_region",
-        "character_elements",
-        "character_weapons",
-        "character_rarity",
-      ];
-      const charInfoFilter = [
-        "region",
-        "element",
-        "weapon",
-        "rarity"
-      ]
-      const filter = [region, elements, weapons, rarity];
-      info.forEach(charChoice => {
-        let valid = true;
-        for (let i = 0; i < filterName.length; i++) {
-          // nested if statements
-          // localstorage has index
-          // check to see if said value is null or 0
-          // if neither null or 0 check that the given character
-          let res = localStorage.getItem(filterName[i]);
-          if(res == null || res == 0){
-            continue;
-          }
-          else{
-            if(charInfoFilter[i] != "rarity" && charChoice[charInfoFilter[i]].toLowerCase() == filter[i][res].toLowerCase()){
-              continue;
-            }
-            else if(charInfoFilter[i] == "rarity" && charChoice[charInfoFilter[i]] == filter[i][res]){
-              continue;
-              // rarity might not always be last
-            }
-            else{
-              valid = false;
-              break;
-            }
-          }
-        }
-        if(valid){
-          newInfo.push(charChoice)
-        }
-      })
-      
-    }
-    return newInfo;
-  }
-    */
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
   let bans = [0, 2, 5, 1, 3, 4];
   let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -1741,28 +1601,6 @@ export default function Game(props) {
                           false
                         )
                       : null}
-                    {/*
-                      <Tooltip title={parseStatusTooltip(time, 1)} arrow>
-                      <p
-                        style={parseTextColor(
-                          identity.timest1[time] - identity.timest2[time],
-                          identity.penaltyt1[time][4]
-                        )}
-                      >
-                        {identity.timest1[time].toFixed(2)}
-                      </p>
-                    </Tooltip>
-                    <Tooltip title={parseStatusTooltip(time, 2)} arrow>
-                      <p
-                        style={parseTextColor(
-                          identity.timest2[time] - identity.timest1[time],
-                          identity.penaltyt2[time][4]
-                        )}
-                      >
-                        {identity.timest2[time].toFixed(2)}
-                      </p>
-                    </Tooltip>
-                    */}
                   </div>
                 );
               })}
