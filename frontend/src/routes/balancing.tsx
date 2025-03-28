@@ -13,15 +13,16 @@ import { useCookies } from "react-cookie";
 // update some names to keep them consistent
 
 interface balance {
-	team: number;
+	team: number; 
 	phase: string;
-	pickSelection: (teamNum: number, selectedObj: object, timeout: boolean) => void;
+	pickSelection: (teamNum: number, selectedObj: {id: number}, timeout: boolean) => void;
+	sendHover: (teamNum: number, selected: number) => void;
 	inGame: boolean;
 	bonusInfo: string[];
 	selections: number[]
 }
 
-export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo, selections}: balance) => {
+export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusInfo, selections}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
 	const [cookieInfo] = useCookies(["player"]);
 	let matching = true;
@@ -66,21 +67,26 @@ export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo, select
 			{/* Left Side: Button Grid */}
 			<Box
 				sx={{
-					borderRight: "1px solid #ccc",	
+					borderRight: "1px solid #ccc",
 				}}
 				id="character-selector-container"
 			>
 				<CharacterSelector
-					characterName={selection}
+					team={team}
 					updateCharacter={setSelection}
 					selectedChars={selections}
+					updateHover={sendHover}
 				/>
 			</Box>
 			{/* Right Side: Button Details */}
 			<Box sx={{ padding: 2, width: "500px" }}>
 				{
 					<React.Fragment>
-						<Typography color={"white"} textTransform="none" variant="h6">
+						<Typography
+							color={"white"}
+							textTransform="none"
+							variant="h6"
+						>
 							{`currently selected: ${selection}`}
 							{/*
 								<Box
@@ -139,33 +145,52 @@ export const Balancing = ({team, phase, pickSelection, inGame, bonusInfo, select
 								</Box>
 							*/}
 						</Typography>
-						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={inGame && ((phase.toLowerCase() != `ban` && phase.toLowerCase() != `pick` && phase.toLowerCase() != "extraban") || !matching)}>
-							<Typography color={"yellow"} textTransform="none" variant="h6">
-								{inGame ? `confirm ${phase.toLowerCase() == 'extraban' ? 'extra ban' : phase.toLowerCase() == "ban" ? `ban` : phase.toLowerCase() == `pick` ? `pick` : `Nothing`}` : `Show Restrictions`}
+						<Button
+							variant="contained"
+							onClick={() => {
+								sendToSocket();
+							}}
+							disabled={
+								inGame &&
+								((phase.toLowerCase() != `ban` &&
+									phase.toLowerCase() != `pick` &&
+									phase.toLowerCase() != "extraban") ||
+									!matching)
+							}
+						>
+							<Typography
+								color={"yellow"}
+								textTransform="none"
+								variant="h6"
+							>
+								{inGame
+									? `confirm ${
+											phase.toLowerCase() == "extraban"
+												? "extra ban"
+												: phase.toLowerCase() == "ban"
+												? `ban`
+												: phase.toLowerCase() == `pick`
+												? `pick`
+												: `Nothing`
+									  }`
+									: `Show Restrictions`}
 							</Typography>
 						</Button>
-						{
-							
-							bonusInfo.map((val: string) => {
-								
-								return (
-									<Fragment key={val}>
-										<Typography
-											color={"white"}
-											textTransform="none"
-											variant="h6"
-										>
-											{val}
-										</Typography>
-										<br />
-									</Fragment>
-								);
-							})
-							
-						}
-						
+						{bonusInfo.map((val: string) => {
+							return (
+								<Fragment key={val}>
+									<Typography
+										color={"white"}
+										textTransform="none"
+										variant="h6"
+									>
+										{val}
+									</Typography>
+									<br />
+								</Fragment>
+							);
+						})}
 					</React.Fragment>
-					
 				}
 			</Box>
 		</Box>

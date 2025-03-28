@@ -10,17 +10,22 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
  * @param updateBoss the state that is triggered when the user clicks on the boss
  * @param selectDisplay 
  */
-interface iBossButton {
-    boss: BOSSES;
+interface IInnerBossButton {
+	boss: BOSSES;
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 	selectDisplay: boolean;
 	selectable: boolean; // can this boss be chosen? if not grey it out
-	isChosen?: boolean;
+	isChosen: boolean;
+}
+interface IBossButton extends IInnerBossButton {
+	team: number;
+	updateHover: (teamNum: number, selected: number) => void;
 }
 
-export const BossButton = ({boss, updateBoss, selectDisplay, selectable, isChosen}: iBossButton) => {
+export const BossButton = ({team, boss, updateBoss, selectDisplay, selectable, isChosen, updateHover}: IBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
+		updateHover!(team, BOSS_DETAIL[boss].index);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
 	}
 	if(isChosen){
@@ -58,7 +63,7 @@ export const BossButton = ({boss, updateBoss, selectDisplay, selectable, isChose
 		</SelectedWrapperBox>
 	);
 }
-export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable, isChosen}: iBossButton) => {
+export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable, isChosen}: IInnerBossButton) => {
 	return (
 		<Fragment>
 			<BossPicture boss={boss} isChosen={isChosen} />

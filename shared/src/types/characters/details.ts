@@ -353,6 +353,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/80/09/f3/METQJAJ_t.png",
 		index: 28,
 	},
+	[CHARACTERS.Iansan]: {
+		displayName: "Iansan",
+		element: ELEMENTS.electro,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FourStar,
+		imageFileName: "Iansan",
+		onlineFilePath: "https://thumbs4.imagebam.com/24/dc/3d/ME10MX77_t.png",
+		index: 42,
+	},
 	[CHARACTERS.Itto]: {
 		displayName: "Itto",
 		element: ELEMENTS.geo,
@@ -453,7 +462,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		index: 38,
 	},
 	[CHARACTERS.KukiShinobu]: {
-		displayName: "Kuki Shinobu",
+		displayName: "Shinobu",
 		element: ELEMENTS.electro,
 		weapon: WEAPONS.sword,
 		rarity: RARITY.FourStar,
@@ -506,7 +515,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/f3/c0/c6/METQJAK_t.png",
 		index: 70,
 	},
-
 	[CHARACTERS.Mavuika]: {
 		displayName: "Mavuika",
 		element: ELEMENTS.pyro,
@@ -516,7 +524,6 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/9d/2b/d7/MEYIHI3_t.png",
 		index: 93,
 	},
-
 	[CHARACTERS.Mualani]: {
 		displayName: "Mualani",
 		element: ELEMENTS.hydro,
@@ -750,6 +757,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Traveler",
 		onlineFilePath: "https://thumbs4.imagebam.com/da/bf/b3/METS289_t.png",
 		index: 18,
+	},
+	[CHARACTERS.Varesa]: {
+		displayName: "Varesa",
+		element: ELEMENTS.electro,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Varesa",
+		onlineFilePath: "https://thumbs4.imagebam.com/ea/8e/1b/ME10MX78_t.png",
+		index: 96,
 	},
 	[CHARACTERS.Venti]: {
 		displayName: "Venti",

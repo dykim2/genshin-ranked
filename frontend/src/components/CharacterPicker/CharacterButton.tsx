@@ -9,25 +9,32 @@ import React, { Fragment } from "react";
 import { CharacterPicture } from "./CharacterPicture";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 
-interface ICharacterButton {
-	character: CHARACTERS,
-	updateCharacter: React.Dispatch<React.SetStateAction<string>>,
+interface IInnerButton {
+	character: CHARACTERS;
+	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
 	banDisplay: string;
 	isChosen: boolean;
 }
 
-export const CharacterButton = ({ character, updateCharacter, banDisplay, isChosen }: ICharacterButton) => {
+interface ICharacterButton extends IInnerButton {
+	team: number;
+	updateHover: (teamNum: number, selected: number) => void;
+}
+
+export const CharacterButton = ({team, character, updateCharacter, banDisplay, isChosen, updateHover }: ICharacterButton) => {
 	// console.log("character")
 	// console.log(character)
 	// console.log(CHARACTER_INFO[character])
 	// console.log("end character")
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
-		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`)
+		// updateHover in a non Game setting should be changed to instead do what the button press normally would
+		updateHover(team, CHARACTER_INFO[character].index);
+		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`);
 	};
 	if(isChosen){
 		return(
-			<NormalWrapperBox disableRipple onClick={doUpdate}>
+			<NormalWrapperBox disableRipple onClick={() => updateHover(1, 1)}>
 				<InnerCharacter
 					character={character}
 					updateCharacter={updateCharacter}
@@ -77,7 +84,7 @@ export const CharacterButton = ({ character, updateCharacter, banDisplay, isChos
 	}
 };
 
-const InnerCharacter = ({character, updateCharacter, banDisplay, isChosen}: ICharacterButton) => {
+const InnerCharacter = ({character, updateCharacter, banDisplay, isChosen}: IInnerButton) => {
 	return (
 		<Fragment>
 			<CharacterPicture character={character} banDisplay={banDisplay} />

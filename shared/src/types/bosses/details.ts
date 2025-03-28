@@ -1,3 +1,4 @@
+import { DisplayP3ColorSpace } from "three";
 import { ELEMENTS } from "../elements";
 import { GenericDetails } from "../generic";
 import { BOSS_TYPE } from "../level";
@@ -58,7 +59,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.IniquitousBaptist]: {
 		displayName: "Baptist",
-		element: ELEMENTS.physical,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Baptist",
 		onlineFilePath: "https://thumbs4.imagebam.com/e5/25/79/METS4W1_t.png",
@@ -66,7 +67,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.Coppelia]: {
 		displayName: "Coppelia",
-		element: ELEMENTS.cryo,
+		element: ELEMENTS.anemo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Coppelia",
 		onlineFilePath: "https://thumbs4.imagebam.com/22/9d/bb/MEVUDKM_t.png",
@@ -74,7 +75,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.Coppelius]: {
 		displayName: "Coppelius",
-		element: ELEMENTS.anemo,
+		element: ELEMENTS.cryo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Coppelius",
 		onlineFilePath: "https://thumbs4.imagebam.com/79/b1/47/MEVUDKN_t.png",
@@ -130,7 +131,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.EnkaVishaps]: {
 		displayName: "Enka Vishaps",
-		element: ELEMENTS.electro,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "EnkaVishaps",
 		onlineFilePath: "https://thumbs4.imagebam.com/2d/68/26/METS4WG_t.png",
@@ -194,9 +195,17 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/f4/e7/b7/METS4WF_t.png",
 		index: 18,
 	},
+	[BOSSES.LavaDragon]: {
+		displayName: "Lava Dragon",
+		element: ELEMENTS.pyro,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "LavaDragon",
+		onlineFilePath: "https://thumbs4.imagebam.com/3c/37/63/ME10MX79_t.png",
+		index: 51,
+	},
 	[BOSSES.LegatusGolem]: {
 		displayName: "Legatus Golem",
-		element: ELEMENTS.pyro,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "LegatusGolem",
 		onlineFilePath: "https://thumbs2.imgbox.com/0a/27/vN4b4URe_t.png",
@@ -204,7 +213,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.MaguuKenki]: {
 		displayName: "Maguu Kenki",
-		element: ELEMENTS.anemo,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "MaguuKenki",
 		onlineFilePath: "https://thumbs4.imagebam.com/66/98/db/METS4V8_t.png",
@@ -244,7 +253,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.PrimoVishap]: {
 		displayName: "Primovishap",
-		element: ELEMENTS.geo,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Primovishap",
 		onlineFilePath: "https://thumbs4.imagebam.com/23/40/04/METS4V2_t.png",
@@ -292,7 +301,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.SolitarySuanii]: {
 		displayName: "Solitary Suanni",
-		element: ELEMENTS.hydro,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Suanni",
 		onlineFilePath: "https://thumbs4.imagebam.com/66/f5/88/METS4V6_t.png",
@@ -332,7 +341,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.Azhdaha]: {
 		displayName: "Azhdaha",
-		element: ELEMENTS.geo,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "Azhdaha",
 		onlineFilePath: "https://thumbs4.imagebam.com/48/f5/54/METS4U7_t.png",
@@ -379,8 +388,8 @@ export const BOSS_DETAIL: BossMap = {
 		index: 47,
 	},
 	[BOSSES.ChizhangVishaps]: {
-		displayName: "Chizhang Vishaps",
-		element: ELEMENTS.geo,
+		displayName: "Chizhang Vishap",
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Legend,
 		imageFileName: "ChizhangVishaps",
 		onlineFilePath: "https://thumbs4.imagebam.com/b9/46/85/METS4UI_t.png",
@@ -412,7 +421,7 @@ export const BOSS_DETAIL: BossMap = {
 	},
 	[BOSSES.Polychrome]: {
 		displayName: "Polychrome",
-		element: ELEMENTS.physical,
+		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Polychrome",
 		onlineFilePath: "https://thumbs4.imagebam.com/9a/57/d5/MEXSPGK_t.png",

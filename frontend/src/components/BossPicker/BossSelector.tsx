@@ -16,13 +16,17 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 // an exact copy of character selector applied for bosses - should make a selector component instead but this way gets the changes out faster
 
 export interface IBoss {
+	team: number;
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 	selections: number[]; // the selected bosses; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
+	updateHover: (teamNum: number, selected: number) => void;
 }
 
 export const BossSelector = ({
+	team,
 	updateBoss,
-	selections
+	selections,
+	updateHover
 }: IBoss) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
@@ -126,11 +130,13 @@ export const BossSelector = ({
 						return x != BOSSES.None ? (
 							<Grid padding={1} key={x}>
 								<BossButton
+									team={team}
 									boss={x}
 									updateBoss={updateBoss}
 									selectDisplay={false}
 									selectable={false}
-									isChosen={selections.includes(BOSS_DETAIL[x].index)}						
+									isChosen={selections.includes(BOSS_DETAIL[x].index)}		
+									updateHover={updateHover}				
 								/>
 							</Grid>
 						) : null;

@@ -119,17 +119,6 @@ const parseBoss = (data) => {
     }
     
   } else {
-    /*
-    if(alerted){
-      alert(
-      "Team " +
-        nextArr[data.nextTeam] +
-        " has selected " +
-        bossList[data.boss + 1].boss +
-        " for their boss!"
-    );
-    }
-    */
     if(long){
       returnVal = {
         ...identity,
@@ -146,8 +135,6 @@ const parseBoss = (data) => {
       };
     }
   }
-  // console.log("return");
-  // console.log(returnVal);
   return returnVal;
 };
 /**
@@ -432,7 +419,9 @@ export default function Game(props) {
   const [bosses, setBosses] = useState(
     JSON.parse(sessionStorage.getItem("bosses"))
   );
-  const [turn, setTurn] = useState(identity.turn != undefined ? identity.turn : 1); // current turn
+  const [turn, setTurn] = useState(
+    identity.turn != undefined ? identity.turn : 1
+  ); // current turn
   const [cookies, setCookie] = useCookies(["player"]);
   const socket = useRef(null);
 
@@ -453,45 +442,49 @@ export default function Game(props) {
   const [bossFilterActive, setBossFilter] = useState(false);
   const [charFilterActive, setCharFilter] = useState(false);
 
-  const [alertLink, setLink] = useState("")
-  const [alertOpen, setAlertOpen] = useState(false)
-  const [alertBan, setAlertBan] = useState(false)
+  const [alertLink, setLink] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertBan, setAlertBan] = useState(false);
 
   const characterRef = useRef();
   const bossRef = useRef();
 
-  const intentionalClose = useRef(false);
   const selectedBosses = useRef([]);
   const selectedChars = useRef([]);
+
+  const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
 
   const updateTurn = (turn) => {
     setTurn(turn);
     sessionStorage.setItem("turn", turn);
-  }
+  };
 
   // set an interval
 
   const updateTimer = (enabled = true, timerActive = false) => {
     enabled ? setTimerValue(Date.now()) : null;
     setTimerVisible(enabled);
-    if(timerActive == false){
+    // going ti ignore this and have server run this instead
+    /*
+    if (timerActive == false) {
       // if it currently is the player's turn, trigger the selection send and end the timer
       // if nothing is selected or it is invalid, send a random pick
-      // if it is ban stage, send a no ban (id -2) 
+      // if it is ban stage, send a no ban (id -2)
       // if it is not the player's turn, do nothing.
-      // reset the timer 
-      if(turn == cookies.player.charAt(0)){
-        sendSelection(turn, selection, true) 
+      // reset the timer
+      if (turn == cookies.player.charAt(0)) {
+        sendSelection(turn, selection, true);
       }
     }
-  }
+    */
+  };
 
   // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
     // console.log(info);
-    console.log("identity");
-    console.log(info)
-    sessionStorage.removeItem('game');
+    // console.log("identity");
+    // console.log(info);
+    sessionStorage.removeItem("game");
     sessionStorage.setItem("game", JSON.stringify(info));
     setIdentity(info);
   };
@@ -577,8 +570,31 @@ export default function Game(props) {
     return true;
   };
 
+  const sendHover = (teamNum, selection) => {
+    // teamNum is 1 / 2 depending on team 1 or 2
+    // selection is the choice made
+    // both are numbers
+    if (socket.current.readyState != 1) {
+      alert("Please refresh the page!");
+      return;
+    }
+    console.log("sending a hover");
+    // notably, does NOT check if the pick is valid
+
+    let req = JSON.stringify({
+      id: props.id,
+      type: "hover",
+      team: teamNum,
+      hovered: selection
+    });
+    socket.current.send(req);
+  };
+
   const sendSelection = (teamNum, selection, timeout = false) => {
-    if(socket.current.readyState != 1){
+    // should no longer be run on timer end
+    // instead server will handle it
+    // assumes coket is open which should always be the case
+    if (socket.current.readyState != 1) {
       alert("Please refresh the page and try again!");
       return;
     }
@@ -598,58 +614,81 @@ export default function Game(props) {
     // boss, pick, etc
     let res = identity.result;
     let req = "";
-    if(res.toLowerCase() == "boss"){
+    if (res.toLowerCase() == "boss") {
       selection.type = "boss";
-      if(localStorage.getItem("boss") == null){
+      if (localStorage.getItem("boss") == null) {
         selection = {};
-      }
-      else{
+      } else {
         selection.id = parseInt(localStorage.getItem("boss"));
       }
-    }
-    else if(res.toLowerCase() == "pick" || res.toLowerCase() == "ban" || res.toLowerCase() == "extraban"){
+    } else if (
+      res.toLowerCase() == "pick" ||
+      res.toLowerCase() == "ban" ||
+      res.toLowerCase() == "extraban"
+    ) {
       selection.type = res.toLowerCase();
-      if(localStorage.getItem("character") == null){
+      if (localStorage.getItem("character") == null) {
         selection = {};
-      }
-      else{
+      } else {
         selection.id = parseInt(localStorage.getItem("character"));
       }
     }
-    if(identity.fearless){
+    if (identity.fearless) {
       if (
         selection.id >= 0 &&
         selection.type == "boss" &&
         identity.fearlessBosses.includes(selection.id)
       ) {
-        alert("This boss was picked in the previous match and may not be picked again!");
+        setExtraInfo([selection.id, teamNum]);
         return;
       }
     }
     let found = false;
-    if (selection.type == "boss" && bosses[selection.id + 1].type == "legend" && identity.division.toLowerCase() != "premier") {
-      if(timeout){
-        alert("Time is up! Hovered boss is a local legend, which cannot be played in your division. A random boss will be selected.");
+    if (
+      selection.type == "boss" &&
+      bosses[selection.id + 1].type == "legend" &&
+      identity.division != "premier"
+    ) {
+      if (timeout) {
+        setExtraInfo(
+          "Time is up! Local legends cannot be played in your division. A random boss will be selected."
+        );
         found = true;
-      }
-      else{
-        alert("You cannot pick legends in standard division!");
-        return; 
+      } else {
+        setExtraInfo("You cannot pick legends in standard division!");
+        return;
       }
     }
-    if((selection.type == "boss" && res.toLowerCase() != "boss") || (selection.type == "character" && (res.toLowerCase() != "ban" && res.toLowerCase() != "pick" && res.toLowerCase() != "extraban"))){
+    if (
+      (selection.type == "boss" && res.toLowerCase() != "boss") ||
+      (selection.type == "character" &&
+        res.toLowerCase() != "ban" &&
+        res.toLowerCase() != "pick" &&
+        res.toLowerCase() != "extraban")
+    ) {
       console.log("invalid selection");
+      setExtraInfo("selection invalid!");
       selection = {};
+    } else if (
+      selection.type == "boss" &&
+      identity.longBoss[teamNum - 1] &&
+      bosses[selection.id + 1].long
+    ) {
+      console.log("ree");
+      setExtraInfo(
+        "You cannot pick more than one long boss in standard division (two in premier division)!"
+      );
+      if (timeout) {
+        found = true;
+      } else {
+        return;
+      }
     }
-    else if(selection.type == "boss" && identity.longBoss[teamNum - 1] && bosses[selection.id + 1].long){
-      console.log("ree")
-      alert("You cannot pick more than one long boss in standard division (two in premier division)!")
-      return;
-    }
-    console.log("test")
     // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
-    if(JSON.stringify(selection) == '{}'){
-      alert("No selection was made! Random boss / pick or no ban is selected.")
+    if (JSON.stringify(selection) == "{}") {
+      setExtraInfo(
+        "No selection was made! Random boss / pick or no ban is selected."
+      );
       req = JSON.stringify({
         id: gameID,
         type: "add",
@@ -660,23 +699,24 @@ export default function Game(props) {
           team: teamNum,
         },
       });
-      socket.current.send(req);
-      updateTimer(false, true);
-      return;
-    }
-    if (res.toLowerCase() == "waiting") {
+      found = true;
+    } else if (res.toLowerCase() == "waiting") {
+      // should only trigger on first pick
       // check bosses, see if picked
       if (!checkSelection(selection, "boss")) {
-        if(!timeout){
-          alert("Time is up! Selected boss is invalid! A random boss will be selected.")
+        if (!timeout) {
+          setExtraInfo(
+            "Time is up! Selected boss is invalid! A random boss will be selected."
+          );
           found = true;
-        }
-        else{
-          alert("Invalid pick! Please select a BOSS that has not been chosen yet!"); 
+        } else {
+          setExtraInfo(
+            "Invalid pick! Please select a BOSS that has not been chosen yet!"
+          );
           return false;
         }
       }
-      if(found){
+      if (found) {
         req = JSON.stringify({
           id: gameID,
           type: "add",
@@ -687,8 +727,7 @@ export default function Game(props) {
             team: teamNum,
           },
         });
-      }
-      else{
+      } else {
         req = JSON.stringify({
           id: gameID,
           type: "add",
@@ -700,31 +739,37 @@ export default function Game(props) {
           },
         });
       }
-    } else {
+    } else { 
       if (!checkSelection(selection, res)) {
-        if(timeout){
-          if(selection.type == "boss"){
-            alert("Time is up! An invalid boss was selected, thereby a random boss will be chosen.")
-          }
-          else if(selection.type == "character"){
-            if(identity.result == "ban"){
-              alert("Time is up. An invalid character was selected, thereby no ban will be chosen.")
-            }
-            else{
-              alert("Time is up. An invalid character was selected, thereby a random pick will be selected.")
+        if (timeout) {
+          if (selection.type == "boss") {
+            setExtraInfo(
+              "Time is up! An invalid boss was selected, thereby a random boss will be chosen."
+            );
+          } else if (selection.type == "character") {
+            if (identity.result == "ban") {
+              setExtraInfo(
+                "Time is up. An invalid character was selected, thereby no ban will be chosen."
+              );
+              // remove these alerts, all of them, add extra text to show that it was random
+            } else {
+              setExtraInfo(
+                "Time is up. An invalid character was selected, thereby a random pick will be selected."
+              );
             }
           }
           found = true;
-        }
-        else{
-          if(selection.type == "boss"){
-            alert("This boss has been picked already!");
-          }
-          else if(identity.result == "ban" || identity.result == "extraban"){
-            alert("This character is banned!");
-          }
-          else{
-            alert("This character has already been picked!");
+        } else {
+          if (selection.type == "boss") {
+            setExtraInfo("This boss has been picked already!");
+          } else if (
+            identity.result == "ban" ||
+            identity.result == "extraban"
+          ) {
+            //during ban phase, shows this, need to fix probs
+            setExtraInfo("This character is banned!");
+          } else {
+            setExtraInfo("This character has already been picked!");
           }
           return false;
         }
@@ -754,7 +799,17 @@ export default function Game(props) {
       }
     }
     updateTimer(false, true);
+    console.log("request")
+    console.log(req);
     // console.log("sent from sendselectione");
+    if (found == false) {
+      setExtraInfo(""); // reset on success
+    } else {
+      // 10 second timeout, then clear
+      setTimeout(() => {
+        setExtraInfo("");
+      }, 15000);
+    }
     socket.current.send(req);
     return true;
   };
@@ -818,24 +873,23 @@ export default function Game(props) {
   };
   /**
    * Returns an object for styling information based on game progress.
-   * @param {Number} timeDiff 
-   * @param {Boolean} varChecked 
+   * @param {Number} timeDiff
+   * @param {Boolean} varChecked
    * @returns an object containing display information
    */
   const parseTextColor = (timeDiff, varChecked = false) => {
     let color = "";
     let textColor = "white";
-    if(timeDiff > 0.5 || (timeDiff > 0 && varChecked)){
+    if (timeDiff > 0.5 || (timeDiff > 0 && varChecked)) {
       color = "red";
-    }
-    else if(timeDiff <= 0.5 && timeDiff >= -0.5 && !varChecked){ // 
+    } else if (timeDiff <= 0.5 && timeDiff >= -0.5 && !varChecked) {
+      //
       color = "yellow";
       textColor = "black";
-    }
-    else{
+    } else {
       color = "green";
     }
-    
+
     return {
       color: textColor,
       marginTop: 10,
@@ -846,12 +900,21 @@ export default function Game(props) {
   const parseStatusTooltip = (index, team) => {
     let penaltyString = "";
     let deathString = "";
-    const penaltyMenu = ["Retry", "DNF", "Ref Error", "VAR", "VAR/Updated", "Forced RT", "Tech"]; // maybe add VAR/T1 wins, Var/T2 wins
+    const penaltyMenu = [
+      "Retry",
+      "DNF",
+      "Ref Error",
+      "VAR",
+      "VAR/Updated",
+      "Forced RT",
+      "Tech",
+    ]; // maybe add VAR/T1 wins, Var/T2 wins
     let deathMenu = [];
-    switch(team){
+    switch (team) {
       case 1: {
         deathMenu = [...identity.playerst1];
-        for (let i = 0; i < identity.penaltyt1[index].length; i++) { // looks like [[false, false, false], [false, false, false]]
+        for (let i = 0; i < identity.penaltyt1[index].length; i++) {
+          // looks like [[false, false, false], [false, false, false]]
           if (identity.penaltyt1[index][i]) {
             penaltyString += penaltyMenu[i] + ", ";
           }
@@ -868,20 +931,20 @@ export default function Game(props) {
           if (identity.penaltyt2[index][i]) {
             penaltyString += penaltyMenu[i] + ", ";
           }
-          if(i < identity.playerst2.length && identity.deatht2[index][i]) {
+          if (i < identity.playerst2.length && identity.deatht2[index][i]) {
             deathString += deathMenu[i] + ", ";
           }
         }
       }
     }
-    
+
     return (
       <Fragment>
-        <p style={{color: 'red', fontSize: 20}}>
+        <p style={{ color: "red", fontSize: 20 }}>
           <b>{`Penalties: `}</b>
           {`${penaltyString}`}
         </p>
-        <p style={{color: 'blue', fontSize: 20}}>
+        <p style={{ color: "blue", fontSize: 20 }}>
           <b>{`Deaths: `}</b>
           {`${deathString}`}
         </p>
@@ -897,28 +960,25 @@ export default function Game(props) {
     */
     let path = "";
     let selection = "";
-    if(boss){
+    if (boss) {
       selection = bossRef.current.get(id);
       path = getBossGifPath(selection);
-      selection = BOSS_DETAIL[selection].displayName
-    }
-    else{
+      selection = BOSS_DETAIL[selection].displayName;
+    } else {
       selection = characterRef.current.get(id);
-      if(ban){
+      if (ban) {
         path = getCharacterBanPath(selection);
-        
-      }
-      else{
+      } else {
         path = getCharacterGifPath(selection);
       }
-      selection = CHARACTER_INFO[selection].displayName
+      selection = CHARACTER_INFO[selection].displayName;
     }
     setLink(path);
     setAlertOpen(true);
     setTimeout(() => {
-      setAlertOpen(false)
+      setAlertOpen(false);
     }, 5000); // shows for 5 seconds, can be changed
-  }
+  };
   /**
    * Updates the selected ref objects to highlight grayscale objects.
    * @param {number} option the choice of what to add to selected, default is 6 (all). 1 is bosses, 2 is extra bans, 3 is bans, 4 and 5 are team 1 and team 2 picks respective
@@ -990,17 +1050,16 @@ export default function Game(props) {
       }
     }
     // option 6: update everything
-  }
+  };
 
   const updateSelectedDirect = (id, option) => {
     // option 1: update boss
-    if(option == 1){
+    if (option == 1) {
       selectedBosses.current.push(id);
-    }
-    else if(option >= 2 && option <= 5){
+    } else if (option >= 2 && option <= 5) {
       selectedChars.current.push(id);
     }
-  }
+  };
   const compare = (one, two) => {
     // compare characters
     if (one._id == "undefined") {
@@ -1019,14 +1078,14 @@ export default function Game(props) {
     // adds selected characters and bosses to the ref objects
     updateSelected(6);
     const map = new Map();
-    for(const someName in BOSS_DETAIL){
+    for (const someName in BOSS_DETAIL) {
       // create a hashmap between index and some name
-      map.set(BOSS_DETAIL[someName].index, someName)
+      map.set(BOSS_DETAIL[someName].index, someName);
     }
     bossRef.current = map;
     const newMap = new Map();
-    for(const someName in CHARACTER_INFO){
-      newMap.set(CHARACTER_INFO[someName].index, someName)
+    for (const someName in CHARACTER_INFO) {
+      newMap.set(CHARACTER_INFO[someName].index, someName);
     }
     characterRef.current = newMap;
     if (sessionStorage.getItem("chosen_bosses") == null) {
@@ -1035,7 +1094,8 @@ export default function Game(props) {
     if (sessionStorage.getItem("chosen_picks") == null) {
       sessionStorage.setItem("chosen_picks", JSON.stringify([]));
     }
-    if ( // this
+    if (
+      // this
       localStorage.getItem("display_boss") != null &&
       localStorage.getItem("display_boss") != 0
     ) {
@@ -1056,7 +1116,7 @@ export default function Game(props) {
       }
     });
     const createSocket = () => {
-      let socket = new WebSocket("wss://rankedwebsocketapi.fly.dev"); // wss://rankedwebsocketapi.fly.dev
+      let socket = new WebSocket("ws://localhost:3000"); // wss://rankedwebsocketapi.fly.dev or ws://localhost:3000
       socket.addEventListener("open", function (event) {
         // this does not load more than once
         // build a reconnection algorithm here
@@ -1150,16 +1210,18 @@ export default function Game(props) {
             showSelectionAlert(data.boss, true, false);
             break;
           }
+          case "complete":{
+            break; // do nothing
+          }
           // should only execute if extra ban setting is enabled
           case "extraban":
           case "ban": {
             updateTimer(true, true);
             res = parseBan(data, data.type == "extraban");
-            if(data.type == "extraban"){
+            if (data.type == "extraban") {
               updateSelectedDirect(data.extraban, 2);
               showSelectionAlert(data.extraban, false, true);
-            }
-            else{
+            } else {
               updateSelectedDirect(data.ban, 2);
               showSelectionAlert(data.ban, false, true);
             }
@@ -1239,7 +1301,7 @@ export default function Game(props) {
       });
       // console.log("socket build")
       return socket;
-    }
+    };
     socket.current = createSocket();
     return () => {
       if (socket.readyState === 1) {
@@ -1266,15 +1328,19 @@ export default function Game(props) {
   const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
   let extraBanCounter = 0;
   let extraBanOrder = [[], []];
-  if(identity.extrabans.length > 0){
+  if (identity.extrabans.length > 0) {
     // creates extra ban order based on the number of extra bans of each team
     // alternates 1 - 2 - 1 - 2 - 1 - 2 until a team runs out of extra bans, which then the rest are the other team's
-    for(let i = 0; i < Math.max(identity.extrabanst1, identity.extrabanst2); i++){
-      if(i < identity.extrabanst1){
+    for (
+      let i = 0;
+      i < Math.max(identity.extrabanst1, identity.extrabanst2);
+      i++
+    ) {
+      if (i < identity.extrabanst1) {
         extraBanOrder[0].push(extraBanCounter);
         extraBanCounter++;
       }
-      if(i < identity.extrabanst2){
+      if (i < identity.extrabanst2) {
         extraBanOrder[1].push(extraBanCounter);
         extraBanCounter++;
       }
@@ -1407,18 +1473,21 @@ export default function Game(props) {
                       id={props.id}
                       team={turn}
                       pickSelection={sendSelection}
+                      sendHover={sendHover}
                       inGame={true}
+                      bonusInfo={[extraInfo]}
                       selections={selectedBosses.current}
                     />
                   ) : identity.result.toLowerCase() == "ban" ||
-                    identity.result.toLowerCase() == "pick" || 
+                    identity.result.toLowerCase() == "pick" ||
                     identity.result.toLowerCase() == "extraban" ? (
                     <Balancing
                       team={turn}
                       phase={identity.result.toLowerCase()}
                       pickSelection={sendSelection}
+                      sendHover={sendHover}
                       inGame={true}
-                      bonusInfo={[""]}
+                      bonusInfo={[extraInfo]}
                       selections={selectedChars.current}
                     />
                   ) : null

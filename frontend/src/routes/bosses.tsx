@@ -9,11 +9,13 @@ interface balance {
 	id: number; // game ID - useful but likely not needed
 	team: number;
 	pickSelection: ( teamNum: number, selectedObj: object, timeout: boolean ) => void;
+	sendHover: (teamNum: number, selected: number) => void;
 	inGame: boolean;
 	selections: number[];
+	bonusInfo: string[];
 }
 
-export const BossDisplay = ({id, team, pickSelection, inGame, selections}: balance) => {
+export const BossDisplay = ({id, team, pickSelection, sendHover, inGame, selections, bonusInfo}: balance) => {
 	const [cookieInfo] = useCookies(["player"]);
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -73,7 +75,7 @@ export const BossDisplay = ({id, team, pickSelection, inGame, selections}: balan
 				}}
 				id="boss-selection-box"
 			>
-				<BossSelector updateBoss={setSelection} selections={selections} />
+				<BossSelector team={team} updateBoss={setSelection} selections={selections} updateHover={sendHover} />
 			</Box>
 			{/* button details, other useful information for boss phase */}
 			<Box sx={{ padding: 2, width: "500px" }}>
@@ -92,6 +94,17 @@ export const BossDisplay = ({id, team, pickSelection, inGame, selections}: balan
 							{
 								(localStorage.getItem("boss") != undefined && !inGame) ? `Selected boss id (for custom game purposes): ${localStorage.getItem("boss")}` : null
 							}
+						</Typography>
+						<br />
+						<Typography variant="h6">
+							{bonusInfo.map((info) => {
+								return (
+									<Typography key={info} variant="h6">
+										{info}
+										<br />
+									</Typography>
+								);
+							})}
 						</Typography>
 					</React.Fragment>
 				}

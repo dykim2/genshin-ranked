@@ -14,15 +14,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import Grid from "@mui/material/Grid2";
 
 export interface Pick {
-	characterName: string;
+	team: number;
 	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
 	selectedChars: number[]; // the selected characters; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
+	updateHover: (teamNum: number, selected: number) => void;
 }	
 
 export const CharacterSelector = ({
-	characterName,
+	team,
 	updateCharacter,
-	selectedChars
+	selectedChars,
+	updateHover
 }: Pick) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
@@ -118,10 +120,12 @@ export const CharacterSelector = ({
 						x != CHARACTERS.None && x != CHARACTERS.NoBan ? (
 							<Grid padding={0} key={x}>
 								<CharacterButton
+									team={team}
 									character={x}
 									updateCharacter={updateCharacter}
 									banDisplay={"loadout"}
 									isChosen={selectedChars.includes(CHARACTER_INFO[x].index)}
+									updateHover={updateHover}
 								/>
 							</Grid>
 						) : null,

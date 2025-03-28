@@ -11,7 +11,7 @@ export default function CharacterList() {
     const [info, setInfo] = useState<string[]>([""]);
     const alertLink = useRef<string>("");
     const [open, setOpen] = useState(false)
-    const displayInfo = (_teamNum: number, selectedObj: any, _timeout: boolean = false) => {
+    const displayInfo = (_teamNum: number, selectedObj: {id: number}, _timeout: boolean = false) => {
       if (charRef.current == undefined) {
         const newMap = new Map();
         for (const someName in CHARACTER_INFO) {
@@ -43,6 +43,9 @@ export default function CharacterList() {
       }
         
     }
+    const doHover = (_teamNum: number, selected: number) => {
+      displayInfo(_teamNum, {id: selected});
+    }
     return (
       <Fragment>
         <Typography sx={{ fontSize: 60 }}>
@@ -50,6 +53,7 @@ export default function CharacterList() {
         </Typography>
         {/* <Button>Show GIF for test</Button>*/}
         <Balancing
+          sendHover={doHover}
           team={0}
           phase={""}
           pickSelection={displayInfo}
