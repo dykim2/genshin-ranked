@@ -26,9 +26,18 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 	const [selection, setSelection] = React.useState<string>("None");
 	const [cookieInfo] = useCookies(["player"]);
 	let matching = true;
-
 	if (cookieInfo.player != undefined && cookieInfo.player.substring(0, 1) != team) {
 		matching = false;
+	}
+	const info = sessionStorage.getItem("game");
+	let newInfo: number;
+	let currentResult: string = "";
+	if (info != null && info != undefined && info != "") {
+		let infoParse = JSON.parse(info);
+		newInfo = infoParse.turn;
+		currentResult = infoParse.result;
+	} else {
+		newInfo = 0;
 	}
 	const sendToSocket = () => {
 		// find the corresponding id of the character with this display name
@@ -37,6 +46,9 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 			type: phase.toLowerCase(),
 			id: -1,
 		};
+		if(team == -1){
+			return;
+		}
 		if (socket.readyState == 1) {
 			let chosenValue: number = -1;
 			if (localStorage.getItem("character") == null) {
@@ -151,11 +163,12 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 								sendToSocket();
 							}}
 							disabled={
-								inGame &&
-								((phase.toLowerCase() != `ban` &&
-									phase.toLowerCase() != `pick` &&
-									phase.toLowerCase() != "extraban") ||
-									!matching)
+								team != newInfo ||
+								(inGame &&
+									((phase.toLowerCase() != `ban` &&
+										phase.toLowerCase() != `pick` &&
+										phase.toLowerCase() != "extraban") ||
+										!matching))
 							}
 						>
 							<Typography

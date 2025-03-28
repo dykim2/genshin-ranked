@@ -41,6 +41,9 @@ export const BossDisplay = ({id, team, pickSelection, sendHover, inGame, selecti
 			type: "boss",
 			id: -1,
 		};
+		if(team == -1){
+			return;
+		}
 		if (socket.readyState == 1) {
 			let chosenValue: number = -1;
 			if (localStorage.getItem("boss") == null) {

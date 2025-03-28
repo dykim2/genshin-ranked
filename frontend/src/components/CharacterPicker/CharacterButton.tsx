@@ -28,13 +28,13 @@ export const CharacterButton = ({team, character, updateCharacter, banDisplay, i
 	// console.log("end character")
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
+		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`);
 		// updateHover in a non Game setting should be changed to instead do what the button press normally would
 		updateHover(team, CHARACTER_INFO[character].index);
-		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`);
 	};
 	if(isChosen){
 		return(
-			<NormalWrapperBox disableRipple onClick={() => updateHover(1, 1)}>
+			<NormalWrapperBox disableRipple onClick={doUpdate}>
 				<InnerCharacter
 					character={character}
 					updateCharacter={updateCharacter}

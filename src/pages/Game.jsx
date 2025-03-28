@@ -24,7 +24,7 @@ import { GifPlay } from "../components/GifPlay.tsx";
 const IMG_SIZE = 75; // use eventually
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
-const TOTAL_TIME = 35500;
+
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
 // to make sure people don't refresh website to stall, maybe i can re-implement the turn thing, where a random pick is made if server says its their turn and the init is ran
@@ -41,10 +41,10 @@ const MyTurn = (turnInfo, draftOver) => {
       cookieInfo.player.substring(0, 1) == "2") &&
     turnInfo.turnInfo > 0
   ) {
-    return <p style={{ color: "red", fontSize: 28 }}>opponent's turn!</p>;
+    return <p style={{ color: "green", fontSize: 28 }}>opponent's turn!</p>;
   } else {
     return (
-      <p style={{ color: "red", fontSize: 28 }}>team {turnInfo.turnInfo}'s turn!</p>
+      <p style={{ color: "white", fontSize: 28 }}>team {turnInfo.turnInfo}'s turn!</p>
     );
   }
 }
@@ -431,7 +431,7 @@ export default function Game(props) {
   const [showT1Order, setOrderT1] = useState(false);
   const [showT2Order, setOrderT2] = useState(false);
 
-  const [showTimer, setTimerVisible] = useState(false);
+  const [showTimer, setTimerVisible] = useState(true);
   // const [chosenBosses, setChosenBosses] = useState(sessionStorage.getItem("selected_bosses"));
   // const [chosenChars, setChosenChars] = useState(sessionStorage.getItem("selected_characters"));
 
@@ -453,7 +453,7 @@ export default function Game(props) {
   const selectedChars = useRef([]);
 
   const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
-
+  const [totalTime, setTotalTime] = useState(0); // total time for timer
   const updateTurn = (turn) => {
     setTurn(turn);
     sessionStorage.setItem("turn", turn);
@@ -461,7 +461,11 @@ export default function Game(props) {
 
   // set an interval
 
-  const updateTimer = (enabled = true, timerActive = false) => {
+  const updateTimer = (enabled = true, resetTime = true) => {
+    if (totalTime != 36500 && resetTime) {
+      // reset timer after refresh page
+      setTotalTime(36500);
+    }
     enabled ? setTimerValue(Date.now()) : null;
     setTimerVisible(enabled);
     // going ti ignore this and have server run this instead
@@ -580,12 +584,14 @@ export default function Game(props) {
     }
     console.log("sending a hover");
     // notably, does NOT check if the pick is valid
-
+    if (teamNum == -1) {
+      return;
+    }
     let req = JSON.stringify({
       id: props.id,
       type: "hover",
       team: teamNum,
-      hovered: selection
+      hovered: selection,
     });
     socket.current.send(req);
   };
@@ -739,7 +745,7 @@ export default function Game(props) {
           },
         });
       }
-    } else { 
+    } else {
       if (!checkSelection(selection, res)) {
         if (timeout) {
           if (selection.type == "boss") {
@@ -799,7 +805,7 @@ export default function Game(props) {
       }
     }
     updateTimer(false, true);
-    console.log("request")
+    console.log("request");
     console.log(req);
     // console.log("sent from sendselectione");
     if (found == false) {
@@ -1125,35 +1131,36 @@ export default function Game(props) {
           clearInterval(window.timer);
           window.timer = 0;
         }
+        if (socket.readyState == 1) {
+          socket.send(
+            JSON.stringify({
+              type: "turn",
+              id: props.id,
+              getSelectionInfo: true,
+            })
+          );
+          if (sessionStorage.getItem("game") == null) {
+            socket.send(
+              JSON.stringify({
+                type: "get",
+                id: props.id,
+              })
+            ); // should work if first connection is to here
+          }
+          if (sessionStorage.getItem("bosses") == null) {
+            socket.send(
+              JSON.stringify({
+                type: "find",
+                query: "boss",
+              })
+            );
+          }
+        }
       });
       if (typeof cookies.player == "undefined") {
         setCookie("player", "spectate");
       }
-      if (socket.readyState == 1) {
-        socket.send(
-          JSON.stringify({
-            type: "turn",
-            id: props.id,
-            getSelectionInfo: true,
-          })
-        );
-        if (sessionStorage.getItem("game") == null) {
-          socket.send(
-            JSON.stringify({
-              type: "get",
-              id: props.id,
-            })
-          ); // should work if first connection is to here
-        }
-        if (sessionStorage.getItem("bosses") == null) {
-          socket.send(
-            JSON.stringify({
-              type: "find",
-              query: "boss",
-            })
-          );
-        }
-      }
+
       // Listen for messages
       socket.addEventListener("message", function (event) {
         console.log(JSON.parse(event.data));
@@ -1188,6 +1195,9 @@ export default function Game(props) {
           return;
         }
         let res = null;
+        if (data.type != "turn" && totalTime != 36500) {
+          setTotalTime(36500);
+        }
         switch (data.type) {
           case "create": {
             updateIdentity(data.game);
@@ -1201,6 +1211,12 @@ export default function Game(props) {
           }
           case "turn": {
             updateTurn(data.turn);
+            if (data.timer != -1) {
+              console.log("i checked the timer");
+              setTotalTime(data.timer * 1000);
+              updateTimer(true, false);
+              setTimerVisible(true);
+            }
             break;
           }
           case "boss": {
@@ -1210,7 +1226,7 @@ export default function Game(props) {
             showSelectionAlert(data.boss, true, false);
             break;
           }
-          case "complete":{
+          case "complete": {
             break; // do nothing
           }
           // should only execute if extra ban setting is enabled
@@ -1380,7 +1396,7 @@ export default function Game(props) {
               </div>
               <p className="boss boss-3">
                 {identity.result == "progress" || identity.result == "finish"
-                  ? "draft complete!"
+                  ? null
                   : identity.result != "waiting"
                   ? "select a " + identity.result.toLowerCase()
                   : "waiting to start"}
@@ -1389,9 +1405,9 @@ export default function Game(props) {
                 showTimer ? (
                   <Countdown
                     className="boss boss-4"
-                    date={timer + TOTAL_TIME}
+                    date={timer + totalTime}
                     onComplete={() => {
-                      updateTimer(false, false);
+                      updateTimer(false, true);
                     }}
                   />
                 ) : (
@@ -1471,7 +1487,13 @@ export default function Game(props) {
                   identity.result.toLowerCase() == "boss" ? (
                     <BossDisplay
                       id={props.id}
-                      team={turn}
+                      team={
+                        cookies.player.charAt(0) == "1"
+                          ? 1
+                          : cookies.player.charAt(0) == "2"
+                          ? 2
+                          : -1
+                      }
                       pickSelection={sendSelection}
                       sendHover={sendHover}
                       inGame={true}
@@ -1482,7 +1504,13 @@ export default function Game(props) {
                     identity.result.toLowerCase() == "pick" ||
                     identity.result.toLowerCase() == "extraban" ? (
                     <Balancing
-                      team={turn}
+                      team={
+                        cookies.player.charAt(0) == "1"
+                          ? 1
+                          : cookies.player.charAt(0) == "2"
+                          ? 2
+                          : -1
+                      }
                       phase={identity.result.toLowerCase()}
                       pickSelection={sendSelection}
                       sendHover={sendHover}
@@ -1739,6 +1767,8 @@ export default function Game(props) {
               >
                 {`you are playing game id`} <b>{`${props.id}! `}</b>
                 make sure everyone you are playing with joins this id.
+                <br />
+                {cookies.player.charAt(0) == "you are team 1." ? 1 : cookies.player.charAt(0) == "you are team 2." ? 2 : "you are not playing!"}. 
               </p>
             </div>
             <div className="grid newgrid twentytwo">

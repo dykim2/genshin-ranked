@@ -360,7 +360,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FourStar,
 		imageFileName: "Iansan",
 		onlineFilePath: "https://thumbs4.imagebam.com/24/dc/3d/ME10MX77_t.png",
-		index: 42,
+		index: 95,
 	},
 	[CHARACTERS.Itto]: {
 		displayName: "Itto",

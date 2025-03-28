@@ -25,8 +25,8 @@ interface IBossButton extends IInnerBossButton {
 export const BossButton = ({team, boss, updateBoss, selectDisplay, selectable, isChosen, updateHover}: IBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
-		updateHover!(team, BOSS_DETAIL[boss].index);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
+		updateHover!(team, BOSS_DETAIL[boss].index);
 	}
 	if(isChosen){
 		return(
