@@ -12,7 +12,7 @@ export default function Bosses() {
         <Typography sx={{ fontSize: 60 }}>
           View available boss options and ids here!
         </Typography>
-        <BossDisplay id={0} team={0} pickSelection={select} inGame={false} selections={[]} bonusInfo={[]} sendHover={sendHover} />
+        <BossDisplay  team={0} pickSelection={select} inGame={false} selections={[]} bonusInfo={[]} sendHover={sendHover} fearless={false} />
       </Fragment>
     );
 } 

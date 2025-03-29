@@ -485,8 +485,8 @@ export default function Game(props) {
 
   // https://rankedwebsocketapi.fly.dev/
   const updateIdentity = (info) => {
-    // console.log(info);
-    // console.log("identity");
+    console.log(info);
+    console.log("identity");
     // console.log(info);
     sessionStorage.removeItem("game");
     sessionStorage.setItem("game", JSON.stringify(info));
@@ -1122,7 +1122,7 @@ export default function Game(props) {
       }
     });
     const createSocket = () => {
-      let socket = new WebSocket("ws://localhost:3000"); // wss://rankedwebsocketapi.fly.dev or ws://localhost:3000
+      let socket = new WebSocket("wss://rankedwebsocketapi.fly.dev"); // wss://rankedwebsocketapi.fly.dev or ws://localhost:3000
       socket.addEventListener("open", function (event) {
         // this does not load more than once
         // build a reconnection algorithm here
@@ -1373,17 +1373,17 @@ export default function Game(props) {
         <Fragment>
           <div className="container">
             <div className="grid one">
-              {typeof identity.team1 == "undefined"
+              {typeof identity.team1 == undefined
                 ? "team 1 Selections"
                 : identity.team1 + " picks"}
             </div>
             <div className="grid newgrid two">
               <p className="boss boss-1">
-                {identity.fearless &&
-                (identity.result.toLowerCase() == "waiting" ||
-                  identity.result.toLowerCase() == "boss")
-                  ? "fearless bosses active!"
-                  : null}
+                {cookies.player.charAt(0) == "1"
+                  ? "you are team 1."
+                  : cookies.player.charAt(0) == "2"
+                  ? "you are team 2."
+                  : "you are not playing!"}
               </p>
               <div className="boss boss-2">
                 {/* console.log(identity.result == "progress" || identity.result == "finish") */}
@@ -1416,7 +1416,7 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid three">
-              {typeof identity.team2 == "undefined"
+              {typeof identity.team2 == undefined
                 ? "team 2 Selections"
                 : identity.team2 + " picks"}
             </div>
@@ -1486,7 +1486,7 @@ export default function Game(props) {
                   identity.result.toLowerCase() == "waiting" ||
                   identity.result.toLowerCase() == "boss" ? (
                     <BossDisplay
-                      id={props.id}
+                      fearless={identity.fearless}
                       team={
                         cookies.player.charAt(0) == "1"
                           ? 1
@@ -1767,8 +1767,6 @@ export default function Game(props) {
               >
                 {`you are playing game id`} <b>{`${props.id}! `}</b>
                 make sure everyone you are playing with joins this id.
-                <br />
-                {cookies.player.charAt(0) == "you are team 1." ? 1 : cookies.player.charAt(0) == "you are team 2." ? 2 : "you are not playing!"}. 
               </p>
             </div>
             <div className="grid newgrid twentytwo">
@@ -1832,12 +1830,7 @@ export default function Game(props) {
             close={closeT2Order}
             reorder={changeTeamInfo}
           />
-          <GifPlay
-            link={alertLink}
-            isOpen={alertOpen}
-            onClose={() => {}}
-            ban={alertBan}
-          />
+          <GifPlay link={alertLink} isOpen={alertOpen} />
         </Fragment>
       )}
     </div>

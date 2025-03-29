@@ -71,6 +71,7 @@ export default function Play(){
     sessionStorage.removeItem("game");
     let info = await fetch(`${api}/gameAPI/find/${id}`);
     info = await info.json();
+    console.log(info);
     setStatus(info[0]);
     sessionStorage.setItem("game", JSON.stringify(info[0]));
     // redirect to the new page (/play/id) - add to navigation

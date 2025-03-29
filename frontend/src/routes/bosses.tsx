@@ -6,16 +6,16 @@ import { socket } from "../../../src/contexts/PlayingContext";
 import {useCookies} from "react-cookie";
 
 interface balance {
-	id: number; // game ID - useful but likely not needed
 	team: number;
 	pickSelection: ( teamNum: number, selectedObj: object, timeout: boolean ) => void;
 	sendHover: (teamNum: number, selected: number) => void;
 	inGame: boolean;
 	selections: number[];
 	bonusInfo: string[];
+	fearless: boolean; // fearless bosses or not
 }
 
-export const BossDisplay = ({id, team, pickSelection, sendHover, inGame, selections, bonusInfo}: balance) => {
+export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections, bonusInfo, fearless}: balance) => {
 	const [cookieInfo] = useCookies(["player"]);
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -86,7 +86,12 @@ export const BossDisplay = ({id, team, pickSelection, sendHover, inGame, selecti
 					<React.Fragment>
 						<Typography color={"white"} variant="h6">
 							{`currently selected: ${selection}`}
+							<br />
+							{
+								(fearless ? `fearless bosses active!` : null)
+							}
 						</Typography>
+						
 						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={team != newInfo || !matching || currentResult == "waiting"}>
 							<Typography color={"yellow"} textTransform="none" variant="h6">
 								{currentResult != "waiting" ? "choose boss " : "waiting to start"}

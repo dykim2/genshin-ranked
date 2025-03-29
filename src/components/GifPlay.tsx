@@ -4,17 +4,13 @@ import { useCookies } from "react-cookie";
 import useScreenSize from "../hooks/useScreenSize.js";
 interface play {
   link: string; // should either end in .gif or .png or other image format
-  isOpen: boolean;
-  onClose: any;
-  ban: boolean;
+  isOpen: boolean
 }
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
 export const GifPlay = ({
   link,
-  isOpen,
-  onClose,
-  ban = false,
+  isOpen
 }: play) => {
   let width = 1000;
   const [cookies, setCookies] = useCookies(["player"]);
@@ -30,28 +26,17 @@ export const GifPlay = ({
   return (
     <React.Fragment>
       {/* turn this in to a component, maybe by providing a state variable*/}
-      <Modal open={isOpen} onClose={onClose}>
+      <Modal open={isOpen}>
         <Box
           sx={{
             position: "absolute",
             top: "35%",
-            left: width, // 2560 -
+            left: width
           }}
         >
-          {ban ? (
-            <Fragment>
-              <img
-                src={link}
-                width="1080"
-                height="256"
-                style={{ filter: "grayscale(70%)" }}
-              />
-            </Fragment>
-          ) : (
-            <Fragment>
-              <img src={link} width="1080" height="256" />
-            </Fragment>
-          )}
+          <Fragment>
+            <img src={link} width="1080" height="256" />
+          </Fragment>
         </Box>
       </Modal>
     </React.Fragment>
