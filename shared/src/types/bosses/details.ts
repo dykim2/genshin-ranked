@@ -339,6 +339,7 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/75/7a/be/METS4UF_t.png",
 		index: 21,
 	},
+	/*
 	[BOSSES.Azhdaha]: {
 		displayName: "Azhdaha",
 		element: ELEMENTS.multi,
@@ -347,6 +348,7 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/48/f5/54/METS4U7_t.png",
 		index: 50,
 	},
+	*/
 	[BOSSES.Knave]: {
 		displayName: "The Knave",
 		element: ELEMENTS.pyro,

@@ -39,7 +39,7 @@ export enum BOSSES {
 	Spiritspeaker = "Spiritspeaker",
     LavaDragon = "LavaDragon",
 
-	Azhdaha = "Azhdaha",
+	// Azhdaha = "Azhdaha",
 	Apep = "Apep",
 	Narwhal = "Narwhal",
 	Knave = "Knave",
