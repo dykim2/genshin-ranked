@@ -168,7 +168,7 @@ export default function Play(){
     setChoosing(false);
     setReadying(false);
     navigate(id);
-    // window.location.reload();
+    window.location.reload();
   };
   const createGame = async () => {
     console.log("hi");
