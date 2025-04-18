@@ -428,6 +428,8 @@ export default function Game(props) {
   const [showT1Modal, setShowT1] = useState(false);
   const [showT2Modal, setShowT2] = useState(false);
 
+  const [canPause, setPause] = useState(true); // true or false
+
   const [showT1Order, setOrderT1] = useState(false);
   const [showT2Order, setOrderT2] = useState(false);
 
@@ -445,6 +447,8 @@ export default function Game(props) {
   const [alertLink, setLink] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertBan, setAlertBan] = useState(false);
+
+  const countdownRef = useRef(null);
 
   const characterRef = useRef();
   const bossRef = useRef();
@@ -1250,6 +1254,14 @@ export default function Game(props) {
             showSelectionAlert(data.pick, false, false);
             break;
           }
+          case "pause":
+            countdownRef.current.getApi().pause();
+            setPause(false);
+            break;
+          case "resume":
+            countdownRef.current.getApi().start();
+            setPause(true);
+            break;
           case "times": {
             // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
             res = parseTimes(data.time);
@@ -1406,6 +1418,7 @@ export default function Game(props) {
                   <Countdown
                     className="boss boss-4"
                     date={timer + totalTime}
+                    ref={countdownRef}
                     onComplete={() => {
                       updateTimer(false, true);
                     }}
@@ -1591,41 +1604,76 @@ export default function Game(props) {
               {cookies.player.charAt(0) == "R" ? (
                 <Fragment>
                   {identity.result != "waiting" ? (
-                    <Button
-                      className="boss-4"
-                      sx={{ backgroundColor: "black", color: "yellow" }}
-                      onClick={() => {
-                        socket.current.send(
-                          JSON.stringify({
-                            type: "switch",
-                            phase: "finish",
-                            id: props.id,
-                          })
-                        );
-                      }}
-                      disabled={identity.result != "progress"}
-                    >
-                      <Typography textTransform="none">end game</Typography>
-                    </Button>
+                    <Fragment>
+                      <Button
+                        className="boss-4"
+                        sx={{ backgroundColor: "black", color: "yellow" }}
+                        onClick={() => {
+                          socket.current.send(
+                            JSON.stringify({
+                              type: "switch",
+                              phase: "finish",
+                              id: props.id,
+                            })
+                          );
+                        }}
+                        disabled={identity.result != "progress"}
+                      >
+                        <Typography textTransform="none">end game</Typography>
+                      </Button>
+                      {canPause ? (
+                        <Button
+                          className="boss-3"
+                          sx={{ backgroundColor: "black", color: "yellow" }}
+                          onClick={() => {
+                            socket.current.send(
+                              JSON.stringify({
+                                type: "pause",
+                                id: props.id,
+                              })
+                            );
+                          }}
+                        >
+                          <Typography textTransform="none">pause</Typography>
+                        </Button>
+                      ) : (
+                        <Button
+                          className="boss-3"
+                          sx={{ backgroundColor: "black", color: "yellow" }}
+                          onClick={() => {
+                            socket.current.send(
+                              JSON.stringify({
+                                type: "resume",
+                                id: props.id,
+                              })
+                            );
+                          }}
+                        >
+                          <Typography textTransform="none">resume</Typography>
+                        </Button>
+                      )}
+                    </Fragment>
                   ) : (
-                    <Button
-                      className="boss-4"
-                      sx={{ backgroundColor: "black", color: "yellow" }}
-                      onClick={() => {
-                        socket.current.send(
-                          JSON.stringify({
-                            type: "switch",
-                            phase: "boss",
-                            id: props.id,
-                          })
-                        );
-                      }}
-                    >
-                      <Typography textTransform="none">start game</Typography>
-                    </Button>
+                    <Fragment>
+                      <Button
+                        className="boss-4"
+                        sx={{ backgroundColor: "black", color: "yellow" }}
+                        onClick={() => {
+                          socket.current.send(
+                            JSON.stringify({
+                              type: "switch",
+                              phase: "boss",
+                              id: props.id,
+                            })
+                          );
+                        }}
+                      >
+                        <Typography textTransform="none">start game</Typography>
+                      </Button>
+                    </Fragment>
                   )}
                   <Button
-                    className="boss-3"
+                    className="boss-2"
                     onClick={() => {
                       socket.current.send(
                         JSON.stringify({
@@ -1786,6 +1834,7 @@ export default function Game(props) {
               </Button>
             </div>
           </div>
+          {/*
           <TimesModal
             times={identity.timest1}
             bosses={identity.bosses}
@@ -1810,6 +1859,7 @@ export default function Game(props) {
             team={2}
             updateStatus={updateStatusInfo}
           />
+          */}
           <OrderModal
             team={1}
             teamName={identity.team1}

@@ -324,7 +324,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 12,
 	},
 	[BOSSES.Wenut]: {
-		displayName: "Seketh Wenut",
+		displayName: "Setekh Wenut",
 		element: ELEMENTS.anemo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Wenut",
