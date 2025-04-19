@@ -1626,6 +1626,7 @@ export default function Game(props) {
                           className="boss-3"
                           sx={{ backgroundColor: "black", color: "yellow" }}
                           onClick={() => {
+                            console.log("testst");
                             socket.current.send(
                               JSON.stringify({
                                 type: "pause",
