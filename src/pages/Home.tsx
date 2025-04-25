@@ -24,7 +24,7 @@ export default function Home(){
         }}
       >
         <Typography sx={{ fontSize: 60 }}>
-          {`Welcome to the homepage of the Ranked website!`}
+          {`Welcome to the homepage of the RANKED website!`}
         </Typography>
         <Typography>{` `}</Typography>
         <br />
@@ -32,7 +32,7 @@ export default function Home(){
         <Fragment>
           <Button
             variant="contained"
-            sx={{ fontSize: 30 }}
+            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
             href="https://docs.google.com/spreadsheets/d/1_h1ya0jeoiP8mZamL6Bt_tm0uQGdOuVj6INX0aZqJhw/edit?gid=1427018506#gid=1427018506"
           >
             Ranked Casual Matches
@@ -40,30 +40,30 @@ export default function Home(){
           {/* connect to different sheets*/}
           <Button
             variant="contained"
-            sx={{ fontSize: 30 }}
+            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
             href="https://docs.google.com/spreadsheets/d/1pKupoKUxiT_pFFgL53yDEgtMZWdPCYetk9OZiF2-474/edit?gid=2094575644#gid=2094575644"
           >
             Player Spreadsheet (casual)
           </Button>
           <Button
             variant="contained"
-            sx={{ fontSize: 30 }}
+            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
             href="https://docs.google.com/spreadsheets/d/1uQ6sFSPISXJIOyb9M7UYFSTq-iJQ2RtSph4aDAmlD_8/edit?gid=458647158#gid=458647158"
           >
             Ranked Statistics sheet
           </Button>
           <Button
             variant="contained"
-            sx={{ fontSize: 30 }}
+            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
             href="http://bit.ly/genshinranked"
           >
             Ranked Discord
           </Button>
-          <Typography sx={{ fontSize: 35 }}>{`\nLinks\n`}</Typography>
+          <Typography sx={{ fontSize: 35, marginBottom: 3 }}>{`Links`}</Typography>
           <Button
             variant="contained"
             color="success"
-            sx={{ fontSize: 25 }}
+            sx={{ fontSize: 25, minWidth: 200, marginBottom: 3 }}
             href="/characters"
           >
             Characters
@@ -71,7 +71,7 @@ export default function Home(){
           <Button
             variant="contained"
             color="success"
-            sx={{ fontSize: 25 }}
+            sx={{ fontSize: 25, minWidth: 200 }}
             href="/bosses"
           >
             Bosses

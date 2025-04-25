@@ -42,6 +42,7 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 	const sendToSocket = () => {
 		// find the corresponding id of the character with this display name
 		// loop on the character information
+		console.log("the button was pressed again");
 		let selectionInfo = {
 			type: phase.toLowerCase(),
 			id: -1,

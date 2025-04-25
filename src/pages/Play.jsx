@@ -282,15 +282,23 @@ export default function Play(){
         <p style={{ fontSize: 50, marginBottom: 100 }}>
           Click to start a new game or join an existing one!
         </p>
-        <Button variant="contained" sx={{ fontSize: 30 }} onClick={createGame}>
+        <Button
+          variant="contained"
+          sx={{ fontSize: 30, marginBottom: 3, minWidth: 400 }}
+          onClick={createGame}
+        >
           New Game
         </Button>
-        <Button variant="contained" sx={{ fontSize: 30 }} onClick={join}>
+        <Button
+          variant="contained"
+          sx={{ fontSize: 30, marginBottom: 3, minWidth: 400 }}
+          onClick={join}
+        >
           Join existing game
         </Button>
         <Button
           variant="contained"
-          sx={{ fontSize: 30 }}
+          sx={{ fontSize: 30, marginBottom: 3, minWidth: 400 }}
           onClick={() => {
             removeCookie("player");
             forceRefresh();
@@ -303,7 +311,9 @@ export default function Play(){
         open={open}
         onClose={close}
         scroll="paper"
-        slotProps={{paper: { style: { color: "white", backgroundColor: "black" } }}}
+        slotProps={{
+          paper: { style: { color: "white", backgroundColor: "black" } },
+        }}
       >
         <DialogTitle>select a game by its id:</DialogTitle>
         <DialogContent>
@@ -353,7 +363,9 @@ export default function Play(){
       <Dialog
         open={choosing}
         onClose={close}
-        slotProps={{paper: { style: { color: "white", backgroundColor: "black" } }}}
+        slotProps={{
+          paper: { style: { color: "white", backgroundColor: "black" } },
+        }}
       >
         <DialogTitle>
           {readying
@@ -412,7 +424,9 @@ export default function Play(){
       <Dialog
         open={options}
         onClose={() => setOptions(false)}
-        slotProps={{paper: {style: { color: "black", backgroundColor: "#46bdc6" }} }}
+        slotProps={{
+          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
+        }}
       >
         <DialogTitle>
           <Typography fontWeight="bold">bonus ref options</Typography>
@@ -630,7 +644,9 @@ export default function Play(){
         onClose={() => {
           setBO2(false);
         }}
-         slotProps={{paper: {style: { color: "black", backgroundColor: "#46bdc6" }} }}
+        slotProps={{
+          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
+        }}
       >
         <DialogTitle>
           <Typography textTransform="none">

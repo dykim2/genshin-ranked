@@ -452,6 +452,7 @@ export default function Game(props) {
 
   const characterRef = useRef();
   const bossRef = useRef();
+  const idRef = useRef(props.id);
 
   const selectedBosses = useRef([]);
   const selectedChars = useRef([]);
@@ -1211,6 +1212,7 @@ export default function Game(props) {
             updateIdentity(data.game);
             updateTurn(data.game.turn);
             updateSelected(6);
+            console.log("game info obtained");
             break;
           }
           case "turn": {
@@ -1308,7 +1310,6 @@ export default function Game(props) {
           }
         }
         if (res != null) {
-          console.log(res);
           updateIdentity(res);
           updateTurn(res.turn);
         }

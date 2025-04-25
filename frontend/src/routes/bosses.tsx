@@ -37,6 +37,7 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 	const sendToSocket = () => {
 		// find the corresponding id of the character with this display name
 		// loop on the character information
+		console.log("the button was pressed");
 		let selectionInfo = {
 			type: "boss",
 			id: -1,
