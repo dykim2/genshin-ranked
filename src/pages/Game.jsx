@@ -24,6 +24,7 @@ import { GifPlay } from "../components/GifPlay.tsx";
 const IMG_SIZE = 75; // use eventually
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
+const TIMER = 35500;
 
 // const swapToBansPickIndex = 2; // can change in future games :eyes:
 
@@ -467,9 +468,9 @@ export default function Game(props) {
   // set an interval
 
   const updateTimer = (enabled = true, resetTime = true) => {
-    if (totalTime != 36500 && resetTime) {
+    if (totalTime != TIMER && resetTime) {
       // reset timer after refresh page
-      setTotalTime(36500);
+      setTotalTime(TIMER);
     }
     enabled ? setTimerValue(Date.now()) : null;
     setTimerVisible(enabled);
@@ -1200,8 +1201,8 @@ export default function Game(props) {
           return;
         }
         let res = null;
-        if (data.type != "turn" && totalTime != 36500) {
-          setTotalTime(36500);
+        if (data.type != "turn" && totalTime != TIMER) {
+          setTotalTime(TIMER);
         }
         switch (data.type) {
           case "create": {
@@ -1257,12 +1258,16 @@ export default function Game(props) {
             break;
           }
           case "pause":
-            countdownRef.current.getApi().pause();
-            setPause(false);
+            if(countdownRef.current != null){
+              countdownRef.current.getApi().pause();
+              setPause(false);
+            }
             break;
           case "resume":
-            countdownRef.current.getApi().start();
-            setPause(true);
+            if(countdownRef.current != null){
+              countdownRef.current.getApi().start();
+              setPause(true);
+            }
             break;
           case "times": {
             // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]

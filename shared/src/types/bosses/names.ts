@@ -38,12 +38,14 @@ export enum BOSSES {
 	Papilla = "Papilla",
 	Spiritspeaker = "Spiritspeaker",
     LavaDragon = "LavaDragon",
+	Overseer = "Overseer",
 
 	// Azhdaha = "Azhdaha",
 	Apep = "Apep",
 	Narwhal = "Narwhal",
 	Knave = "Knave",
 	ErodedLord = "ErodedLord",
+	ChessGame = "ChessGame",
 
 	// 4.0
 	Vivianne = "Vivianne",

@@ -272,6 +272,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/a8/c7/23/MEV7JII_t.png",
 		index: 84,
 	},
+	[CHARACTERS.Escoffier]: {
+		displayName: "Escoffier",
+		element: ELEMENTS.cryo,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Escoffier",
+		onlineFilePath: "https://thumbs4.imagebam.com/8e/47/93/ME11UHW3_t.png",
+		index: 97,
+	},
 	[CHARACTERS.Eula]: {
 		displayName: "Eula",
 		element: ELEMENTS.cryo,
@@ -361,6 +370,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Iansan",
 		onlineFilePath: "https://thumbs4.imagebam.com/24/dc/3d/ME10MX77_t.png",
 		index: 95,
+	},
+	[CHARACTERS.Ifa]: {
+		displayName: "Ifa",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FourStar,
+		imageFileName: "Ifa",
+		onlineFilePath: "https://thumbs4.imagebam.com/63/7d/0b/ME11UHW6_t.png",
+		index: 98,
 	},
 	[CHARACTERS.Itto]: {
 		displayName: "Itto",

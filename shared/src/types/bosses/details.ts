@@ -235,6 +235,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/cd/58/d7/METS4UY_t.png",
 		index: 4,
 	},
+	[BOSSES.Overseer]: {
+		displayName: "Overseer",
+		element: ELEMENTS.hydro,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Overseer",
+		onlineFilePath: "https://thumbs4.imagebam.com/a8/b9/6f/ME11UFVZ_t.png",
+		index: 51,
+	},
 	[BOSSES.Papilla]: {
 		displayName: "Papilla",
 		element: ELEMENTS.physical,
@@ -338,6 +346,14 @@ export const BOSS_DETAIL: BossMap = {
 		imageFileName: "Apep",
 		onlineFilePath: "https://thumbs4.imagebam.com/75/7a/be/METS4UF_t.png",
 		index: 21,
+	},
+	[BOSSES.ChessGame]: {
+		displayName: "Chess Game",
+		element: ELEMENTS.multi,
+		type: BOSS_TYPE.Weekly,
+		imageFileName: "ChessGame",
+		onlineFilePath: "https://thumbs4.imagebam.com/97/23/e0/ME11UFVX_t.png",
+		index: 50,
 	},
 	/*
 	[BOSSES.Azhdaha]: {

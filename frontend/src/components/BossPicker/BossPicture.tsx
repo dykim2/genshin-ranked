@@ -6,7 +6,7 @@ import {
 } from "@genshin-ranked/shared";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 import { BOSS_TYPE } from "@genshin-ranked/shared/src/types/level";
-import { Box, IconButton } from "@mui/material";
+import { Box, Icon, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 
 interface IBossPicture {
@@ -23,7 +23,7 @@ export const BossPicture = ({ boss, isChosen }: IBossPicture) => {
 						sx={{ filter: "grayscale(100%)" }}
 					/>
 					{boss != BOSSES.None ? (
-						<IconWrapper disabled>
+						<IconWrapper>
 							<IconImage src={getBossElementImagePath(boss)} />
 						</IconWrapper>
 					) : null}
@@ -34,7 +34,7 @@ export const BossPicture = ({ boss, isChosen }: IBossPicture) => {
 						src={getBossImagePath(boss)}
 					/>
 					{boss != BOSSES.None ? (
-						<IconWrapper disabled>
+						<IconWrapper>
 							<IconImage src={getBossElementImagePath(boss)} />
 						</IconWrapper>
 					) : null}
