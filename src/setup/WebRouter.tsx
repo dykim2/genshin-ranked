@@ -5,7 +5,6 @@ import Rules from "../pages/Rules.jsx";
 import Play from "../pages/Play.jsx";
 import InvalidPage from "../pages/InvalidPage.jsx";
 import Ranked from "./Ranked.jsx";
-import Player from "../pages/Player.jsx";
 import { useContext, useEffect } from "react";
 import CharacterContext from "../contexts/CharacterContext.js";
 import Game from "../pages/Game.jsx";
@@ -102,7 +101,6 @@ export default function WebRouter() {
             })}
             <Route path="/characters" element={<Characters />} />
             <Route path="/bosses" element={<Bosses />} />
-            <Route path="/test" element={<Player />} />
             <Route path="/guide" element={<Guide />} />
             <Route path="*" element={<InvalidPage />} />
           </Route>
