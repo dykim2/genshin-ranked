@@ -75,11 +75,16 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 		<Box sx={{ display: "flex" }}>
 			<Box
 				sx={{
-					borderRight: "1px solid #cc",
+					borderRight: "4px solid #ccc",
 				}}
 				id="boss-selection-box"
 			>
-				<BossSelector team={team} updateBoss={setSelection} selections={selections} updateHover={sendHover} />
+				<BossSelector
+					team={team}
+					updateBoss={setSelection}
+					selections={selections}
+					updateHover={sendHover}
+				/>
 			</Box>
 			{/* button details, other useful information for boss phase */}
 			<Box sx={{ padding: 2, width: "500px" }}>
@@ -88,27 +93,47 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 						<Typography color={"white"} variant="h6">
 							{`currently selected: ${selection}`}
 							<br />
-							{
-								(fearless ? `fearless bosses active!` : null)
-							}
+							{fearless ? `fearless bosses active!` : null}
 						</Typography>
-						
-						<Button variant="contained" onClick={() => {sendToSocket()}} disabled={team != newInfo || !matching || currentResult == "waiting"}>
-							<Typography color={"yellow"} textTransform="none" variant="h6">
-								{currentResult != "waiting" ? "choose boss " : "waiting to start"}
+
+						<Button
+							variant="contained"
+							onClick={() => {
+								sendToSocket();
+							}}
+							onContextMenu={() => {
+								alert("hi");
+							}}
+							disabled={
+								team != newInfo ||
+								!matching ||
+								currentResult == "waiting"
+							}
+						>
+							<Typography
+								color={"yellow"}
+								textTransform="none"
+								variant="h6"
+							>
+								{currentResult != "waiting"
+									? "choose boss "
+									: "waiting to start"}
 							</Typography>
 						</Button>
 						<br />
 						<Typography variant="h6">
-							{
-								(localStorage.getItem("boss") != undefined && !inGame) ? `Selected boss id (for custom game purposes): ${localStorage.getItem("boss")}` : null
-							}
+							{localStorage.getItem("boss") != undefined &&
+							!inGame
+								? `Selected boss id (for custom game purposes): ${localStorage.getItem(
+										"boss",
+								  )}`
+								: null}
 						</Typography>
 						<br />
 						<Typography variant="h6">
 							{bonusInfo.map((info) => {
 								return (
-									<Typography key={info} variant="h6">
+									<Typography key={info}>
 										{info}
 										<br />
 									</Typography>

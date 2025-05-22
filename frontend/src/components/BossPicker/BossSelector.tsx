@@ -7,7 +7,7 @@ import {
 	// RARITY_INFO,
 } from "@genshin-ranked/shared";
 import { InputAdornment, Stack, TextField } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { BossButton } from "./BossButton";
 import { GroupToggle } from "../GroupToggle";
 import SearchIcon from "@mui/icons-material/Search";
@@ -99,8 +99,7 @@ export const BossSelector = ({
 				container
 				spacing={1}
 				minWidth="470px"
-				maxWidth="50vw"
-				minHeight="1000px"
+				maxWidth="98vw"
 				id="char-selector-grid"
 				ref={componentRef}
 			>
@@ -128,13 +127,12 @@ export const BossSelector = ({
 					})
 					.map((x) => {
 						return x != BOSSES.None ? (
-							<Grid padding={1} key={x}>
+							<Grid padding={0.3} key={x}>
 								<BossButton
 									team={team}
 									boss={x}
 									updateBoss={updateBoss}
 									selectDisplay={false}
-									selectable={false}
 									isChosen={selections.includes(BOSS_DETAIL[x].index)}		
 									updateHover={updateHover}				
 								/>

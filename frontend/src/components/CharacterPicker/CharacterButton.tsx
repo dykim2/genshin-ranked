@@ -22,10 +22,6 @@ interface ICharacterButton extends IInnerButton {
 }
 
 export const CharacterButton = ({team, character, updateCharacter, banDisplay, isChosen, updateHover }: ICharacterButton) => {
-	// console.log("character")
-	// console.log(character)
-	// console.log(CHARACTER_INFO[character])
-	// console.log("end character")
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`);
@@ -94,7 +90,7 @@ const InnerCharacter = ({character, updateCharacter, banDisplay, isChosen}: IInn
 					sx={{
 						textOverflow: "ellipsis",
 						whiteSpace: "wrap",
-						fontSize: banDisplay ? 11 : 14,
+						fontSize: banDisplay ? 11 : 10.5,
 						fontWeight: 'bold'
 					}}
 				>
@@ -114,7 +110,7 @@ const NormalWrapperBox = styled(Button)({
 	overflow: "hidden",
 	justifyContent: "center",
 	color: "black",
-	width: 110,
+	width: 100,
 });
 
 const PickWrapperBox = styled(Button)({

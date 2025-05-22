@@ -66,7 +66,7 @@ export default function OrderModal(props) {
     }
     /**
      * Makes a shallow copy of names with the same objects, to edit accordingly.
-     * @param {*} index the location of the name to update
+     * @param {number} index the location of the name to update
      * @param {*} e the event information
      */
     const updateNames = (index, e) => {

@@ -11,7 +11,7 @@ import { CharacterButton } from "./CharacterButton";
 import { GroupToggle } from "../GroupToggle";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 import SearchIcon from '@mui/icons-material/Search';
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 
 export interface Pick {
 	team: number;
@@ -90,7 +90,7 @@ export const CharacterSelector = ({
 				container
 				spacing={1}
 				minWidth="470px"
-				maxWidth="50vw"
+				maxWidth="80vw"
 				id="char-selector-grid"
 			>
 				{/* TODO: Wrap this with useMemo to minimize unnessecary refiltering of these values */}
@@ -118,7 +118,7 @@ export const CharacterSelector = ({
 					})
 					.map((x) =>
 						x != CHARACTERS.None && x != CHARACTERS.NoBan ? (
-							<Grid padding={0} key={x}>
+							<Grid padding={0.3} key={x}>
 								<CharacterButton
 									team={team}
 									character={x}

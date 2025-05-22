@@ -12,14 +12,14 @@ export const Guide = () => {
     }
     return (
       <div>
-        <h1>Ranked Website Guide (slightly outdated, still accurate though)</h1>
+        <h1>Ranked Website Guide (outdated, still accurate though)</h1>
         <iframe
           width={maxWidth}
           height={maxHeight}
           src="https://www.youtube.com/embed/dIa1D4AwZVU?si=Xze_ZDa2k-BxmcXa"
           title="Ranked Website Guide"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        ></iframe>
+        />
       </div>
     );
 }

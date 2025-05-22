@@ -26,7 +26,7 @@ export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) =
 					{character != CHARACTERS.None &&
 					character != CHARACTERS.NoBan ? (
 						<IconWrapper>
-							<IconImage
+							<Image
 								src={getCharacterElementImagePath(character)}
 							/>
 						</IconWrapper>
@@ -41,7 +41,7 @@ export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) =
 					{character != CHARACTERS.None &&
 					character != CHARACTERS.NoBan ? (
 						<IconWrapper>
-							<IconImage
+							<Image
 								sx={{ filter: "grayscale(100%)" }}
 								src={getCharacterElementImagePath(character)}
 							/>
@@ -70,16 +70,19 @@ const BannedGradientBox = styled(Box)({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "center",
+	border: "1px solid black",
 	borderRadius: "8px 8px 15px 0px",
 	overflow: "hidden",
 });
 
 const NormalGradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
-	background: rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
+	background:
+		rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
 	position: "relative",
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "center",
+	border: "1px solid black",
 	borderRadius: "8px 8px 15px 0px",
 	overflow: "hidden",
 }));
@@ -90,15 +93,11 @@ const Image = styled("img")({
 	objectFit: "cover",
 });
 
-const IconWrapper = styled(IconButton)({
+const IconWrapper = styled(Icon)({
 	position: "absolute",
-	top: 1,
-	left: 1,
+	top: 3,
+	left: 3,
 	padding: 0,
-});
-
-// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
-const IconImage = styled("img")({
-	width: 25,
-	height: 25,
+	display: "flex",
+	overflow: "visible",
 });

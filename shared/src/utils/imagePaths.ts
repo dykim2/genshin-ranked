@@ -23,6 +23,7 @@ export const getCharacterElementOnlinePath = (character: CHARACTERS) => {
 }
 
 export const getCharacterBanPath = (character: CHARACTERS) => {
+	console.log("a character "+character+ " is banned")
 	return `${CHARACTER_IMAGE_PATH}/bans/${CHARACTER_INFO[character].imageFileName}Ban.gif`;
 }
 

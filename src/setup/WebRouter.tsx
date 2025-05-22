@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import {BrowserRouter, Route, Routes } from "react-router-dom";
 import Characters from "../pages/CharacterInfo.tsx";
 import Home from "../pages/Home.tsx";
 import Rules from "../pages/Rules.jsx";
@@ -6,15 +6,12 @@ import Play from "../pages/Play.jsx";
 import InvalidPage from "../pages/InvalidPage.jsx";
 import Ranked from "./Ranked.jsx";
 import Player from "../pages/Player.jsx";
-import Redirect from "../pages/RedirectOne.jsx";
 import { useContext, useEffect } from "react";
 import CharacterContext from "../contexts/CharacterContext.js";
 import Game from "../pages/Game.jsx";
 import ActiveContext from "../contexts/ActiveContext.js";
-import { PlayingContext, socket } from "../contexts/PlayingContext.js";
 import React from "react";
-import { BossDisplay } from "../../frontend/src/routes/bosses.tsx";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import Bosses from "../pages/BossInfo.tsx";
 import { Guide } from "../pages/Guide.tsx";
 
@@ -24,6 +21,16 @@ export default function WebRouter() {
   const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
   const api = api_choice[0];
   
+  let userId = localStorage.getItem("userid");
+  if (userId == null) {
+    userId = crypto.randomUUID();
+    localStorage.setItem("userid", userId);
+  }
+  let socketOpts = [
+    `wss://rankedwebsocketapi.fly.dev?userId=${userId}`,
+    `ws://localhost:3000?userId=${userId}`,
+  ];
+  const socket = new WebSocket(socketOpts[0]);
   useEffect(() => {
     // obtain list of characters, save them to a context
     async function getChars() {
@@ -76,64 +83,8 @@ export default function WebRouter() {
       </div>
     );
   }
-  const select = (teamNum: number, selectedObj: object, timeout: boolean) => {
-    
-  }
-  /*
-    createRoutesFromElements(
-      <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
-        <Route index element={<Home />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/play" element={<Play />} />
-        {active.map((game) => {
-          return (
-            <Route
-              key={game._id}
-              path={`/play/${game._id}`}
-              element={<Game id={game._id} />}
-            />
-          );
-        })}
-        <Route path="/characters" element={<Characters />} />
-        <Route path="/test" element={<Player />} />
-        <Route path="/redirect" element={<Redirect />} />
-        {characters.map((char) => {
-          return (
-            <Route
-              key={char._id}
-              path={`/characters/${char.name}`}
-              element={<OneCharacter name={char.name} img={char.image} />}
-            />
-          );
-        })}
-        <Route path="*" element={<InvalidPage />} />
-      </Route>
-    )
-  */
-  const gameRoutes = () => {};
-  const newRouter = createBrowserRouter([
-    {
-      path: "/",
-      element: <Ranked />,
-      children: [
-        {
-          index: true,
-          element: <Home />,
-        },
-        {
-          path: "rules",
-          element: <Rules />,
-        },
-        {
-          path: "play",
-          element: <Play />,
-        },
-      ],
-      errorElement: <ErrorPage />,
-    },
-  ]);
   return (
-    <PlayingContext.Provider value={socket}>
+    
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
@@ -145,30 +96,18 @@ export default function WebRouter() {
                 <Route
                   key={game._id}
                   path={`/play/${game._id}`}
-                  element={<Game id={game._id} />}
+                  element={<Game id={game._id} socket={socket} />}
                 />
               );
             })}
             <Route path="/characters" element={<Characters />} />
             <Route path="/bosses" element={<Bosses />} />
             <Route path="/test" element={<Player />} />
-            <Route path="/redirect" element={<Redirect />} />
             <Route path="/guide" element={<Guide />} />
-            {/*
-        {characters.map((char: { _id: React.Key | null | undefined; name: string; image: string; }) => {
-          return (
-            <Route
-              key={char._id}
-              path={`/characters/${char.name}`}
-              element={<OneCharacter name={char.name} img={char.image} />}
-            />
-          );
-        })} */}
             <Route path="*" element={<InvalidPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
-    </PlayingContext.Provider>
   );
 }
 

@@ -6,46 +6,77 @@ import {
 } from "@genshin-ranked/shared";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 import { BOSS_TYPE } from "@genshin-ranked/shared/src/types/level";
-import { Box, Icon, IconButton } from "@mui/material";
+import { Box, Icon } from "@mui/material";
 import { styled } from "@mui/system";
+import { Fragment } from "react/jsx-runtime";
 
-interface IBossPicture {
-    boss: BOSSES;
-	isChosen?: boolean;
+interface IBoss {
+	boss: BOSSES
+}
+interface IBossPicture extends IBoss {
+	isChosen: boolean;
+}
+const ImageDetail = ({ boss }: IBoss) => {
+	return (
+		<Fragment>
+			<Image src={getBossImagePath(boss)} />
+			<IconWrapper>
+				{boss == BOSSES.None ? null : (
+					<Image src={getBossElementImagePath(boss)} />
+				)}
+			</IconWrapper>
+		</Fragment>
+	);
+};
+const ChosenDetail = ({ boss }: IBoss) => {
+	return (
+		<Fragment>
+			<Image
+				src={getBossImagePath(boss)}
+				sx={{ filter: "grayscale(100%)" }}
+			/>
+			<IconWrapper>
+				{boss == BOSSES.None ? null : (
+					<Image src={getBossElementImagePath(boss)} />
+				)}
+			</IconWrapper>
+		</Fragment>
+	);
+};
+
+interface IGradientBox {
+	type: BOSS_TYPE | null;
 }
 export const BossPicture = ({ boss, isChosen }: IBossPicture) => {
+	const thisInd = BOSS_DETAIL[boss].index;
+	let hoverInd = -5;
+	if(localStorage.getItem("boss") != null){
+		hoverInd = parseInt(localStorage.getItem("boss")!); 
+	}
+	else{
+		return;
+	}
     return (
 		<Box sx={{ backgroundColor: "white" }}>
-			{isChosen ? (
+			{thisInd == hoverInd && isChosen ? (
+				<HoveredChosenBox>
+					<ChosenDetail boss={boss} />
+				</HoveredChosenBox>
+			) : thisInd == hoverInd ? (
+				<HoveredBox type={BOSS_DETAIL[boss].type}>
+					<ImageDetail boss={boss} />
+				</HoveredBox>
+			) : isChosen ? (
 				<ChosenBox>
-					<Image
-						src={getBossImagePath(boss)}
-						sx={{ filter: "grayscale(100%)" }}
-					/>
-					{boss != BOSSES.None ? (
-						<IconWrapper>
-							<IconImage src={getBossElementImagePath(boss)} />
-						</IconWrapper>
-					) : null}
+					<ChosenDetail boss={boss} />
 				</ChosenBox>
 			) : (
 				<GradientBox type={BOSS_DETAIL[boss].type}>
-					<Image
-						src={getBossImagePath(boss)}
-					/>
-					{boss != BOSSES.None ? (
-						<IconWrapper>
-							<IconImage src={getBossElementImagePath(boss)} />
-						</IconWrapper>
-					) : null}
+					<ImageDetail boss={boss} />
 				</GradientBox>
 			)}
 		</Box>
 	);
-}
-
-interface IGradientBox {
-	type: BOSS_TYPE | null;
 }
 
 const LEGEND_GRADIENT =
@@ -57,41 +88,43 @@ const STANDARD_GRADIENT =
 const BANNED_GRADIENT =
 	"linear-gradient(90deg, rgba(212,212,212,1) 0%, rgba(154,154,154,1) 14%, rgba(112,112,112,1) 100%)";
 
-const ChosenBox = styled(Box)(() => ({
+const ChosenBox = styled(Box)(() => ({ // picked or banned already
 	background: BANNED_GRADIENT,
-	position: "relative",
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "center",
 	borderRadius: "8px 8px 15px 0px",
+	border: '1px solid black',
 	overflow: "hidden",
 }))
-const GradientBox = styled(Box)(({ type }: IGradientBox) => ({
-	background: type == BOSS_TYPE.Standard ? STANDARD_GRADIENT : type == BOSS_TYPE.Weekly ? WEEKLY_GRADIENT : LEGEND_GRADIENT,
-	position: "relative",
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
-	borderRadius: "8px 8px 15px 0px",
-	overflow: "hidden",
+const GradientBox = styled(ChosenBox)(({ type }: IGradientBox) => ({
+	background:
+		type == BOSS_TYPE.Standard
+			? STANDARD_GRADIENT
+			: type == BOSS_TYPE.Weekly
+			? WEEKLY_GRADIENT
+			: LEGEND_GRADIENT
+}));
+const HoveredBox = styled(GradientBox)(() => ({
+	borderRadius: "50%",
+	border: "3px solid #1976d2",
+}));
+const HoveredChosenBox = styled(ChosenBox)(() => ({
+	borderRadius: "50%",
+	border: "3px solid #1976d2",
 }));
 
 const Image = styled("img")({
 	width: "100%",
 	height: "100%",
 	objectFit: "cover",
-	
 });
 
-const IconWrapper = styled(IconButton)({
+const IconWrapper = styled(Icon)({
 	position: "absolute",
-	top: 4,
-	left: 4,
+	top: 3,
+	left: 3,
 	padding: 0,
-});
-
-// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
-const IconImage = styled("img")({
-	width: 25,
-	height: 25,
+	display: "flex",
+	overflow: "visible"
 });

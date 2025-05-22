@@ -284,21 +284,36 @@ export default function Play(){
         </p>
         <Button
           variant="contained"
-          sx={{ fontSize: 30, marginBottom: 3, minWidth: 400 }}
+          sx={{
+            fontSize: 30,
+            marginBottom: 3,
+            minWidth: 400,
+            fontFamily: "Roboto Mono",
+          }}
           onClick={createGame}
         >
           New Game
         </Button>
         <Button
           variant="contained"
-          sx={{ fontSize: 30, marginBottom: 3, minWidth: 400 }}
+          sx={{
+            fontSize: 30,
+            marginBottom: 3,
+            minWidth: 400,
+            fontFamily: "Roboto Mono",
+          }}
           onClick={join}
         >
           Join existing game
         </Button>
         <Button
           variant="contained"
-          sx={{ fontSize: 30, marginBottom: 3, minWidth: 400 }}
+          sx={{
+            fontSize: 30,
+            marginBottom: 3,
+            minWidth: 400,
+            fontFamily: "Roboto Mono",
+          }}
           onClick={() => {
             removeCookie("player");
             forceRefresh();

@@ -32,7 +32,7 @@ export default function Home(){
         <Fragment>
           <Button
             variant="contained"
-            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
+            sx={{ fontSize: 30, minWidth: 560, marginBottom: 3 }}
             href="https://docs.google.com/spreadsheets/d/1_h1ya0jeoiP8mZamL6Bt_tm0uQGdOuVj6INX0aZqJhw/edit?gid=1427018506#gid=1427018506"
           >
             Ranked Casual Matches
@@ -40,21 +40,21 @@ export default function Home(){
           {/* connect to different sheets*/}
           <Button
             variant="contained"
-            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
+            sx={{ fontSize: 30, minWidth: 560, marginBottom: 3 }}
             href="https://docs.google.com/spreadsheets/d/1pKupoKUxiT_pFFgL53yDEgtMZWdPCYetk9OZiF2-474/edit?gid=2094575644#gid=2094575644"
           >
             Player Spreadsheet (casual)
           </Button>
           <Button
             variant="contained"
-            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
+            sx={{ fontSize: 30, minWidth: 560, marginBottom: 3 }}
             href="https://docs.google.com/spreadsheets/d/1uQ6sFSPISXJIOyb9M7UYFSTq-iJQ2RtSph4aDAmlD_8/edit?gid=458647158#gid=458647158"
           >
             Ranked Statistics sheet
           </Button>
           <Button
             variant="contained"
-            sx={{ fontSize: 30, minWidth: 520, marginBottom: 3 }}
+            sx={{ fontSize: 30, minWidth: 560, marginBottom: 3 }}
             href="http://bit.ly/genshinranked"
           >
             Ranked Discord

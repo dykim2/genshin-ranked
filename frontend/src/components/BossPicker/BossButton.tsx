@@ -8,34 +8,33 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 /**
  * @param boss the boss name to display
  * @param updateBoss the state that is triggered when the user clicks on the boss
- * @param selectDisplay 
+ * @param selectDisplay whether bosses are being chosen for pick/ban or for viewing
  */
-interface IInnerBossButton {
+interface IDisplayInnerBossButton {
 	boss: BOSSES;
-	updateBoss: React.Dispatch<React.SetStateAction<string>>;
-	selectDisplay: boolean;
-	selectable: boolean; // can this boss be chosen? if not grey it out
+	selectDisplay: boolean; // display for choosing bosses to pick/ban or for viewing
 	isChosen: boolean;
+}
+interface IInnerBossButton extends IDisplayInnerBossButton {
+	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 }
 interface IBossButton extends IInnerBossButton {
 	team: number;
 	updateHover: (teamNum: number, selected: number) => void;
 }
 
-export const BossButton = ({team, boss, updateBoss, selectDisplay, selectable, isChosen, updateHover}: IBossButton) => {
+export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, updateHover}: IBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
-		updateHover!(team, BOSS_DETAIL[boss].index);
+		updateHover(team, BOSS_DETAIL[boss].index);
 	}
 	if(isChosen){
 		return(
 			<NormalWrapperBox disableRipple onClick={doUpdate}>
 				<InnerBoss
 					boss={boss}
-					updateBoss={updateBoss}
 					selectDisplay={selectDisplay}
-					selectable={selectable}
 					isChosen={true}
 				/>
 			</NormalWrapperBox>
@@ -45,9 +44,7 @@ export const BossButton = ({team, boss, updateBoss, selectDisplay, selectable, i
 		<NormalWrapperBox disableRipple onClick={doUpdate}>
 			<InnerBoss
 				boss={boss}
-				updateBoss={updateBoss}
 				selectDisplay={selectDisplay}
-				selectable={selectable}
 				isChosen={isChosen}
 			/>
 		</NormalWrapperBox>
@@ -55,15 +52,13 @@ export const BossButton = ({team, boss, updateBoss, selectDisplay, selectable, i
 		<SelectedWrapperBox disableRipple onClick={doUpdate}>
 			<InnerBoss
 				boss={boss}
-				updateBoss={updateBoss}
 				selectDisplay={selectDisplay}
-				selectable={true}
 				isChosen={isChosen}
 			/>
 		</SelectedWrapperBox>
 	);
 }
-export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable, isChosen}: IInnerBossButton) => {
+export const InnerBoss = ({boss, selectDisplay, isChosen}: IDisplayInnerBossButton) => {
 	return (
 		<Fragment>
 			<BossPicture boss={boss} isChosen={isChosen} />
@@ -74,7 +69,7 @@ export const InnerBoss = ({boss, updateBoss, selectDisplay, selectable, isChosen
 						textOverflow: "ellipsis",
 						whiteSpace: "nowrap",
 						overflow: "hidden",
-						fontSize: selectDisplay ? 10.5 : 13,
+						fontSize: selectDisplay ? 10 : 10.5,
 						fontWeight: "bold",
 					}}
 				>
@@ -95,7 +90,7 @@ const NormalWrapperBox = styled(Button)({
 	overflow: "hidden",
 	justifyContent: "center",
 	color: "black",
-	width: 125,
+	width: 100,
 });
 
 // designed for the bottom boss selection
@@ -108,7 +103,7 @@ const SelectedWrapperBox = styled(Button)({
 	overflow: "hidden",
 	justifyContent: "center",
 	color: "black",
-	width: 85,
+	width: 80,
 });
 
 const LabelBox = styled(Box)({

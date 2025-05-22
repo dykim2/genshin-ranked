@@ -1,17 +1,21 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Box, Button, Menu, MenuItem, Modal } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
-export default function FilterModal(props) {
+// not being used currently
+
+interface FilterProps {
+  open: boolean;
+  close: () => void;
+  setOrder: (newOrder: string[]) => void
+}
+const FilterModal: React.FC<FilterProps> = (props) => {
   // filter the list of current characters by element(s), rarity (4 or 5 star), name, region, weapon
   // use localstorage for the filter
   // create a grid
-  const [bossHighlight, setBossHighlight] = useState("Select a region:");
+  const [bossHighlight, setBossHighlight] = useState<string>("Select a region:");
   const [active, setActive] = useState([null, null, null, null, null]); 
   const [setting, setSetting] = useState(["Select a region:", "Select an element:", "Select a weapon:", "Select a rarity:"]);
-
- 
-
   const activeAnchors = active.map(menu => {return Boolean(menu);});
   const elements = [
     "Element: Any",
@@ -41,18 +45,18 @@ export default function FilterModal(props) {
     "Region: Fontaine",
   ];
   const filters = [region, elements, weapons, rarity];
-  const activateAnchor = (index, event) => {
+  const activateAnchor = (index: number, event) => {
     let newActive = [...active];
     newActive[index] = event.currentTarget;
     setActive(newActive);
   };
-  const deactivateAnchor = (index) => {
+  const deactivateAnchor = (index: number) => {
     let newActive = [...active];
     newActive[index] = null;
     
     setActive(newActive);
   };
-  const updateSetting = (index, choice) => {
+  const updateSetting = (index: number, choice: number) => {
     let newSetting = [...setting];
     newSetting[index] = filters[index][choice];
     
@@ -70,8 +74,9 @@ export default function FilterModal(props) {
     backgroundColor: "white",
   };
    useEffect(() => {
-    if(localStorage.getItem("display_boss") != null && localStorage.getItem("display_boss") != 0){
-        setBossHighlight(region[localStorage.getItem("display_boss")])
+    let res = localStorage.getItem("display_boss") ?? "";
+    if(localStorage.getItem("display_boss") != null && res != "0"){
+        setBossHighlight(region[res])
     }
     let settingInfo = ["Select a region:", "Select an element:", "Select a weapon:", "Select a rarity:"]
     const filterName = [
@@ -83,9 +88,9 @@ export default function FilterModal(props) {
     setSetting(settingInfo.map((info, index) => {
         if (
           localStorage.getItem(filterName[index]) != null &&
-          localStorage.getItem(filterName[index]) != 0
+          localStorage.getItem(filterName[index]) != "0"
         ) {
-          return filters[index][localStorage.getItem(filterName[index])];
+          return filters[index][localStorage.getItem(filterName[index])!];
         } else {
           return info;
         }
@@ -113,9 +118,9 @@ export default function FilterModal(props) {
         </Button>
         <Menu
           open={activeAnchors[0]}
-          id={0}
+          id="0"
           anchorEl={active[0]}
-          onClick={(e) => {
+          onClick={() => {
             deactivateAnchor(0);
           }}
         >
@@ -146,9 +151,9 @@ export default function FilterModal(props) {
                     </Button>
                     <Menu
                       open={activeAnchors[index + 1]}
-                      id={0}
+                      id="1"
                       anchorEl={active[index + 1]}
-                      onClick={(e) => {
+                      onClick={() => {
                         deactivateAnchor(index + 1);
                       }}
                     >

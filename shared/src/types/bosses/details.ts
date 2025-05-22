@@ -106,7 +106,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 19,
 	},
 	[BOSSES.EFG]: {
-		displayName: "Field Generator",
+		displayName: "EFG",
 		element: ELEMENTS.geo,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "EFG",
