@@ -75,7 +75,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		limit: 6,
 		differences: [5],
 		restrictions: [
-			"Mistsplitter Reforged | Absolution | Freedom-Sworn | Peak Patrol Song",
+			"Freedom-Sworn",
 		],
 	},
 	[CHARACTERS.Candace]: {
@@ -124,7 +124,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [
 			"Absolution",
 			"Any 5* Weapon | The Black Sword | Sturdy Bone | Lion's Roar",
-			"Any 3* Weapon\nAllowed: Skyrider Sword",
+			"Any 4* Weapon | Harbinger of Dawn | Cool Steel",
 		],
 	},
 	[CHARACTERS.Collei]: {
@@ -174,9 +174,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [0,1,2,3],
 		restrictions: [
 			"No Restriction",
-			"Symphonist of Scents",
-			"Any 4* Weapon,\nAllowed: Prototype Starglitter",
-			"Any 3* Weapon,\nAllowed: Black Tassel]"
+			"Any 5* Weapon | Deathmatch R3+",
+			"Any 3* Weapon,\nAllowed: Black Tassel",
+			"Any 2* Weapon]"
 		]
 	},
 	[CHARACTERS.Eula]: {
@@ -202,7 +202,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Furina]: {
 		limit: 2,
 		differences: [2],
-		restrictions: ["Any 3* Weapon"],
+		restrictions: ["Any 3* Weapon\nTeams may no longer manipulate HP between bosses after the first boss."],
 	},
 	[CHARACTERS.Gaming]: {
 		limit: 6,
@@ -214,7 +214,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [1, 3, 4,6],
 		restrictions: [
 			"Astral Vulture's Crimson Plumage | The First Great Magic",
-			"Any 5* Weapon | R3+ Scion of The Blazing Sun",
+			"Any 5* Weapon | R3+ Scion of The Blazing Sun | R3+ Flower-wreathed Feathers",
 			"Any 4* Weapon",
 			"Any 3* Weapon"
 		],
@@ -554,7 +554,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Yoimiya]: {
 		limit: 6,
 		differences: [4, 6],
-		restrictions: ["Any 5* Weapon | Rust", "Any 4* Weapon | Slingshot"],
+		restrictions: ["Thundering Pulse", "Any 5* Weapon | Rust | Slingshot"],
 	},
 	[CHARACTERS.YunJin]: {
 		limit: 6,
