@@ -4,7 +4,6 @@
 import React, { Fragment } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { CharacterSelector } from "../components";
-import {socket} from "../../../src/contexts/PlayingContext.js"
 import './balancing.css';
 import { useCookies } from "react-cookie";
 // import Avatar from "@mui/material/Avatar";
@@ -50,29 +49,27 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 		if(team == -1){
 			return;
 		}
-		if (socket.readyState == 1) {
-			let chosenValue: number = -1;
-			if (localStorage.getItem("character") == null) {
-				chosenValue = -1;
-				alert("Please select a character!");
-				return;
-			} else {
-				chosenValue = parseInt(localStorage.getItem("character")!);
-			}
-			selectionInfo.id = chosenValue;
-			pickSelection(team, selectionInfo, false);
-			/*
-			socket.send(
-				JSON.stringify({
-					// force websocket to determine if current status is ban or pick, handle accordingly
-					type: "character",
-					id: id,
-					charId: chosenValue,
-					team: team,
-				}),
-			);
-			*/
+		let chosenValue: number = -1;
+		if (localStorage.getItem("character") == null) {
+			chosenValue = -1;
+			alert("Please select a character!");
+			return;
+		} else {
+			chosenValue = parseInt(localStorage.getItem("character")!);
 		}
+		selectionInfo.id = chosenValue;
+		pickSelection(team, selectionInfo, false);
+		/*
+		socket.send(
+			JSON.stringify({
+				// force websocket to determine if current status is ban or pick, handle accordingly
+				type: "character",
+				id: id,
+				charId: chosenValue,
+				team: team,
+			}),
+		);
+		*/
 	};
 	
 	return (

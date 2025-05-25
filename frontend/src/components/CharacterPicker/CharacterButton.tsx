@@ -9,11 +9,19 @@ import React, { Fragment } from "react";
 import { CharacterPicture } from "./CharacterPicture";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 
+/**
+ * @param character the character this picture refers to
+ * @param updateCharacter the action taken when the character is clicked
+ * @param banDisplay information on whether this is a ban or not
+ * @param isChosen whether this character has been selected or banned
+ * @param component whether this character is displayed as a component on the side bar or not
+ */
 interface IInnerButton {
 	character: CHARACTERS;
 	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
 	banDisplay: string;
 	isChosen: boolean;
+	component: boolean;
 }
 
 interface ICharacterButton extends IInnerButton {
@@ -21,7 +29,7 @@ interface ICharacterButton extends IInnerButton {
 	updateHover: (teamNum: number, selected: number) => void;
 }
 
-export const CharacterButton = ({team, character, updateCharacter, banDisplay, isChosen, updateHover }: ICharacterButton) => {
+export const CharacterButton = ({team, character, updateCharacter, banDisplay, isChosen, updateHover, component }: ICharacterButton) => {
 	const doUpdate = () => {
 		updateCharacter(CHARACTER_INFO[character].displayName);
 		localStorage.setItem("character", `${CHARACTER_INFO[character].index}`);
@@ -36,6 +44,7 @@ export const CharacterButton = ({team, character, updateCharacter, banDisplay, i
 					updateCharacter={updateCharacter}
 					banDisplay={"ban"}
 					isChosen={isChosen}
+					component={component}
 				/>
 			</NormalWrapperBox>
 		)
@@ -49,6 +58,7 @@ export const CharacterButton = ({team, character, updateCharacter, banDisplay, i
 						updateCharacter={updateCharacter}
 						banDisplay={banDisplay}
 						isChosen={isChosen}
+						component={component}
 					/>
 				</PickWrapperBox>
 			);
@@ -61,6 +71,7 @@ export const CharacterButton = ({team, character, updateCharacter, banDisplay, i
 						updateCharacter={updateCharacter}
 						banDisplay={banDisplay}
 						isChosen={isChosen}
+						component={component}
 					/>
 				</BanWrapperBox>
 			);
@@ -73,6 +84,7 @@ export const CharacterButton = ({team, character, updateCharacter, banDisplay, i
 						updateCharacter={updateCharacter}
 						banDisplay={banDisplay}
 						isChosen={isChosen}
+						component={component}
 					/>
 				</NormalWrapperBox>
 			);
@@ -80,10 +92,10 @@ export const CharacterButton = ({team, character, updateCharacter, banDisplay, i
 	}
 };
 
-const InnerCharacter = ({character, updateCharacter, banDisplay, isChosen}: IInnerButton) => {
+const InnerCharacter = ({character, banDisplay, component}: IInnerButton) => {
 	return (
 		<Fragment>
-			<CharacterPicture character={character} banDisplay={banDisplay} />
+			<CharacterPicture character={character} banDisplay={banDisplay} component={component} />
 			<LabelBox>
 				<Typography
 					fontFamily={'Roboto Mono'}

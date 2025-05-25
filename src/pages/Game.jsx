@@ -14,7 +14,7 @@ import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/deta
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
 import {getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "../../shared/src/utils/imagePaths.ts"
 
-import { Box, Button, Typography, Grid, Paper } from "@mui/material";
+import { Box, Button, Typography, Grid, Paper, Stack } from "@mui/material";
 import { GifPlay } from "../components/GifPlay.tsx";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {restrictToHorizontalAxis, restrictToVerticalAxis} from "@dnd-kit/modifiers";
@@ -1170,6 +1170,7 @@ export default function Game(props) {
   };
   const handleSocketMessage = (event) => {
     let data = JSON.parse(event.data);
+    console.log("new data");
     console.log(data);
     if (data.id != props.id) {
       return; // do nothing if game does not match
@@ -1302,8 +1303,16 @@ export default function Game(props) {
       case "names": {
         res = {
           ...identity,
-          [`playerst${data.team}`]: data.names
+          [`playerst${data.team}`]: data.names,
+        };
+        break;
+      }
+      case "overwrite": {
+        res = {
+          ...identity,
+          [`${data.which}`]: data.replacement
         }
+        break;
       }
       case "TeamUpdate": {
         res = parseUpdate(data);
@@ -1383,12 +1392,9 @@ export default function Game(props) {
     });
     newSocket.addEventListener("close", function (event) {
       handleSocketClose(event.data);
-      console.log("is closing");
-      console.log(event.data);
     });
     newSocket.addEventListener("error", function (event) {
       console.log("An error occured");
-      console.log(event.data);
       socket.current.close();
     });
     // console.log("socket build")
@@ -1462,8 +1468,6 @@ export default function Game(props) {
       handleSocketMessage(event);
     });
     socket.current.addEventListener("close", function (event) {
-      console.log("is closing here normally");
-      console.log(event.data);
       handleSocketClose();
     });
     socket.current.addEventListener("error", function (event) {
@@ -1517,7 +1521,7 @@ export default function Game(props) {
   };
   */
   const openChange = (team, name, original) => {
-    if (cookies.player.charAt(0) != "R" && cookies.player.charAt(0) != team) {
+    if (cookies.player.charAt(0) != "R") {
       // reject
       return;
     }
@@ -1542,7 +1546,23 @@ export default function Game(props) {
     // if a character or boss must be changed for whatever reason and refs agree to it
     // this is what happens
     // tell which to overwrite, in terms of id
-    if (cookies.player.charAt(0) != "R" && cookies.player.charAt(0) != JSON.stringify(team)) {
+    console.log("change: "+change);
+    let res = parseInt(change);
+    if(isNaN(res)){
+      characters.forEach(char => {
+        if(char.name.toLowerCase() == change.toLowerCase()){
+          res = char._id;
+        }
+      })
+    }
+    if(isNaN(res)){
+      // ask for proper input
+      alert("The character name specified is invalid!");
+      return;
+    }
+    console.log("result: "+res);
+    setShowChanges(false);
+    if (cookies.player.charAt(0) != "R") {
       // reject
       return;
     }
@@ -1550,14 +1570,14 @@ export default function Game(props) {
       alert("Please do not change characters mid round!");
       return;
     }
-    socket.send(JSON.stringify({
-      type: "Overwrite",
+    socket.current.send(JSON.stringify({
+      type: "overwrite",
       id: props.id,
+      team: team,
       which: changeInfo[0],
       original: changeInfo[3],
-      replacement: change
+      replacement: res
     }))
-    setShowChanges(false);
     // find the original and replace it
   };
   const handleDND = (event) => {
@@ -1744,7 +1764,19 @@ export default function Game(props) {
                             justifyContent: "center",
                           }}
                           paddingLeft={2}
-                          onClick={() => {ind % 2 == 0 ? updateNames(prompt("Enter a new name for team 1 player "+(ind / 2 + 1)+":", ""), ind / 2) : null}}
+                          onClick={() => {
+                            ind % 2 == 0
+                              ? updateNames(
+                                  prompt(
+                                    "Enter a new name for team 1 player " +
+                                      (ind / 2 + 1) +
+                                      ":",
+                                    ""
+                                  ),
+                                  ind / 2
+                                )
+                              : null;
+                          }}
                         >
                           {ind % 2 == 0
                             ? typeof identity.playerst1 == "undefined" ||
@@ -1868,6 +1900,19 @@ export default function Game(props) {
                             justifyContent: "center",
                           }}
                           paddingLeft={2}
+                          onClick={() => {
+                            ind % 2 == 0
+                              ? updateNames(
+                                  prompt(
+                                    "Enter a new name for team 2 player " +
+                                      (ind / 2 + 1) +
+                                      ":",
+                                    ""
+                                  ),
+                                  ind / 2 + 3
+                                )
+                              : null;
+                          }}
                         >
                           {ind % 2 == 0
                             ? typeof identity.playerst2 == "undefined" ||
@@ -1896,7 +1941,6 @@ export default function Game(props) {
                   <Fragment>
                     <Grid offset={3} size={1}>
                       <Button
-                        className="boss-2"
                         fullWidth
                         onClick={() => {
                           socket.current.send(
@@ -1921,7 +1965,6 @@ export default function Game(props) {
                         {identity.result == "progress" ? (
                           <Grid size={1}>
                             <Button
-                              className="boss-4"
                               sx={{ backgroundColor: "black", color: "yellow" }}
                               fullWidth
                               onClick={() => {
@@ -2010,19 +2053,21 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid eleven">
-              <Grid container spacing={3}>
-                {bans.slice(0, 3).map((ban) => {
-                  return (
-                    <div key={ban}>
-                      {characterRef.current != undefined
-                        ? displayCharacter(
-                            characterRef.current.get(identity.bans[ban]._id),
-                            false
-                          )
-                        : null}
-                    </div>
-                  );
-                })}
+              <Grid container>
+                <Stack spacing={3} direction="row">
+                  {bans.slice(0, 3).map((ban) => {
+                    return (
+                      <div key={ban}>
+                        {characterRef.current != undefined
+                          ? displayCharacter(
+                              characterRef.current.get(identity.bans[ban]._id),
+                              false
+                            )
+                          : null}
+                      </div>
+                    );
+                  })}
+                </Stack>
               </Grid>
             </div>
             <div className="grid twelve">

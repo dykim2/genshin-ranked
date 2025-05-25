@@ -2,7 +2,7 @@
  * Picture of a character, including the backdrop and element. Does NOT include name of character.
  */
 
-import React from "react";
+import React, { Fragment } from "react";
 import {
 	CHARACTERS,
 	getCharacterElementImagePath,
@@ -10,43 +10,77 @@ import {
 	RARITY,
 } from "@genshin-ranked/shared";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
-import { Box, Icon, IconButton } from "@mui/material";
+import { Box, Icon } from "@mui/material";
 import { styled } from "@mui/system";
 
-interface ICharacterPicture {
-	character: CHARACTERS, 
-	banDisplay: string
+interface ICharacter {
+	character: CHARACTERS
 }
-export const CharacterPicture = ({ character, banDisplay }: ICharacterPicture) => {
+interface ICharacterPicture extends ICharacter { 
+	banDisplay: string;
+	component: boolean;
+}
+
+const ImageDetail = ({character}: ICharacter) => {
+	return (
+		<Fragment>
+			<Image src={getCharacterImagePath(character)} />
+			{character != CHARACTERS.None && character != CHARACTERS.NoBan ? (
+				<IconWrapper>
+					<Image src={getCharacterElementImagePath(character)} />
+				</IconWrapper>
+			) : null}
+		</Fragment>
+	);
+}
+const BanDetail = ({character}: ICharacter) => {
+	return (
+		<Fragment>
+			<Image
+				src={getCharacterImagePath(character)}
+				sx={{ filter: "grayscale(100%)" }}
+			/>
+			{character != CHARACTERS.None && character != CHARACTERS.NoBan ? (
+				<IconWrapper>
+					<Image
+						sx={{ filter: "grayscale(100%)" }}
+						src={getCharacterElementImagePath(character)}
+					/>
+				</IconWrapper>
+			) : null}
+		</Fragment>
+	);
+}
+
+export const CharacterPicture = ({ character, banDisplay, component }: ICharacterPicture) => {
+	// check if the hovered index matches
+	// when creating a game reset both
+	// highlight 
+	const thisInd = CHARACTER_INFO[character].index;
+	let hoverInd = -5;
+	if(localStorage.getItem("character") != null){
+		hoverInd = parseInt(localStorage.getItem("character")!); 
+	}
+	else{
+		return;
+	}
 	return (
 		<Box sx={{ backgroundColor: "white" }}>
-			{banDisplay != "ban" ? (
+			{thisInd == hoverInd && !component && banDisplay != "ban" ? (
+				<HoveredGradientBox rarity={CHARACTER_INFO[character].rarity}>
+					<ImageDetail character={character} />
+				</HoveredGradientBox>
+			) : thisInd == hoverInd && !component ? (
+				<HoveredBannedBox>
+					<BanDetail character={character} />
+				</HoveredBannedBox>
+			) : banDisplay != "ban" ? (
 				<NormalGradientBox rarity={CHARACTER_INFO[character].rarity}>
-					<Image src={getCharacterImagePath(character)} />
-					{character != CHARACTERS.None &&
-					character != CHARACTERS.NoBan ? (
-						<IconWrapper>
-							<Image
-								src={getCharacterElementImagePath(character)}
-							/>
-						</IconWrapper>
-					) : null}
+					<ImageDetail character={character} />
 				</NormalGradientBox>
 			) : (
 				<BannedGradientBox>
-					<Image
-						src={getCharacterImagePath(character)}
-						sx={{ filter: "grayscale(100%)" }}
-					/>
-					{character != CHARACTERS.None &&
-					character != CHARACTERS.NoBan ? (
-						<IconWrapper>
-							<Image
-								sx={{ filter: "grayscale(100%)" }}
-								src={getCharacterElementImagePath(character)}
-							/>
-						</IconWrapper>
-					) : null}
+					<BanDetail character={character} />
 				</BannedGradientBox>
 			)}
 		</Box>
@@ -75,17 +109,18 @@ const BannedGradientBox = styled(Box)({
 	overflow: "hidden",
 });
 
-const NormalGradientBox = styled(Box)(({ rarity }: IGradientBox) => ({
+const NormalGradientBox = styled(BannedGradientBox)(({ rarity }: IGradientBox) => ({
 	background:
 		rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
-	position: "relative",
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
-	border: "1px solid black",
-	borderRadius: "8px 8px 15px 0px",
-	overflow: "hidden",
 }));
+
+const HoveredBannedBox = styled(BannedGradientBox)({
+	border: "8px solid #000000"
+});
+
+const HoveredGradientBox = styled(NormalGradientBox)({
+	border: "8px solid #000000",
+});
 
 const Image = styled("img")({
 	width: "100%",

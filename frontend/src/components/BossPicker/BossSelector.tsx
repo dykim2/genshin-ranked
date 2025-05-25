@@ -134,7 +134,8 @@ export const BossSelector = ({
 									updateBoss={updateBoss}
 									selectDisplay={false}
 									isChosen={selections.includes(BOSS_DETAIL[x].index)}		
-									updateHover={updateHover}				
+									updateHover={updateHover}
+									component={false}			
 								/>
 							</Grid>
 						) : null;

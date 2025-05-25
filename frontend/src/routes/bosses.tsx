@@ -2,7 +2,6 @@
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { BossSelector } from "../components";
-import { socket } from "../../../src/contexts/PlayingContext";
 import {useCookies} from "react-cookie";
 
 interface balance {
@@ -45,30 +44,28 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 		if(team == -1){
 			return;
 		}
-		if (socket.readyState == 1) {
-			let chosenValue: number = -1;
-			if (localStorage.getItem("boss") == null) {
-				chosenValue = -1;
-				alert("Please choose a boss!");
-				return;
-			} else {
-				chosenValue = parseInt(localStorage.getItem("boss")!);
-			}
-			// transition to using the existing selection method, to keep things clean
-			selectionInfo.id = chosenValue;
-			pickSelection(team, selectionInfo, false);
-			/*
-			socket.send(
-				JSON.stringify({
-					// force websocket to determine if current status is ban or pick, handle accordingly
-					type: "boss",
-					id: id,
-					bossId: chosenValue,
-					team: team,
-				}),
-			);
-			*/
+		let chosenValue: number = -1;
+		if (localStorage.getItem("boss") == null) {
+			chosenValue = -1;
+			alert("Please choose a boss!");
+			return;
+		} else {
+			chosenValue = parseInt(localStorage.getItem("boss")!);
 		}
+		// transition to using the existing selection method, to keep things clean
+		selectionInfo.id = chosenValue;
+		pickSelection(team, selectionInfo, false);
+		/*
+		socket.send(
+			JSON.stringify({
+				// force websocket to determine if current status is ban or pick, handle accordingly
+				type: "boss",
+				id: id,
+				bossId: chosenValue,
+				team: team,
+			}),
+		);
+		*/
 	};
 
     return (

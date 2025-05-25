@@ -126,6 +126,7 @@ export const CharacterSelector = ({
 									banDisplay={"loadout"}
 									isChosen={selectedChars.includes(CHARACTER_INFO[x].index)}
 									updateHover={updateHover}
+									component={false}
 								/>
 							</Grid>
 						) : null,

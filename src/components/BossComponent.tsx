@@ -22,7 +22,7 @@ const updateHover = (_teamNum: number, _selected: number) => {
     alert("wawawa");
 }
 
-export const displayBoss = (boss: BOSSES) => {
+export const displayBoss = (boss: BOSSES, change: (team: number, name: string, original: number) => void) => {
     const selecting = true; // can be changed in future
     const updateBoss = () => {
         // does nothing
@@ -36,6 +36,7 @@ export const displayBoss = (boss: BOSSES) => {
     return(
         <Droppable id={z}>
             <Dragable id={z}>
+              <div onContextMenu={(e) => {e.preventDefault(); change(0, BOSS_DETAIL[boss].displayName, BOSS_DETAIL[boss].index)}}>
                 <BossButton
                     boss={boss}
                     updateBoss={updateBoss}
@@ -43,7 +44,9 @@ export const displayBoss = (boss: BOSSES) => {
                     team={0}
                     updateHover={updateHover}
                     isChosen={false}
+                    component={true}
                 />
+                </div>
             </Dragable>
         </Droppable>
     )
@@ -57,7 +60,16 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
     return (
       <Droppable id={CHARACTER_INFO[character].index}>
         <Dragable id={CHARACTER_INFO[character].index}>
-          <div onContextMenu={(e) => {e.preventDefault(); change(team, CHARACTER_INFO[character].displayName, CHARACTER_INFO[character].index);}}>
+          <div
+            onContextMenu={(e) => {
+              e.preventDefault();
+              change(
+                team,
+                CHARACTER_INFO[character].displayName,
+                CHARACTER_INFO[character].index
+              );
+            }}
+          >
             <CharacterButton
               character={character}
               updateCharacter={updateCharacter}
@@ -65,6 +77,7 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
               banDisplay={banDisplay}
               team={0}
               isChosen={false}
+              component={true}
             />
           </div>
         </Dragable>

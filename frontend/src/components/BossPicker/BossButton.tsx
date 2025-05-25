@@ -9,21 +9,23 @@ import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
  * @param boss the boss name to display
  * @param updateBoss the state that is triggered when the user clicks on the boss
  * @param selectDisplay whether bosses are being chosen for pick/ban or for viewing
+ * @param component whether this is displayed as a component or not (don't create the hover circle if it is)
  */
-interface IDisplayInnerBossButton {
+interface IBossButton {
 	boss: BOSSES;
 	selectDisplay: boolean; // display for choosing bosses to pick/ban or for viewing
 	isChosen: boolean;
+	component: boolean;
 }
-interface IInnerBossButton extends IDisplayInnerBossButton {
+interface IInnerBossButton extends IBossButton {
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 }
-interface IBossButton extends IInnerBossButton {
+interface IDisplayInnerBossButton extends IInnerBossButton {
 	team: number;
 	updateHover: (teamNum: number, selected: number) => void;
 }
 
-export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, updateHover}: IBossButton) => {
+export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, updateHover, component}: IDisplayInnerBossButton) => {
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
 		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
@@ -36,6 +38,7 @@ export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, upd
 					boss={boss}
 					selectDisplay={selectDisplay}
 					isChosen={true}
+					component={component}
 				/>
 			</NormalWrapperBox>
 		)
@@ -46,6 +49,7 @@ export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, upd
 				boss={boss}
 				selectDisplay={selectDisplay}
 				isChosen={isChosen}
+				component={component}
 			/>
 		</NormalWrapperBox>
 	) : (
@@ -54,14 +58,15 @@ export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, upd
 				boss={boss}
 				selectDisplay={selectDisplay}
 				isChosen={isChosen}
+				component={component}
 			/>
 		</SelectedWrapperBox>
 	);
 }
-export const InnerBoss = ({boss, selectDisplay, isChosen}: IDisplayInnerBossButton) => {
+export const InnerBoss = ({boss, selectDisplay, isChosen, component}: IBossButton) => {
 	return (
 		<Fragment>
-			<BossPicture boss={boss} isChosen={isChosen} />
+			<BossPicture boss={boss} isChosen={isChosen} component={component} />
 			<LabelBox>
 				<Typography
 					fontFamily={"Roboto Mono"}
@@ -91,6 +96,7 @@ const NormalWrapperBox = styled(Button)({
 	justifyContent: "center",
 	color: "black",
 	width: 100,
+	position: "relative"
 });
 
 // designed for the bottom boss selection
@@ -104,6 +110,7 @@ const SelectedWrapperBox = styled(Button)({
 	justifyContent: "center",
 	color: "black",
 	width: 80,
+	position: "relative"
 });
 
 const LabelBox = styled(Box)({
