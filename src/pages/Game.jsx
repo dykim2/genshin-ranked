@@ -1406,7 +1406,7 @@ export default function Game(props) {
       window.timer = setInterval(() => {
         socket.current = createSocket();
         // this hsould never be null
-      }, 2000);
+      }, 500);
     }
     socket.current.close();
   };
