@@ -2054,7 +2054,7 @@ export default function Game(props) {
             </div>
             <div className="grid eleven">
               <Grid container>
-                <Stack spacing={3} direction="row">
+                <Stack spacing={identity.bans.length} direction="row">
                   {bans.slice(0, 3).map((ban) => {
                     return (
                       <div key={ban}>
@@ -2149,7 +2149,7 @@ export default function Game(props) {
                 </Grid>
               ) : null}
             </div>
-            <div className="grid newgrid nineteen">
+            <div className="grid nineteen">
               {/* extra bans */}
               {identity.extrabanst2 > 0 ? (
                 <Grid
