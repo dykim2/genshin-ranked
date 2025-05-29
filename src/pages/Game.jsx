@@ -2053,21 +2053,19 @@ export default function Game(props) {
               ) : null}
             </div>
             <div className="grid eleven">
-              <Grid container>
-                <Stack spacing={identity.bans.length} direction="row">
-                  {bans.slice(0, 3).map((ban) => {
-                    return (
-                      <div key={ban}>
-                        {characterRef.current != undefined
-                          ? displayCharacter(
-                              characterRef.current.get(identity.bans[ban]._id),
-                              false
-                            )
-                          : null}
-                      </div>
-                    );
-                  })}
-                </Stack>
+              <Grid container spacing={identity.bans.length / 2}>
+                {bans.slice(0, 3).map((ban) => {
+                  return (
+                    <div key={ban}>
+                      {characterRef.current != undefined
+                        ? displayCharacter(
+                            characterRef.current.get(identity.bans[ban]._id),
+                            false
+                          )
+                        : null}
+                    </div>
+                  );
+                })}
               </Grid>
             </div>
             <div className="grid twelve">
@@ -2107,7 +2105,7 @@ export default function Game(props) {
                 container
                 justifyContent="end"
                 sx={{ paddingRight: 1 }}
-                spacing={3}
+                spacing={identity.bans.length / 2}
               >
                 {bans.slice(3, 6).map((ban) => {
                   return (
