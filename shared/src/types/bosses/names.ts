@@ -5,7 +5,7 @@ export enum BOSSES {
 	CryoVine = "CryoVine",
 	ElectroCube = "ElectroCube",
 	GeoCube = "GeoCube",
-	Oceanid = "Oceanid",
+	// Oceanid = "Oceanid",
 	PyroVine = "PyroVine",
 	PrimoVishap = "PrimoVishap",
 	CryoCube = "CryoCube",

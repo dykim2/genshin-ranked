@@ -5,7 +5,7 @@ import Rules from "../pages/Rules.jsx";
 import Play from "../pages/Play.jsx";
 import InvalidPage from "../pages/InvalidPage.jsx";
 import Ranked from "./Ranked.jsx";
-import { useContext, useEffect } from "react";
+import { FC, useContext, useEffect } from "react";
 import CharacterContext from "../contexts/CharacterContext.js";
 import Game from "../pages/Game.jsx";
 import ActiveContext from "../contexts/ActiveContext.js";
@@ -13,26 +13,21 @@ import React from "react";
 import { Button } from "@mui/material";
 import Bosses from "../pages/BossInfo.tsx";
 import { Guide } from "../pages/Guide.tsx";
+import GetInfo from "../pages/GetInfo.tsx";
 
-export default function WebRouter() {
+interface IRouter {
+  socket: WebSocket;
+}
+
+const WebRouter: FC<IRouter> = (props) => {
   const [characters, setCharacters] = useContext(CharacterContext);
   const [active, setActive] = useContext(ActiveContext);
   const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
   const api = api_choice[0];
   
-  let userId = localStorage.getItem("userid");
-  if (userId == null) {
-    userId = crypto.randomUUID();
-    localStorage.setItem("userid", userId);
-  }
-  let socketOpts = [
-    `wss://rankedwebsocketapi.fly.dev?userId=${userId}`,
-    `ws://localhost:3000?userId=${userId}`,
-  ];
-  const socket = new WebSocket(socketOpts[0]);
   useEffect(() => {
     // obtain list of characters, save them to a context
-    async function getChars() {
+     const getChars = async() => {
       let charData = await fetch(
         `${api}/charAPI/`,
         {
@@ -49,7 +44,7 @@ export default function WebRouter() {
       setCharacters(arr);
       sessionStorage.setItem("characters", JSON.stringify(arr));
     }
-    async function findActive() {
+    const findActive = async() => {
       let gameData = await fetch(`${api}/gameAPI/active`, {
         method: "GET",
       });
@@ -95,13 +90,14 @@ export default function WebRouter() {
                 <Route
                   key={game._id}
                   path={`/play/${game._id}`}
-                  element={<Game id={game._id} socket={socket} />}
+                  element={<Game id={game._id} socket={props.socket} />}
                 />
               );
             })}
             <Route path="/characters" element={<Characters />} />
             <Route path="/bosses" element={<Bosses />} />
             <Route path="/guide" element={<Guide />} />
+            <Route path="/checklogs" element={<GetInfo />} />
             <Route path="*" element={<InvalidPage />} />
           </Route>
         </Routes>
@@ -124,3 +120,5 @@ const compare = (one: any, two: any) => {
     return 0;
   }
 }
+
+export default WebRouter;

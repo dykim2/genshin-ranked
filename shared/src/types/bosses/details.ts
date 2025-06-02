@@ -31,7 +31,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Drake",
 		onlineFilePath: "https://thumbs4.imagebam.com/57/d8/ce/METS4WA_t.png",
-		index: 17,
+		index: 16,
 	},
 	[BOSSES.AnemoCube]: {
 		displayName: "Anemo Cube",
@@ -47,7 +47,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "ASIMON",
 		onlineFilePath: "https://thumbs4.imagebam.com/01/74/0b/METS4W8_t.png",
-		index: 18,
+		index: 17,
 	},
 	[BOSSES.Automaton]: {
 		displayName: "Automaton",
@@ -55,7 +55,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Automaton",
 		onlineFilePath: "https://thumbs4.imagebam.com/dc/a7/c2/MEWLE3I_t.png",
-		index: 44,
+		index: 43,
 	},
 	[BOSSES.IniquitousBaptist]: {
 		displayName: "Baptist",
@@ -63,7 +63,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Baptist",
 		onlineFilePath: "https://thumbs4.imagebam.com/e5/25/79/METS4W1_t.png",
-		index: 22,
+		index: 21,
 	},
 	[BOSSES.Coppelia]: {
 		displayName: "Coppelia",
@@ -71,7 +71,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Coppelia",
 		onlineFilePath: "https://thumbs4.imagebam.com/22/9d/bb/MEVUDKM_t.png",
-		index: 23,
+		index: 22,
 	},
 	[BOSSES.Coppelius]: {
 		displayName: "Coppelius",
@@ -79,7 +79,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Coppelius",
 		onlineFilePath: "https://thumbs4.imagebam.com/79/b1/47/MEVUDKN_t.png",
-		index: 24,
+		index: 23,
 	},
 	[BOSSES.CryoCube]: {
 		displayName: "Cryo Cube",
@@ -87,7 +87,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "CryoCube",
 		onlineFilePath: "https://thumbs4.imagebam.com/a4/71/4e/METS4UT_t.png",
-		index: 7,
+		index: 6,
 	},
 	[BOSSES.CryoVine]: {
 		displayName: "Cryo Vine",
@@ -103,7 +103,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "DendroCube",
 		onlineFilePath: "https://thumbs4.imagebam.com/51/a6/69/METS4W6_t.png",
-		index: 19,
+		index: 18,
 	},
 	[BOSSES.EFG]: {
 		displayName: "EFG",
@@ -111,7 +111,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "EFG",
 		onlineFilePath: "https://thumbs2.imgbox.com/83/ea/v9eEVHNx_t.png",
-		index: 28,
+		index: 27,
 	},
 	[BOSSES.ElectroCube]: {
 		displayName: "Electro Cube",
@@ -127,7 +127,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "ElectroVine",
 		onlineFilePath: "https://thumbs4.imagebam.com/75/72/7b/METS4WC_t.png",
-		index: 15,
+		index: 14,
 	},
 	[BOSSES.EnkaVishaps]: {
 		displayName: "Enka Vishaps",
@@ -135,7 +135,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "EnkaVishaps",
 		onlineFilePath: "https://thumbs4.imagebam.com/2d/68/26/METS4WG_t.png",
-		index: 13,
+		index: 12,
 	},
 	[BOSSES.ErodedLord]: {
 		displayName: "Eroded Lord",
@@ -143,7 +143,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "ErodedLord",
 		onlineFilePath: "https://thumbs4.imagebam.com/d5/66/de/MEZJO44_t.png",
-		index: 48,
+		index: 47,
 	},
 	[BOSSES.GeoCube]: {
 		displayName: "Geo Cube",
@@ -169,7 +169,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Goldflame",
 		onlineFilePath: "https://thumbs4.imagebam.com/38/76/4d/MEVO2OM_t.png",
-		index: 41,
+		index: 40,
 	},
 	[BOSSES.HydroCube]: {
 		displayName: "Hydro Cube",
@@ -177,7 +177,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "HydroCube",
 		onlineFilePath: "https://images4.imagebam.com/84/5b/8e/METS4VH_o.png",
-		index: 11,
+		index: 10,
 	},
 	[BOSSES.HydroTulpa]: {
 		displayName: "Hydro Tulpa",
@@ -185,7 +185,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "HydroTulpa",
 		onlineFilePath: "https://thumbs4.imagebam.com/1d/15/89/METS4VP_t.png",
-		index: 32,
+		index: 31,
 	},
 	[BOSSES.JadeplumeTerrorshroom]: {
 		displayName: "Terrorshroom",
@@ -193,7 +193,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Terrorshroom",
 		onlineFilePath: "https://thumbs4.imagebam.com/f4/e7/b7/METS4WF_t.png",
-		index: 16,
+		index: 15,
 	},
 	[BOSSES.LavaDragon]: {
 		displayName: "Lava Dragon",
@@ -201,7 +201,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "LavaDragon",
 		onlineFilePath: "https://thumbs4.imagebam.com/3c/37/63/ME10MX79_t.png",
-		index: 49,
+		index: 48,
 	},
 	[BOSSES.LegatusGolem]: {
 		displayName: "Legatus Golem",
@@ -209,7 +209,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "LegatusGolem",
 		onlineFilePath: "https://thumbs2.imgbox.com/0a/27/vN4b4URe_t.png",
-		index: 38,
+		index: 37,
 	},
 	[BOSSES.MaguuKenki]: {
 		displayName: "Maguu Kenki",
@@ -217,7 +217,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "MaguuKenki",
 		onlineFilePath: "https://thumbs4.imagebam.com/66/98/db/METS4V8_t.png",
-		index: 8,
+		index: 7,
 	},
 	[BOSSES.MountainKing]: {
 		displayName: "Mountain King",
@@ -225,8 +225,9 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "MountainKing",
 		onlineFilePath: "https://thumbs4.imagebam.com/1e/de/c7/MEVO2LF_t.png",
-		index: 42,
+		index: 41,
 	},
+	/*
 	[BOSSES.Oceanid]: {
 		displayName: "Oceanid",
 		element: ELEMENTS.hydro,
@@ -235,13 +236,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/cd/58/d7/METS4UY_t.png",
 		index: 4,
 	},
+	*/
 	[BOSSES.Overseer]: {
 		displayName: "Overseer",
 		element: ELEMENTS.hydro,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Overseer",
 		onlineFilePath: "https://thumbs4.imagebam.com/a8/b9/6f/ME11UFVZ_t.png",
-		index: 51,
+		index: 50,
 	},
 	[BOSSES.Papilla]: {
 		displayName: "Papilla",
@@ -249,7 +251,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Papilla",
 		onlineFilePath: "https://thumbs4.imagebam.com/e8/a7/0c/MEWPYUZ_t.png",
-		index: 46,
+		index: 45,
 	},
 	[BOSSES.PMA]: {
 		displayName: "PMA",
@@ -257,7 +259,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "PMA",
 		onlineFilePath: "https://images4.imagebam.com/65/66/44/METS4VB_o.png",
-		index: 9,
+		index: 8,
 	},
 	[BOSSES.PrimoVishap]: {
 		displayName: "Primovishap",
@@ -265,7 +267,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Primovishap",
 		onlineFilePath: "https://thumbs4.imagebam.com/23/40/04/METS4V2_t.png",
-		index: 6,
+		index: 5,
 	},
 	[BOSSES.PyroCrab]: {
 		displayName: "Pyro Crab",
@@ -273,7 +275,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "PyroCrab",
 		onlineFilePath: "https://thumbs4.imagebam.com/e6/cd/11/METS4VU_t.png",
-		index: 25,
+		index: 24,
 	},
 	[BOSSES.PyroCube]: {
 		displayName: "Pyro Cube",
@@ -281,7 +283,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "PyroCube",
 		onlineFilePath: "https://images4.imagebam.com/a6/e6/69/METS4VF_o.png",
-		index: 10,
+		index: 9,
 	},
 	[BOSSES.PyroVine]: {
 		displayName: "Pyro Vine",
@@ -289,7 +291,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "PyroVine",
 		onlineFilePath: "https://thumbs4.imagebam.com/a7/bc/c2/METS4UW_t.png",
-		index: 5,
+		index: 4,
 	},
 	[BOSSES.RuinSerpent]: {
 		displayName: "Ruin Serpent",
@@ -297,7 +299,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "RuinSerpent",
 		onlineFilePath: "https://thumbs4.imagebam.com/39/a0/48/METS4V4_t.png",
-		index: 14,
+		index: 13,
 	},
 	[BOSSES.MillenialPearlSeahorse]: {
 		displayName: "Seahorse",
@@ -305,7 +307,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Seahorse",
 		onlineFilePath: "https://thumbs4.imagebam.com/19/9e/b3/METS4VT_t.png",
-		index: 29,
+		index: 28,
 	},
 	[BOSSES.SolitarySuanii]: {
 		displayName: "Solitary Suanni",
@@ -313,7 +315,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Suanni",
 		onlineFilePath: "https://thumbs4.imagebam.com/66/f5/88/METS4V6_t.png",
-		index: 35,
+		index: 34,
 	},
 	[BOSSES.Spiritspeaker]: {
 		displayName: "Spiritspeaker",
@@ -321,7 +323,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Spiritspeaker",
 		onlineFilePath: "https://thumbs4.imagebam.com/ba/18/2c/MEYMYLP_t.png",
-		index: 47,
+		index: 46,
 	},
 	[BOSSES.Thunderbird]: {
 		displayName: "Thunderbird",
@@ -329,7 +331,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Thunderbird",
 		onlineFilePath: "https://thumbs4.imagebam.com/2a/b1/95/METS4VJ_t.png",
-		index: 12,
+		index: 11,
 	},
 	[BOSSES.Wenut]: {
 		displayName: "Setekh Wenut",
@@ -337,7 +339,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Wenut",
 		onlineFilePath: "https://thumbs4.imagebam.com/16/64/60/METS4W4_t.png",
-		index: 20,
+		index: 19,
 	},
 	[BOSSES.Apep]: {
 		displayName: "Apep",
@@ -345,7 +347,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "Apep",
 		onlineFilePath: "https://thumbs4.imagebam.com/75/7a/be/METS4UF_t.png",
-		index: 21,
+		index: 20,
 	},
 	[BOSSES.ChessGame]: {
 		displayName: "Chess Game",
@@ -353,7 +355,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "ChessGame",
 		onlineFilePath: "https://thumbs4.imagebam.com/97/23/e0/ME11UFVX_t.png",
-		index: 50,
+		index: 49,
 	},
 	/*
 	[BOSSES.Azhdaha]: {
@@ -371,7 +373,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "Knave",
 		onlineFilePath: "https://thumbs4.imagebam.com/6a/fd/eb/METS4UB_t.png",
-		index: 37,
+		index: 36,
 	},
 	[BOSSES.Narwhal]: {
 		displayName: "Narwhal",
@@ -379,7 +381,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Weekly,
 		imageFileName: "Narwhal",
 		onlineFilePath: "https://thumbs4.imagebam.com/44/33/67/METS4UD_t.png",
-		index: 31,
+		index: 30,
 	},
 	[BOSSES.ArrayMek]: {
 		displayName: "Array Mek",
@@ -387,7 +389,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "ArrayMek",
 		onlineFilePath: "https://thumbs4.imagebam.com/f6/0e/0e/METS4UH_t.png",
-		index: 27,
+		index: 26,
 	},
 	[BOSSES.Balachko]: {
 		displayName: "Balachko",
@@ -395,7 +397,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Balachko",
 		onlineFilePath: "https://thumbs4.imagebam.com/82/96/f3/MEXSPGM_t.png",
-		index: 39,
+		index: 38,
 	},
 	[BOSSES.Bronzelock]: {
 		displayName: "Bronzelock",
@@ -403,7 +405,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Bronzelock",
 		onlineFilePath: "https://thumbs4.imagebam.com/77/ff/51/MEXSPGL_t.png",
-		index: 45,
+		index: 44,
 	},
 	[BOSSES.ChizhangVishaps]: {
 		displayName: "Chizhang Vishap",
@@ -411,7 +413,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "ChizhangVishaps",
 		onlineFilePath: "https://thumbs4.imagebam.com/b9/46/85/METS4UI_t.png",
-		index: 34,
+		index: 33,
 	},
 	[BOSSES.Cineas]: {
 		displayName: "Cineas",
@@ -419,7 +421,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Cineas",
 		onlineFilePath: "https://thumbs4.imagebam.com/f1/9f/75/METS4UK_t.png",
-		index: 36,
+		index: 35,
 	},
 	[BOSSES.Cocijo]: {
 		displayName: "Cocijo",
@@ -427,7 +429,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Cocijo",
 		onlineFilePath: "https://thumbs4.imagebam.com/eb/b1/71/MEXSPGO_t.png",
-		index: 40,
+		index: 39,
 	},
 	[BOSSES.Deianeira]: {
 		displayName: "Deianeira",
@@ -435,7 +437,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Deianeira",
 		onlineFilePath: "https://thumbs4.imagebam.com/3d/25/94/MEXSPGQ_t.png",
-		index: 30,
+		index: 29,
 	},
 	[BOSSES.Polychrome]: {
 		displayName: "Polychrome",
@@ -443,7 +445,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Polychrome",
 		onlineFilePath: "https://thumbs4.imagebam.com/9a/57/d5/MEXSPGK_t.png",
-		index: 43,
+		index: 42,
 	},
 	[BOSSES.Rocky]: {
 		displayName: "Rocky",
@@ -451,7 +453,7 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Rocky",
 		onlineFilePath: "https://thumbs4.imagebam.com/d0/70/af/MEXSPGI_t.png",
-		index: 33,
+		index: 32,
 	},
 	[BOSSES.Vivianne]: {
 		displayName: "Vivianne",
@@ -459,6 +461,6 @@ export const BOSS_DETAIL: BossMap = {
 		type: BOSS_TYPE.Legend,
 		imageFileName: "Vivianne",
 		onlineFilePath: "https://thumbs4.imagebam.com/10/d1/26/MEXSPGJ_t.png",
-		index: 26,
+		index: 25,
 	},
 };

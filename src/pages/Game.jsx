@@ -416,7 +416,7 @@ const parseStatus = (data) => {
   return newIden;
 } 
 
-export default function Game(props) {
+const Game = (props) => {
   // the actual meat of the game, including picks / bans / etc
   const [identity, setIdentity] = useState(gameInfo);
   const [characters, setCharacters] = useContext(CharacterContext);
@@ -528,25 +528,6 @@ export default function Game(props) {
       })
     );
   };
-  /**
-   *
-   * @param {*} selection the selection information (what boss/pick is chosen)
-   * @param {*} type boss or pick (pick counts for both ban and pick)
-   */
-  const checkCharStatus = (id) => {
-    for (let i = 0; i < characters.length; i++) {
-      if (characters[i]._id == id) {
-        return characters[i].chosen;
-      }
-    }
-  };
-  const checkBossStatus = (id) => {
-    for (let i = 0; i < bosses.length; i++) {
-      if (bosses[i]._id == id) {
-        return bosses[i].chosen;
-      }
-    }
-  };
   const checkSelection = (selection, type) => {
     //
     if (selection.id == -1) {
@@ -559,9 +540,8 @@ export default function Game(props) {
         let bossInfo = JSON.stringify(identity.bosses);
         // console.log(bossInfo);
         if (
-          bossInfo.includes(`"_id":${selection.id},`) ||
-          bossInfo.includes(selection.name) ||
-          checkBossStatus(selection.id)
+          bossInfo.includes(`\"_id\":${selection.id},`) ||
+          bossInfo.includes(selection.name)
         ) {
           return false;
         }
@@ -576,8 +556,7 @@ export default function Game(props) {
           JSON.stringify(identity.pickst2);
         if (
           charInfo.includes(`\"_id\":${selection.id},`) ||
-          charInfo.includes(selection.name) ||
-          checkCharStatus(selection.id)
+          charInfo.includes(selection.name)
         ) {
           // pick is already chosen or banned
           return false;
@@ -597,7 +576,6 @@ export default function Game(props) {
       alert("Please refresh the page!");
       return;
     }
-    console.log("sending a hover");
     // notably, does NOT check if the pick is valid
     if (teamNum == -1) {
       return;
@@ -914,6 +892,7 @@ export default function Game(props) {
         (index < 3 && cookies.player.charAt(0) != "1"))
     )
     {
+      alert("you cannot change that player's name!");
       return;
     } 
     if(index > 3){
@@ -1357,6 +1336,7 @@ export default function Game(props) {
       updateTurn(res.turn);
     }
   };
+  /*
   const createSocket = () => {
     // test
     let uuid = localStorage.getItem("userid");
@@ -1376,7 +1356,7 @@ export default function Game(props) {
       `wss://rankedwebsocketapi.fly.dev?userId=${uuid}`,
       `ws://localhost:3000?userId=${uuid}`,
     ];
-    let newSocket = new WebSocket(socketOpts[0]); // wss://rankedwebsocketapi.fly.dev or ws://localhost:3000
+    let newSocket = new WebSocket(socketOpts[1]); // wss://rankedwebsocketapi.fly.dev or ws://localhost:3000
     newSocket.addEventListener("open", function (event) {
       console.log("socket opened here");
       setupSocket();
@@ -1402,15 +1382,18 @@ export default function Game(props) {
   };
   const handleSocketClose = () => {
     console.log("closed");
+    /*
     if (!window.timer) {
       window.timer = setInterval(() => {
         socket.current = createSocket();
-        // this hsould never be null
+        // this should never be null
       }, 500);
     }
+    */
+   /*
     socket.current.close();
   };
-
+  */
   useEffect(() => {
     // console.log("yes")
     // adds selected characters and bosses to the ref objects
@@ -1468,7 +1451,7 @@ export default function Game(props) {
       handleSocketMessage(event);
     });
     socket.current.addEventListener("close", function (event) {
-      handleSocketClose();
+      // handleSocketClose();
     });
     socket.current.addEventListener("error", function (event) {
       console.log("An error occured");
@@ -1477,7 +1460,7 @@ export default function Game(props) {
     });
     return () => {
       if (socket.current.readyState == WebSocket.OPEN) {
-        socket.current.close();
+        // socket.current.close();
       }
     };
   }, []);
@@ -1523,6 +1506,7 @@ export default function Game(props) {
   const openChange = (team, name, original) => {
     if (cookies.player.charAt(0) != "R") {
       // reject
+      alert("you can only change bosses/characters as a ref!");
       return;
     }
     if(identity.result != "progress"){
@@ -1534,42 +1518,84 @@ export default function Game(props) {
       info[0] = "boss";
     }
     else{
-      info[0] = "character";
+      if (original > 14) {
+        info[0] = "extraban";
+        original = original - 15;
+      } else if (original > -1) {
+        info[0] = "character";
+      } // need to differentiate between ban and extra ban
+      else {
+        info[0] = "ban";
+        original = (original * -1) - 1;
+      }
     }
+    
+    // add 15 to extra ban i guess?
     info[1] = name;
     info[2] = team;
     info[3] = original;
     setChangeInfo(info);
     setShowChanges(true);
   }
+
   const handleChange = (change, team) => {
     // if a character or boss must be changed for whatever reason and refs agree to it
     // this is what happens
     // tell which to overwrite, in terms of id
+
+    // doesnt handle appropriately which one is changed, so maybe add an index field too?
+    // so it knows which one was the original
+    // to allow changing boss?
+    // yeah
+    // need to 
     console.log("change: "+change);
     let res = parseInt(change);
     if(isNaN(res)){
-      characters.forEach(char => {
+      if(changeInfo[0] == "boss"){
+        bosses.forEach(boss => {
+          if(boss.boss.toLowerCase() == change.toLowerCase()){
+            res = boss._id;
+          }
+        })
+      }
+      else{
+        characters.forEach(char => {
         if(char.name.toLowerCase() == change.toLowerCase()){
           res = char._id;
         }
       })
+      }
+      
     }
     if(isNaN(res)){
       // ask for proper input
-      alert("The character name specified is invalid!");
+      if(changeInfo[0] == "boss"){
+        alert("The boss name specified is invalid!");
+      }
+      else{
+        alert("The character name specified is invalid!");
+      }
       return;
     }
-    console.log("result: "+res);
     setShowChanges(false);
     if (cookies.player.charAt(0) != "R") {
       // reject
       return;
     }
+    /*
     if (identity.result != "progress") {
       alert("Please do not change characters mid round!");
       return;
     }
+    */
+   /*
+    console.log("info:");
+    console.log("team: "+team);
+    console.log("replacement id: "+res);
+    console.log("change info: ")
+    console.log(changeInfo);
+    return;
+    */
     socket.current.send(JSON.stringify({
       type: "overwrite",
       id: props.id,
@@ -1749,11 +1775,13 @@ export default function Game(props) {
                       >
                         {characterRef.current != undefined
                           ? displayCharacter(
+                              // change to work on bans too, again same cond only ref can change
                               characterRef.current.get(
                                 identity.pickst1[ind]._id
                               ),
                               true,
                               1,
+                              ind,
                               openChange
                             )
                           : null}
@@ -1890,7 +1918,10 @@ export default function Game(props) {
                               characterRef.current.get(
                                 identity.pickst2[ind]._id
                               ),
-                              true
+                              true,
+                              2,
+                              ind,
+                              openChange
                             )
                           : null}
                         <Box
@@ -2060,7 +2091,10 @@ export default function Game(props) {
                       {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.bans[ban]._id),
-                            false
+                            false,
+                            1,
+                            -1 * (ban + 1),
+                            openChange
                           )
                         : null}
                     </div>
@@ -2091,7 +2125,8 @@ export default function Game(props) {
                         {bossRef.current != undefined
                           ? displayBoss(
                               bossRef.current.get(identity.bosses[time]._id),
-                              false
+                              time,
+                              openChange
                             )
                           : null}
                       </Grid>
@@ -2113,7 +2148,10 @@ export default function Game(props) {
                       {characterRef.current != undefined
                         ? displayCharacter(
                             characterRef.current.get(identity.bans[ban]._id),
-                            false
+                            false,
+                            2,
+                            -1 * (ban + 1),
+                            openChange
                           )
                         : null}
                     </div>
@@ -2129,16 +2167,19 @@ export default function Game(props) {
             ) : null}
             <div className="grid seventeen">
               {identity.extrabanst1 > 0 ? (
-                <Grid container spacing={extraBanOrder[0].length}>
+                <Grid container justifyContent="center" sx={{paddingLeft: 1}} spacing={identity.extrabanst1}>
                   {extraBanOrder[0].map((ban, index) => {
                     return (
-                      <div key={index}>
+                      <div key={index} size={1}>
                         {characterRef.current != undefined
                           ? displayCharacter(
                               characterRef.current.get(
                                 identity.extrabans[ban]._id
                               ),
-                              false
+                              false,
+                              1,
+                              ban + 15,
+                              openChange
                             )
                           : null}
                       </div>
@@ -2149,29 +2190,27 @@ export default function Game(props) {
             </div>
             <div className="grid nineteen">
               {/* extra bans */}
-              {identity.extrabanst2 > 0 ? (
-                <Grid
-                  container
-                  justifyContent="end"
-                  sx={{ paddingRight: 1 }}
-                  spacing={extraBanOrder[1].length}
-                >
-                  {extraBanOrder[1].map((ban, index) => {
+              <Grid container justifyContent="center" spacing={2}>
+                {identity.extrabanst2 > 0 ? ( 
+                  extraBanOrder[1].map((ban, index) => {
                     return (
-                      <div key={index}>
+                      <div key={index} size={1}>
                         {characterRef.current != undefined
                           ? displayCharacter(
                               characterRef.current.get(
                                 identity.extrabans[ban]._id
                               ),
-                              false
+                              false,
+                              2,
+                              ban + 15,
+                              openChange
                             )
                           : null}
                       </div>
                     );
-                  })}
-                </Grid>
-              ) : null}
+                  })
+                ) : null}
+              </Grid>
             </div>
             <div className="grid twenty">
               <p
@@ -2265,3 +2304,5 @@ export default function Game(props) {
     </div>
   );
 }
+
+export default Game;

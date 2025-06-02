@@ -168,6 +168,8 @@ export default function Play(){
     setChoosing(false);
     setReadying(false);
     navigate(id);
+    localStorage.setItem("character", -1);
+    localStorage.setItem("boss", -1);
     if(creating){
       window.location.reload();
     }

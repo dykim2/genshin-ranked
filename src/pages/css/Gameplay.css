@@ -119,19 +119,16 @@
 .nineteen {
     grid-column: 4 / span 1;
     grid-row: row 6 / span 1;
-    align-self: center;
 }
 
 .twenty {
     grid-column: 1 / span 1;
     grid-row: row 7  / span 1;
-    align-self: center;
 }
 
 .twentytwo {
     grid-column: 4 / span 1;
     grid-row: row 7 / span 1;
-    align-self: center;
 }
 
 .twentythree {

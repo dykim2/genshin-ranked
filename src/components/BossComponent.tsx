@@ -4,7 +4,6 @@
 import { BOSSES, CHARACTER_INFO, CHARACTERS } from "@genshin-ranked/shared";
 import { BossButton, CharacterButton } from "../../frontend/src/components";
 import { BOSS_DETAIL } from "@genshin-ranked/shared";
-import React, {Fragment} from "react";
 import Droppable from "./Droppable";
 import Dragable from "./Dragable";
 
@@ -19,10 +18,11 @@ const updateHover = (_teamNum: number, _selected: number) => {
     // does nothing
     // can be repurposed to do an alert
     // can send socket something
-    alert("wawawa");
+    alert("hi");
 }
 
-export const displayBoss = (boss: BOSSES, change: (team: number, name: string, original: number) => void) => {
+// index needed incase someone adds a boss twice
+export const displayBoss = (boss: BOSSES, index: number, change: (team: number, name: string, original: number) => void) => {
     const selecting = true; // can be changed in future
     const updateBoss = () => {
         // does nothing
@@ -32,11 +32,14 @@ export const displayBoss = (boss: BOSSES, change: (team: number, name: string, o
     // it must also be droppable in a sense too
     // cause i want to drag it between the elements
     // only can be dragged horizontally
+
+    // for bosses specifically make sure no duplicates
+    // for characters can allow dupes
     
     return(
         <Droppable id={z}>
             <Dragable id={z}>
-              <div onContextMenu={(e) => {e.preventDefault(); change(0, BOSS_DETAIL[boss].displayName, BOSS_DETAIL[boss].index)}}>
+              <div onContextMenu={(e) => {e.preventDefault(); change(0, BOSS_DETAIL[boss].displayName, index)}}>
                 <BossButton
                     boss={boss}
                     updateBoss={updateBoss}
@@ -52,10 +55,10 @@ export const displayBoss = (boss: BOSSES, change: (team: number, name: string, o
     )
 }
 
-export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: number, change: (team: number, name: string, original: number) => void) => {
+export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: number, index: number, change: (team: number, name: string, original: number) => void) => {
     const banDisplay = (isPick ? "pick" : "ban");
     const updateCharacter = () => {
-
+      
     }
     return (
       <Droppable id={CHARACTER_INFO[character].index}>
@@ -63,10 +66,11 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
           <div
             onContextMenu={(e) => {
               e.preventDefault();
+              console.log("index: "+index);
               change(
                 team,
                 CHARACTER_INFO[character].displayName,
-                CHARACTER_INFO[character].index
+                index
               );
             }}
           >
