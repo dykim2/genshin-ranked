@@ -97,6 +97,7 @@ export default function Play(){
     division: mode,
     fearless: fearless,
     fearlessID: fearless ? bonusParams[3] : -1,
+    processing: false
   };
   const choosePlayer = async (playerChoice, id, info = defaultInfo) => {
     info.player = playerChoice;

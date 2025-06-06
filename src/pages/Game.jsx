@@ -2232,7 +2232,7 @@ const Game = (props) => {
                   socket.current.send(
                     JSON.stringify({
                       type: "get",
-                      phase: "ban",
+                      from: "refresh info",
                       id: props.id,
                     })
                   );
