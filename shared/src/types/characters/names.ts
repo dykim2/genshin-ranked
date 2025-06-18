@@ -58,6 +58,7 @@ export enum CHARACTERS {
 	Mizuki = "Mizuki",
 	Varesa = "Varesa",
 	Escoffier = "Escoffier",
+	Skirk = "Skirk",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 
@@ -105,5 +106,6 @@ export enum CHARACTERS {
 	Ororon = "Ororon",
 	LanYan = "Lan Yan",
 	Iansan = "Iansan",
-	Ifa = "Ifa"
+	Ifa = "Ifa",
+	Dahlia = "Dahlia",
 }

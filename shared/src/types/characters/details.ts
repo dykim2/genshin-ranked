@@ -227,6 +227,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/f9/45/66/METQJB6_t.png",
 		index: 55,
 	},
+	[CHARACTERS.Dahlia]: {
+		displayName: "Dahlia",
+		element: ELEMENTS.hydro,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FourStar,
+		imageFileName: "Dahlia",
+		onlineFilePath: "https://thumbs4.imagebam.com/31/f4/d1/ME12Y3HH_t.png",
+		index: 99,
+	},
 	[CHARACTERS.Dehya]: {
 		displayName: "Dehya",
 		element: ELEMENTS.pyro,
@@ -712,6 +721,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Shenhe",
 		onlineFilePath: "https://thumbs4.imagebam.com/ec/bc/52/METS0IA_t.png",
 		index: 44,
+	},
+	[CHARACTERS.Skirk]: {
+		displayName: "Skirk",
+		element: ELEMENTS.cryo,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Skirk",
+		onlineFilePath: "https://thumbs4.imagebam.com/31/f4/d1/ME12Y3HH_t.png",
+		index: 100,	
 	},
 	[CHARACTERS.Heizou]: {
 		displayName: "Heizou",
