@@ -140,6 +140,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 			"Any 4* Weapon | White Tassel,\nAllowed: Favonius Lance",
 		],
 	},
+	[CHARACTERS.Dahlia]: {
+		limit: 6,
+		differences: [-1],
+		restrictions: [""]
+	},
 	[CHARACTERS.Dehya]: {
 		limit: 6,
 		differences: [-1],
@@ -452,6 +457,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		limit: 5,
 		differences: [4, 5],
 		restrictions: ["Silvershow Heartstrings", "Aqua Simulacra"],
+	},
+	[CHARACTERS.Skirk]: {
+		limit: 2,
+		differences: [0,1,2],
+		restrictions: ["WIP", "WIP", "WIP"],
 	},
 	[CHARACTERS.Sucrose]: {
 		limit: 6,
