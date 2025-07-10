@@ -330,7 +330,7 @@ export default function Play(){
         onClose={close}
         scroll="paper"
         slotProps={{
-          paper: { style: { color: "white", backgroundColor: "black" } },
+          paper: { style: { color: "white", backgroundColor: "#73584b" } },
         }}
       >
         <DialogTitle>select a game by its id:</DialogTitle>
@@ -341,10 +341,10 @@ export default function Play(){
                 <ListItem disableGutters key={game._id}>
                   <ListItemButton
                     sx={{
-                      backgroundColor: "black",
+                      backgroundColor: "#73584b",
                       border: "2px solid red",
-                      maxWidth: "90px",
-                      minWidth: "90px",
+                      maxWidth: "110px",
+                      minWidth: "110px",
                     }}
                     onClick={async () => {
                       await playGame(game._id);
@@ -352,7 +352,7 @@ export default function Play(){
                   >
                     {`ID: ${game._id}`}
                   </ListItemButton>
-                  <ListItemText primary={`current status: ${game.result}`} />
+                  <ListItemText primary={`status: ${game.result}`} />
                 </ListItem>
               );
             })}

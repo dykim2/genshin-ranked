@@ -18,10 +18,11 @@ interface balance {
 	sendHover: (teamNum: number, selected: number) => void;
 	inGame: boolean;
 	bonusInfo: string[];
-	selections: number[]
+	selections: number[];
+	active: boolean;
 }
 
-export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusInfo, selections}: balance) => {
+export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusInfo, selections, active}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
 	const [cookieInfo] = useCookies(["player"]);
 	let matching = true;
@@ -166,7 +167,8 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 									((phase.toLowerCase() != `ban` &&
 										phase.toLowerCase() != `pick` &&
 										phase.toLowerCase() != "extraban") ||
-										!matching))
+										!matching)) ||
+								!active
 							}
 						>
 							<Typography

@@ -470,33 +470,32 @@ const Game = (props) => {
 
   const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
   const [totalTime, setTotalTime] = useState(0); // total time for timer
+  const [active, setActive] = useState(true);
   const updateTurn = (turn) => {
     setTurn(turn);
     sessionStorage.setItem("turn", turn);
   };
 
   // set an interval
-
+  /**
+   * updates timer information.
+   * @param {boolean} enabled whether the timer is meant to be enabled or not
+   * @param {boolean} resetTime whether to reset the timer or not
+   */
   const updateTimer = (enabled = true, resetTime = true) => {
     if (totalTime != TIMER && resetTime) {
       // reset timer after refresh page
       setTotalTime(TIMER);
     }
-    enabled ? setTimerValue(Date.now()) : null;
-    setTimerVisible(enabled);
-    // going ti ignore this and have server run this instead
-    /*
-    if (timerActive == false) {
-      // if it currently is the player's turn, trigger the selection send and end the timer
-      // if nothing is selected or it is invalid, send a random pick
-      // if it is ban stage, send a no ban (id -2)
-      // if it is not the player's turn, do nothing.
-      // reset the timer
-      if (turn == cookies.player.charAt(0)) {
-        sendSelection(turn, selection, true);
-      }
+    if(enabled){
+      setTimerValue(Date.now());
+      setActive(true);
     }
-    */
+    else{
+      setActive(false); // this minor change should prevent button from being pressed right after processing
+      // just need to check hover works
+    }
+    setTimerVisible(enabled);
   };
 
   const updateIdentity = (info) => {
@@ -1266,12 +1265,14 @@ const Game = (props) => {
         if (countdownRef.current != null) {
           countdownRef.current.getApi().pause();
           setPause(false);
+          setActive(false);
         }
         break;
       case "resume":
         if (countdownRef.current != null) {
           countdownRef.current.getApi().start();
           setPause(true);
+          setActive(true);
         }
         break;
       case "times": {
@@ -1868,6 +1869,7 @@ const Game = (props) => {
                       inGame={true}
                       bonusInfo={[extraInfo]}
                       selections={selectedBosses.current}
+                      active={active}
                     />
                   ) : identity.result.toLowerCase() == "ban" ||
                     identity.result.toLowerCase() == "pick" ||
@@ -1886,6 +1888,7 @@ const Game = (props) => {
                       inGame={true}
                       bonusInfo={[extraInfo]}
                       selections={selectedChars.current}
+                      active={active}
                     />
                   ) : null
                 ) : null}

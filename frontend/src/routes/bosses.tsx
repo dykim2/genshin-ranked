@@ -12,9 +12,11 @@ interface balance {
 	selections: number[];
 	bonusInfo: string[];
 	fearless: boolean; // fearless bosses or not
+	active: boolean;
 }
 
-export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections, bonusInfo, fearless}: balance) => {
+export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections, bonusInfo, fearless, active}: balance) => {
+	// maybe add game turn? and current phase? instead of grabbing from session storage?
 	const [cookieInfo] = useCookies(["player"]);
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -22,8 +24,11 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 	if (cookieInfo.player != undefined && cookieInfo.player.substring(0, 1) != team) {
 		matching = false;
 	}
+	// replace this?
+	// when timer reaches 0
 	const info = sessionStorage.getItem("game");
-	let newInfo: number;
+	let newInfo: number = -1;
+
 	let currentResult: string = "";
 	if (info != null && info != undefined && info != "") {
 		let infoParse = JSON.parse(info);
@@ -32,11 +37,10 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 	} else {
 		newInfo = 0;
 	}
-
 	const sendToSocket = () => {
 		// find the corresponding id of the character with this display name
 		// loop on the character information
-		console.log("the button was pressed");
+		// console.log("the button was pressed");
 		let selectionInfo = {
 			type: "boss",
 			id: -1,
@@ -104,7 +108,8 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 							disabled={
 								team != newInfo ||
 								!matching ||
-								currentResult == "waiting"
+								currentResult == "waiting" ||
+								!active
 							}
 						>
 							<Typography
