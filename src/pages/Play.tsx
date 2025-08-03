@@ -362,7 +362,7 @@ export default function Play(){
         <DialogTitle>select a game by its id:</DialogTitle>
         <DialogContent>
           <List sx={{ pt: 0 }}>
-            {activeGames.map((game: { _id: number; result: string; }) => {
+            {activeGames.map((game: { _id: number; result: string }) => {
               return (
                 <ListItem disableGutters key={game._id}>
                   <ListItemButton
@@ -649,7 +649,9 @@ export default function Play(){
             <RadioGroup
               row
               value={fearless}
-              onChange={(event) => setFearless(event.target.value === "false" ? false : true)}
+              onChange={(event) =>
+                setFearless(event.target.value === "false" ? false : true)
+              }
             >
               <FormControlLabel
                 value={"true"}
@@ -680,9 +682,9 @@ export default function Play(){
           {/* for the id of fearless boss - game must be either in the "progress" or the "finish" state */}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => console.log("standard start")}>
+          <Button onClick={() => choosePlayer("Ref", status._id)}>
             <Typography textTransform="none" fontWeight="bold">
-              {`default ${mode} game`}
+              {`default standard game`}
             </Typography>
           </Button>
           <Button
