@@ -223,7 +223,7 @@ export default function Play(){
       player: "1",
       extrabanst1: 0,
       extrabanst2: 0,
-      totalBans: 8,
+      totalBans: 6,
       bossCount: -1,
       initialBosses: [-1, -1],
       division: "advanced",
