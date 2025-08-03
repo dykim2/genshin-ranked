@@ -1,13 +1,21 @@
 .container {
     display: grid;
-    grid-template-columns: 350px repeat(2, minmax(300px, max-content)) 350px;
+    grid-template-columns: 300px repeat(2, minmax(300px, max-content)) 300px;
+    grid-template-rows: auto;
+    grid-gap: 4px;
+    margin: 10px;
+}
+
+.bigcontainer {
+    display: grid;
+    grid-template-columns: 400px repeat(2, minmax(300px, max-content)) 400px;
     grid-template-rows: auto;
     grid-gap: 4px;
     margin: 10px;
 }
 
 .grid {
-    padding: 5px;
+    padding: 1px;
     font-size: 105%;
     color: #fff;
     border-radius: 5px;

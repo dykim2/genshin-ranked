@@ -2,7 +2,7 @@ import {BrowserRouter, Route, Routes } from "react-router-dom";
 import Characters from "../pages/CharacterInfo.tsx";
 import Home from "../pages/Home.tsx";
 import Rules from "../pages/Rules.jsx";
-import Play from "../pages/Play.jsx";
+import Play from "../pages/Play.tsx";
 import InvalidPage from "../pages/InvalidPage.jsx";
 import Ranked from "./Ranked.jsx";
 import { FC, useContext, useEffect } from "react";

@@ -59,6 +59,7 @@ export enum CHARACTERS {
 	Varesa = "Varesa",
 	Escoffier = "Escoffier",
 	Skirk = "Skirk",
+	Ineffa = "Ineffa",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 

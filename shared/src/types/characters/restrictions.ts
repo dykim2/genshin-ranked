@@ -37,7 +37,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Arlecchino]: {
 		limit: 2,
 		differences: [1,2],
-		restrictions: ["Any 4* Weapon","Any 3* Weapon"],
+		restrictions: ["Any 5* Weapon, Ballad of Fjords, Deathmatch, Lithic Spear","Any 3* Weapon"],
 	},
 	[CHARACTERS.Ayaka]: {
 		limit: 6,
@@ -120,11 +120,10 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Clorinde]: {
 		limit: 2,
-		differences: [0, 1, 2],
+		differences: [1, 2],
 		restrictions: [
-			"Absolution",
-			"Any 5* Weapon | The Black Sword | Sturdy Bone | Lion's Roar",
-			"Any 4* Weapon | Harbinger of Dawn | Cool Steel",
+			"Any 5* Weapon | R3+ The Black Sword,\nAllowed: Splendor of Tranquil Waters, Azurelight",
+			"Any 4* Weapon,\nAllowed: Sword of Narzissenkreuz, The Flute",
 		],
 	},
 	[CHARACTERS.Collei]: {
@@ -175,13 +174,12 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		],
 	},
 	[CHARACTERS.Escoffier]: {
-		limit: 5,
-		differences: [0,1,2,3],
+		limit: 2,
+		differences: [0,1,2],
 		restrictions: [
-			"No Restriction",
-			"Any 5* Weapon | Deathmatch R3+",
-			"Any 3* Weapon,\nAllowed: Black Tassel",
-			"Any 2* Weapon]"
+			"Symphonist of Scents",
+			"Any 4* Weapon",
+			"Any 2* Weapon"
 		]
 	},
 	[CHARACTERS.Eula]: {
@@ -218,7 +216,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		limit: 6,
 		differences: [1, 3, 4,6],
 		restrictions: [
-			"Astral Vulture's Crimson Plumage | The First Great Magic",
+			"Astral Vulture's Crimson Plumage",
 			"Any 5* Weapon | R3+ Scion of The Blazing Sun | R3+ Flower-wreathed Feathers",
 			"Any 4* Weapon",
 			"Any 3* Weapon"
@@ -243,6 +241,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		limit: 6,
 		differences: [-1],
 		restrictions: []
+	},
+	[CHARACTERS.Ineffa] :{
+		limit: 2,
+		differences: [1,2],
+		restrictions: ["Fractured Halo", "Any 5* Weapon"]
 	},
 	[CHARACTERS.Itto]: {
 		limit: 6,
@@ -353,11 +356,12 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [""],
 	},
 	[CHARACTERS.Mavuika]: {
-		limit: 1,
-		differences: [0,1],
+		limit: 2,
+		differences: [0,1,2],
 		restrictions: [
-			"A Thousand Blazing Suns | Serpent Spine R3+",
-			"Any 4* Weapon,\nAllowed: Earth Shaker | Prototype Archaic | Favonius Greatsword"
+			"A Thousand Blazing Suns",
+			"Any 4* Weapon,\nAllowed: Earth Shaker | Prototype Archaic | Favonius Greatsword",
+			"Any 3* Weapon"
 		],
 	},
 	[CHARACTERS.Mualani]: {
@@ -460,8 +464,8 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Skirk]: {
 		limit: 2,
-		differences: [0,1,2],
-		restrictions: ["WIP", "WIP", "WIP"],
+		differences: [1,2],
+		restrictions: ["Any 5* Weapon", "Any 3* Weapon"],
 	},
 	[CHARACTERS.Sucrose]: {
 		limit: 6,
@@ -543,8 +547,8 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.YaeMiko]: {
 		limit: 6,
-		differences: [3, 4, 6],
-		restrictions: ["Kagura's Verity", "Any 5* Weapon", "Any 4* Weapon,\nAllowed: Favonius Codex"],
+		differences: [4, 6],
+		restrictions: ["Kagura's Verity", "Any Crit 4* Weapon, Mappa Mare, Hakushin Ring, Oathsworn Eye"],
 	},
 	[CHARACTERS.Yanfei]: {
 		limit: 6,

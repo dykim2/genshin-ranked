@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.3",
-    "@types/node": "^22.10.1",
+    "@types/node": "^24.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint-plugin-react": "^7.37.2",

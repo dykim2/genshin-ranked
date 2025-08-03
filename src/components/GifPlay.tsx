@@ -12,8 +12,9 @@ export const GifPlay = ({
   link,
   isOpen
 }: play) => {
-  let width = 1000;
   const [cookies, setCookies] = useCookies(["player"]);
+  const defWidth = useScreenSize().width / 2 - 540;
+  let width = 1000;
   if (
     cookies.player != undefined &&
     localStorage.getItem("x") != null &&
@@ -21,7 +22,7 @@ export const GifPlay = ({
   ) {
     width = parseInt(localStorage.getItem("x")!);
   } else {
-    width = useScreenSize().width / 2 - 540;
+    width = defWidth;
   }
   return (
     <React.Fragment>
@@ -42,7 +43,3 @@ export const GifPlay = ({
     </React.Fragment>
   );
 };
-
-// user press a button, button leads to video being played.
-// replace the current alert with a 3s gif
-// i think im gonna create a modal with material ui, while modal is active and a character is set play video of character, hide after 3s

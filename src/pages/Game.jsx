@@ -54,6 +54,7 @@ const MyTurn = (turnInfo, draftOver) => {
     );
   }
 }
+
 const parseBoss = (data) => {
   // takes in a copy of local storage usestate
   // takes in a copy of data
@@ -62,8 +63,17 @@ const parseBoss = (data) => {
   const identity = JSON.parse(sessionStorage.getItem("game"));
   const bossList = JSON.parse(sessionStorage.getItem("bosses")); // note that very first one is -1
   // console.log(bossList)
+  // check boss exists
+
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
+  let oldIds = identity.bosses.map(boss => boss._id);
+  console.log("oid ids");
+  console.log(oldIds);
+  console.log("data.boss: "+data.boss);
+  if(oldIds.includes(data.boss)){
+    console.log("duplicate boss located");
+  }
   let long = false;
   for (let i = 0; i < identity.bosses.length; i++) {
     if (identity.bosses[i]._id == -1) {
@@ -431,6 +441,9 @@ const Game = (props) => {
   const [cookies, setCookie] = useCookies(["player"]);
   const socket = useRef(props.socket);
 
+  const [banInfo, setBanInfo] = useState([false, 3, 6]);
+  // in order: 8 bans (3 + 1), ban split 1, ban split 2
+
   // const [showT1Modal, setShowT1] = useState(false);
   // const [showT2Modal, setShowT2] = useState(false);
 
@@ -443,13 +456,12 @@ const Game = (props) => {
   const [changeInfo, setChangeInfo] = useState(["", "", 1, -1]);
   // in order: type, name, team (1 or 2, 0 if boss), id
 
-  const [showTimer, setTimerVisible] = useState(true);
+  const [showTimer, setTimerVisible] = useState(false);
   // const [chosenBosses, setChosenBosses] = useState(sessionStorage.getItem("selected_bosses"));
   // const [chosenChars, setChosenChars] = useState(sessionStorage.getItem("selected_characters"));
 
   const [timer, setTimerValue] = useState(Date.now());
   const currentTime = useRef(0);
-  currentTime.current = timer;
 
   // const [bossFilterActive, setBossFilter] = useState(false);
   // const [charFilterActive, setCharFilter] = useState(false);
@@ -462,7 +474,6 @@ const Game = (props) => {
 
   const characterRef = useRef();
   const bossRef = useRef();
-  const idRef = useRef(props.id);
   const dndRef = useRef("boss");
 
   const selectedBosses = useRef([]);
@@ -471,11 +482,99 @@ const Game = (props) => {
   const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
   const [totalTime, setTotalTime] = useState(0); // total time for timer
   const [active, setActive] = useState(true);
+
+  useEffect(() => {
+    // console.log("yes")
+    // adds selected characters and bosses to the ref objects
+    localStorage.setItem("timer", "false");
+    if(localStorage.getItem("totalbans") == "2+1"){
+      if (banInfo[0]) {
+        setBanInfo([false, 3, 6]);
+      }
+    }
+    else{
+      if (!banInfo[0]) {
+        setBanInfo([true, 4, 8]);
+      }
+    }
+    updateSelected(6);
+    const map = new Map();
+    for (const someName in BOSS_DETAIL) {
+      // create a hashmap between index and some name
+      map.set(BOSS_DETAIL[someName].index, someName);
+    }
+    bossRef.current = map;
+    const newMap = new Map();
+    for (const someName in CHARACTER_INFO) {
+      newMap.set(CHARACTER_INFO[someName].index, someName);
+    }
+    characterRef.current = newMap;
+    if (sessionStorage.getItem("chosen_bosses") == null) {
+      sessionStorage.setItem("chosen_bosses", JSON.stringify([]));
+    }
+    if (sessionStorage.getItem("chosen_picks") == null) {
+      sessionStorage.setItem("chosen_picks", JSON.stringify([]));
+    }
+    if (
+      // this
+      localStorage.getItem("display_boss") != null &&
+      localStorage.getItem("display_boss") != 0
+    ) {
+      setBossFilter(true);
+    }
+    [
+      "character_elements",
+      "character_rarity",
+      "character_region",
+      "character_weapons",
+    ].forEach((type) => {
+      if (
+        localStorage.getItem(type) != null &&
+        localStorage.getItem(type) != 0
+      ) {
+        setCharFilter(true);
+        // here
+      }
+    });
+    const handleOpen = () => {
+      console.log("socket opened here");
+      setupSocket();
+    };
+    socket.current.addEventListener("open", handleOpen);
+    const handleMessage = (event) => {
+      // console.log(JSON.parse(event.data));
+      handleSocketMessage(event);
+    };
+    if (typeof cookies.player == "undefined") {
+      setCookie("player", "spectate");
+    }
+    // Listen for messages
+    socket.current.addEventListener("message", handleMessage);
+    const handleClose = () => {};
+    socket.current.addEventListener("close", handleClose);
+    const handleError = (event) => {
+      console.log("An error occured");
+      console.log(event.data);
+      socket.current.close();
+    };
+    socket.current.addEventListener("error", handleError);
+    return () => {
+      if (socket.current.readyState == WebSocket.OPEN) {
+        // socket.current.close();
+        // close event listeners?
+        socket.current.removeEventListener("open", handleOpen);
+        socket.current.removeEventListener("message", handleMessage);
+        socket.current.removeEventListener("close", handleClose);
+        socket.current.removeEventListener("error", handleError);
+      }
+    };
+  }, [props.id]);
+
   const updateTurn = (turn) => {
     setTurn(turn);
     sessionStorage.setItem("turn", turn);
   };
-
+  currentTime.current = timer;
   // set an interval
   /**
    * updates timer information.
@@ -487,15 +586,15 @@ const Game = (props) => {
       // reset timer after refresh page
       setTotalTime(TIMER);
     }
-    if(enabled){
+    if (enabled) {
       setTimerValue(Date.now());
       setActive(true);
-    }
-    else{
+    } else {
       setActive(false); // this minor change should prevent button from being pressed right after processing
       // just need to check hover works
     }
     setTimerVisible(enabled);
+    localStorage.setItem("timer", enabled + "");
   };
 
   const updateIdentity = (info) => {
@@ -849,6 +948,7 @@ const Game = (props) => {
    * @param {Object} names the player names
    * @param {String} teamName the name of the team
    */
+  /*
   const changeTeamInfo = (team, order, names, teamName) => {
     // check valid team and valid team name
     if (teamName.length > 20) {
@@ -864,6 +964,8 @@ const Game = (props) => {
         team == 1 ? (names[i] = playerst1[i]) : (names[i] = playerst2[i]);
       }
     }
+    console.log("gjherr");
+    return;
     socket.current.send(
       JSON.stringify({
         type: "team",
@@ -877,38 +979,57 @@ const Game = (props) => {
       })
     );
   };
+  */
   const updateNames = (name, index) => {
     let names;
     if (index < 0 || index > 5) {
       return;
     }
-    if(name == null || name == ""){
+    if (name == null || name == "") {
       return;
     }
     if (
       cookies.player.charAt(0) != "R" &&
       ((index > 2 && cookies.player.charAt(0) != "2") ||
         (index < 3 && cookies.player.charAt(0) != "1"))
-    )
-    {
+    ) {
       alert("you cannot change that player's name!");
       return;
-    } 
-    if(index > 3){
+    }
+    if (index > 3) {
       names = [...identity.playerst2];
       names[index - 3] = name;
-    }
-    else{
+    } else {
       names = [...identity.playerst1];
       names[index] = name;
     }
-    socket.current.send(JSON.stringify({
-      type: "names",
-      team: index > 3 ? "2" : "1",
-      id: props.id,
-      newNames: names
-    }))
-  }
+    socket.current.send(
+      JSON.stringify({
+        type: "names",
+        team: index > 3 ? "2" : "1",
+        id: props.id,
+        newNames: names,
+      })
+    );
+  };
+  const updateTeamNames = (name, team) => {
+    // should be worried about offensive names but not like i can do anything
+    if (
+      cookies.player.charAt(0) == "R" ||
+      parseInt(cookies.player.charAt(0)) == team
+    ) {
+      socket.current.send(
+        JSON.stringify({
+          type: "teamname",
+          team: team,
+          id: props.id,
+          newName: name,
+        })
+      );
+    } else {
+      alert("you cannot change that team's name!");
+    }
+  };
   /**
    * Returns an object for styling information based on game progress.
    * @param {Number} timeDiff
@@ -1001,7 +1122,6 @@ const Game = (props) => {
     */
     let path = "";
     let selection = "";
-    console.log("test run is this running");
     if (boss) {
       selection = bossRef.current.get(id);
       path = getBossGifPath(selection);
@@ -1148,8 +1268,8 @@ const Game = (props) => {
   };
   const handleSocketMessage = (event) => {
     let data = JSON.parse(event.data);
-    console.log("new data");
-    console.log(data);
+    // console.log("new data");
+    // console.log(data)
     if (data.id != props.id) {
       return; // do nothing if game does not match
     } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
@@ -1191,17 +1311,52 @@ const Game = (props) => {
       case "get": {
         updateIdentity(data.game);
         updateTurn(data.game.turn);
+        let pausedStorage = localStorage.getItem("timer");
+        // if timer inactive then set timer
+        if (data.time != -1 && pausedStorage === "false") {
+          // data.time is -1 when game is not happening
+          // make timer visible
+          console.log("setting tiomter");
+          setTotalTime(data.time * 1000);
+          updateTimer(true, false);
+        }
         updateSelected(6);
+        if (canPause && data.paused) {
+          console.log("must pause");
+          // game is not paused, on server end it is paused
+          setTimeout(() => {
+            pauseDraft();
+          }, 100);
+        } else if (!canPause && !data.paused) {
+          console.log("must resume");
+          // game is paused, server end is resumed
+          setTimeout(() => {
+            resumeDraft();
+          }, 100);
+        } else {
+          console.log("must chill");
+        }
         console.log("game info obtained");
         break;
       }
       case "turn": {
         updateTurn(data.turn);
-        if (data.timer != -1) {
+        if (data.timer != -1 && localStorage.getItem("timer") === "false") {
           setTotalTime(data.timer * 1000);
           updateTimer(true, false);
-          setTimerVisible(true);
         }
+        if (canPause && data.paused) {
+          // game is not paused, on server end it is paused
+          setTimeout(() => {
+            pauseDraft();
+          }, 100);
+        } else if (!canPause && !data.paused) {
+          // game is paused, server end is resumed
+          setTimeout(() => {
+            resumeDraft();
+          }, 100);
+        }
+        // check for pause here too
         break;
       }
       case "boss": {
@@ -1262,18 +1417,10 @@ const Game = (props) => {
         break;
       }
       case "pause":
-        if (countdownRef.current != null) {
-          countdownRef.current.getApi().pause();
-          setPause(false);
-          setActive(false);
-        }
+        pauseDraft();
         break;
       case "resume":
-        if (countdownRef.current != null) {
-          countdownRef.current.getApi().start();
-          setPause(true);
-          setActive(true);
-        }
+        resumeDraft();
         break;
       case "times": {
         // info.data is in format of a three digit array: [team (1 or 2), boss number (0 to 6 or 8 depends on division), new time]
@@ -1287,11 +1434,22 @@ const Game = (props) => {
         };
         break;
       }
-      case "overwrite": {
+      case "teamname": {
         res = {
           ...identity,
-          [`${data.which}`]: data.replacement
-        }
+          [`team${data.team}`]: data.newName,
+        };
+        break;
+      }
+      case "overwrite": {
+        // identity was replaced but did not save?
+        let tempInfo = JSON.parse(sessionStorage.getItem("game"));
+        // bandage fix - not much i can do until i start working on a long term plan to shift to redux
+        res = {
+          ...identity,
+          result: tempInfo.result,
+          [`${data.which}`]: data.replacement,
+        };
         break;
       }
       case "TeamUpdate": {
@@ -1326,15 +1484,48 @@ const Game = (props) => {
           updateTimer(true, true);
         }
         res = {
-          ...JSON.parse(sessionStorage.getItem("game")),
+          ...identity,
           result: data.newPhase,
         };
         break;
       }
     }
     if (res != null) {
+      /*
+      console.log("new res")
+      console.log(res);
+      console.log("old identity");
+      console.log(identity);
+      */
       updateIdentity(res);
       updateTurn(res.turn);
+    }
+    if (data.type == "overwrite") {
+      setTimeout(() => {
+        updateSelected(6); // can be optimized based on what changed
+      }, 100);
+    }
+  };
+  const pauseDraft = () => {
+    // maybe clear the timer?
+    // i.e. remove it and readd it?
+    if (countdownRef.current != null) {
+      console.log("pausing draft");
+      // if the time has been changed, get the timer value
+      countdownRef.current.getApi().pause();
+      // solution: reset timer?
+      // meaning get info from timer
+      setPause(false);
+      setActive(false);
+    } else {
+      console.log("cannot pause draft");
+    }
+  };
+  const resumeDraft = () => {
+    if (countdownRef.current != null) {
+      countdownRef.current.getApi().start();
+      setPause(true);
+      setActive(true);
     }
   };
   /*
@@ -1391,104 +1582,10 @@ const Game = (props) => {
       }, 500);
     }
     */
-   /*
+  /*
     socket.current.close();
   };
   */
-  useEffect(() => {
-    // console.log("yes")
-    // adds selected characters and bosses to the ref objects
-    updateSelected(6);
-    const map = new Map();
-    for (const someName in BOSS_DETAIL) {
-      // create a hashmap between index and some name
-      map.set(BOSS_DETAIL[someName].index, someName);
-    }
-    bossRef.current = map;
-    const newMap = new Map();
-    for (const someName in CHARACTER_INFO) {
-      newMap.set(CHARACTER_INFO[someName].index, someName);
-    }
-    characterRef.current = newMap;
-    if (sessionStorage.getItem("chosen_bosses") == null) {
-      sessionStorage.setItem("chosen_bosses", JSON.stringify([]));
-    }
-    if (sessionStorage.getItem("chosen_picks") == null) {
-      sessionStorage.setItem("chosen_picks", JSON.stringify([]));
-    }
-    if (
-      // this
-      localStorage.getItem("display_boss") != null &&
-      localStorage.getItem("display_boss") != 0
-    ) {
-      setBossFilter(true);
-    }
-    [
-      "character_elements",
-      "character_rarity",
-      "character_region",
-      "character_weapons",
-    ].forEach((type) => {
-      if (
-        localStorage.getItem(type) != null &&
-        localStorage.getItem(type) != 0
-      ) {
-        setCharFilter(true);
-        // here
-      }
-    });
-
-    socket.current.addEventListener("open", function (event) {
-      console.log("socket opened here");
-      setupSocket();
-    });
-    if (typeof cookies.player == "undefined") {
-      setCookie("player", "spectate");
-    }
-    // Listen for messages
-    socket.current.addEventListener("message", function (event) {
-      // console.log(JSON.parse(event.data));
-      // console.log("^^^^");
-      handleSocketMessage(event);
-    });
-    socket.current.addEventListener("close", function (event) {
-      // handleSocketClose();
-    });
-    socket.current.addEventListener("error", function (event) {
-      console.log("An error occured");
-      console.log(event.data);
-      socket.current.close();
-    });
-    return () => {
-      if (socket.current.readyState == WebSocket.OPEN) {
-        // socket.current.close();
-      }
-    };
-  }, []);
-  // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
-  let bans = [0, 2, 5, 1, 3, 4];
-  let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
-  let extraBanCounter = 0;
-  let extraBanOrder = [[], []];
-  if (identity.extrabans.length > 0) {
-    // creates extra ban order based on the number of extra bans of each team
-    // alternates 1 - 2 - 1 - 2 - 1 - 2 until a team runs out of extra bans, which then the rest are the other team's
-    for (
-      let i = 0;
-      i < Math.max(identity.extrabanst1, identity.extrabanst2);
-      i++
-    ) {
-      if (i < identity.extrabanst1) {
-        extraBanOrder[0].push(extraBanCounter);
-        extraBanCounter++;
-      }
-      if (i < identity.extrabanst2) {
-        extraBanOrder[1].push(extraBanCounter);
-        extraBanCounter++;
-      }
-    }
-  }
 
   /*
   const closeT1Times = () => {  
@@ -1510,15 +1607,22 @@ const Game = (props) => {
       alert("you can only change bosses/characters as a ref!");
       return;
     }
-    if(identity.result != "progress"){
-      alert("Please do not change characters mid round!");
+    if (identity.result == "waiting") {
+      alert("start the draft first!");
+      return;
+    }
+    if (
+      canPause &&
+      identity.result != "progress" &&
+      identity.result != "finish"
+    ) {
+      alert("pause the draft first!");
       return;
     }
     let info = ["", "", 0, 0];
-    if(team == 0){
+    if (team == 0) {
       info[0] = "boss";
-    }
-    else{
+    } else {
       if (original > 14) {
         info[0] = "extraban";
         original = original - 15;
@@ -1527,17 +1631,17 @@ const Game = (props) => {
       } // need to differentiate between ban and extra ban
       else {
         info[0] = "ban";
-        original = (original * -1) - 1;
+        original = original * -1 - 1;
       }
     }
-    
+
     // add 15 to extra ban i guess?
     info[1] = name;
     info[2] = team;
     info[3] = original;
     setChangeInfo(info);
     setShowChanges(true);
-  }
+  };
 
   const handleChange = (change, team) => {
     // if a character or boss must be changed for whatever reason and refs agree to it
@@ -1548,32 +1652,29 @@ const Game = (props) => {
     // so it knows which one was the original
     // to allow changing boss?
     // yeah
-    // need to 
-    console.log("change: "+change);
+    // need to
+    console.log("change: " + change);
     let res = parseInt(change);
-    if(isNaN(res)){
-      if(changeInfo[0] == "boss"){
-        bosses.forEach(boss => {
-          if(boss.boss.toLowerCase() == change.toLowerCase()){
+    if (isNaN(res)) {
+      if (changeInfo[0] == "boss") {
+        bosses.forEach((boss) => {
+          if (boss.boss.toLowerCase() == change.toLowerCase()) {
             res = boss._id;
           }
-        })
+        });
+      } else {
+        characters.forEach((char) => {
+          if (char.name.toLowerCase() == change.toLowerCase()) {
+            res = char._id;
+          }
+        });
       }
-      else{
-        characters.forEach(char => {
-        if(char.name.toLowerCase() == change.toLowerCase()){
-          res = char._id;
-        }
-      })
-      }
-      
     }
-    if(isNaN(res)){
+    if (isNaN(res)) {
       // ask for proper input
-      if(changeInfo[0] == "boss"){
+      if (changeInfo[0] == "boss") {
         alert("The boss name specified is invalid!");
-      }
-      else{
+      } else {
         alert("The character name specified is invalid!");
       }
       return;
@@ -1589,22 +1690,16 @@ const Game = (props) => {
       return;
     }
     */
-   /*
-    console.log("info:");
-    console.log("team: "+team);
-    console.log("replacement id: "+res);
-    console.log("change info: ")
-    console.log(changeInfo);
-    return;
-    */
-    socket.current.send(JSON.stringify({
-      type: "overwrite",
-      id: props.id,
-      team: team,
-      which: changeInfo[0],
-      original: changeInfo[3],
-      replacement: res
-    }))
+    socket.current.send(
+      JSON.stringify({
+        type: "overwrite",
+        id: props.id,
+        team: team,
+        which: changeInfo[0],
+        original: changeInfo[3],
+        replacement: res,
+      })
+    );
     // find the original and replace it
   };
   const handleDND = (event) => {
@@ -1642,8 +1737,49 @@ const Game = (props) => {
     dndRef.current = "t2";
     handleDND(event);
   };
+
+  // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
+  let bans = !banInfo[0] ? [0, 2, 5, 1, 3, 4] : [0, 2, 4, 7, 1, 3, 5, 6];
+  console.log("ban info: "+banInfo);
+  let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
+  let extraBanCounter = 0;
+  let extraBanOrder = [[], []];
+  if (identity.extrabans.length > 0) {
+    // creates extra ban order based on the number of extra bans of each team
+    // alternates 1 - 2 - 1 - 2 - 1 - 2 until a team runs out of extra bans, which then the rest are the other team's
+    for (
+      let i = 0;
+      i < Math.max(identity.extrabanst1, identity.extrabanst2);
+      i++
+    ) {
+      if (i < identity.extrabanst1) {
+        extraBanOrder[0].push(extraBanCounter);
+        extraBanCounter++;
+      }
+      if (i < identity.extrabanst2) {
+        extraBanOrder[1].push(extraBanCounter);
+        extraBanCounter++;
+      }
+    }
+  }
+  // add pause, waiting, game over
+  let choice = !banInfo[0] ? "container" : "bigcontainer"
   return (
     <div>
+      <title>
+        {!canPause
+          ? "draft paused. ID " + props.id
+          : identity.result == "waiting"
+          ? "waiting for game ID " + props.id
+          : identity.result == "progress" || identity.result == "finish"
+          ? "draft over"
+          : cookies.player.charAt(0) == "" + turn
+          ? "YOUR TURN! ID " + props.id
+          : cookies.player.charAt(0) == "R" || cookies.player.charAt(0) == "S"
+          ? identity["team" + turn] + " 's turn! ID " + props.id
+          : "enemy turn! ID " + props.id}
+      </title>
       {sessionStorage.getItem("game") == null ||
       sessionStorage.getItem("bosses") == null ||
       sessionStorage.getItem("characters") == null ||
@@ -1651,10 +1787,18 @@ const Game = (props) => {
         <p>your page is currently loading!</p>
       ) : (
         <Fragment>
-          <div className="container">
-            <div className="grid one">
+          <div className={choice}>
+            <div
+              className="grid one"
+              style={{
+                textAlign: "left", // can change to center
+              }}
+              onClick={() =>
+                updateTeamNames(prompt("enter a new name for team 1:"), 1)
+              }
+            >
               {typeof identity.team1 == undefined
-                ? "team 1 Selections"
+                ? "team 1 selections"
                 : identity.team1 + " picks"}
             </div>
             <div className="grid two">
@@ -1711,54 +1855,17 @@ const Game = (props) => {
                 </Grid>
               </Grid>
             </div>
-            <div className="grid three">
+            <div
+              className="grid three"
+              onClick={() =>
+                updateTeamNames(prompt("enter a new name for team 2:"), 2)
+              }
+            >
               {typeof identity.team2 == undefined
-                ? "team 2 Selections"
+                ? "team 2 selections"
                 : identity.team2 + " picks"}
             </div>
             <div className="grid four">
-              {/*
-              
-              <Grid
-                container
-                sx={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                direction="column"
-                spacing={2}
-              >
-                {Array.from(Array(3), (_, i) => i * 2).map((val, ind) => {
-                  return (
-                    <Fragment key={val}>
-                      <p>
-                        {typeof identity.playerst1 == "undefined" ||
-                        typeof identity.playerst1[ind] == "undefined"
-                          ? "player " + (ind + 1)
-                          : identity.playerst1[ind]}
-                      </p>
-                      <Grid container key={val} spacing={3}>
-                        {Array.from(Array(2)).map((_, index) => {
-                          return (
-                            <Fragment key={index}>
-                              {characterRef.current != undefined
-                                ? displayCharacter(
-                                    characterRef.current.get(
-                                      identity.pickst1[index + val]._id
-                                    ),
-                                    true
-                                  )
-                                : null}
-                            </Fragment>
-                          );
-                        })}
-                      </Grid>
-                    </Fragment>
-                  );
-                })}
-              </Grid>
-               */}
-
               <Grid container direction="row" columns={6} spacing={2.5}>
                 <DndContext
                   onDragEnd={handleT1DND}
@@ -1901,7 +2008,16 @@ const Game = (props) => {
               </div>
             </div>
             <div className="grid seven">
-              <Grid container direction="row" columns={6} spacing={2.5}>
+              <Grid
+                container
+                direction="row"
+                sx={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                columns={6}
+                spacing={2.5}
+              >
                 <DndContext
                   onDragEnd={handleT2DND}
                   collisionDetection={closestCenter}
@@ -1963,15 +2079,7 @@ const Game = (props) => {
             </div>
             <div className="grid nine">
               {cookies.player.charAt(0) == "R" ? (
-                <Grid
-                  container
-                  sx={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  columns={5}
-                  spacing={1}
-                >
+                <Grid container columns={5} spacing={1}>
                   <Fragment>
                     <Grid offset={3} size={1}>
                       <Button
@@ -2087,8 +2195,8 @@ const Game = (props) => {
               ) : null}
             </div>
             <div className="grid eleven">
-              <Grid container spacing={identity.bans.length / 2}>
-                {bans.slice(0, 3).map((ban) => {
+              <Grid container paddingLeft={1} spacing={2.2}>
+                {bans.slice(0, banInfo[1]).map((ban) => {
                   return (
                     <div key={ban}>
                       {characterRef.current != undefined
@@ -2143,9 +2251,9 @@ const Game = (props) => {
                 container
                 justifyContent="end"
                 sx={{ paddingRight: 1 }}
-                spacing={identity.bans.length / 2}
+                spacing={2.2}
               >
-                {bans.slice(3, 6).map((ban) => {
+                {bans.slice(banInfo[1], banInfo[2]).map((ban) => {
                   return (
                     <div key={ban}>
                       {characterRef.current != undefined
@@ -2170,7 +2278,12 @@ const Game = (props) => {
             ) : null}
             <div className="grid seventeen">
               {identity.extrabanst1 > 0 ? (
-                <Grid container justifyContent="center" sx={{paddingLeft: 1}} spacing={identity.extrabanst1}>
+                <Grid
+                  container
+                  justifyContent="center"
+                  sx={{ paddingLeft: 1 }}
+                  spacing={identity.extrabanst1}
+                >
                   {extraBanOrder[0].map((ban, index) => {
                     return (
                       <div key={index} size={1}>
@@ -2194,25 +2307,25 @@ const Game = (props) => {
             <div className="grid nineteen">
               {/* extra bans */}
               <Grid container justifyContent="center" spacing={2}>
-                {identity.extrabanst2 > 0 ? ( 
-                  extraBanOrder[1].map((ban, index) => {
-                    return (
-                      <div key={index} size={1}>
-                        {characterRef.current != undefined
-                          ? displayCharacter(
-                              characterRef.current.get(
-                                identity.extrabans[ban]._id
-                              ),
-                              false,
-                              2,
-                              ban + 15,
-                              openChange
-                            )
-                          : null}
-                      </div>
-                    );
-                  })
-                ) : null}
+                {identity.extrabanst2 > 0
+                  ? extraBanOrder[1].map((ban, index) => {
+                      return (
+                        <div key={index} size={1}>
+                          {characterRef.current != undefined
+                            ? displayCharacter(
+                                characterRef.current.get(
+                                  identity.extrabans[ban]._id
+                                ),
+                                false,
+                                2,
+                                ban + 15,
+                                openChange
+                              )
+                            : null}
+                        </div>
+                      );
+                    })
+                  : null}
               </Grid>
             </div>
             <div className="grid twenty">
@@ -2241,7 +2354,8 @@ const Game = (props) => {
                   );
                 }}
               >
-                <Typography textTransform="none">refresh game info</Typography>
+                <Typography textTransform="none">refresh game info</Typography>{" "}
+                {/* should check for paused game */}
               </Button>
             </div>
           </div>

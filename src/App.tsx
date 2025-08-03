@@ -4,7 +4,7 @@ import React, {useState, useRef} from "react";
 import CharacterContext from "./contexts/CharacterContext.js";
 import ActiveContext from "./contexts/ActiveContext.js";
 
-function App() {
+const App = () => {
   const [characters, setCharacters] = useState([]);
   const [active, setActive] = useState([]);
   const socketRef = useRef<WebSocket | null>(null);
@@ -23,15 +23,17 @@ function App() {
     socketRef.current.readyState === WebSocket.CLOSED ||
     socketRef.current.readyState === WebSocket.CLOSING
   ) {
+    // console.log("making a new socket connection");
     socketRef.current = new WebSocket(socketOpts[0]);
   }
   return (
     <div className="font">
-      <div className="fullscreen-container" style={{ color: "white", fontSize: 24 }}>
+      <div className="background"></div>
+      <div className="main-content" style={{ color: "white", fontSize: 24 }}>
         <CharacterContext.Provider value={[characters, setCharacters]}>
-            <ActiveContext.Provider value={[active, setActive]}>
-              <WebRouter socket={socketRef.current} />
-            </ActiveContext.Provider>
+          <ActiveContext.Provider value={[active, setActive]}>
+            <WebRouter socket={socketRef.current} />
+          </ActiveContext.Provider>
         </CharacterContext.Provider>
       </div>
     </div>

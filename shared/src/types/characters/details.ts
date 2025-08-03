@@ -380,6 +380,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/24/dc/3d/ME10MX77_t.png",
 		index: 95,
 	},
+	[CHARACTERS.Ineffa]: {
+		displayName: "Ineffa",
+		element: ELEMENTS.electro,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Ineffa",
+		onlineFilePath: "https://thumbs4.imagebam.com/a7/e9/dc/ME14OUYR_t.png",
+		index: 101,
+	},
 	[CHARACTERS.Ifa]: {
 		displayName: "Ifa",
 		element: ELEMENTS.anemo,
@@ -729,7 +738,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Skirk",
 		onlineFilePath: "https://thumbs4.imagebam.com/31/f4/d1/ME12Y3HH_t.png",
-		index: 100,	
+		index: 100,
 	},
 	[CHARACTERS.Heizou]: {
 		displayName: "Heizou",
