@@ -154,10 +154,16 @@ export default function Play(){
           player: "" + playerChoice,
         }),
       });
+      // have this return the game's total ban status too?
       let newInfo = await res.json();
       if (res.status != 200) {
         valid = false;
         alert(newInfo.message);
+      }
+      else{
+        newInfo[0].totalBans == 6
+          ? sessionStorage.setItem("totalbans", "2+1")
+          : sessionStorage.setItem("totalbans", "3+1");
       }
     } else if (creating) {
       // combine the info sent to the API - this allows me to add custom settings
@@ -173,12 +179,28 @@ export default function Play(){
       setStatus(res[0]);
       sessionStorage.setItem("game", JSON.stringify(res[0]));
       if(res[0].totalBans == 6){
-        localStorage.setItem("totalbans", "2+1");
+        sessionStorage.setItem("totalbans", "2+1");
       }
       else{
-        localStorage.setItem("totalbans", "3+1");
+        sessionStorage.setItem("totalbans", "3+1");
       }
       id = res[0]._id;
+    }
+    else{
+      let res = await fetch(`${api}/gameAPI/bans/${id}`, {
+        method: "GET"
+      });
+      // have this return the game's total ban status too?
+      let newInfo = await res.json();
+      console.log(newInfo);
+      if (res.status != 200) {
+        valid = false;
+        alert(newInfo.message);
+      } else {
+        newInfo.totalBans == 6
+          ? sessionStorage.setItem("totalbans", "2+1")
+          : sessionStorage.setItem("totalbans", "3+1");
+      }
     }
     if (!valid) {
       return; // don't go any further

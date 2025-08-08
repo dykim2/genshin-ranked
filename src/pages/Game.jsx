@@ -484,16 +484,18 @@ const Game = (props) => {
   const [active, setActive] = useState(true);
 
   useEffect(() => {
-    // console.log("yes")
+    console.log("yes")
     // adds selected characters and bosses to the ref objects
     localStorage.setItem("timer", "false");
-    if(localStorage.getItem("totalbans") == "2+1"){
+    if(sessionStorage.getItem("totalbans") == "2+1"){
       if (banInfo[0]) {
+        console.log("change ban info");
         setBanInfo([false, 3, 6]);
       }
     }
     else{
       if (!banInfo[0]) {
+        console.log("reset ban info");
         setBanInfo([true, 4, 8]);
       }
     }
@@ -568,7 +570,7 @@ const Game = (props) => {
         socket.current.removeEventListener("error", handleError);
       }
     };
-  }, [props.id]);
+  }, []);
 
   const updateTurn = (turn) => {
     setTurn(turn);
@@ -1311,6 +1313,12 @@ const Game = (props) => {
       case "get": {
         updateIdentity(data.game);
         updateTurn(data.game.turn);
+        if(data.game.totalBans == 6){
+          setBanInfo([false, 3, 6]);
+        }
+        else{
+          setBanInfo([true, 4, 8]);;
+        }
         let pausedStorage = localStorage.getItem("timer");
         // if timer inactive then set timer
         if (data.time != -1 && pausedStorage === "false") {
@@ -1739,7 +1747,10 @@ const Game = (props) => {
   };
 
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
-  let bans = !banInfo[0] ? [0, 2, 5, 1, 3, 4] : [0, 2, 4, 7, 1, 3, 5, 6];
+  let bans =
+    sessionStorage.getItem("totalbans") == "2+1"
+      ? [0, 2, 5, 1, 3, 4]
+      : [0, 2, 4, 7, 1, 3, 5, 6];
   console.log("ban info: "+banInfo);
   let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
