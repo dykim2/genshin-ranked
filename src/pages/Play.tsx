@@ -161,7 +161,7 @@ export default function Play(){
         alert(newInfo.message);
       }
       else{
-        newInfo[0].totalBans == 6
+        newInfo.totalBans == 6
           ? sessionStorage.setItem("totalbans", "2+1")
           : sessionStorage.setItem("totalbans", "3+1");
       }

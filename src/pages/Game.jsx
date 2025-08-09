@@ -68,9 +68,6 @@ const parseBoss = (data) => {
   let nextArr = [0, 2, 1];
   let newBosses = [...identity.bosses];
   let oldIds = identity.bosses.map(boss => boss._id);
-  console.log("oid ids");
-  console.log(oldIds);
-  console.log("data.boss: "+data.boss);
   if(oldIds.includes(data.boss)){
     console.log("duplicate boss located");
   }
@@ -484,7 +481,6 @@ const Game = (props) => {
   const [active, setActive] = useState(true);
 
   useEffect(() => {
-    console.log("yes")
     // adds selected characters and bosses to the ref objects
     localStorage.setItem("timer", "false");
     if(sessionStorage.getItem("totalbans") == "2+1"){
@@ -1304,7 +1300,7 @@ const Game = (props) => {
     if (data.type != "turn" && totalTime != TIMER) {
       setTotalTime(TIMER);
     }
-    console.log("data.type: " + data.type);
+    // console.log("data.type: " + data.type);
     switch (data.type) {
       case "create": {
         updateIdentity(data.game);
@@ -1324,27 +1320,26 @@ const Game = (props) => {
         if (data.time != -1 && pausedStorage === "false") {
           // data.time is -1 when game is not happening
           // make timer visible
-          console.log("setting tiomter");
+          // console.log("setting tiomter");
           setTotalTime(data.time * 1000);
           updateTimer(true, false);
         }
         updateSelected(6);
         if (canPause && data.paused) {
-          console.log("must pause");
+          // console.log("must pause");
           // game is not paused, on server end it is paused
           setTimeout(() => {
             pauseDraft();
           }, 100);
         } else if (!canPause && !data.paused) {
-          console.log("must resume");
+          // console.log("must resume");
           // game is paused, server end is resumed
           setTimeout(() => {
             resumeDraft();
           }, 100);
         } else {
-          console.log("must chill");
+          // console.log("must chill");
         }
-        console.log("game info obtained");
         break;
       }
       case "turn": {
@@ -1751,7 +1746,7 @@ const Game = (props) => {
     sessionStorage.getItem("totalbans") == "2+1"
       ? [0, 2, 5, 1, 3, 4]
       : [0, 2, 4, 7, 1, 3, 5, 6];
-  console.log("ban info: "+banInfo);
+  // console.log("ban info: "+banInfo);
   let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const limit = identity.bosses == undefined ? 0 : identity.bosses.length;
   let extraBanCounter = 0;
