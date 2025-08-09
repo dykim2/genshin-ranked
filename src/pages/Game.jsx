@@ -596,8 +596,8 @@ const Game = (props) => {
   };
 
   const updateIdentity = (info) => {
-    // console.log(info);
-    // console.log("identity");
+    console.log(info);
+    console.log("identity");
     // console.log(info);
     sessionStorage.removeItem("game");
     sessionStorage.setItem("game", JSON.stringify(info));
@@ -1189,6 +1189,7 @@ const Game = (props) => {
     }
     // option 4: update team 1 picks
     // option 5: update team 2 picks
+
     if (option == 4 || option == 5 || option == 6) {
       for (let i = 0; i < identity.pickst1.length; i++) {
         // both picks arrays are the same length
@@ -1266,8 +1267,8 @@ const Game = (props) => {
   };
   const handleSocketMessage = (event) => {
     let data = JSON.parse(event.data);
-    // console.log("new data");
-    // console.log(data)
+    console.log("new data");
+    console.log(data)
     if (data.id != props.id) {
       return; // do nothing if game does not match
     } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
@@ -1377,7 +1378,7 @@ const Game = (props) => {
           case "boss":
             res = {
               ...identity,
-              bosses: data.newBosses,
+              bosses: data.newResult,
             };
             break;
           case "t1":
@@ -1709,6 +1710,9 @@ const Game = (props) => {
     // what must be done to handle a drag and drop situation?
     // assuming i know the first and second ids, i can tell the socket to move the characters or bosses
     // can be handled by a simple socket.send
+    if(cookies.player.charAt(0) != "R"){
+      return;
+    }
     const { active, over } = event;
     let vals = [active.id];
     if (over != null) {
