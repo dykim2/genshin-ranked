@@ -29,7 +29,7 @@ const WebRouter: FC<IRouter> = (props) => {
     // obtain list of characters, save them to a context
      const getChars = async() => {
       let charData = await fetch(
-        `${api}/charAPI/`,
+        `${api}/charAPI/all`,
         {
           method: "GET",
         }
