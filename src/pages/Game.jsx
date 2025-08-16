@@ -1439,10 +1439,13 @@ const Game = (props) => {
         break;
       }
       case "teamname": {
+        let tempInfo = JSON.parse(sessionStorage.getItem("game"));
         res = {
-          ...identity,
+          ...tempInfo,
           [`team${data.team}`]: data.newName,
         };
+        console.log("team name res");
+        console.log(res);
         break;
       }
       case "overwrite": {
