@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-const IdentityContext = createContext();
+const IdentityContext = createContext([]);
 export default IdentityContext;

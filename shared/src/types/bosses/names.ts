@@ -1,5 +1,6 @@
 // This is just names. Background colors will depend on boss type - local legends have one color, weeklies another and normal bosses a third.
 export enum BOSSES {
+	Random = "Random",
 	None = "None",
 	AnemoCube = "AnemoCube",
 	CryoVine = "CryoVine",

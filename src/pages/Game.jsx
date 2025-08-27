@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef, Fragment } from "react";
 import { useCookies } from "react-cookie";
 import "./css/Playing.css";
 import "./css/Gameplay.css";
-import CharacterContext from "../contexts/CharacterContext.js";
+import CharacterContext from "../contexts/CharacterContext.ts";
 import OrderModal from "./OrderModal.jsx";
 import Countdown from "react-countdown";
 
@@ -14,7 +14,7 @@ import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/deta
 import { displayBoss, displayCharacter } from "../components/BossComponent.tsx";
 import {getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "../../shared/src/utils/imagePaths.ts"
 
-import { Box, Button, Typography, Grid, Paper, Stack } from "@mui/material";
+import { Box, Button, Typography, Grid} from "@mui/material";
 import { GifPlay } from "../components/GifPlay.tsx";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {restrictToHorizontalAxis, restrictToVerticalAxis} from "@dnd-kit/modifiers";
@@ -22,6 +22,7 @@ import ChangeModal from "./ChangeModal.tsx";
 // import { BOSSES } from "@genshin-ranked/shared";
 // 
 const IMG_SIZE = 75; // use eventually
+// redux good for handling and modifying game information?
 const gameInfo = () => JSON.parse(sessionStorage.getItem("game")) || "yikes";
 const charInfo = () => JSON.parse(sessionStorage.getItem("characters")) || [];
 const TIMER = 35500;
@@ -151,13 +152,14 @@ const parseBoss = (data) => {
   return returnVal;
 };
 /**
- * 
+ * handles a ban or extra ban
  * @param {Object} data the data returned from the server
  * @param {boolean} extra whether this ban is an extra ban or not
  * @returns a copy of the game information, with the extra information added
  */
 const parseBan = (data, extra = false) => {
   const charList = charInfo();
+  console.log(charInfo);
   const identity = JSON.parse(sessionStorage.getItem("game"));
   // check accordingly
   let newBans = [];
@@ -262,6 +264,7 @@ const parseBan = (data, extra = false) => {
   }
 };
 const parsePick = (data) => {
+
   const charList = charInfo();
   const identity = JSON.parse(sessionStorage.getItem("game"));
   let returnInfo = "";
@@ -271,6 +274,7 @@ const parsePick = (data) => {
     let newPicks = [...identity.pickst1];
     for (let i = 0; i < identity.pickst1.length; i++) {
       if (identity.pickst1[i]._id == -1) {
+
         for (let j = 0; j < charList.length; j++) {
           if (charList[j]._id == data.pick) {
             newPicks[i] = charList[j];
@@ -645,14 +649,14 @@ const Game = (props) => {
       case "ban":
       case "pick":
       case "extraban":
-        let charInfo =
+        let currentCharInfo =
           JSON.stringify(identity.extrabans) +
           JSON.stringify(identity.bans) +
           JSON.stringify(identity.pickst1) +
           JSON.stringify(identity.pickst2);
         if (
-          charInfo.includes(`\"_id\":${selection.id},`) ||
-          charInfo.includes(selection.name)
+          currentCharInfo.includes(`\"_id\":${selection.id},`) ||
+          currentCharInfo.includes(selection.name)
         ) {
           // pick is already chosen or banned
           return false;
@@ -747,51 +751,7 @@ const Game = (props) => {
       }
     }
     let found = false;
-    if (
-      selection.type == "boss" &&
-      bosses[selection.id + 1].type == "legend" &&
-      identity.division != "premier"
-    ) {
-      if (timeout) {
-        setExtraInfo(
-          "Time is up! Local legends cannot be played in your division. A random boss will be selected."
-        );
-        found = true;
-      } else {
-        setExtraInfo("You cannot pick legends in standard division!");
-        return;
-      }
-    }
-    if (
-      (selection.type == "boss" && res.toLowerCase() != "boss") ||
-      (selection.type == "character" &&
-        res.toLowerCase() != "ban" &&
-        res.toLowerCase() != "pick" &&
-        res.toLowerCase() != "extraban")
-    ) {
-      console.log("invalid selection");
-      setExtraInfo("selection invalid!");
-      selection = {};
-    } else if (
-      selection.type == "boss" &&
-      identity.longBoss[teamNum - 1] &&
-      bosses[selection.id + 1].long
-    ) {
-      console.log("ree");
-      setExtraInfo(
-        "You cannot pick more than one long boss in standard division (two in premier division)!"
-      );
-      if (timeout) {
-        found = true;
-      } else {
-        return;
-      }
-    }
-    // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
-    if (JSON.stringify(selection) == "{}") {
-      setExtraInfo(
-        "No selection was made! Random boss / pick or no ban is selected."
-      );
+    if(selection.id == -3){
       req = JSON.stringify({
         id: gameID,
         type: "add",
@@ -802,82 +762,51 @@ const Game = (props) => {
           team: teamNum,
         },
       });
-      found = true;
-    } else if (res.toLowerCase() == "waiting") {
-      // should only trigger on first pick
-      // check bosses, see if picked
-      if (!checkSelection(selection, "boss")) {
-        if (!timeout) {
-          setExtraInfo(
-            "Time is up! Selected boss is invalid! A random boss will be selected."
-          );
-          found = true;
-        } else {
-          setExtraInfo(
-            "Invalid pick! Please select a BOSS that has not been chosen yet!"
-          );
-          return false;
-        }
-      }
-      if (found) {
-        req = JSON.stringify({
-          id: gameID,
-          type: "add",
-          changed: identity.result,
-          data: {
-            character: -3,
-            boss: -3,
-            team: teamNum,
-          },
-        });
-      } else {
-        req = JSON.stringify({
-          id: gameID,
-          type: "add",
-          changed: identity.result,
-          data: {
-            character: selection.id,
-            boss: selection.id,
-            team: teamNum,
-          },
-        });
-      }
-    } else {
-      if (!checkSelection(selection, res)) {
+    }
+    else{
+      if (
+        selection.type == "boss" &&
+        bosses[selection.id + 1].type == "legend" &&
+        identity.division != "premier"
+      ) {
         if (timeout) {
-          if (selection.type == "boss") {
-            setExtraInfo(
-              "Time is up! An invalid boss was selected, thereby a random boss will be chosen."
-            );
-          } else if (selection.type == "character") {
-            if (identity.result == "ban") {
-              setExtraInfo(
-                "Time is up. An invalid character was selected, thereby no ban will be chosen."
-              );
-              // remove these alerts, all of them, add extra text to show that it was random
-            } else {
-              setExtraInfo(
-                "Time is up. An invalid character was selected, thereby a random pick will be selected."
-              );
-            }
-          }
+          setExtraInfo(
+            "Time is up! Local legends cannot be played in your division. A random boss will be selected."
+          );
           found = true;
         } else {
-          if (selection.type == "boss") {
-            setExtraInfo("This boss has been picked already!");
-          } else if (
-            identity.result == "ban" ||
-            identity.result == "extraban"
-          ) {
-            //during ban phase, shows this, need to fix probs
-            setExtraInfo("This character is banned!");
-          } else {
-            setExtraInfo("This character has already been picked!");
-          }
-          return false;
+          setExtraInfo("You cannot pick legends in standard division!");
+          return;
         }
       }
-      if (found) {
+      if (
+        (selection.type == "boss" && res.toLowerCase() != "boss") ||
+        (selection.type == "character" &&
+          res.toLowerCase() != "ban" &&
+          res.toLowerCase() != "pick" &&
+          res.toLowerCase() != "extraban")
+      ) {
+        setExtraInfo("selection invalid!");
+        selection = {};
+      } else if (
+        selection.type == "boss" &&
+        identity.longBoss[teamNum - 1] &&
+        bosses[selection.id + 1].long
+      ) {
+        setExtraInfo(
+          "You cannot pick more than one long boss in standard division (two in premier division)!"
+        );
+        if (timeout) {
+          found = true;
+        } else {
+          return;
+        }
+      }
+      // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
+      if (JSON.stringify(selection) == "{}") {
+        setExtraInfo(
+          "No selection was made! Random boss / pick or no ban is selected."
+        );
         req = JSON.stringify({
           id: gameID,
           type: "add",
@@ -888,19 +817,107 @@ const Game = (props) => {
             team: teamNum,
           },
         });
+        found = true;
+      } else if (res.toLowerCase() == "waiting") {
+        // should only trigger on first pick
+        // check bosses, see if picked
+        if (!checkSelection(selection, "boss")) {
+          if (!timeout) {
+            setExtraInfo(
+              "Time is up! Selected boss is invalid! A random boss will be selected."
+            );
+            found = true;
+          } else {
+            setExtraInfo(
+              "Invalid pick! Please select a BOSS that has not been chosen yet!"
+            );
+            return false;
+          }
+        }
+        if (found) {
+          req = JSON.stringify({
+            id: gameID,
+            type: "add",
+            changed: identity.result,
+            data: {
+              character: -3,
+              boss: -3,
+              team: teamNum,
+            },
+          });
+        } else {
+          req = JSON.stringify({
+            id: gameID,
+            type: "add",
+            changed: identity.result,
+            data: {
+              character: selection.id,
+              boss: selection.id,
+              team: teamNum,
+            },
+          });
+        }
       } else {
-        req = JSON.stringify({
-          id: gameID,
-          type: "add",
-          changed: identity.result,
-          data: {
-            character: selection.id,
-            boss: selection.id,
-            team: teamNum,
-          },
-        });
+        if (!checkSelection(selection, res)) {
+          if (timeout) {
+            if (selection.type == "boss") {
+              setExtraInfo(
+                "Time is up! An invalid boss was selected, thereby a random boss will be chosen."
+              );
+            } else if (selection.type == "character") {
+              if (identity.result == "ban") {
+                setExtraInfo(
+                  "Time is up. An invalid character was selected, thereby no ban will be chosen."
+                );
+                // remove these alerts, all of them, add extra text to show that it was random
+              } else {
+                setExtraInfo(
+                  "Time is up. An invalid character was selected, thereby a random pick will be selected."
+                );
+              }
+            }
+            found = true;
+          } else {
+            if (selection.type == "boss") {
+              setExtraInfo("This boss has been picked already!");
+            } else if (
+              identity.result == "ban" ||
+              identity.result == "extraban"
+            ) {
+              //during ban phase, shows this, need to fix probs
+              setExtraInfo("This character is banned!");
+            } else {
+              setExtraInfo("This character has already been picked!");
+            }
+            return false;
+          }
+        }
+        if (found) {
+          req = JSON.stringify({
+            id: gameID,
+            type: "add",
+            changed: identity.result,
+            data: {
+              character: -3,
+              boss: -3,
+              team: teamNum,
+            },
+          });
+        } else {
+          req = JSON.stringify({
+            id: gameID,
+            type: "add",
+            changed: identity.result,
+            data: {
+              character: selection.id,
+              boss: selection.id,
+              team: teamNum,
+            },
+          });
+        }
       }
     }
+    
     updateTimer(false, true);
     console.log("request");
     console.log(req);

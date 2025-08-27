@@ -1,5 +1,5 @@
 import React from 'react'
-import useScreenSize from '../hooks/useScreenSize';
+import useScreenSize from '../hooks/useScreenSize.ts';
 export const Guide = () => {
     const size = useScreenSize();
     let maxWidth = 1060;

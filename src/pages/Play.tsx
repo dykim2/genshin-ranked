@@ -1,43 +1,51 @@
 import { useState, useEffect, useContext, Fragment, useRef, Key } from "react";
 // import './css/Playing.css';
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, List, ListItem, ListItemButton, ListItemText, Radio, RadioGroup, TextField, Typography } from "@mui/material";
-import ActiveContext from "../contexts/ActiveContext.js";
+import PlayerInfo from "../interfaces/PlayerInfoInterface.js";
 
 // start implementing redux!
+
+interface IPlay {
+  activeGames: PlayerInfo[];
+  findActive: () => Promise<void>;
+}
 
 const gameInfo = () => {
   const info = sessionStorage.getItem("game");
   return info ? JSON.parse(info) : { connected: [0, 0, 0] };
 };
 
-export default function Play(){
-  const [refreshing, setRefresh] = useState(false); // for a refresh games option
-  const [activeGames, setActive] = useContext(ActiveContext);
-  const [open, setOpen] = useState(false);
-  const [choosing, setChoosing] = useState(false);
+const Play = ({ activeGames, findActive }: IPlay) => {
+  const [refreshing, setRefresh] = useState<boolean>(false); // for a refresh games option
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [choosing, setChoosing] = useState<boolean>(false);
   const [cookies, setCookie, removeCookie] = useCookies(["player"]);
-  const [, forceRefresh] = useState(); // refreshes the page
+  const [, forceRefresh] = useState<undefined>(); // refreshes the page
   const [status, setStatus] = useState(gameInfo()); // the game the player chooses
-  const navi = useNavigate();
-  const [creating, setCreating] = useState(false);
-  const [readying, setReadying] = useState(false);
-  const [options, setOptions] = useState(false);
-  const [banMode, setBanMode] = useState("3+1");
+  const navi: NavigateFunction = useNavigate();
+  const [creating, setCreating] = useState<boolean>(false);
+  const [readying, setReadying] = useState<boolean>(false);
+  const [options, setOptions] = useState<boolean>(false);
+  const [banMode, setBanMode] = useState<string>("3+1");
 
-  const [mode, setMode] = useState("standard");
+  const [mode, setMode] = useState<string>("standard");
 
-  const [extraBans, setExtraBans] = useState("no one");
-  const [bans, setBans] = useState([0, 0]);
+  const [extraBans, setExtraBans] = useState<string>("no one");
+  const [bans, setBans] = useState<number[]>([0, 0]);
 
-  const [bonusParams, setParams] = useState([0, -2, -1, -1]);
-  const [creatingBO2, setBO2] = useState([false, true]); // is it a bo2? is it game 1 or 2 of the bo2?
-  // bo2 alwayshas fearless bosses i.e. cant pick same bosses 
+  const [bonusParams, setParams] = useState<number[]>([0, -2, -1, -1]);
+  const [creatingBO2, setBO2] = useState<boolean[]>([false, true]); // is it a bo2? is it game 1 or 2 of the bo2?
+  // bo2 alwayshas fearless bosses i.e. cant pick same bosses
   const [fearless, setFearless] = useState<boolean>(false);
 
   const latestBoss = useRef(null);
-  const api_list = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
+  const api_list = [
+    "https://rankedapi-late-cherry-618.fly.dev",
+    "http://localhost:3000",
+  ];
   const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
 
   const refreshGames = () => {
@@ -65,7 +73,6 @@ export default function Play(){
       setParams(newParams);
     }
   };
-
   useEffect(() => {
     sessionStorage.setItem("game", JSON.stringify(status));
   }, [status]);
@@ -102,29 +109,30 @@ export default function Play(){
     division: mode,
     fearless: fearless,
     fearlessID: fearless ? bonusParams[3] : -1,
-    processing: false
+    processing: false,
   };
-  const choosePlayer = async (playerChoice: string, id: number, info = defaultInfo) => {
+  const choosePlayer = async (
+    playerChoice: string,
+    id: number,
+    info = defaultInfo
+  ) => {
     info.player = playerChoice;
     if (playerChoice == "Ref (Custom)") {
       info.player = "Ref";
       setOptions(true);
       return;
-    }
-    else if(playerChoice == "Ref (BO2 Game 1)"){
+    } else if (playerChoice == "Ref (BO2 Game 1)") {
       info.player = "Ref";
       setBO2([false, false]);
       // go directly to setting up and forego asking for id
       // update bonus params
       await submitBO2();
       return;
-    }
-    else if(playerChoice == "Ref (BO2 Game 2)"){
+    } else if (playerChoice == "Ref (BO2 Game 2)") {
       info.player = "Ref";
       setBO2([true, true]);
       return;
-    }
-    else if(playerChoice == "Ref (2 + 1 bans)"){
+    } else if (playerChoice == "Ref (2 + 1 bans)") {
       info.player = "Ref";
       info.totalBans = 6;
     }
@@ -159,8 +167,7 @@ export default function Play(){
       if (res.status != 200) {
         valid = false;
         alert(newInfo.message);
-      }
-      else{
+      } else {
         newInfo.totalBans == 6
           ? sessionStorage.setItem("totalbans", "2+1")
           : sessionStorage.setItem("totalbans", "3+1");
@@ -178,17 +185,15 @@ export default function Play(){
       res = await res.json();
       setStatus(res[0]);
       sessionStorage.setItem("game", JSON.stringify(res[0]));
-      if(res[0].totalBans == 6){
+      if (res[0].totalBans == 6) {
         sessionStorage.setItem("totalbans", "2+1");
-      }
-      else{
+      } else {
         sessionStorage.setItem("totalbans", "3+1");
       }
       id = res[0]._id;
-    }
-    else{
+    } else {
       let res = await fetch(`${api}/gameAPI/bans/${id}`, {
-        method: "GET"
+        method: "GET",
       });
       // have this return the game's total ban status too?
       let newInfo = await res.json();
@@ -214,7 +219,7 @@ export default function Play(){
     navigate(id);
     localStorage.setItem("character", "-1");
     localStorage.setItem("boss", "-1");
-    if(creating){
+    if (creating) {
       window.location.reload();
     }
   };
@@ -236,7 +241,7 @@ export default function Play(){
   const submitBO2 = async () => {
     // assumes no initial bans
     setBO2([false, [...creatingBO2][1]]);
-    if(bonusParams[3] < -1){
+    if (bonusParams[3] < -1) {
       alert("Please choose a valid game id for fearless bosses!");
       return;
     }
@@ -251,10 +256,10 @@ export default function Play(){
       division: "advanced",
       fearless: bonusParams[3] > -1,
       fearlessID: bonusParams[3] > -1 ? bonusParams[3] : -1,
-      processing: false
+      processing: false,
     };
     await choosePlayer("Ref", -1, info);
-  }
+  };
 
   const submitCustom = async () => {
     // playerChoice is always ref - ref must join and decide these
@@ -384,7 +389,7 @@ export default function Play(){
         <DialogTitle>select a game by its id:</DialogTitle>
         <DialogContent>
           <List sx={{ pt: 0 }}>
-            {activeGames.map((game: { _id: number; result: string }) => {
+            {activeGames!.map((game) => {
               return (
                 <ListItem disableGutters key={game._id}>
                   <ListItemButton
@@ -408,13 +413,9 @@ export default function Play(){
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={async () => {
+            onClick={() => {
+              findActive();
               refreshGames();
-              let gameData = await fetch(`${api}/gameAPI/active`, {
-                method: "GET",
-              });
-              gameData = await gameData.json();
-              setActive(gameData[0]);
             }}
             disabled={refreshing}
             sx={{ fontSize: 22, color: "red" }}
@@ -766,8 +767,8 @@ export default function Play(){
       </Dialog>
     </div>
   );
-}
-
+};
+ export default Play;
 
 
 /*

@@ -1,7 +1,7 @@
 import { Box, Modal, Typography } from "@mui/material";
 import React, { Fragment } from "react";
 import { useCookies } from "react-cookie";
-import useScreenSize from "../hooks/useScreenSize.js";
+import useScreenSize from "../hooks/useScreenSize.ts";
 interface play {
   link: string; // should either end in .gif or .png or other image format
   isOpen: boolean
@@ -12,7 +12,7 @@ export const GifPlay = ({
   link,
   isOpen
 }: play) => {
-  const [cookies, setCookies] = useCookies(["player"]);
+  const [cookies, ] = useCookies(["player"]);
   const defWidth = useScreenSize().width / 2 - 540;
   let width = 1000;
   if (

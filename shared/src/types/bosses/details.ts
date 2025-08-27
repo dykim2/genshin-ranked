@@ -15,14 +15,22 @@ interface BossInfo extends GenericDetails {
 }
 // index is the way the server communicates to determine what boss to place on the screen
 
+
 export const BOSS_DETAIL: BossMap = {
+	[BOSSES.Random]: {
+		displayName: "Random",
+		element: ELEMENTS.multi,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Random",
+		onlineFilePath: "https://images4.imagebam.com/32/ba/9c/ME15DSS8_o.png",
+		index: -3,
+	},
 	[BOSSES.None]: {
 		displayName: "None",
 		element: ELEMENTS.physical,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "None",
 		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
-		// have restrictions here
 		index: -1,
 	},
 	[BOSSES.AeonblightDrake]: {
