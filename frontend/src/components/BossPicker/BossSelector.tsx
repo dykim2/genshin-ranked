@@ -126,7 +126,7 @@ export const BossSelector = ({
 						}
 					})
 					.map((x) => {
-						return x != BOSSES.None ? (
+						return (x != BOSSES.None) ? (
 							<Grid padding={0.3} key={x}>
 								<BossButton
 									team={team}

@@ -365,11 +365,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		],
 	},
 	[CHARACTERS.Mualani]: {
-		limit: 1,
-		differences: [1],
+		limit: 2,
+		differences: [1,2],
 		restrictions: [
-			"Any 5* Weapon | R3+ Ring of Yaxche | Prototype Amber | Waveriding Whirl",
-			"Any 3* Weapon,\nAllowed: Emerald Orb"
+			"Any 5* Weapon | Prototype Amber | Waveriding Whirl",
+			"Any 3* Weapon,\nAllowed: Emerald Orb",
 		],
 	},
 	[CHARACTERS.Nahida]: {

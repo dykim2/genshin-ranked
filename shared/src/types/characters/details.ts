@@ -20,11 +20,20 @@ export interface CharacterDetail extends GenericDetails {
 }
 
 export const CHARACTER_INFO: CharacterMap = {
+	[CHARACTERS.Random]: {
+		displayName: "Random",
+		element: ELEMENTS.multi,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Random",
+		onlineFilePath: "https://images4.imagebam.com/32/ba/9c/ME15DSS8_o.png",
+		index: -3
+	},
 	[CHARACTERS.NoBan]: {
 		displayName: "No Ban",
 		element: ELEMENTS.physical,
 		weapon: WEAPONS.sword,
-		rarity: RARITY.FourStar,
+		rarity: RARITY.FiveStar,
 		imageFileName: "NoBan",
 		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
 		index: -2,

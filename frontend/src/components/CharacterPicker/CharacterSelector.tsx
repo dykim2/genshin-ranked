@@ -18,13 +18,15 @@ export interface Pick {
 	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
 	selectedChars: number[]; // the selected characters; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
 	updateHover: (teamNum: number, selected: number) => void;
+	phase: string;
 }	
 
 export const CharacterSelector = ({
 	team,
 	updateCharacter,
 	selectedChars,
-	updateHover
+	updateHover,
+	phase
 }: Pick) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
@@ -117,14 +119,20 @@ export const CharacterSelector = ({
 						}
 					})
 					.map((x) =>
-						x != CHARACTERS.None && x != CHARACTERS.NoBan ? (
+						x != CHARACTERS.None &&
+						(x != CHARACTERS.NoBan ||
+							phase.toLowerCase() == "extraban" ||
+							phase.toLowerCase() == "ban") &&
+						(x != CHARACTERS.Random || phase.toLowerCase() == "pick")  ? (
 							<Grid padding={0.3} key={x}>
 								<CharacterButton
 									team={team}
 									character={x}
 									updateCharacter={updateCharacter}
 									banDisplay={"loadout"}
-									isChosen={selectedChars.includes(CHARACTER_INFO[x].index)}
+									isChosen={selectedChars.includes(
+										CHARACTER_INFO[x].index,
+									)}
 									updateHover={updateHover}
 									component={false}
 								/>

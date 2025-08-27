@@ -117,7 +117,8 @@ export const BossDisplay = ({team, pickSelection, sendHover, inGame, selections,
 								textTransform="none"
 								variant="h6"
 							>
-								{currentResult != "waiting"
+								{!inGame ? "click boss for id"
+									: currentResult != "waiting"
 									? "choose boss "
 									: "waiting to start"}
 							</Typography>

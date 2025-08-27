@@ -87,6 +87,7 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 					updateCharacter={setSelection}
 					selectedChars={selections}
 					updateHover={sendHover}
+					phase={phase}
 				/>
 			</Box>
 			{/* Right Side: Button Details */}
@@ -186,7 +187,7 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 												? `pick`
 												: `Nothing`
 									  }`
-									: `Show Restrictions`}
+									: `click char for restrictions`}
 							</Typography>
 						</Button>
 						{bonusInfo.map((val: string) => {

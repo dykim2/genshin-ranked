@@ -60,15 +60,8 @@ export default function CharacterList() {
           inGame={false}
           bonusInfo={info}
           selections={[]}
+          active={false}
         />
-        {/* empty selections as this section is for display purposes only.
-          <GifPlay
-          link={alertLink.current}
-          isOpen={open}
-          onClose={() => {}}
-          ban={false}
-        />
-          */}
       </Fragment>
     );
 };

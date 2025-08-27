@@ -475,6 +475,8 @@ const Game = (props) => {
 
   const characterRef = useRef();
   const bossRef = useRef();
+  const bossNameRef = useRef();
+  const charNameRef = useRef(); // if i use both together, it allows a boss to be confused as a character and vice versa
   const dndRef = useRef("boss");
 
   const selectedBosses = useRef([]);
@@ -501,16 +503,23 @@ const Game = (props) => {
     }
     updateSelected(6);
     const map = new Map();
+    const bossNameMap = new Map(); // map character and boss name to corresponding id
+    const charNameMap = new Map();
     for (const someName in BOSS_DETAIL) {
       // create a hashmap between index and some name
       map.set(BOSS_DETAIL[someName].index, someName);
+      bossNameMap.set(BOSS_DETAIL[someName].displayName.toLowerCase(), BOSS_DETAIL[someName].index);
     }
+    bossNameRef.current = bossNameMap;
     bossRef.current = map;
     const newMap = new Map();
     for (const someName in CHARACTER_INFO) {
       newMap.set(CHARACTER_INFO[someName].index, someName);
+      charNameMap.set(CHARACTER_INFO[someName].displayName.toLowerCase(), CHARACTER_INFO[someName].index);
     }
     characterRef.current = newMap;
+    charNameRef.current = charNameMap;
+    // create a map mapping name 
     if (sessionStorage.getItem("chosen_bosses") == null) {
       sessionStorage.setItem("chosen_bosses", JSON.stringify([]));
     }
@@ -751,14 +760,18 @@ const Game = (props) => {
       }
     }
     let found = false;
-    if(selection.id == -3){
+    if(selection.id == -3 || selection.id == -2){
+      // set to -3 if not ban
+      if(!(res.toLowerCase() == "ban" || res.toLowerCase() == "extraban")){
+        selection.id = -3; // change to random
+      }
       req = JSON.stringify({
         id: gameID,
         type: "add",
         changed: identity.result,
         data: {
-          character: -3,
-          boss: -3,
+          character: selection.id,
+          boss: selection.id,
           team: teamNum,
         },
       });
@@ -1668,31 +1681,20 @@ const Game = (props) => {
   };
 
   const handleChange = (change, team) => {
-    // if a character or boss must be changed for whatever reason and refs agree to it
-    // this is what happens
-    // tell which to overwrite, in terms of id
-
-    // doesnt handle appropriately which one is changed, so maybe add an index field too?
-    // so it knows which one was the original
-    // to allow changing boss?
-    // yeah
-    // need to
-    console.log("change: " + change);
+    // console.log("change: " + change);
+    setShowChanges(false);
+    if (cookies.player.charAt(0) != "R") {
+      // reject
+      return;
+    }
     let res = parseInt(change);
     if (isNaN(res)) {
       if (changeInfo[0] == "boss") {
-        bosses.forEach((boss) => {
-          if (boss.boss.toLowerCase() == change.toLowerCase()) {
-            res = boss._id;
-          }
-        });
+        res = bossNameRef.current.get(change.toLowerCase());
       } else {
-        characters.forEach((char) => {
-          if (char.name.toLowerCase() == change.toLowerCase()) {
-            res = char._id;
-          }
-        });
+        res = charNameRef.current.get(change.toLowerCase());
       }
+      
     }
     if (isNaN(res)) {
       // ask for proper input
@@ -1703,17 +1705,6 @@ const Game = (props) => {
       }
       return;
     }
-    setShowChanges(false);
-    if (cookies.player.charAt(0) != "R") {
-      // reject
-      return;
-    }
-    /*
-    if (identity.result != "progress") {
-      alert("Please do not change characters mid round!");
-      return;
-    }
-    */
     socket.current.send(
       JSON.stringify({
         type: "overwrite",
