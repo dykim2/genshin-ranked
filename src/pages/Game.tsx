@@ -1195,8 +1195,8 @@ const parseStatus = (data) => {
   let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const limit = identity.bosses.length ?? 0;
   // add pause, waiting, game over
-  const smallSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 4 : 2;
-  const largeSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 4 : 8;
+  const smallSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 3 : 2;
+  const largeSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 6 : 8;
   return (
     <div>
       <title>
