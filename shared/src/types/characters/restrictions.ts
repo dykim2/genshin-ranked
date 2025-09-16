@@ -10,6 +10,26 @@ type CharacterRestriction = {
 }
 
 export const CHARACTER_RESTRICTIONS: CharMap = {
+	[CHARACTERS.NoBan]: {
+		limit: 0,
+		differences: [],
+		restrictions: [],
+	},
+	[CHARACTERS.None]: {
+		limit: 0,
+		differences: [],
+		restrictions: [],
+	},
+	[CHARACTERS.Random]: {
+		limit: 6,
+		differences: [-1],
+		restrictions: ["Random characters don't have restrictions!"]
+	},
+	[CHARACTERS.Aino]: {
+		limit: 6,
+		differences: [-1],
+		restrictions: [""],
+	},
 	[CHARACTERS.Albedo]: {
 		limit: 6,
 		differences: [-1],
@@ -36,8 +56,8 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Arlecchino]: {
 		limit: 2,
-		differences: [1,2],
-		restrictions: ["Any 5* Weapon, Ballad of Fjords, Deathmatch, Lithic Spear","Any 3* Weapon"],
+		differences: [1, 2],
+		restrictions: ["Any 5* Weapon, Ballad of Fjords, Deathmatch, Lithic Spear", "Any 3* Weapon"],
 	},
 	[CHARACTERS.Ayaka]: {
 		limit: 6,
@@ -90,7 +110,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Chasca]: {
 		limit: 3,
-		differences: [0,1,2,3],
+		differences: [0, 1, 2, 3],
 		restrictions: [
 			"Astral Vulture's Crimson Plumage",
 			"Any 5* Weapon | Scion of The Blazing Sun | Flower-Wreathed Feathers | Range Gauge",
@@ -166,7 +186,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Emilie]: {
 		limit: 3,
-		differences: [1,2,3],
+		differences: [1, 2, 3],
 		restrictions: [
 			"Lumidouce Elegy",
 			"Any 4* Weapon",
@@ -175,7 +195,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Escoffier]: {
 		limit: 2,
-		differences: [0,1,2],
+		differences: [0, 1, 2],
 		restrictions: [
 			"Symphonist of Scents",
 			"Any 4* Weapon",
@@ -197,6 +217,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
+	[CHARACTERS.Flins]: {
+		limit: 1,
+		differences: [0, 1],
+		restrictions: ["Unknown", "Unknown"]
+	},
 	[CHARACTERS.Freminet]: {
 		limit: 6,
 		differences: [-1],
@@ -214,7 +239,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Ganyu]: {
 		limit: 6,
-		differences: [1, 3, 4,6],
+		differences: [1, 3, 4, 6],
 		restrictions: [
 			"Astral Vulture's Crimson Plumage",
 			"Any 5* Weapon | R3+ Scion of The Blazing Sun | R3+ Flower-wreathed Feathers",
@@ -242,9 +267,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: []
 	},
-	[CHARACTERS.Ineffa] :{
+	[CHARACTERS.Ineffa]: {
 		limit: 2,
-		differences: [1,2],
+		differences: [1, 2],
 		restrictions: ["Fractured Halo", "Any 5* Weapon"]
 	},
 	[CHARACTERS.Itto]: {
@@ -287,7 +312,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Kinich]: {
 		limit: 1,
-		differences: [1,2,3],
+		differences: [1, 2, 3],
 		restrictions: ["Any 5* Weapon | Serpent Spine", "Any 4* Weapon | Bloodtainted Greatsword | Debate Club | Any 2* Weapon"],
 	},
 	[CHARACTERS.Kirara]: {
@@ -315,6 +340,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
+	[CHARACTERS.Lauma]: {
+		limit: 1,
+		differences: [0, 1],
+		restrictions: ["NO restrictions", "Nightweaver's Looking Glass"],
+	},
 	[CHARACTERS.LanYan]: {
 		limit: 6,
 		differences: [-1],
@@ -337,7 +367,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Lyney]: {
 		limit: 2,
-		differences: [1,2],
+		differences: [1, 2],
 		restrictions: ["Astral Vulture's Crimson Plumage | The First Great Magic | Thundering Pulse | Aqua Simulacra", "Any 4* Weapon, Slingshots"],
 	},
 	[CHARACTERS.Mika]: {
@@ -357,7 +387,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Mavuika]: {
 		limit: 2,
-		differences: [0,1,2],
+		differences: [0, 1, 2],
 		restrictions: [
 			"A Thousand Blazing Suns",
 			"Any 4* Weapon,\nAllowed: Earth Shaker | Prototype Archaic | Favonius Greatsword",
@@ -366,7 +396,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Mualani]: {
 		limit: 2,
-		differences: [1,2],
+		differences: [1, 2],
 		restrictions: [
 			"Any 5* Weapon | Prototype Amber | Waveriding Whirl",
 			"Any 3* Weapon,\nAllowed: Emerald Orb",
@@ -464,7 +494,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Skirk]: {
 		limit: 2,
-		differences: [1,2],
+		differences: [1, 2],
 		restrictions: ["Any 5* Weapon", "Any 3* Weapon"],
 	},
 	[CHARACTERS.Sucrose]: {
@@ -497,7 +527,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Varesa]: {
 		limit: 1,
-		differences: [0,1],
+		differences: [0, 1],
 		restrictions: ["Vivid Notions", "Any Crit 5* Weapon | Crane's Echoing Call"]
 	},
 	[CHARACTERS.Venti]: {
@@ -562,7 +592,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	},
 	[CHARACTERS.Yelan]: {
 		limit: 3,
-		differences: [2,3],
+		differences: [2, 3],
 		restrictions: ["Any 5* Weapon", "Any 3* Weapon"],
 	},
 	[CHARACTERS.Yoimiya]: {
@@ -579,15 +609,5 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		limit: 6,
 		differences: [-1],
 		restrictions: [""],
-	},
-	[CHARACTERS.NoBan]: {
-		limit: 0,
-		differences: [],
-		restrictions: [],
-	},
-	[CHARACTERS.None]: {
-		limit: 0,
-		differences: [],
-		restrictions: [],
 	},
 };

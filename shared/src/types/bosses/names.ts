@@ -15,7 +15,7 @@ export enum BOSSES {
 	PyroCube = "PyroCube",
 	HydroCube = "HydroCube",
 	Thunderbird = "Thunderbird",
-	// GoldenWolflord="GoldenWolflord",
+	// GoldenWolflord = "GoldenWolflord",
 	EnkaVishaps = "EnkaVishaps",
 	RuinSerpent = "RuinSerpent",
 	ElectroVine = "ElectroVine",
@@ -28,10 +28,10 @@ export enum BOSSES {
 	Coppelia = "Coppelia",
 	Coppelius = "Coppelius",
 	PyroCrab = "PyroCrab",
-	EFG = "ExperimentalFieldGenerator",
+	EFG = "EFG",
 	MillenialPearlSeahorse = "MillenialPearlSeahorse",
 	HydroTulpa = "HydroTulpa",
-	SolitarySuanii = "SolitarySuanni",
+	SolitarySuanni = "SolitarySuanni",
 	LegatusGolem = "LegatusGolem",
 	Goldflame = "Goldflame",
 	MountainKing = "MountainKing",
@@ -40,6 +40,9 @@ export enum BOSSES {
 	Spiritspeaker = "Spiritspeaker",
     LavaDragon = "LavaDragon",
 	Overseer = "Overseer",
+	KnuckleDuckle = "KnuckleDuckle",
+	Moonfly = "Moonfly",
+	
 
 	// Azhdaha = "Azhdaha",
 	Apep = "Apep",
@@ -56,13 +59,13 @@ export enum BOSSES {
 	Deianeira = "Deianeira",
 	Rocky = "Rocky",
 	// 4.4
-	ChizhangVishaps = "ChizangVishaps",
+	ChizhangVishaps = "ChizhangVishaps",
 	// 4.6
 	Cineas = "Cineas",
 	// 5.0
 	Balachko = "Balachko",
 	Cocijo = "Cocijo",
-	Polychrome = "PolychromeTriStars",
+	Polychrome = "Polychrome",
 	// 5.2
 	Bronzelock = "Bronzelock",
 }

@@ -1,6 +1,6 @@
-type PlayerInfo = {
+type PlayerConnection = {
     "_id": number,
     "result": string,
     "connected": number[]
 }
-export default PlayerInfo;
+export default PlayerConnection;

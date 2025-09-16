@@ -4,6 +4,8 @@ import { styled } from "@mui/system";
 import React, { Fragment } from "react";
 import { BossPicture } from "./BossPicture";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
+import { useAppDispatch } from "../../../../src/hooks/ReduxHooks";
+import { hoverBoss } from "../../../../src/GameReduce/selectionSlice";
 
 /**
  * @param boss the boss name to display
@@ -16,54 +18,37 @@ interface IBossButton {
 	selectDisplay: boolean; // display for choosing bosses to pick/ban or for viewing
 	isChosen: boolean;
 	component: boolean;
+	mainDisplay: boolean;
 }
-interface IInnerBossButton extends IBossButton {
+interface IDisplayInnerBossButton extends IBossButton {
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
-}
-interface IDisplayInnerBossButton extends IInnerBossButton {
 	team: number;
 	updateHover: (teamNum: number, selected: number) => void;
 }
+interface WrapperBoxProps {
+	mainDisplay?: boolean;
+}
 
-export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, updateHover, component}: IDisplayInnerBossButton) => {
+export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, updateHover, component, mainDisplay}: IDisplayInnerBossButton) => {
+	const dispatch = useAppDispatch();
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
-		localStorage.setItem("boss", `${BOSS_DETAIL[boss].index}`);
+		dispatch(hoverBoss(BOSS_DETAIL[boss].index));
 		updateHover(team, BOSS_DETAIL[boss].index);
 	}
-	if(isChosen){
-		return(
-			<NormalWrapperBox disableRipple onClick={doUpdate}>
-				<InnerBoss
-					boss={boss}
-					selectDisplay={selectDisplay}
-					isChosen={true}
-					component={component}
-				/>
-			</NormalWrapperBox>
-		)
-	}
-    return !selectDisplay ? (
-		<NormalWrapperBox disableRipple onClick={doUpdate}>
+	return (
+		<WrapperBox disableRipple onClick={doUpdate} mainDisplay={mainDisplay}>
 			<InnerBoss
 				boss={boss}
 				selectDisplay={selectDisplay}
 				isChosen={isChosen}
 				component={component}
+				mainDisplay={mainDisplay}
 			/>
-		</NormalWrapperBox>
-	) : (
-		<SelectedWrapperBox disableRipple onClick={doUpdate}>
-			<InnerBoss
-				boss={boss}
-				selectDisplay={selectDisplay}
-				isChosen={isChosen}
-				component={component}
-			/>
-		</SelectedWrapperBox>
+		</WrapperBox>
 	);
 }
-export const InnerBoss = ({boss, selectDisplay, isChosen, component}: IBossButton) => {
+export const InnerBoss = ({boss, isChosen, component, mainDisplay}: IBossButton) => {
 	return (
 		<Fragment>
 			<BossPicture boss={boss} isChosen={isChosen} component={component} />
@@ -71,10 +56,16 @@ export const InnerBoss = ({boss, selectDisplay, isChosen, component}: IBossButto
 				<Typography
 					fontFamily={"Roboto Mono"}
 					sx={{
-						textOverflow: "ellipsis",
+						textOverflow: "hidden",
 						whiteSpace: "nowrap",
 						overflow: "hidden",
-						fontSize: selectDisplay ? 10 : 10.5,
+						fontSize: {
+							xs: 5,
+							sm: 7.5, 
+							md: 8.5,
+							lg: 9.5,
+							xl: mainDisplay ? 11 : 10
+						},
 						fontWeight: "bold",
 					}}
 				>
@@ -85,8 +76,7 @@ export const InnerBoss = ({boss, selectDisplay, isChosen, component}: IBossButto
 	);
 }
 
-
-const NormalWrapperBox = styled(Button)({
+const WrapperBox = styled(Button, {shouldForwardProp: (prop) => prop !== "mainDisplay"})<WrapperBoxProps>(({ theme, mainDisplay }) => ({
 	display: "box",
 	flexDirection: "column",
 	alignItems: "center",
@@ -95,23 +85,22 @@ const NormalWrapperBox = styled(Button)({
 	overflow: "hidden",
 	justifyContent: "center",
 	color: "black",
-	width: 100,
-	position: "relative"
-});
-
-// designed for the bottom boss selection
-const SelectedWrapperBox = styled(Button)({
-	display: "box",
-	flexDirection: "column",
-	alignItems: "center",
-	padding: 0,
-	borderRadius: 8,
-	overflow: "hidden",
-	justifyContent: "center",
-	color: "black",
-	width: 80,
-	position: "relative"
-});
+	position: "relative",
+	minWidth: 0,
+	width: 40,
+	[theme.breakpoints.up("sm")]: {
+		width: mainDisplay ? 53 : 45,
+	},
+	[theme.breakpoints.up("md")]: {
+		width: mainDisplay ? 66 : 55,
+	},
+	[theme.breakpoints.up("lg")]: {
+		width: mainDisplay ? 79 : 62,
+	},
+	[theme.breakpoints.up("xl")]: {
+		width: mainDisplay ? 92 : 70,
+	},
+}));
 
 const LabelBox = styled(Box)({
 	backgroundColor: "white",
@@ -120,5 +109,5 @@ const LabelBox = styled(Box)({
 	textAlign: "center",
 	// TODO: Perhaps a programmatic way that gives more leeway to more flexibile sizes?
 	// TODO: Need to find a way for flexible font sizes, refer to Arataki Itto within application, the Itto gets moved to the next line and is cut off.
-	maxHeight: 25,
+	maxHeight: 20,
 });

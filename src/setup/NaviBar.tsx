@@ -1,18 +1,28 @@
 import { NavLink } from "react-router-dom";
 import "./css/NaviBar.css"
 import icon from "/images/assets/icon.png";
+import React from "react";
 
 export default function NaviBar(){
+  const [open, setOpen] = React.useState(false);
     return (
       <>
         <header>
           <nav className="navigation">
-            <ul>
+            <button
+              className="hamburger"
+              onClick={() => setOpen((prev) => !prev)}
+            >
+              &#9776;
+              <i className="ranked-text"><b>RANKED</b></i>
+              <img src={icon} alt="Ranked Icon" width="20" height="20" />
+            </button>
+
+            <ul className={open ? "open" : ""}>
               <li
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
                 }}
               >
                 <b>
@@ -26,6 +36,9 @@ export default function NaviBar(){
                 <NavLink to="/">Home</NavLink>
               </li>
               <li>
+                <NavLink to="/play">Play</NavLink>
+              </li>
+              <li>
                 <NavLink to="/characters">Characters</NavLink>
               </li>
               <li>
@@ -36,9 +49,6 @@ export default function NaviBar(){
               </li>
               <li>
                 <NavLink to="/rules">Rules</NavLink>
-              </li>
-              <li>
-                <NavLink to="/play">Play</NavLink>
               </li>
               <li>
                 <a href="http://discord.gg/fnGdP36E2Q">Discord</a>

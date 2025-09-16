@@ -2,7 +2,7 @@ import { CHARACTERS, GenericDetails } from "../types";
 import { BOSSES } from "../types/bosses";
 import { CHARACTER_INFO } from "../types/characters/details";
 import { BOSS_DETAIL } from "../types/bosses/details";
-import { ELEMENT_INFO, ELEMENTS } from "../types/elements";
+import { ELEMENT_INFO } from "../types/elements";
 
 export const ELEMENT_IMAGE_PATH = "/images/general/elements";
 export const WEAPON_IMAGE_PATH = "/images/general/billets";

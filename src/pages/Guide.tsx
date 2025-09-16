@@ -1,4 +1,3 @@
-import React from 'react'
 import useScreenSize from '../hooks/useScreenSize.ts';
 export const Guide = () => {
     const size = useScreenSize();
@@ -11,7 +10,7 @@ export const Guide = () => {
       maxHeight = size.height / 2;
     }
     return (
-      <div>
+      <div style={{ marginLeft: 10 }}>
         <h1>Ranked Website Guide (outdated, still accurate though)</h1>
         <iframe
           width={maxWidth}

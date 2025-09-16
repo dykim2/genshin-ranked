@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 
 export default function Ranked() {
+  // default has cookies
   return (
     <div>
       <NaviBar />

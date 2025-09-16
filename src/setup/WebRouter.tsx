@@ -1,9 +1,9 @@
 import {BrowserRouter, Route, Routes } from "react-router-dom";
 import Characters from "../pages/CharacterInfo.tsx";
 import Home from "../pages/Home.tsx";
-import Rules from "../pages/Rules.jsx";
+import Rules from "../pages/Rules.tsx";
 import Play from "../pages/Play.tsx";
-import InvalidPage from "../pages/InvalidPage.jsx";
+import InvalidPage from "../pages/InvalidPage.tsx";
 import Ranked from "./Ranked.jsx";
 import { FC, useEffect, useState } from "react";
 import Game from "../pages/Game.jsx";
@@ -12,25 +12,26 @@ import { Button } from "@mui/material";
 import Bosses from "../pages/BossInfo.tsx";
 import { Guide } from "../pages/Guide.tsx";
 import GetInfo from "../pages/GetInfo.tsx";
-import PlayerInfo from "../interfaces/PlayerInfoInterface.tsx";
+import PlayerConnection from "../interfaces/PlayerInfoInterface.tsx";
 
 interface IRouter {
   socket: WebSocket;
 }
 
 const WebRouter: FC<IRouter> = (props) => {
-  const [active, setActive] = useState<PlayerInfo[]>([]);
-  const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3000"];
+  const [active, setActive] = useState<PlayerConnection[]>([]);
+  const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3001"];
   const api = api_choice[0];
   const findActive = async () => {
     let gameData = await fetch(`${api}/gameAPI/active`, {
       method: "GET",
     });
-    let res: [PlayerInfo[], string] = await gameData.json();
-    let info: PlayerInfo[] = res[0];
+    let res: [PlayerConnection[], string] = await gameData.json();
+    let info: PlayerConnection[] = res[0];
     if (info != undefined) {
       setActive(info);
     }
+    // console.log(info);
   };
   useEffect(() => {
     findActive();
@@ -45,7 +46,7 @@ const WebRouter: FC<IRouter> = (props) => {
     fontFamily: "Roboto Mono",
     flexDirection: "column",
   };
-  function ErrorPage() {
+  const ErrorPage = () => {
     return (
       <div style={centerStyle}>
         <h1 style={{ fontSize: 65 }}>Oh no, something went wrong!</h1>
@@ -66,7 +67,7 @@ const WebRouter: FC<IRouter> = (props) => {
           <Route index element={<Home />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/play" element={<Play activeGames={active} findActive={findActive} />} />
-          {active!.map((game: { _id: React.Key | null | undefined }) => {
+          {active!.map((game: {_id: number}) => {
             return (
               <Route
                 key={game._id}
@@ -85,7 +86,4 @@ const WebRouter: FC<IRouter> = (props) => {
     </BrowserRouter>
   );
 }
-
-
-
 export default WebRouter;

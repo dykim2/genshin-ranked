@@ -1,4 +1,3 @@
-import { DisplayP3ColorSpace } from "three";
 import { ELEMENTS } from "../elements";
 import { GenericDetails } from "../generic";
 import { BOSS_TYPE } from "../level";
@@ -14,7 +13,6 @@ interface BossInfo extends GenericDetails {
     index: number;
 }
 // index is the way the server communicates to determine what boss to place on the screen
-
 
 export const BOSS_DETAIL: BossMap = {
 	[BOSSES.Random]: {
@@ -203,6 +201,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/f4/e7/b7/METS4WF_t.png",
 		index: 15,
 	},
+	[BOSSES.KnuckleDuckle]: {
+		displayName: "Knuckle Duckle",
+		element: ELEMENTS.electro,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "KnuckleDuckle",
+		onlineFilePath: "https://thumbs4.imagebam.com/ce/53/25/ME15W8RD_t.png",
+		index: 51,
+	},
 	[BOSSES.LavaDragon]: {
 		displayName: "Lava Dragon",
 		element: ELEMENTS.pyro,
@@ -212,7 +218,7 @@ export const BOSS_DETAIL: BossMap = {
 		index: 48,
 	},
 	[BOSSES.LegatusGolem]: {
-		displayName: "Legatus Golem",
+		displayName: "Golem",
 		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "LegatusGolem",
@@ -226,6 +232,14 @@ export const BOSS_DETAIL: BossMap = {
 		imageFileName: "MaguuKenki",
 		onlineFilePath: "https://thumbs4.imagebam.com/66/98/db/METS4V8_t.png",
 		index: 7,
+	},
+	[BOSSES.Moonfly]: {
+		displayName: "Moonfly",
+		element: ELEMENTS.dendro,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Moonfly",
+		onlineFilePath: "https://thumbs4.imagebam.com/13/9a/ac/ME15W8RF_t.png",
+		index: 52,
 	},
 	[BOSSES.MountainKing]: {
 		displayName: "Mountain King",
@@ -317,8 +331,8 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/19/9e/b3/METS4VT_t.png",
 		index: 28,
 	},
-	[BOSSES.SolitarySuanii]: {
-		displayName: "Solitary Suanni",
+	[BOSSES.SolitarySuanni]: {
+		displayName: "Suanni",
 		element: ELEMENTS.multi,
 		type: BOSS_TYPE.Standard,
 		imageFileName: "Suanni",

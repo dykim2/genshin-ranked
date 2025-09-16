@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	CHARACTERS,
 	ELEMENT_INFO,
@@ -12,32 +12,39 @@ import { GroupToggle } from "../GroupToggle";
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 import SearchIcon from '@mui/icons-material/Search';
 import Grid from "@mui/material/Grid";
+import { useAppSelector } from "../../../../src/hooks/ReduxHooks";
+import { chosenCharacters } from "../../../../src/GameReduce/selectionSlice";
 
 export interface Pick {
+	inGame: boolean;
 	team: number;
 	updateCharacter: React.Dispatch<React.SetStateAction<string>>;
-	selectedChars: number[]; // the selected characters; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
 	updateHover: (teamNum: number, selected: number) => void;
 	phase: string;
 }	
 
 export const CharacterSelector = ({
+	inGame,
 	team,
 	updateCharacter,
-	selectedChars,
 	updateHover,
 	phase
 }: Pick) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState<Boolean>(false);
-	const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selectedChars changes
+	// const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selectedChars changes
+	const selectedChars = useAppSelector(chosenCharacters);
+	const componentRef = React.useRef(null);
 	useEffect(() => {
-		setCount(count => count + 1);
+		// setCount(count => count + 1);
 	}, [selectedChars])
 	return (
 		<Stack direction="column">
-			<Stack direction="row" alignContent="center">
+			<Stack
+				direction={{ xs: "column", md: "row" }}
+				alignContent="center"
+			>
 				<TextField
 					variant="outlined"
 					placeholder="search"
@@ -49,7 +56,7 @@ export const CharacterSelector = ({
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
 					sx={{
-						minWidth: 140,
+						width: { xs: 160, md: 220, lg: 250 },
 						input: { color: "white" },
 						// Customizing the input text color
 						"& .MuiOutlinedInput-root": {
@@ -91,9 +98,11 @@ export const CharacterSelector = ({
 			<Grid
 				container
 				spacing={1}
-				minWidth="470px"
-				maxWidth="80vw"
+				maxHeight="70vh"
+				maxWidth={inGame ? undefined : "85vw"}
+				overflow={"auto"}
 				id="char-selector-grid"
+				ref={componentRef}
 			>
 				{/* TODO: Wrap this with useMemo to minimize unnessecary refiltering of these values */}
 				{Object.values(CHARACTERS)
@@ -123,8 +132,9 @@ export const CharacterSelector = ({
 						(x != CHARACTERS.NoBan ||
 							phase.toLowerCase() == "extraban" ||
 							phase.toLowerCase() == "ban") &&
-						(x != CHARACTERS.Random || phase.toLowerCase() == "pick")  ? (
-							<Grid padding={0.3} key={x}>
+						(x != CHARACTERS.Random ||
+							phase.toLowerCase() == "pick") ? (
+							<Grid key={x}>
 								<CharacterButton
 									team={team}
 									character={x}
@@ -133,6 +143,7 @@ export const CharacterSelector = ({
 									isChosen={selectedChars.includes(
 										CHARACTER_INFO[x].index,
 									)}
+									mainDisplay={true}
 									updateHover={updateHover}
 									component={false}
 								/>

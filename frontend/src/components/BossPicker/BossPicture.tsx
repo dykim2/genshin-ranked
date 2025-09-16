@@ -4,11 +4,13 @@ import {
     getBossElementImagePath,
 	getBossImagePath,
 } from "@genshin-ranked/shared";
-import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
-import { BOSS_TYPE } from "@genshin-ranked/shared/src/types/level";
-import { Box, Icon } from "@mui/material";
-import { height, styled } from "@mui/system";
-import { Fragment } from "react/jsx-runtime";
+import {BOSS_DETAIL} from "@genshin-ranked/shared/src/types/bosses/details";
+import {BOSS_TYPE} from "@genshin-ranked/shared/src/types/level";
+import {Box, Icon} from "@mui/material";
+import {styled} from "@mui/system";
+import {Fragment} from "react/jsx-runtime";
+import {useAppSelector} from "../../../../src/hooks/ReduxHooks";
+import {hoveredBoss} from "../../../../src/GameReduce/selectionSlice";
 
 interface IBoss {
 	boss: BOSSES
@@ -17,28 +19,28 @@ interface IBossPicture extends IBoss {
 	isChosen: boolean;
 	component: boolean;
 }
-const ImageDetail = ({ boss }: IBoss) => {
+const ImageDetail = ({boss}: IBoss) => {
 	return (
 		<Fragment>
 			<Image src={getBossImagePath(boss)} />
 			<IconWrapper>
 				{boss == BOSSES.None ? null : (
-					<Image src={getBossElementImagePath(boss)} />
+					<IconImage src={getBossElementImagePath(boss)} />
 				)}
 			</IconWrapper>
 		</Fragment>
 	);
 };
-const ChosenDetail = ({ boss }: IBoss) => {
+const ChosenDetail = ({boss}: IBoss) => {
 	return (
 		<Fragment>
 			<Image
 				src={getBossImagePath(boss)}
-				sx={{ filter: "grayscale(100%)" }}
+				sx={{filter: "grayscale(100%)"}}
 			/>
 			<IconWrapper>
 				{boss == BOSSES.None ? null : (
-					<Image
+					<IconImage
 						src={getBossElementImagePath(boss)}
 						sx={{filter: "greyscale(100%)"}}
 					/>
@@ -51,15 +53,9 @@ const ChosenDetail = ({ boss }: IBoss) => {
 interface IGradientBox {
 	type: BOSS_TYPE | null;
 }
-export const BossPicture = ({ boss, isChosen, component }: IBossPicture) => {
+export const BossPicture = ({boss, isChosen, component}: IBossPicture) => {
 	const thisInd = BOSS_DETAIL[boss].index;
-	let hoverInd = -5;
-	if(localStorage.getItem("boss") != null){
-		hoverInd = parseInt(localStorage.getItem("boss")!); 
-	}
-	else{
-		return;
-	}
+	let hoverInd = useAppSelector(hoveredBoss);
     return (
 		<Box sx={{backgroundColor: "white"}}>
 			{thisInd == hoverInd && !component && isChosen ? (
@@ -96,14 +92,14 @@ const ChosenBox = styled(Box)(() => ({
 	// picked or banned already
 	background: BANNED_GRADIENT,
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
+	alignItems: "left",
+	justifyContent: "left",
 	borderRadius: "8px 8px 15px 0px",
 	border: "1px solid black",
 	overflow: "hidden",
 	zIndex: 2,
 }));
-const GradientBox = styled(ChosenBox)(({ type }: IGradientBox) => ({
+const GradientBox = styled(ChosenBox)(({type}: IGradientBox) => ({
 	background:
 		type == BOSS_TYPE.Standard
 			? STANDARD_GRADIENT
@@ -111,18 +107,52 @@ const GradientBox = styled(ChosenBox)(({ type }: IGradientBox) => ({
 			? WEEKLY_GRADIENT
 			: LEGEND_GRADIENT
 }));
-const HoveredBox = styled(GradientBox)(() => ({
-	border: "8px solid #000000",
+const HoveredBox = styled(GradientBox)(({theme}) => ({
+	border: "8px solid #000", // default
+	[theme.breakpoints.down("md")]: {
+		border: "5px solid #000",
+	},
+	[theme.breakpoints.down("sm")]: {
+		border: "3px solid #000",
+	},
 }));
-const HoveredChosenBox = styled(ChosenBox)(() => ({
-	border: "8px solid #000000",
+const HoveredChosenBox = styled(ChosenBox)(({theme}) => ({
+	border: "8px solid #000", // default
+	[theme.breakpoints.down("md")]: {
+		border: "5px solid #000",
+	},
+	[theme.breakpoints.down("sm")]: {
+		border: "3px solid #000",
+	},
 }));
 
-const Image = styled("img")({
+const Image = styled("img")(() => ({
 	width: "100%",
-	height: "100%",
 	objectFit: "cover",
-});
+	// Responsive min/max sizes
+}));
+
+const IconImage = styled("img")(({ theme }) => ({
+	width: 10,
+	height: 10,
+	[theme.breakpoints.up("sm")]: {
+		width: 14,
+		height: 14,
+	},
+	[theme.breakpoints.up("md")]: {
+		width: 18,
+		height: 18,
+	},
+	[theme.breakpoints.up("lg")]: {
+		width: 22,
+		height: 22,
+	},
+	[theme.breakpoints.up("xl")]: {
+		width: 26,
+		height: 26,
+	},
+	objectFit: "cover",
+}));
 
 const IconWrapper = styled(Icon)({
 	position: "absolute",

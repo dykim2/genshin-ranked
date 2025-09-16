@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import { Button, Modal, Stack, TextField, Typography } from "@mui/material";
+import {FC, useState} from "react";
+import {Button, Modal, Stack, TextField, Typography} from "@mui/material";
 
 // a modal that pops up that shows an existing character and a way to replace them
+
+// later on goal: allow people to click on a character image
+// for now: character name will do
 const styling = {
   position: "absolute",
   top: "50%",
@@ -12,14 +15,14 @@ const styling = {
   transform: "translate(-50%, -50%)",
 };   
 interface ChangeProps {
-    open: boolean;
-    close: () => void;
-    change: (val: string, team: number) => void;
-    type: string,
-    name: string,
-    team: number
+  open: boolean;
+  close: () => void;
+  change: (val: string, team: number) => void;
+  type: string,
+  name: string,
+  team: number
 }
-const ChangeModal: React.FC<ChangeProps> = (props) => {
+const ChangeModal: FC<ChangeProps> = (props) => {
     const [newVal, setNewVal] = useState<string>("");
     return (
       <Modal open={props.open} onClose={props.close}>
