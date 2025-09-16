@@ -1,30 +1,34 @@
-import { useState, useEffect, useContext, Fragment, useRef, Key } from "react";
+import { useState, useEffect, Fragment, useRef } from "react";
 // import './css/Playing.css';
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, List, ListItem, ListItemButton, ListItemText, Radio, RadioGroup, TextField, Typography } from "@mui/material";
-import PlayerInfo from "../interfaces/PlayerInfoInterface.js";
-
-// start implementing redux!
+import PlayerConnection from "../interfaces/PlayerInfoInterface";
+import { useAppSelector, useAppDispatch } from "../hooks/ReduxHooks";
+import { buildGame, changeConnected, GameSettings, GameWebInterface, getConnected, getGame, getTotalBans, removeGame } from "../GameReduce/gameSlice";
+import { clearSelections } from "../GameReduce/selectionSlice";
 
 interface IPlay {
-  activeGames: PlayerInfo[];
+  activeGames: PlayerConnection[];
   findActive: () => Promise<void>;
 }
 
-const gameInfo = () => {
-  const info = sessionStorage.getItem("game");
-  return info ? JSON.parse(info) : { connected: [0, 0, 0] };
-};
-
 const Play = ({ activeGames, findActive }: IPlay) => {
   const [refreshing, setRefresh] = useState<boolean>(false); // for a refresh games option
-
+  const fontSizeChoice = {xs: "0.7rem", sm: "1rem", md: "1.3rem", lg: "1.6rem", xl: "2rem"};
+  const clickStartSize = {xs: "1.5rem", sm: "2.1rem", md: "2.7rem", lg: "3.3rem", xl: "4rem"};
+  const gameInProgressSize = {xs: "0.4rem", sm: "0.6rem", md: "0.8rem", lg: "rem", xl: "1.2rem"};
+  const refreshExitButtonSize = {xs: "0.55rem", sm: "0.7rem", md: "0.9rem", lg: "1.1rem", xl: "1.3rem"};
+  // change size to be responsive
+  const widthChoice = {xs: 200, sm: 250, md: 300, lg: 350, xl: 400};
+  const biggestTextSize = {xs: "1.3rem", sm: "1.9rem", md: "2.5rem", lg: "3.1rem", xl: "3.7rem"};
   const [open, setOpen] = useState<boolean>(false);
   const [choosing, setChoosing] = useState<boolean>(false);
   const [cookies, setCookie, removeCookie] = useCookies(["player"]);
   const [, forceRefresh] = useState<undefined>(); // refreshes the page
-  const [status, setStatus] = useState(gameInfo()); // the game the player chooses
+  const status = useAppSelector((state) => state.game);
+  const dispatch = useAppDispatch();
+  
   const navi: NavigateFunction = useNavigate();
   const [creating, setCreating] = useState<boolean>(false);
   const [readying, setReadying] = useState<boolean>(false);
@@ -34,19 +38,20 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   const [mode, setMode] = useState<string>("standard");
 
   const [extraBans, setExtraBans] = useState<string>("no one");
-  const [bans, setBans] = useState<number[]>([0, 0]);
+  const [bans, setBans] = useState<number[]>([0, 0]); // probably extra ban counts
 
   const [bonusParams, setParams] = useState<number[]>([0, -2, -1, -1]);
   const [creatingBO2, setBO2] = useState<boolean[]>([false, true]); // is it a bo2? is it game 1 or 2 of the bo2?
   // bo2 alwayshas fearless bosses i.e. cant pick same bosses
   const [fearless, setFearless] = useState<boolean>(false);
+  const idRef = useRef<number>(-1);
 
   const latestBoss = useRef(null);
   const api_list = [
     "https://rankedapi-late-cherry-618.fly.dev",
-    "http://localhost:3000",
+    "http://localhost:3001",
   ];
-  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3000"
+  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3001"
 
   const refreshGames = () => {
     setRefresh(true);
@@ -73,21 +78,17 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       setParams(newParams);
     }
   };
-  useEffect(() => {
-    sessionStorage.setItem("game", JSON.stringify(status));
-  }, [status]);
   const playGame = async (id: number) => {
     setCreating(false);
     setOpen(false);
+    idRef.current = id;
+    // await for connected
+    await dispatch(getConnected(id));
+    // 
     // call api to see if a player 1 / 2 / ref exists
-    sessionStorage.removeItem("game");
-    let info = await fetch(`${api}/gameAPI/find/${id}`);
-    info = await info.json();
-    console.log(info);
-    setStatus(info[0]);
-    sessionStorage.setItem("game", JSON.stringify(info[0]));
-    // redirect to the new page (/play/id) - add to navigation
+    // dispatch the game information 
     setChoosing(true);
+    // redirect to the new page (/play/id) - add to navigation
   };
   const close = () => {
     setOpen(false);
@@ -98,8 +99,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   const navigate = (id: number) => {
     return navi(`/play/${id}`);
   };
-  const defaultInfo = {
-    _id: -1,
+  const defaultInfo: GameSettings = {
+    _id: idRef.current,
     player: "1",
     extrabanst1: bans[0],
     extrabanst2: bans[1],
@@ -109,14 +110,15 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     division: mode,
     fearless: fearless,
     fearlessID: fearless ? bonusParams[3] : -1,
-    processing: false,
   };
   const choosePlayer = async (
     playerChoice: string,
     id: number,
-    info = defaultInfo
+    info: GameSettings = defaultInfo
   ) => {
     info.player = playerChoice;
+    dispatch(clearSelections());
+    dispatch(removeGame());
     if (playerChoice == "Ref (Custom)") {
       info.player = "Ref";
       setOptions(true);
@@ -147,84 +149,33 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     setReadying(true);
     // set the player in the API
     let valid = true;
-    let bosses = await fetch(`${api}/bossAPI/all`, {
-      method: "GET",
-    });
-    bosses = await bosses.json();
-    sessionStorage.setItem("bosses", JSON.stringify(bosses[0]));
     if (playerChoice != "Spectator" && !creating) {
-      let res = await fetch(`${api}/gameAPI/players/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          player: "" + playerChoice,
-        }),
-      });
       // have this return the game's total ban status too?
-      let newInfo = await res.json();
-      if (res.status != 200) {
-        valid = false;
-        alert(newInfo.message);
-      } else {
-        newInfo.totalBans == 6
-          ? sessionStorage.setItem("totalbans", "2+1")
-          : sessionStorage.setItem("totalbans", "3+1");
-      }
+      await dispatch(changeConnected({id: id, playerChoice: playerChoice}));
     } else if (creating) {
       // combine the info sent to the API - this allows me to add custom settings
-      let res = await fetch(`${api}/gameAPI/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(info),
-      });
-      sessionStorage.removeItem("game");
-      res = await res.json();
-      setStatus(res[0]);
-      sessionStorage.setItem("game", JSON.stringify(res[0]));
-      if (res[0].totalBans == 6) {
-        sessionStorage.setItem("totalbans", "2+1");
-      } else {
-        sessionStorage.setItem("totalbans", "3+1");
-      }
-      id = res[0]._id;
+      let result = (await dispatch(buildGame(info))).payload as GameWebInterface;
+      id = result._id;
+      idRef.current = id;
+      // need to get id somehow
     } else {
-      let res = await fetch(`${api}/gameAPI/bans/${id}`, {
-        method: "GET",
-      });
-      // have this return the game's total ban status too?
-      let newInfo = await res.json();
-      console.log(newInfo);
-      if (res.status != 200) {
-        valid = false;
-        alert(newInfo.message);
-      } else {
-        newInfo.totalBans == 6
-          ? sessionStorage.setItem("totalbans", "2+1")
-          : sessionStorage.setItem("totalbans", "3+1");
-      }
+      await dispatch(getTotalBans(id));
     }
     if (!valid) {
-      return; // don't go any further
+      return; 
     }
-    sessionStorage.setItem("selected_bosses", JSON.stringify([]));
-    sessionStorage.setItem("selected_characters", JSON.stringify([]));
     setCookie("player", "" + playerChoice + " game " + id);
-    setCreating(false);
-    setChoosing(false);
+    setChoosing(false); // the delay allows for the reload
     setReadying(false);
     navigate(id);
     localStorage.setItem("character", "-1");
     localStorage.setItem("boss", "-1");
     if (creating) {
+      setCreating(false);
       window.location.reload();
     }
   };
   const createGame = async () => {
-    console.log("hi");
     // create the game here
     setCreating(true);
     // once created, connect the game to the websocket api to allow for picks and bans
@@ -245,7 +196,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       alert("Please choose a valid game id for fearless bosses!");
       return;
     }
-    let info = {
+    let info: GameSettings = {
       _id: -1,
       player: "1",
       extrabanst1: 0,
@@ -256,11 +207,9 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       division: "advanced",
       fearless: bonusParams[3] > -1,
       fearlessID: bonusParams[3] > -1 ? bonusParams[3] : -1,
-      processing: false,
     };
     await choosePlayer("Ref", -1, info);
   };
-
   const submitCustom = async () => {
     // playerChoice is always ref - ref must join and decide these
     // similar to create game, but adds the extra information to the stats
@@ -310,7 +259,6 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       processing: false,
     };
     await choosePlayer("Ref", -1, info);
-
     /* dialog for extra options for a ref 
       The options:
       1. team gets extra bans - a series of radio buttons
@@ -329,21 +277,21 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   return (
     <div>
       {typeof cookies.player == "undefined" ? null : (
-        <p style={{ fontSize: 20, color: "white" }}>
+        <Typography sx={{fontSize: gameInProgressSize, color: "white"}}>
           You are currently in the middle of a game.
-        </p>
+        </Typography>
       )}
       <div style={centerStyle as React.CSSProperties}>
-        <h1 style={{ fontSize: 65 }}>Welcome to Genshin Ranked!</h1>
-        <p style={{ fontSize: 50, marginBottom: 100 }}>
+        <Typography variant="h1" sx={{fontSize: biggestTextSize, fontWeight: "bold"}}>Welcome to Genshin Ranked!</Typography>
+        <Typography sx={{fontSize: fontSizeChoice, marginBottom: {xs: 5, md: 10}}}>
           Click to start a new game or join an existing one!
-        </p>
+        </Typography>
         <Button
           variant="contained"
           sx={{
-            fontSize: 30,
+            fontSize: fontSizeChoice,
             marginBottom: 3,
-            minWidth: 400,
+            minWidth: widthChoice,
             fontFamily: "Roboto Mono",
           }}
           onClick={createGame}
@@ -353,10 +301,9 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         <Button
           variant="contained"
           sx={{
-            fontSize: 30,
+            fontSize: fontSizeChoice,
             marginBottom: 3,
-            minWidth: 400,
-            fontFamily: "Roboto Mono",
+            minWidth: widthChoice
           }}
           onClick={join}
         >
@@ -365,10 +312,9 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         <Button
           variant="contained"
           sx={{
-            fontSize: 30,
+            fontSize: fontSizeChoice,
             marginBottom: 3,
-            minWidth: 400,
-            fontFamily: "Roboto Mono",
+            minWidth: widthChoice
           }}
           onClick={() => {
             removeCookie("player");
@@ -383,12 +329,13 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         onClose={close}
         scroll="paper"
         slotProps={{
-          paper: { style: { color: "white", backgroundColor: "#73584b" } },
+          paper: {style: {color: "white", backgroundColor: "#73584b"}},
         }}
+        sx={{fontSize: refreshExitButtonSize}}
       >
-        <DialogTitle>select a game by its id:</DialogTitle>
+        <DialogTitle sx={{fontSize: refreshExitButtonSize}}>select a game by its id:</DialogTitle>
         <DialogContent>
-          <List sx={{ pt: 0 }}>
+          <List sx={{paddingTop: 0}}>
             {activeGames!.map((game) => {
               return (
                 <ListItem disableGutters key={game._id}>
@@ -396,16 +343,16 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                     sx={{
                       backgroundColor: "#73584b",
                       border: "2px solid red",
-                      maxWidth: "110px",
-                      minWidth: "110px",
+                      minWidth: {xs: "70px", sm: "85px", md: "100px", lg: "120px"},
+                      maxWidth: {xs: "70px", sm: "85px", md: "100px", lg: "120px"},
                     }}
-                    onClick={async () => {
-                      await playGame(game._id);
+                    onClick={() => {
+                      playGame(game._id);
                     }}
                   >
                     {`ID: ${game._id}`}
                   </ListItemButton>
-                  <ListItemText primary={`status: ${game.result}`} />
+                  <ListItemText primary={`status: ${game.result}`} slotProps={{primary: {sx: {fontSize: refreshExitButtonSize, paddingLeft: 1}}}} />
                 </ListItem>
               );
             })}
@@ -418,11 +365,11 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               refreshGames();
             }}
             disabled={refreshing}
-            sx={{ fontSize: 22, color: "red" }}
+            sx={{fontSize: refreshExitButtonSize, color: "red"}}
           >
             {refreshing ? "Please Wait" : "Refresh"}
           </Button>
-          <Button onClick={close} sx={{ fontSize: 22, color: "yellow" }}>
+          <Button onClick={close} sx={{fontSize: refreshExitButtonSize, color: "yellow"}}>
             Exit
           </Button>
         </DialogActions>
@@ -431,7 +378,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={choosing}
         onClose={close}
         slotProps={{
-          paper: { style: { color: "black", backgroundColor: "#73584b" } },
+          paper:{style:{color: "black", backgroundColor: "#73584b"}},
         }}
       >
         <DialogTitle>
@@ -459,7 +406,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                     (!creating && !player.includes("Ref (")) ? (
                     <ListItem disableGutters key={player}>
                       <ListItemButton
-                        onClick={() => choosePlayer(player, status._id)}
+                        onClick={() => choosePlayer(player, idRef.current)}
                         disabled={
                           (player == "Spectator" && creating) ||
                           player == "Refe (Custom)" || // if i want to disable custom ref game i can do this in future (typo is intended)
@@ -476,11 +423,11 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             </DialogContent>
             <DialogActions>
               <Button
-                sx={{ color: "yellow" }}
+                sx={{color: "yellow"}}
                 onClick={() => {
                   setChoosing(false); // stop choosing and remove game information
-                  setStatus({ connected: [0, 0, 0] }); // back to default
-                  sessionStorage.removeItem("game");
+                  // remove game data - set game state back to default
+                  dispatch(removeGame());
                 }}
               >
                 Exit
@@ -493,25 +440,12 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={options}
         onClose={() => setOptions(false)}
         slotProps={{
-          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
+          paper: {style: {color: "black", backgroundColor: "#46bdc6"}},
         }}
       >
         <DialogTitle>
           <Typography fontWeight="bold">bonus ref options</Typography>
         </DialogTitle>
-        {/* dialog for extra options for a ref 
-            The options:
-            1. team gets extra bans - a series of radio buttons
-            1.1. if a team gets extra bans, are they limited to support bans?
-
-            2. custom number of bosses - team 1 will always get the extra pick
-
-            3. preset first boss or make no preset (drake or a set boss or nothing)
-
-            4. premier mode
-
-            5. fearless bosses (no picking the same bosses as a previous game)
-          */}
         <DialogContent>
           <Typography>division</Typography>
           <FormControl>
@@ -551,6 +485,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               />
             </RadioGroup>
           </FormControl>
+          <br />
           <FormControl>
             <Typography>who gets extra bans?</Typography>
             <RadioGroup
@@ -580,6 +515,11 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               />
             </RadioGroup>
           </FormControl>
+          {
+            extraBans == "team 1" || extraBans == "team 2" || extraBans == "both" ? (
+              <br />
+            ) : null
+          }
           {extraBans == "team 1" || extraBans == "both" ? (
             <TextField
               helperText="Extra bans are limited to at most 2!"
@@ -591,6 +531,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               error={bans[0] > 2 || bans[0] < 0}
             />
           ) : null}
+          {''}
           {extraBans == "team 2" || extraBans == "both" ? (
             <TextField
               helperText="Extra bans are limited to at most 2!"

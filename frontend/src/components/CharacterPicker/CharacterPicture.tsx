@@ -2,7 +2,7 @@
  * Picture of a character, including the backdrop and element. Does NOT include name of character.
  */
 
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import {
 	CHARACTERS,
 	getCharacterElementImagePath,
@@ -12,6 +12,8 @@ import {
 import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details";
 import { Box, Icon } from "@mui/material";
 import { styled } from "@mui/system";
+import { useAppSelector } from "../../../../src/hooks/ReduxHooks";
+import { hoveredCharacter } from "../../../../src/GameReduce/selectionSlice";
 
 interface ICharacter {
 	character: CHARACTERS
@@ -27,7 +29,7 @@ const ImageDetail = ({character}: ICharacter) => {
 			<Image src={getCharacterImagePath(character)} />
 			{character != CHARACTERS.None && character != CHARACTERS.NoBan ? (
 				<IconWrapper>
-					<Image src={getCharacterElementImagePath(character)} />
+					<IconImage src={getCharacterElementImagePath(character)} />
 				</IconWrapper>
 			) : null}
 		</Fragment>
@@ -42,7 +44,7 @@ const BanDetail = ({character}: ICharacter) => {
 			/>
 			{character != CHARACTERS.None && character != CHARACTERS.NoBan ? (
 				<IconWrapper>
-					<Image
+					<IconImage
 						sx={{ filter: "grayscale(100%)" }}
 						src={getCharacterElementImagePath(character)}
 					/>
@@ -57,13 +59,7 @@ export const CharacterPicture = ({ character, banDisplay, component }: ICharacte
 	// when creating a game reset both
 	// highlight 
 	const thisInd = CHARACTER_INFO[character].index;
-	let hoverInd = -5;
-	if(localStorage.getItem("character") != null){
-		hoverInd = parseInt(localStorage.getItem("character")!); 
-	}
-	else{
-		return;
-	}
+	let hoverInd = useAppSelector(hoveredCharacter)
 	return (
 		<Box sx={{ backgroundColor: "white" }}>
 			{thisInd == hoverInd && !component && banDisplay != "ban" ? (
@@ -109,18 +105,30 @@ const BannedGradientBox = styled(Box)({
 	overflow: "hidden",
 });
 
-const NormalGradientBox = styled(BannedGradientBox)(({ rarity }: IGradientBox) => ({
+const NormalGradientBox = styled(BannedGradientBox)(({rarity}: IGradientBox) => ({
 	background:
 		rarity === RARITY.FiveStar ? FIVE_STAR_GRADIENT : FOUR_STAR_GRADIENT,
 }));
 
-const HoveredBannedBox = styled(BannedGradientBox)({
-	border: "8px solid #000000"
-});
+const HoveredBannedBox = styled(BannedGradientBox)(({theme}) => ({
+	border: "8px solid #000", // default
+	[theme.breakpoints.down("md")]: {
+		border: "5px solid #000",
+	},
+	[theme.breakpoints.down("sm")]: {
+		border: "3px solid #000",
+	},
+}));
 
-const HoveredGradientBox = styled(NormalGradientBox)({
-	border: "8px solid #000000",
-});
+const HoveredGradientBox = styled(NormalGradientBox)(({theme}) => ({
+	border: "8px solid #000", // default
+	[theme.breakpoints.down("md")]: {
+		border: "5px solid #000",
+	},
+	[theme.breakpoints.down("sm")]: {
+		border: "3px solid #000",
+	},
+}));
 
 const Image = styled("img")({
 	width: "100%",
@@ -128,10 +136,32 @@ const Image = styled("img")({
 	objectFit: "cover",
 });
 
+const IconImage = styled("img")(({ theme }) => ({
+	width: 10,
+	height: 10,
+	[theme.breakpoints.up("sm")]: {
+		width: 14,
+		height: 14,
+	},
+	[theme.breakpoints.up("md")]: {
+		width: 18,
+		height: 18,
+	},
+	[theme.breakpoints.up("lg")]: {
+		width: 22,
+		height: 22,
+	},
+	[theme.breakpoints.up("xl")]: {
+		width: 26,
+		height: 26,
+	},
+	objectFit: "cover",
+}));
+
 const IconWrapper = styled(Icon)({
 	position: "absolute",
-	top: 3,
-	left: 3,
+	top: 2,
+	left: 2,
 	padding: 0,
 	display: "flex",
 	overflow: "visible",

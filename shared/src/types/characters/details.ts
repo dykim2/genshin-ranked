@@ -27,7 +27,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		rarity: RARITY.FiveStar,
 		imageFileName: "Random",
 		onlineFilePath: "https://images4.imagebam.com/32/ba/9c/ME15DSS8_o.png",
-		index: -3
+		index: -3,
 	},
 	[CHARACTERS.NoBan]: {
 		displayName: "No Ban",
@@ -46,6 +46,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "NoBan",
 		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
 		index: -1,
+	},
+	[CHARACTERS.Aino]: {
+		displayName: "Aino",
+		element: ELEMENTS.hydro,
+		weapon: WEAPONS.claymore,
+		rarity: RARITY.FourStar,
+		imageFileName: "Aino",
+		onlineFilePath: "https://thumbs4.imagebam.com/6c/11/d9/ME15W8RB_t.png",
+		index: 102,
 	},
 	[CHARACTERS.Albedo]: {
 		displayName: "Albedo",
@@ -326,6 +335,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/70/64/fd/METQJAY_t.png",
 		index: 6,
 	},
+	[CHARACTERS.Flins]: {
+		displayName: "Flins",
+		element: ELEMENTS.electro,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Flins",
+		onlineFilePath: "https://thumbs4.imagebam.com/ed/fd/98/ME15W8R9_t.png",
+		index: 103,
+	},
 	[CHARACTERS.Freminet]: {
 		displayName: "Freminet",
 		element: ELEMENTS.cryo,
@@ -523,6 +541,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "LanYan",
 		onlineFilePath: "https://thumbs4.imagebam.com/69/ba/fa/MEYIHI6_t.png",
 		index: 92,
+	},
+	[CHARACTERS.Lauma]: {
+		displayName: "Lauma",
+		element: ELEMENTS.dendro,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Lauma",
+		onlineFilePath: "https://thumbs4.imagebam.com/5e/7d/e2/ME15W8R8_t.png",
+		index: 104,
 	},
 	[CHARACTERS.Layla]: {
 		displayName: "Layla",

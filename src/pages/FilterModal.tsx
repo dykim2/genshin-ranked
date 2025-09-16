@@ -1,6 +1,6 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Box, Button, Menu, MenuItem, Modal } from "@mui/material";
-import React, { Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 
 // not being used currently
 
@@ -9,7 +9,8 @@ interface FilterProps {
   close: () => void;
   setOrder: (newOrder: string[]) => void
 }
-const FilterModal: React.FC<FilterProps> = (props) => {
+// not currently being used, because it is ugly and just worse than current filtering
+const FilterModal: FC<FilterProps> = (props) => {
   // filter the list of current characters by element(s), rarity (4 or 5 star), name, region, weapon
   // use localstorage for the filter
   // create a grid
@@ -182,3 +183,4 @@ const FilterModal: React.FC<FilterProps> = (props) => {
     </Modal>
   );
 }
+export default FilterModal;

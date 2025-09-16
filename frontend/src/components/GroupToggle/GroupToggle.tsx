@@ -42,9 +42,11 @@ export const GroupToggle = ({
 						<Box
 							component="img"
 							src={getElementImagePath(option)}
+							// add a scroll bar or like a way to collapse these
 							sx={{
-								width: 30,
-								height: 30,
+								width: {xs: 15, sm: 20, md: 30},
+								height: {xs: 15, sm: 20, md: 30},
+								overflow: "scroll"
 							}}
 						/>
 					</ToggleButton>

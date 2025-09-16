@@ -1,12 +1,11 @@
-const centerStyle = {
+const centerStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  whitespace: "pre-line",
   flexDirection: "column",
   marginTop: 300,
 };
-export default function ErrorPage(){
+export const ErrorPage = () => {
     return (
     <div style={centerStyle}>
         <h1 style={{ fontSize: 65 }}>An error occurred!</h1>

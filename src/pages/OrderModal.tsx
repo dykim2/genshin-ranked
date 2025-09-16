@@ -8,7 +8,7 @@
 
 import { Box, Button, Modal, Menu, MenuItem, TextField } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Fragment, useState } from "react";
+import { Fragment, ChangeEvent, MouseEvent, useState } from "react";
 const styling = {
   position: "absolute",
   top: `30%`,
@@ -18,19 +18,23 @@ const styling = {
   gridTemplateColumns: "1fr 1fr 1fr", // boss button ("Add Aeonblight Drake time"), time, status (dropdown menu)
   component: "form",
   backgroundColor: 'white'
-};   
-export default function OrderModal(props) {
+};
+
+export default function OrderModal(props: { players: any[]; teamName: string; picks: { name: string }[]; progress: any; reorder: (arg0: any, arg1: number[], arg2: any[], arg3: any) => void; team: any; close: () => void; open: boolean;}) {
     const [order, setOrder] = useState([0,1,2,3,4,5]); // taken from original pick order
-    const [active, setActive] = useState([null, null, null, null, null, null]);
+    const [active, setActive] = useState<Array<MouseEvent<HTMLButtonElement, globalThis.MouseEvent> | null>>([null, null, null, null, null, null]);
     const [names, setNames] = useState([...props.players])
     const [teamName, setTeamName] = useState(props.teamName);
     const activeAnchors = active.map(menu => {return Boolean(menu);})
-    const activateAnchor = (index, event) => {
-      let newActive = [...active];
-      newActive[index] = event.currentTarget;
+    const activateAnchor = (
+      index: number,
+      event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+    ) => {
+      let newActive = [...active]; // need to change to currentTarget though
+      newActive[index] = event;
       setActive(newActive);
-    }
-    const deactivateAnchor = (index) => {
+    };
+    const deactivateAnchor = (index: number) => {
       let newActive = [...active];
       newActive[index] = null;
       setActive(newActive);
@@ -38,7 +42,7 @@ export default function OrderModal(props) {
     // useref value for new order - updates on change, but actual dro
     // console.log(props.picks);
     // console.log("picks")
-    const pickArr = props.picks.map(pick => {return pick.name;});
+    const pickArr: string[] = props.picks.map((pick: { name: string; }) => {return pick.name;});
     /**
      * Sends the order information to the websocket.
      */
@@ -69,12 +73,15 @@ export default function OrderModal(props) {
      * @param {number} index the location of the name to update
      * @param {*} e the event information
      */
-    const updateNames = (index, e) => {
+    const updateNames = (
+      index: number,
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
       let newNames = [...names];
-      newNames[index] = e.target.value; 
+      newNames[index] = e.target.value;
       setNames(newNames);
-    }
-    const updateOrder = (index, value) => {
+    };
+    const updateOrder = (index: number, value: number) => {
       if(value < 0 || value >= order.length){
           // do literally, absolutely, utterly nothing
           return;
@@ -125,14 +132,18 @@ export default function OrderModal(props) {
                   id={name}
                   label={`Player ${index + 1} name`}
                   defaultValue={name}
-                  onChange={(e) => {
+                  onChange={(
+                    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+                  ) => {
                     updateNames(index, e);
                   }}
                 />
                 <Button
                   variant="outlined"
                   id={`button-${2 * index}`}
-                  onClick={(e) => {
+                  onClick={(
+                    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+                  ) => {
                     activateAnchor(2 * index, e);
                   }}
                 >
@@ -141,8 +152,8 @@ export default function OrderModal(props) {
                 </Button>
                 <Menu
                   open={activeAnchors[2 * index]}
-                  id={2 * index}
-                  anchorEl={active[2 * index]}
+                  id={"" + 2 * index}
+                  anchorEl={active[2 * index]?.currentTarget}
                   onClose={() => {
                     deactivateAnchor(2 * index);
                   }}
@@ -172,8 +183,8 @@ export default function OrderModal(props) {
                 </Button>
                 <Menu
                   open={activeAnchors[2 * index + 1]}
-                  id={2 * index + 1}
-                  anchorEl={active[2 * index + 1]}
+                  id={"" + (2 * index + 1)}
+                  anchorEl={active[2 * index + 1]?.currentTarget}
                   onClose={() => {
                     deactivateAnchor(2 * index + 1);
                   }}

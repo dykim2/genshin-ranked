@@ -20,6 +20,10 @@
   "rules": {
     //add customize rules here as per your project's needs
     "react/react-in-jsx-scope": "off",
-    "react/jsx-uses-react": "off"
+    "react/jsx-uses-react": "off",
+    "no-warning-comments": [
+      "warn",
+      { "terms": ["todo", "fixme"], "location": "anywhere" }
+    ]
   }
 }

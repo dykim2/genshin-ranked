@@ -1,10 +1,9 @@
-.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+body {
+  width: 100%;
+  min-height: 100vh;
   background: url('/images/background.png') no-repeat center center / cover;
+  margin: 0;
+  padding: 0;
   z-index: -1;
 }
 

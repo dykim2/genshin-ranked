@@ -6,18 +6,43 @@
 }
 
 .navigation {
-  background-color: rgb(0 0 0);
+  background-color: #1f172a;
   font-size: 18px;
   font-family: 'Roboto Mono';
+  
 }
 
 .navigation ul {
   display: flex;
   justify-content: start;
-  gap: 30px;
+  gap: 20px;
   padding: 1em;
   list-style-type: none;
   font-family: 'Roboto Mono';
+}
+
+.hamburger {
+  display: none;
+  font-size: 1.5rem;
+  color: rgb(255 233 166);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+@media (max-width: 700px) {
+  .navigation ul {
+    font-size: 16px;
+    flex-direction: column;
+    display: none;
+  }
+  .navigation ul.open {
+    display: flex;
+  }
+  .hamburger {
+    display: block;
+  }
 }
 
 .navigation ul a {
@@ -30,4 +55,8 @@
 .navigation ul a.active {
   color: rgb(34 197 94);
   font-family: 'Roboto Mono';
+}
+
+.ranked-text {
+  color: white;
 }

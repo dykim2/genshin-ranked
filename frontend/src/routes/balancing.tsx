@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // The old /characters page, that discusses balancing of units.
-import React, { Fragment } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import { CharacterSelector } from "../components";
+import React, {Fragment} from "react";
+import {Box, Typography} from "@mui/material";
+import {CharacterSelector} from "../components";
 import './balancing.css';
-import { useCookies } from "react-cookie";
 // import Avatar from "@mui/material/Avatar";
 // import styled from "@emotion/styled";
 
@@ -14,92 +13,41 @@ import { useCookies } from "react-cookie";
 interface balance {
 	team: number; 
 	phase: string;
-	pickSelection: (teamNum: number, selectedObj: {id: number}, timeout: boolean) => void;
 	sendHover: (teamNum: number, selected: number) => void;
 	inGame: boolean;
 	bonusInfo: string[];
-	selections: number[];
-	active: boolean;
 }
 
-export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusInfo, selections, active}: balance) => {
+export const Balancing = ({team, phase, sendHover, inGame, bonusInfo}: balance) => {
 	const [selection, setSelection] = React.useState<string>("None");
-	const [cookieInfo] = useCookies(["player"]);
-	let matching = true;
-	if (cookieInfo.player != undefined && cookieInfo.player.substring(0, 1) != team) {
-		matching = false;
-	}
-	const info = sessionStorage.getItem("game");
-	let newInfo: number;
-	let currentResult: string = "";
-	if (info != null && info != undefined && info != "") {
-		let infoParse = JSON.parse(info);
-		newInfo = infoParse.turn;
-		currentResult = infoParse.result;
-	} else {
-		newInfo = 0;
-	}
-	const sendToSocket = () => {
-		// find the corresponding id of the character with this display name
-		// loop on the character information
-		console.log("the button was pressed again");
-		let selectionInfo = {
-			type: phase.toLowerCase(),
-			id: -1,
-		};
-		if(team == -1){
-			return;
-		}
-		let chosenValue: number = -1;
-		if (localStorage.getItem("character") == null) {
-			chosenValue = -1;
-			alert("Please select a character!");
-			return;
-		} else {
-			chosenValue = parseInt(localStorage.getItem("character")!);
-		}
-		selectionInfo.id = chosenValue;
-		pickSelection(team, selectionInfo, false);
-		/*
-		socket.send(
-			JSON.stringify({
-				// force websocket to determine if current status is ban or pick, handle accordingly
-				type: "character",
-				id: id,
-				charId: chosenValue,
-				team: team,
-			}),
-		);
-		*/
-	};
-	
 	return (
 		<Box sx={{ display: "flex" }} id="balancing-page-parent-box">
 			{/* Left Side: Button Grid */}
 			<Box
 				sx={{
-					borderRight: "1px solid #ccc",
+					borderRight: !inGame ? "0px solid #ccc" : undefined,
 				}}
 				id="character-selector-container"
 			>
 				<CharacterSelector
+					inGame={inGame}
 					team={team}
 					updateCharacter={setSelection}
-					selectedChars={selections}
 					updateHover={sendHover}
 					phase={phase}
 				/>
 			</Box>
-			{/* Right Side: Button Details */}
-			<Box sx={{ padding: 2, width: "500px" }}>
-				{
-					<React.Fragment>
+			{/* Right Side: Button Details - adjust box size */}
+			{
+				!inGame ?
+				<Box sx={{ padding: 2, width: "500px" }}>
+					<Fragment>
 						<Typography
 							color={"white"}
 							textTransform="none"
 							variant="h6"
 						>
-							{`currently selected: ${selection}`}
+							{`currently selected:\n ${selection}`}
 							{/*
 								<Box
 									sx={{
@@ -157,7 +105,8 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 								</Box>
 							*/}
 						</Typography>
-						<Button
+						{/*
+						 <Button
 							variant="contained"
 							onClick={() => {
 								sendToSocket();
@@ -189,7 +138,9 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 									  }`
 									: `click char for restrictions`}
 							</Typography>
-						</Button>
+							</Button>
+						*/}
+
 						{bonusInfo.map((val: string) => {
 							return (
 								<Fragment key={val}>
@@ -204,9 +155,11 @@ export const Balancing = ({team, phase, pickSelection, sendHover, inGame, bonusI
 								</Fragment>
 							);
 						})}
-					</React.Fragment>
-				}
-			</Box>
+					</Fragment>
+				
+				</Box> : undefined
+			}
+			
 		</Box>
 	);
 };

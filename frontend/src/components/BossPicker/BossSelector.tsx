@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import {
     BOSSES,
 	ELEMENT_INFO,
@@ -12,41 +12,36 @@ import { BossButton } from "./BossButton";
 import { GroupToggle } from "../GroupToggle";
 import SearchIcon from "@mui/icons-material/Search";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
+import { useAppSelector } from "../../../../src/hooks/ReduxHooks";
+import { chosenBosses } from "../../../../src/GameReduce/selectionSlice";
 
 // an exact copy of character selector applied for bosses - should make a selector component instead but this way gets the changes out faster
 
 export interface IBoss {
+	inGame: boolean;
 	team: number;
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
-	selections: number[]; // the selected bosses; these ones will be greyed out (no seperate message tho; the seperate message is already handled elsewhere)
 	updateHover: (teamNum: number, selected: number) => void;
 }
 
 export const BossSelector = ({
+	inGame,
 	team,
 	updateBoss,
-	selections,
 	updateHover
 }: IBoss) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState<boolean>(false);
-	const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selections changes
-	const componentRef: any = useRef(null)
-	useEffect(() => {
-		/*
-		if(componentRef.current){
-			const {width, height} = componentRef.current.getBoundingClientRect();
-			console.log(`center: ${width/2}, ${height/2}`)
-			// localStorage.setItem("width", `${width}`)
-			// localStorage.setItem("height", `${height}`)
-		}
-		*/
-		setCount(count => count + 1);
-	}, [selections]) 
+	// const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selections changes
+	const selections = useAppSelector(chosenBosses);
+	const componentRef = useRef(null);
 	return (
 		<Stack direction="column">
-			<Stack direction="row" alignContent="center">
+			<Stack
+				direction={{ xs: "column", md: "row" }}
+				alignContent="center"
+			>
 				<TextField
 					variant="outlined"
 					placeholder="search"
@@ -58,7 +53,8 @@ export const BossSelector = ({
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
 					sx={{
-						minWidth: 240,
+						width: { xs: 160, md: 220, lg: 250 },
+						marginTop: 0.75,
 						input: { color: "white" },
 						// Customizing the input text color
 						"& .MuiOutlinedInput-root": {
@@ -92,15 +88,16 @@ export const BossSelector = ({
 				<GroupToggle
 					value={elementFilter}
 					setValue={setElementFilter}
-					options={Object.values(ELEMENT_INFO)} 
+					options={Object.values(ELEMENT_INFO)}
 				/>
 			</Stack>
 			<Grid
 				container
 				spacing={1}
-				minWidth="470px"
-				maxWidth="98vw"
-				id="char-selector-grid"
+				maxHeight="70vh"
+				maxWidth={inGame ? undefined : "85vw"}
+				overflow={"auto"}
+				id="boss-selector-grid"
 				ref={componentRef}
 			>
 				{/* TODO: Wrap this with useMemo to minimize unnessecary refiltering of these values */}
@@ -112,9 +109,13 @@ export const BossSelector = ({
 						// TODO: Algorithm can be slightly optimized. (Not by degrees of n, but perhaps a coefficient of it.)
 						const correctElement =
 							elementFilter === BOSS_DETAIL[boss].element;
-						const correctSearch = BOSS_DETAIL[boss].imageFileName
-							.toLowerCase()
-							.includes(searchFilter.toLowerCase());
+						const correctSearch =
+							BOSS_DETAIL[boss].displayName
+								.toLowerCase()
+								.includes(searchFilter.toLowerCase()) ||
+							BOSS_DETAIL[boss].imageFileName
+								.toLowerCase()
+								.includes(searchFilter.toLowerCase());
 						if (searchFilter.length === 0 && elementFilter) {
 							return correctElement;
 						} else if (searchFilter.length > 0 && !elementFilter) {
@@ -126,16 +127,19 @@ export const BossSelector = ({
 						}
 					})
 					.map((x) => {
-						return (x != BOSSES.None) ? (
-							<Grid padding={0.3} key={x}>
+						return x != BOSSES.None ? (
+							<Grid key={x}>
 								<BossButton
 									team={team}
 									boss={x}
 									updateBoss={updateBoss}
 									selectDisplay={false}
-									isChosen={selections.includes(BOSS_DETAIL[x].index)}		
+									isChosen={selections.includes(
+										BOSS_DETAIL[x].index,
+									)}
+									mainDisplay={true}
 									updateHover={updateHover}
-									component={false}			
+									component={false}
 								/>
 							</Grid>
 						) : null;
