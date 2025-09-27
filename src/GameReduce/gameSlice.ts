@@ -259,19 +259,9 @@ const gameSlice = createSlice({
         }
         if (emptyIndex == state.bosses.length - 1) {
           // trigger bans or extra bans
-          if(state.extrabans.length > 0){
-            state.result = "extraban";
-            if(state.extrabanst1 == 0){
-              state.turn = 2;
-            }
-            else{
-              state.turn = 1;
-            }
-          }
-          else{
-            state.result = "ban";
-            state.turn = 1;
-          }
+          // on start of game set status to extraban if extra bans 
+          state.result = "ban";
+          state.turn = 1;
         }
         else{
           state.turn = Math.abs(nextTeam);
@@ -353,13 +343,20 @@ const gameSlice = createSlice({
       if (replaceIndex != -1) {
         state.extrabans[replaceIndex] = character;
       } else {
+        // check if character exists already
+        const existingIndex = state.extrabans.findIndex((ban: number) => ban == character);
+        if (existingIndex != -1 && character >= 0) {
+          console.log("character already exists in extra bans");
+          // do nothing
+          return;
+        }
         const emptyIndex = state.extrabans.findIndex((ban: number) => ban == -1);
         if (emptyIndex != -1) {
           state.extrabans[emptyIndex] = character;
           // last empty ban?
           if (emptyIndex == state.extrabans.length - 1) {
             state.turn = 1;
-            state.result = "ban";
+            state.result = "boss";
           }
           else{
             // what determines the new turn?
@@ -393,6 +390,12 @@ const gameSlice = createSlice({
       ];
       if (!phases.includes(action.payload.toLowerCase())) {
         return;
+      }
+      if(action.payload.toLowerCase() == "extraban" && state.extrabans.length == 0){
+        return;
+      }
+      else if(action.payload.toLowerCase() == "extraban" && state.extrabans.length > 0){
+        state.turn = state.extrabanst1 == 0 ? 2 : 1;
       }
       state.result = action.payload;
     },
@@ -451,10 +454,13 @@ const gameSlice = createSlice({
       });
   }
 });
+
+export const gameInfo = (state: RootState) => state.game;
 export const gameTurn = (state: RootState) => state.game.turn;
 export const gameResult = (state: RootState) => state.game.result;
 export const getGameSearchResult = (state: RootState) => state.game.status;
 export const totalBans = (state: RootState) => state.game.totalBans;
+export const extraBanCount = (state: RootState) => state.game.extrabans.length;
 
 export default gameSlice;
 export const {addGame, addBoss, addCharacter, addExtraBan, addName, addTeamName, changePhase, dragAndDrop, setBans, setTurn, removeGame} = gameSlice.actions;

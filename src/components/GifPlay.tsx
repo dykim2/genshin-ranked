@@ -1,5 +1,5 @@
-import { Box, Modal, Typography } from "@mui/material";
-import React, { Fragment } from "react";
+import { Box, Modal } from "@mui/material";
+import { Fragment } from "react";
 import { useCookies } from "react-cookie";
 import useScreenSize from "../hooks/useScreenSize.ts";
 interface play {
@@ -20,7 +20,7 @@ export const GifPlay = ({
   const totalHeight = useScreenSize().height;
   // default width is half the screen - 540 (the width of the image at full size)
   const defWidth = totalWidth / 2 - 540;
-  console.log(defWidth);
+  // console.log(defWidth);
   let width = 1000;
   let height = 0;
   if (

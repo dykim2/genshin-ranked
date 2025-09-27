@@ -217,7 +217,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     // gathers info then send it to chooseplayer
     // should only be enabled if creating is true anyways
     for (let i = 0; i < bans.length; i++) {
-      if (bans[i] < 0 || bans[i] > 3) {
+      if (bans[i] < 0 || bans[i] > 4) {
         alert("extra bans count is invalid!");
         return;
       }
@@ -522,24 +522,24 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           }
           {extraBans == "team 1" || extraBans == "both" ? (
             <TextField
-              helperText="Extra bans are limited to at most 2!"
+              helperText="Extra bans are limited to at most 4!"
               label="Team 1's extra ban count"
               variant="outlined"
               autoFocus
               defaultValue={bans[0]}
               onChange={(e) => updateFields(1, e.target.value, true)}
-              error={bans[0] > 2 || bans[0] < 0}
+              error={bans[0] > 4 || bans[0] < 0}
             />
           ) : null}
           {''}
           {extraBans == "team 2" || extraBans == "both" ? (
             <TextField
-              helperText="Extra bans are limited to at most 2!"
+              helperText="Extra bans are limited to at most 4!"
               label="Team 2's extra ban count"
               variant="outlined"
               defaultValue={bans[1]}
               onChange={(e) => updateFields(2, e.target.value, true)}
-              error={bans[1] > 2 || bans[1] < 0}
+              error={bans[1] > 4 || bans[1] < 0}
             />
           ) : null}
           <br />

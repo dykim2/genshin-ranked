@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, Fragment, FC} from "react";
+import {useState, useEffect, useRef, Fragment, FC, RefObject} from "react";
 import {useCookies} from "react-cookie";
 import "./css/Playing.css";
 import "./css/Gameplay.css";
@@ -23,7 +23,7 @@ import {BOSSES} from "@genshin-ranked/shared";
 import {BOSS_TYPE} from "@genshin-ranked/shared/src/types/level.ts";
 import type {DragEndEvent} from "@dnd-kit/core";
 import {useAppSelector, useAppDispatch} from "../hooks/ReduxHooks.ts";
-import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans} from "../GameReduce/gameSlice.ts";
+import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans, extraBanCount, gameInfo, gameTurn} from "../GameReduce/gameSlice.ts";
 import {chosenBosses, chosenCharacters, overrideBoss, overrideCharacter, selectBoss, selectBan, selectExtraBan, selectPickT1, selectPickT2, overrideAllCharacters, chosenBans, chosenExtraBans, chosenPicksT1, chosenPicksT2, hoveredCharacter, hoveredBoss} from "../GameReduce/selectionSlice.ts";
 import ExtraBanDisplay from "./ExtraBanComponent.tsx";
 const IMG_SIZE = 75; // use eventually
@@ -96,16 +96,16 @@ interface SocketLatestMessage extends SocketMessage {
   boss: number,
   character: number
 }
-const Game = (props: {socket: WebSocket, id: number;}) => {
+const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, socketOpen: () => void}) => {
   // the actual meat of the game, including picks / bans / etc
-  const identity = useAppSelector((state) => state.game);
+  const identity = useAppSelector(gameInfo);
   // const [selection, setSelection] = useState({}); // what character they choose
   // const [update, setUpdate] = useState(false);
-  const turn = useAppSelector((state) => state.game.turn); // current turn
+  const turn = useAppSelector(gameTurn); // current turn
   const hoverBoss = useAppSelector(hoveredBoss);
   const hoverCharacter = useAppSelector(hoveredCharacter);
   const [cookies, setCookie] = useCookies(["player"]); // replace cookies for a player for redux???
-  const socket: React.RefObject<WebSocket> = useRef(props.socket);
+  const socket: RefObject<WebSocket> = useRef(props.socket);
 
   const [banInfo, setBanInfo] = useState([0, 3, 6]);
   // in order: 8 bans (3 + 1), ban split 1, ban split 2
@@ -138,11 +138,13 @@ const Game = (props: {socket: WebSocket, id: number;}) => {
   const selectedBans = useAppSelector(chosenBans);
   const selectedPicksT1 = useAppSelector(chosenPicksT1);
   const selectedPicksT2 = useAppSelector(chosenPicksT2);
+  const extraBanNumber = useAppSelector(extraBanCount);
   const gameTextSize = {xs: "0.5rem", sm: "0.75rem", md: "0.9rem", lg: "1rem", xl: "1.3rem"};
   const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
   const [totalTime, setTotalTime] = useState(0); // total time for timer
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const lastMessageRef = useRef<{info: string; time: number}>({info: "", time: 0});
   const isMediumOrBigger = useMediaQuery(theme.breakpoints.up("md"));
   useEffect(() => {
     // adds selected characters and bosses to the ref objects
@@ -163,8 +165,13 @@ const Game = (props: {socket: WebSocket, id: number;}) => {
       charRef.current.set(CHARACTER_INFO[someName as keyof typeof CHARACTERS].index, CHARACTERS[someName as keyof typeof CHARACTERS]);
       charNameRef.current.set(CHARACTER_INFO[someName as keyof typeof CHARACTERS].displayName.toLowerCase(), CHARACTER_INFO[someName as keyof typeof CHARACTERS].index);
     }
-    // probably move these to another store / reducer
+  }, []);
+
+  useEffect(() => {
     setupSocket();
+    if(socket.current !== props.socket){
+      socket.current = props.socket;
+    }
     const handleMessage = (event: MessageEvent) => {
       // console.log(JSON.parse(event.data));
       handleSocketMessage(event);
@@ -173,26 +180,34 @@ const Game = (props: {socket: WebSocket, id: number;}) => {
       setCookie("player", "spectate");
     }
     // Listen for messages
+    socket.current.addEventListener("open", props.socketOpen);
+    // check for open
     socket.current.addEventListener("message", handleMessage);
-    const handleClose = () => {};
+    const handleClose = () => {
+      setTimeout(() => {
+        props.resetSocket();
+      }, 1000);
+    };
     socket.current.addEventListener("close", handleClose);
     const handleError = (event: Event) => {
       console.log("An error occured");
       console.log((event as MessageEvent).data);
       socket.current.close();
+      setTimeout(() => {
+        props.resetSocket();
+      }, 1000);
     };
     socket.current.addEventListener("error", handleError);
     // get latest from socket
     return () => {
-      if (socket.current.readyState == WebSocket.OPEN) {
-        // socket.current.close();
-        // close event listeners?
+      if (socket.current && socket.current.readyState == WebSocket.OPEN) {
+        socket.current.removeEventListener("open", props.socketOpen);
         socket.current.removeEventListener("message", handleMessage);
         socket.current.removeEventListener("close", handleClose);
         socket.current.removeEventListener("error", handleError);
       }
     };
-  }, []);
+  }, [props.socket]);
 
   useEffect(() => {
     updateSelected(1);
@@ -219,16 +234,16 @@ const MyTurn: FC<{turnInfo: number, draftOver: boolean}> = ({turnInfo, draftOver
   }
   const [cookieInfo] = useCookies(["player"]);
   if ("" + turnInfo == cookieInfo.player.substring(0, 1)) {
-    return <p style={{ color: "green"}}>your turn!</p>;
+    return <p style={{color: "green"}}>your turn!</p>;
   } else if (
     (cookieInfo.player.substring(0, 1) == "1" ||
       cookieInfo.player.substring(0, 1) == "2") &&
     turnInfo > 0
   ) {
-    return <p style={{ color: "red"}}>opponent's turn!</p>;
+    return <p style={{color: "red"}}>opponent's turn!</p>;
   } else {
     return (
-      <p style={{ color: "white" }}>
+      <p style={{color: "white"}}>
         team {turnInfo}'s turn!
       </p>
     );
@@ -768,6 +783,12 @@ const parseStatus = (data) => {
     let data: SocketBanMessage | SocketBossMessage | SocketConnectedMessage | SocketDNDMessage | SocketLatestMessage |
     SocketMessageWithGame | SocketPauseResumeMessage | SocketPickMessage | SocketOverwriteMessage |
     SocketPlayerNameMessage | SocketPhaseMessage | SocketTeamNameMessage | SocketTurnMessage = JSON.parse(event.data);
+    const thisTime = Date.now();
+    if(lastMessageRef.current.info == event.data && thisTime - lastMessageRef.current.time < 500){
+      // duplicate message within 500 ms, ignore
+      return;
+    }
+    lastMessageRef.current = {info: event.data, time: thisTime};
     console.log(data)
     if (data.id != props.id) {
       return; // do nothing if game does not match
@@ -1014,7 +1035,13 @@ const parseStatus = (data) => {
       }
       case "phase": {
         let newData = data as SocketPhaseMessage;
-        if (newData.newPhase == "boss") {
+        console.log(newData);
+        console.log("create new phase");
+        console.log(extraBanNumber)
+        if (
+          (newData.newPhase == "boss" && extraBanNumber == 0) ||
+          (newData.newPhase == "extraban")
+        ) {
           updateTimer(true, true);
           if (cookies.player.charAt(0) != "S") {
             alert("Draft starts now!");
@@ -1281,7 +1308,7 @@ const parseStatus = (data) => {
               </Grid>
               <Grid size={smallSizeChoice}>
                 <div
-                  style={{ textAlign: "center" }}
+                  style={{textAlign: "center"}}
                   onClick={() =>
                     updateTeamNames(prompt("enter a new name for team 2:"), 2)
                   }
@@ -1658,8 +1685,8 @@ const parseStatus = (data) => {
                       cookies.player.charAt(0) == "2" ? (
                       <Button
                         sx={{
-                          backgroundColor: "#543834",
-                          color: "black",
+                          backgroundColor: "#943834",
+                          color: "white",
                         }}
                         fullWidth
                         disabled={
@@ -1679,7 +1706,7 @@ const parseStatus = (data) => {
                           );
                         }}
                       >
-                        <Typography textTransform="none">{`confirm ${identity.result.toLowerCase()}`}</Typography>
+                        <Typography textTransform="none"><b>{`confirm ${identity.result.toLowerCase()}`}</b></Typography>
                       </Button>
                     ) : cookies.player.charAt(0) == "R" &&
                       identity.result == "waiting" ? (
@@ -1690,13 +1717,24 @@ const parseStatus = (data) => {
                         }}
                         fullWidth
                         onClick={() => {
-                          socket.current.send(
-                            JSON.stringify({
-                              type: "switch",
-                              phase: "boss",
-                              id: props.id,
-                            })
-                          );
+                          if(identity.extrabans.length > 0){
+                            socket.current.send(
+                              JSON.stringify({
+                                type: "switch",
+                                phase: "extraban",
+                                id: props.id,
+                              })
+                            );
+                          }
+                          else{
+                            socket.current.send(
+                              JSON.stringify({
+                                type: "switch",
+                                phase: "boss",
+                                id: props.id,
+                              })
+                            );
+                          }
                         }}
                       >
                         <Typography textTransform="none">start game</Typography>

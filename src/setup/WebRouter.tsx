@@ -16,6 +16,8 @@ import PlayerConnection from "../interfaces/PlayerInfoInterface.tsx";
 
 interface IRouter {
   socket: WebSocket;
+  resetSocket: () => void;
+  socketOpen: () => void;
 }
 
 const WebRouter: FC<IRouter> = (props) => {
@@ -49,12 +51,12 @@ const WebRouter: FC<IRouter> = (props) => {
   const ErrorPage = () => {
     return (
       <div style={centerStyle}>
-        <h1 style={{ fontSize: 65 }}>Oh no, something went wrong!</h1>
-        <p style={{ fontSize: 50 }}>
+        <h1 style={{fontSize: 65}}>Oh no, something went wrong!</h1>
+        <p style={{fontSize: 50}}>
           Press the button below to return home, and please send a bug report explaining
           how you got to this screen.
         </p>
-        <Button variant="contained" sx={{ fontSize: 30 }} href="/">
+        <Button variant="contained" sx={{fontSize: 30}} href="/">
           Return Home
         </Button>
       </div>
@@ -72,7 +74,7 @@ const WebRouter: FC<IRouter> = (props) => {
               <Route
                 key={game._id}
                 path={`/play/${game._id}`}
-                element={<Game id={game._id} socket={props.socket} />}
+                element={<Game id={game._id} socket={props.socket} resetSocket={props.resetSocket} socketOpen={props.socketOpen} />}
               />
             );
           })}
