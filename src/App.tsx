@@ -26,6 +26,7 @@ const App = () => {
       socket.readyState === WebSocket.CLOSED ||
       socket.readyState === WebSocket.CLOSING
     ) {
+      return;
       setSocket(new WebSocket(socketOpts[0]));
       console.log("opening new socket");
       // timeout to wait 2 seconds before trying again

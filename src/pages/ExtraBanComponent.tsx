@@ -5,10 +5,10 @@ import {useAppSelector} from "../hooks/ReduxHooks";
 import {CHARACTERS} from "@genshin-ranked/shared";
 
 interface ExtraBanProps {
-    charInfo: Map<number, CHARACTERS>
-    gridSize: number,
-    openChange: (team: number, name: string, original: number) => void,
-    team: 1 | 2,
+  charInfo: Map<number, CHARACTERS>
+  gridSize: number,
+  openChange: (team: number, name: string, original: number) => void,
+  team: 1 | 2,
 }
 
 
@@ -37,12 +37,11 @@ const ExtraBanDisplay = ({openChange, team, gridSize, charInfo}: ExtraBanProps) 
   return(
     <Grid
       container
-      sx={{justifyContent: {xs: "end", md: "center"}}}
+      sx={{justifyContent: {xs: team == 2 ? "end" : "left", md: "center"}}}
       size={gridSize}
-      offset={team == 1 ? 0 : identity.extrabanst1 > 0 ? (12 - gridSize * 2) : (12 - gridSize)}
       direction={"row"}
       columns={2}
-      spacing={1}
+      spacing={0.5}
     >
       {extraBanOrder[team - 1].map((ban: number, index: number) => {
         return (

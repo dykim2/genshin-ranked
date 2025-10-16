@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, List, ListItem, ListItemButton, ListItemText, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import PlayerConnection from "../interfaces/PlayerInfoInterface";
 import { useAppSelector, useAppDispatch } from "../hooks/ReduxHooks";
-import { buildGame, changeConnected, GameSettings, GameWebInterface, getConnected, getGame, getTotalBans, removeGame } from "../GameReduce/gameSlice";
+import { buildGame, changeConnected, GameSettings, GameWebInterface, getConnected, getTotalBans, removeGame } from "../GameReduce/gameSlice";
 import { clearSelections } from "../GameReduce/selectionSlice";
 
 interface IPlay {
@@ -36,6 +36,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   const [banMode, setBanMode] = useState<string>("3+1");
 
   const [mode, setMode] = useState<string>("standard");
+  const [bossBan, setBossBans] = useState(false);
 
   const [extraBans, setExtraBans] = useState<string>("no one");
   const [bans, setBans] = useState<number[]>([0, 0]); // probably extra ban counts
@@ -105,6 +106,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     extrabanst1: bans[0],
     extrabanst2: bans[1],
     totalBans: 8,
+    bossBans: [], // none
     bossCount: bonusParams[0],
     initialBosses: [bonusParams[1], bonusParams[2]],
     division: mode,
@@ -202,6 +204,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       extrabanst1: 0,
       extrabanst2: 0,
       totalBans: 6,
+      bossBans: bossBan ? [] : [],
       bossCount: -1,
       initialBosses: [-1, -1],
       division: "advanced",
@@ -251,6 +254,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       extrabanst1: bans[0],
       extrabanst2: bans[1],
       totalBans: banMode == "2+1" ? 6 : 8,
+      bossBans: bossBan ? [] : [-1, -1],
       bossCount: bonusParams[0],
       initialBosses: [bonusParams[1], bonusParams[2]],
       division: mode,
@@ -277,13 +281,20 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   return (
     <div>
       {typeof cookies.player == "undefined" ? null : (
-        <Typography sx={{fontSize: gameInProgressSize, color: "white"}}>
+        <Typography sx={{ fontSize: gameInProgressSize, color: "white" }}>
           You are currently in the middle of a game.
         </Typography>
       )}
       <div style={centerStyle as React.CSSProperties}>
-        <Typography variant="h1" sx={{fontSize: biggestTextSize, fontWeight: "bold"}}>Welcome to Genshin Ranked!</Typography>
-        <Typography sx={{fontSize: fontSizeChoice, marginBottom: {xs: 5, md: 10}}}>
+        <Typography
+          variant="h1"
+          sx={{ fontSize: biggestTextSize, fontWeight: "bold" }}
+        >
+          Welcome to Genshin Ranked!
+        </Typography>
+        <Typography
+          sx={{ fontSize: fontSizeChoice, marginBottom: { xs: 5, md: 10 } }}
+        >
           Click to start a new game or join an existing one!
         </Typography>
         <Button
@@ -303,7 +314,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           sx={{
             fontSize: fontSizeChoice,
             marginBottom: 3,
-            minWidth: widthChoice
+            minWidth: widthChoice,
           }}
           onClick={join}
         >
@@ -314,7 +325,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           sx={{
             fontSize: fontSizeChoice,
             marginBottom: 3,
-            minWidth: widthChoice
+            minWidth: widthChoice,
           }}
           onClick={() => {
             removeCookie("player");
@@ -329,13 +340,15 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         onClose={close}
         scroll="paper"
         slotProps={{
-          paper: {style: {color: "white", backgroundColor: "#73584b"}},
+          paper: { style: { color: "white", backgroundColor: "#73584b" } },
         }}
-        sx={{fontSize: refreshExitButtonSize}}
+        sx={{ fontSize: refreshExitButtonSize }}
       >
-        <DialogTitle sx={{fontSize: refreshExitButtonSize}}>select a game by its id:</DialogTitle>
+        <DialogTitle sx={{ fontSize: refreshExitButtonSize }}>
+          select a game by its id:
+        </DialogTitle>
         <DialogContent>
-          <List sx={{paddingTop: 0}}>
+          <List sx={{ paddingTop: 0 }}>
             {activeGames!.map((game) => {
               return (
                 <ListItem disableGutters key={game._id}>
@@ -343,8 +356,18 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                     sx={{
                       backgroundColor: "#73584b",
                       border: "2px solid red",
-                      minWidth: {xs: "70px", sm: "85px", md: "100px", lg: "120px"},
-                      maxWidth: {xs: "70px", sm: "85px", md: "100px", lg: "120px"},
+                      minWidth: {
+                        xs: "70px",
+                        sm: "85px",
+                        md: "100px",
+                        lg: "120px",
+                      },
+                      maxWidth: {
+                        xs: "70px",
+                        sm: "85px",
+                        md: "100px",
+                        lg: "120px",
+                      },
                     }}
                     onClick={() => {
                       playGame(game._id);
@@ -352,7 +375,14 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                   >
                     {`ID: ${game._id}`}
                   </ListItemButton>
-                  <ListItemText primary={`status: ${game.result}`} slotProps={{primary: {sx: {fontSize: refreshExitButtonSize, paddingLeft: 1}}}} />
+                  <ListItemText
+                    primary={`status: ${game.result}`}
+                    slotProps={{
+                      primary: {
+                        sx: { fontSize: refreshExitButtonSize, paddingLeft: 1 },
+                      },
+                    }}
+                  />
                 </ListItem>
               );
             })}
@@ -365,11 +395,14 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               refreshGames();
             }}
             disabled={refreshing}
-            sx={{fontSize: refreshExitButtonSize, color: "red"}}
+            sx={{ fontSize: refreshExitButtonSize, color: "red" }}
           >
             {refreshing ? "Please Wait" : "Refresh"}
           </Button>
-          <Button onClick={close} sx={{fontSize: refreshExitButtonSize, color: "yellow"}}>
+          <Button
+            onClick={close}
+            sx={{ fontSize: refreshExitButtonSize, color: "yellow" }}
+          >
             Exit
           </Button>
         </DialogActions>
@@ -378,7 +411,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={choosing}
         onClose={close}
         slotProps={{
-          paper:{style:{color: "black", backgroundColor: "#73584b"}},
+          paper: { style: { color: "black", backgroundColor: "#73584b" } },
         }}
       >
         <DialogTitle>
@@ -423,7 +456,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             </DialogContent>
             <DialogActions>
               <Button
-                sx={{color: "yellow"}}
+                sx={{ color: "yellow" }}
                 onClick={() => {
                   setChoosing(false); // stop choosing and remove game information
                   // remove game data - set game state back to default
@@ -440,7 +473,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={options}
         onClose={() => setOptions(false)}
         slotProps={{
-          paper: {style: {color: "black", backgroundColor: "#46bdc6"}},
+          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
         }}
       >
         <DialogTitle>
@@ -466,6 +499,23 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               />
             </RadioGroup>
           </FormControl>
+          <Typography>boss bans?</Typography>
+          <RadioGroup
+            row
+            value={bossBan}
+            onChange={(event) => setBossBans(event.target.value == "yes" ? true : false)}
+          >
+            <FormControlLabel
+              value={"yes"}
+              control={<Radio />}
+              label={"yes"}
+            />
+            <FormControlLabel
+              value={"no"}
+              control={<Radio />}
+              label={"no"}
+            />
+          </RadioGroup>
           <Typography>standard ban count</Typography>
           <FormControl>
             <RadioGroup
@@ -515,11 +565,11 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               />
             </RadioGroup>
           </FormControl>
-          {
-            extraBans == "team 1" || extraBans == "team 2" || extraBans == "both" ? (
-              <br />
-            ) : null
-          }
+          {extraBans == "team 1" ||
+          extraBans == "team 2" ||
+          extraBans == "both" ? (
+            <br />
+          ) : null}
           {extraBans == "team 1" || extraBans == "both" ? (
             <TextField
               helperText="Extra bans are limited to at most 4!"
@@ -531,7 +581,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               error={bans[0] > 4 || bans[0] < 0}
             />
           ) : null}
-          {''}
+          {""}
           {extraBans == "team 2" || extraBans == "both" ? (
             <TextField
               helperText="Extra bans are limited to at most 4!"

@@ -17,7 +17,7 @@ const obtainInfo = async() => {
     return;
   }
   let info = await game.json();
-  console.log(info[0].log);
+  console.log(info.log);
   alert("info obtained");
 }
 

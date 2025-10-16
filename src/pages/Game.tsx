@@ -90,7 +90,7 @@ interface SocketPauseResumeMessage extends SocketMessage {
 }
 interface SocketTeamNameMessage extends SocketMessage {
   team: number,
-  teamName: string
+  newName: string
 }
 interface SocketLatestMessage extends SocketMessage {
   boss: number,
@@ -790,6 +790,7 @@ const parseStatus = (data) => {
     }
     lastMessageRef.current = {info: event.data, time: thisTime};
     console.log(data)
+    console.log("data data");
     if (data.id != props.id) {
       return; // do nothing if game does not match
     } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
@@ -801,6 +802,7 @@ const parseStatus = (data) => {
     if (data.type != "turn" && data.type != "game" && data.type != "latest" && totalTime != TIMER) {
       setTotalTime(TIMER);
     }
+    console.log(data.type);
     // console.log("data.type: " + data.type);
     switch (data.type) {
       case "create": {
@@ -963,7 +965,7 @@ const parseStatus = (data) => {
         let newData = data as SocketTeamNameMessage;
         dispatch(addTeamName({
           team: newData.team,
-          name: newData.teamName
+          name: newData.newName
         }));
         break;
       }
@@ -1308,7 +1310,7 @@ const parseStatus = (data) => {
               </Grid>
               <Grid size={smallSizeChoice}>
                 <div
-                  style={{textAlign: "center"}}
+                  style={{ textAlign: "center" }}
                   onClick={() =>
                     updateTeamNames(prompt("enter a new name for team 2:"), 2)
                   }
@@ -1706,7 +1708,9 @@ const parseStatus = (data) => {
                           );
                         }}
                       >
-                        <Typography textTransform="none"><b>{`confirm ${identity.result.toLowerCase()}`}</b></Typography>
+                        <Typography textTransform="none">
+                          <b>{`confirm ${identity.result.toLowerCase()}`}</b>
+                        </Typography>
                       </Button>
                     ) : cookies.player.charAt(0) == "R" &&
                       identity.result == "waiting" ? (
@@ -1717,7 +1721,7 @@ const parseStatus = (data) => {
                         }}
                         fullWidth
                         onClick={() => {
-                          if(identity.extrabans.length > 0){
+                          if (identity.extrabans.length > 0) {
                             socket.current.send(
                               JSON.stringify({
                                 type: "switch",
@@ -1725,8 +1729,7 @@ const parseStatus = (data) => {
                                 id: props.id,
                               })
                             );
-                          }
-                          else{
+                          } else {
                             socket.current.send(
                               JSON.stringify({
                                 type: "switch",
@@ -1746,15 +1749,16 @@ const parseStatus = (data) => {
               <Grid
                 size={cookies.player.charAt(0) == "S" ? smallSizeChoice : 2}
               />
-              <Grid
-                container
-                sx={{ justifyContent: "center" }}
-                size={smallSizeChoice}
-              >
-                {isMediumOrBigger ? (
-                  bans.slice(0, banInfo[1]).map((ban) => {
+              {isMediumOrBigger ? (
+                <Grid
+                  container
+                  size={smallSizeChoice}
+                  sx={{justifyContent: "center"}}
+                  spacing={1}
+                >
+                  {bans.slice(0, banInfo[1]).map((ban) => {
                     return (
-                      <div key={ban}>
+                      <Fragment key={ban}>
                         {charRef.current != undefined
                           ? displayCharacter(
                               charRef.current.get(identity.bans[ban]) ??
@@ -1765,22 +1769,22 @@ const parseStatus = (data) => {
                               openChange
                             )
                           : null}
-                      </div>
+                      </Fragment>
                     );
-                  })
-                ) : identity.extrabanst1 > 0 ? (
-                  <ExtraBanDisplay
-                    charInfo={charRef.current}
-                    gridSize={smallSizeChoice}
-                    openChange={openChange}
-                    team={1}
-                  />
-                ) : null}
-              </Grid>
+                  })}
+                </Grid>
+              ) : identity.extrabanst1 > 0 ? (
+                <ExtraBanDisplay
+                  charInfo={charRef.current}
+                  gridSize={smallSizeChoice}
+                  openChange={openChange}
+                  team={1}
+                />
+              ) : null}
               <Grid
                 container
                 size={largeSizeChoice}
-                spacing={1}
+                spacing={0.5}
                 columns={identity.bosses.length}
               >
                 <DndContext
@@ -1813,7 +1817,7 @@ const parseStatus = (data) => {
                 <Grid
                   container
                   size={smallSizeChoice}
-                  sx={{justifyContent: "center"}}
+                  sx={{ justifyContent: "center" }}
                   spacing={1}
                 >
                   {bans.slice(banInfo[1], banInfo[2]).map((ban) => {

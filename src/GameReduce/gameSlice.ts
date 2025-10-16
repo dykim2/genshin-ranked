@@ -74,6 +74,7 @@ export interface GameWebInterface extends GameInterface {
 
 export interface GameSettings {
   _id: number;
+  bossBans: number[],
   bossCount: number;
   division: string;
   extrabanst1: number;
