@@ -26,7 +26,7 @@ const App = () => {
       socket.readyState === WebSocket.CLOSED ||
       socket.readyState === WebSocket.CLOSING
     ) {
-      setSocket(new WebSocket(socketOpts[1]));
+      setSocket(new WebSocket(socketOpts[0]));
       console.log("opening new socket");
       if (timerRef.current) {
         clearInterval(timerRef.current);
