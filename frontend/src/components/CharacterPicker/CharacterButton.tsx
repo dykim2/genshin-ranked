@@ -88,9 +88,7 @@ const InnerCharacter = ({character, banDisplay, component}: IInnerButton) => {
 	);
 }
 
-const WrapperBox = styled(Button, {
-	shouldForwardProp: (prop) => prop !== "mainDisplay",
-})<WrapperBoxProps>(({ theme, mainDisplay }) => ({
+const WrapperBox = styled(Button, {shouldForwardProp: (prop) => prop !== "mainDisplay"})<WrapperBoxProps>(({theme, mainDisplay}) => ({
 	display: "box",
 	flexDirection: "column",
 	alignItems: "center",

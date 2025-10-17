@@ -15,7 +15,6 @@ import { hoverBoss } from "../../../../src/GameReduce/selectionSlice";
  */
 interface IBossButton {
 	boss: BOSSES;
-	selectDisplay: boolean; // display for choosing bosses to pick/ban or for viewing
 	isChosen: boolean;
 	component: boolean;
 	mainDisplay: boolean;
@@ -29,7 +28,7 @@ interface WrapperBoxProps {
 	mainDisplay?: boolean;
 }
 
-export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, updateHover, component, mainDisplay}: IDisplayInnerBossButton) => {
+export const BossButton = ({team, boss, updateBoss, isChosen, updateHover, component, mainDisplay}: IDisplayInnerBossButton) => {
 	const dispatch = useAppDispatch();
 	const doUpdate = () => {
 		updateBoss(BOSS_DETAIL[boss].displayName);
@@ -40,7 +39,6 @@ export const BossButton = ({team, boss, updateBoss, selectDisplay, isChosen, upd
 		<WrapperBox disableRipple onClick={doUpdate} mainDisplay={mainDisplay}>
 			<InnerBoss
 				boss={boss}
-				selectDisplay={selectDisplay}
 				isChosen={isChosen}
 				component={component}
 				mainDisplay={mainDisplay}
@@ -76,7 +74,7 @@ export const InnerBoss = ({boss, isChosen, component, mainDisplay}: IBossButton)
 	);
 }
 
-const WrapperBox = styled(Button, {shouldForwardProp: (prop) => prop !== "mainDisplay"})<WrapperBoxProps>(({ theme, mainDisplay }) => ({
+const WrapperBox = styled(Button, {shouldForwardProp: (prop) => prop !== "mainDisplay"})<WrapperBoxProps>(({theme, mainDisplay}) => ({
 	display: "box",
 	flexDirection: "column",
 	alignItems: "center",

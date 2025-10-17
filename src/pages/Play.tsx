@@ -36,7 +36,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   const [banMode, setBanMode] = useState<string>("3+1");
 
   const [mode, setMode] = useState<string>("standard");
-  const [bossBan, setBossBans] = useState(false);
+  const [bossBan, setBossBans] = useState(true);
 
   const [extraBans, setExtraBans] = useState<string>("no one");
   const [bans, setBans] = useState<number[]>([0, 0]); // probably extra ban counts
@@ -106,6 +106,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     extrabanst1: bans[0],
     extrabanst2: bans[1],
     totalBans: 8,
+    doBossBans: true,
     bossBans: [], // none
     bossCount: bonusParams[0],
     initialBosses: [bonusParams[1], bonusParams[2]],
@@ -200,16 +201,17 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     }
     let info: GameSettings = {
       _id: -1,
-      player: "1",
+      bossBans: [],
+      bossCount: -1,
+      division: "advanced",
+      doBossBans: true,
       extrabanst1: 0,
       extrabanst2: 0,
-      totalBans: 6,
-      bossBans: bossBan ? [] : [],
-      bossCount: -1,
-      initialBosses: [-1, -1],
-      division: "advanced",
       fearless: bonusParams[3] > -1,
       fearlessID: bonusParams[3] > -1 ? bonusParams[3] : -1,
+      initialBosses: [-1, -1],
+      player: "1",
+      totalBans: 6,
     };
     await choosePlayer("Ref", -1, info);
   };
@@ -250,17 +252,18 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     setOptions(false);
     let info = {
       _id: -1,
-      player: "1",
+      bossBans: [],
+      bossCount: bonusParams[0],
+      division: mode,
+      doBossBans: bossBan,
       extrabanst1: bans[0],
       extrabanst2: bans[1],
-      totalBans: banMode == "2+1" ? 6 : 8,
-      bossBans: bossBan ? [] : [-1, -1],
-      bossCount: bonusParams[0],
-      initialBosses: [bonusParams[1], bonusParams[2]],
-      division: mode,
       fearless: fearless,
       fearlessID: fearless ? bonusParams[3] : -1,
+      initialBosses: [bonusParams[1], bonusParams[2]],
+      player: "1",
       processing: false,
+      totalBans: banMode == "2+1" ? 6 : 8,
     };
     await choosePlayer("Ref", -1, info);
     /* dialog for extra options for a ref 
@@ -473,7 +476,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={options}
         onClose={() => setOptions(false)}
         slotProps={{
-          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
+          paper: {style: {color: "black", backgroundColor: "#46bdc6"}},
         }}
       >
         <DialogTitle>
@@ -503,15 +506,15 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           <RadioGroup
             row
             value={bossBan}
-            onChange={(event) => setBossBans(event.target.value == "yes" ? true : false)}
+            onChange={(event) => setBossBans(event.target.value == "true")}
           >
             <FormControlLabel
-              value={"yes"}
+              value={true}
               control={<Radio />}
               label={"yes"}
             />
             <FormControlLabel
-              value={"no"}
+              value={false}
               control={<Radio />}
               label={"no"}
             />

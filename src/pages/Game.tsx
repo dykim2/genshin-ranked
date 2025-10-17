@@ -13,7 +13,7 @@ import {CHARACTER_INFO} from "@genshin-ranked/shared/src/types/characters/detail
 import {displayBoss, displayCharacter} from "../components/DisplayComponent.tsx";
 import {getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "@genshin-ranked/shared/src/utils/imagePaths.ts"
 
-import {Box, Button, Typography, Grid, useMediaQuery, useTheme} from "@mui/material";
+import {Box, Button, Typography, Grid, useMediaQuery, useTheme, Stack} from "@mui/material";
 import {GifPlay} from "../components/GifPlay.tsx";
 import {DndContext, closestCenter} from "@dnd-kit/core";
 import {restrictToHorizontalAxis, restrictToVerticalAxis} from "@dnd-kit/modifiers";
@@ -1123,6 +1123,10 @@ const parseStatus = (data) => {
       } else if (original > -1) {
         info[0] = "character";
       } // need to differentiate between ban and extra ban
+      else if(original < -14){
+        info[0] = "bossban";
+        original = original * -1 - 15;
+      }
       else {
         info[0] = "ban";
         original = original * -1 - 1;
@@ -1753,7 +1757,7 @@ const parseStatus = (data) => {
                 <Grid
                   container
                   size={smallSizeChoice}
-                  sx={{justifyContent: "center"}}
+                  sx={{ justifyContent: "center" }}
                   spacing={1}
                 >
                   {bans.slice(0, banInfo[1]).map((ban) => {
@@ -1784,34 +1788,67 @@ const parseStatus = (data) => {
               <Grid
                 container
                 size={largeSizeChoice}
-                spacing={0.5}
-                columns={identity.bosses.length}
+                offset={
+                  !isMediumOrBigger && identity.extrabanst1 == 0
+                    ? smallSizeChoice
+                    : 0
+                }
+                direction="column"
               >
-                <DndContext
-                  onDragEnd={handleDND}
-                  collisionDetection={closestCenter}
-                  modifiers={[restrictToHorizontalAxis]}
-                >
-                  {timeOrder.slice(0, limit).map((time) => {
-                    return (
-                      <Grid
-                        container
-                        sx={{ justifyContent: "center" }}
-                        size={1}
-                        key={time}
-                      >
-                        {bossRef.current != undefined
-                          ? displayBoss(
-                              bossRef.current.get(identity.bosses[time]) ??
-                                BOSSES.None,
-                              time,
-                              openChange
-                            )
-                          : null}
-                      </Grid>
-                    );
-                  })}
-                </DndContext>
+                <Grid container spacing={0.5} columns={identity.bosses.length}>
+                  <DndContext
+                    onDragEnd={handleDND}
+                    collisionDetection={closestCenter}
+                    modifiers={[restrictToHorizontalAxis]}
+                  >
+                    {timeOrder.slice(0, limit).map((time) => {
+                      return (
+                        <Grid
+                          container
+                          sx={{justifyContent: "center"}}
+                          size={1}
+                          key={time}
+                        >
+                          {bossRef.current != undefined
+                            ? displayBoss(
+                                bossRef.current.get(identity.bosses[time]) ??
+                                  BOSSES.None,
+                                true,
+                                time,
+                                openChange
+                              )
+                            : null}
+                        </Grid>
+                      );
+                    })}
+                  </DndContext>
+                </Grid>
+                {
+                  !isMediumOrBigger ? (
+                    <Grid container spacing={0.5} columns={identity.bossBans.length}>
+                      {identity.bossBans.map((ban, index) => {
+                        return (
+                          <Grid
+                            container
+                            sx={{justifyContent: "center"}}
+                            size={1}
+                          >
+                            {bossRef.current != undefined
+                              ? displayBoss(
+                                  bossRef.current.get(ban) ??
+                                      BOSSES.None,
+                                  false,
+                                  -15 - index, // -15 for the first boss ban, -16 for the second
+                                  openChange
+                                )
+                              : null}
+                          </Grid>
+                        )
+                      })}
+                    </Grid>
+                  ) : null
+                }
+                
               </Grid>
               {isMediumOrBigger ? (
                 <Grid
@@ -1855,7 +1892,31 @@ const parseStatus = (data) => {
                 />
               ) : null}
               {/* need to decide proper offset for the below grid - either 10 or 8 depending on if t1 has extra bans */}
-
+              {
+                isMediumOrBigger ? (
+                  <Grid size={largeSizeChoice} container spacing={0.5} offset={identity.extrabanst1 > 0 ? 0 : smallSizeChoice} columns={identity.bossBans.length}>
+                    {identity.bossBans.map((ban, index) => {
+                      return (
+                        <Grid
+                          container
+                          sx={{justifyContent: "center"}}
+                          size={1}
+                        >
+                          {bossRef.current != undefined
+                            ? displayBoss(
+                                bossRef.current.get(ban) ??
+                                    BOSSES.None,
+                                false,
+                                -15 - index, // -15 for the first boss ban, -16 for the second
+                                openChange
+                              )
+                            : null}
+                        </Grid>
+                      )
+                    })}
+                  </Grid>
+                ) : null
+              }
               {isMediumOrBigger && identity.extrabanst2 > 0 ? (
                 <ExtraBanDisplay
                   charInfo={charRef.current}

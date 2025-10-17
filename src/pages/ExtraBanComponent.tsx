@@ -34,11 +34,12 @@ const ExtraBanDisplay = ({openChange, team, gridSize, charInfo}: ExtraBanProps) 
       }
     }
   }
-  return(
+  return (
     <Grid
       container
       sx={{justifyContent: {xs: team == 2 ? "end" : "left", md: "center"}}}
       size={gridSize}
+      // offset: now 0, formerly team == 1 || (identity.extrabanst1 > 0 && identity.extrabanst2 > 0 && gridSize == 2) ? 0 : identity.extrabanst1 > 0 ? (12 - gridSize * 2) : (12 - gridSize)
       direction={"row"}
       columns={2}
       spacing={0.5}
@@ -47,10 +48,9 @@ const ExtraBanDisplay = ({openChange, team, gridSize, charInfo}: ExtraBanProps) 
         return (
           <div key={index}>
             {displayCharacter(
-              charInfo.get(identity.extrabans[ban]) ??
-              CHARACTERS.None,
+              charInfo.get(identity.extrabans[ban]) ?? CHARACTERS.None,
               false,
-              1,
+              team,
               ban + 15,
               openChange
             )}
@@ -58,6 +58,6 @@ const ExtraBanDisplay = ({openChange, team, gridSize, charInfo}: ExtraBanProps) 
         );
       })}
     </Grid>
-  )
+  );
 }
 export default ExtraBanDisplay;

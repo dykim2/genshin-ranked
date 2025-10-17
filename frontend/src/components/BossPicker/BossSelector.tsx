@@ -133,7 +133,6 @@ export const BossSelector = ({
 									team={team}
 									boss={x}
 									updateBoss={updateBoss}
-									selectDisplay={false}
 									isChosen={selections.includes(
 										BOSS_DETAIL[x].index,
 									)}

@@ -15,14 +15,14 @@ import Dragable from "./Dragable";
 
 
 const updateHover = (_teamNum: number, _selected: number) => {
-    // does nothing
-    // can be repurposed to do an alert
-    // can send socket something
-    // alert("hi");
+  // does nothing
+  // can be repurposed to do an alert
+  // can send socket something
+  // alert("hi");
 }
 
 // index needed incase someone adds a boss twice
-export const displayBoss = (boss: BOSSES, index: number, change: (team: number, name: string, original: number) => void) => {
+export const displayBoss = (boss: BOSSES, isPick: boolean, index: number, change: (team: number, name: string, original: number) => void) => {
     const selecting = true; // can be changed in future
     const updateBoss = () => {
         // does nothing
@@ -36,24 +36,28 @@ export const displayBoss = (boss: BOSSES, index: number, change: (team: number, 
     // for bosses specifically make sure no duplicates
     // for characters can allow dupes
     
-    return(
+    return (
       <Droppable id={z}>
         <Dragable id={z}>
-          <div onContextMenu={(e) => {e.preventDefault(); change(0, BOSS_DETAIL[boss].displayName, index)}}>
+          <div
+            onContextMenu={(e) => {
+              e.preventDefault();
+              change(0, BOSS_DETAIL[boss].displayName, index);
+            }}
+          >
             <BossButton
               boss={boss}
               updateBoss={updateBoss}
-              selectDisplay={selecting}
-              team={0}
               updateHover={updateHover}
+              team={0}
               mainDisplay={false}
-              isChosen={false}
+              isChosen={!isPick}
               component={true}
             />
-            </div>
+          </div>
         </Dragable>
       </Droppable>
-    )
+    );
 }
 
 export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: number, index: number, change: (team: number, name: string, original: number) => void) => {

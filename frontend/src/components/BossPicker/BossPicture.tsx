@@ -97,7 +97,7 @@ const ChosenBox = styled(Box)(() => ({
 	borderRadius: "8px 8px 15px 0px",
 	border: "1px solid black",
 	overflow: "hidden",
-	zIndex: 2,
+	zIndex: 2, 
 }));
 const GradientBox = styled(ChosenBox)(({type}: IGradientBox) => ({
 	background:
