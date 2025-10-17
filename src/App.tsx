@@ -43,7 +43,7 @@ const App = () => {
           openRef.current = false;
           return;
         }
-        const newSocket = new WebSocket(socketOpts[1]);
+        const newSocket = new WebSocket(socketOpts[0]);
         setSocket(newSocket);
       }, 3000);
     }

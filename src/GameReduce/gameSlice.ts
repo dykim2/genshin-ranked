@@ -20,7 +20,6 @@ import {RootState} from "../app/store";
   pickst2: 
   playerst1:
   playerst2:
-  processing: 
   result: 
   team1: 
   team2: 
@@ -42,6 +41,7 @@ export interface GameInterface {
   bosses: number[];
   connected: [number, number, number];
   division: "open" | "standard" | "premier";
+  doBossBans: boolean;
   error: string | null;
   extrabans: number[]; //
   extrabanst1: number;
@@ -69,7 +69,6 @@ export interface GameWebInterface extends GameInterface {
   initialBosses: number[],
   log: string;
   player: string;
-  processing: boolean;
 }
 
 export interface GameSettings {
@@ -77,6 +76,7 @@ export interface GameSettings {
   bossBans: number[],
   bossCount: number;
   division: string;
+  doBossBans: boolean;
   extrabanst1: number;
   extrabanst2: number;
   fearless: boolean;
@@ -106,6 +106,7 @@ const initialState: GameInterface = {
   bosses: [],
   connected: [0, 0, 0],
   division: "standard",
+  doBossBans: true,
   error: null,
   extrabans: [],
   extrabanst1: 0,
