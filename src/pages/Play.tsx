@@ -28,7 +28,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   const [, forceRefresh] = useState<undefined>(); // refreshes the page
   const status = useAppSelector((state) => state.game);
   const dispatch = useAppDispatch();
-  
+  const enableBossBans = false; // CHANGE THIS TO SET BOSS BAN DEFAULT ONLY
   const navi: NavigateFunction = useNavigate();
   const [creating, setCreating] = useState<boolean>(false);
   const [readying, setReadying] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   const [banMode, setBanMode] = useState<string>("3+1");
 
   const [mode, setMode] = useState<string>("standard");
-  const [bossBan, setBossBans] = useState(true);
+  const [bossBan, setBossBans] = useState(false);
 
   const [extraBans, setExtraBans] = useState<string>("no one");
   const [bans, setBans] = useState<number[]>([0, 0]); // probably extra ban counts
@@ -106,7 +106,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     extrabanst1: bans[0],
     extrabanst2: bans[1],
     totalBans: 8,
-    doBossBans: true,
+    doBossBans: enableBossBans,
     bossBans: [], // none
     bossCount: bonusParams[0],
     initialBosses: [bonusParams[1], bonusParams[2]],
@@ -204,7 +204,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       bossBans: [],
       bossCount: -1,
       division: "advanced",
-      doBossBans: true,
+      doBossBans: enableBossBans,
       extrabanst1: 0,
       extrabanst2: 0,
       fearless: bonusParams[3] > -1,

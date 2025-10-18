@@ -11,7 +11,7 @@ import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
 import {BOSS_DETAIL} from "@genshin-ranked/shared/src/types/bosses/details.ts";
 import {CHARACTER_INFO} from "@genshin-ranked/shared/src/types/characters/details.ts"; 
 import {displayBoss, displayCharacter} from "../components/DisplayComponent.tsx";
-import {getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "@genshin-ranked/shared/src/utils/imagePaths.ts"
+import {getBossBanPath, getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "@genshin-ranked/shared/src/utils/imagePaths.ts"
 
 import {Box, Button, Typography, Grid, useMediaQuery, useTheme, Stack} from "@mui/material";
 import {GifPlay} from "../components/GifPlay.tsx";
@@ -23,8 +23,8 @@ import {BOSSES} from "@genshin-ranked/shared";
 import {BOSS_TYPE} from "@genshin-ranked/shared/src/types/level.ts";
 import type {DragEndEvent} from "@dnd-kit/core";
 import {useAppSelector, useAppDispatch} from "../hooks/ReduxHooks.ts";
-import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans, extraBanCount, gameInfo, gameTurn} from "../GameReduce/gameSlice.ts";
-import {chosenBosses, chosenCharacters, overrideBoss, overrideCharacter, selectBoss, selectBan, selectExtraBan, selectPickT1, selectPickT2, overrideAllCharacters, chosenBans, chosenExtraBans, chosenPicksT1, chosenPicksT2, hoveredCharacter, hoveredBoss} from "../GameReduce/selectionSlice.ts";
+import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans, extraBanCount, gameInfo, gameTurn, addBossBan} from "../GameReduce/gameSlice.ts";
+import {chosenBossPlusBans, chosenCharacters, overrideBoss, overrideCharacter, selectBoss, selectBan, selectExtraBan, selectPickT1, selectPickT2, overrideAllCharacters, chosenBans, chosenExtraBans, chosenPicksT1, chosenPicksT2, hoveredCharacter, hoveredBoss, chosenBosses, chosenBossBans} from "../GameReduce/selectionSlice.ts";
 import ExtraBanDisplay from "./ExtraBanComponent.tsx";
 const IMG_SIZE = 75; // use eventually
 // redux good for handling and modifying game information?
@@ -46,6 +46,11 @@ interface SocketMessageWithGame extends SocketMessage {
 interface SocketBossMessage extends SocketMessage {
   boss: number,
   long: boolean,
+  team: number,
+  nextTeam: number
+}
+interface SocketBossBanMessage extends SocketMessage {
+  ban: number,
   team: number,
   nextTeam: number
 }
@@ -132,7 +137,10 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
   const charNameRef = useRef(new Map<string, number>());
   const dndRef = useRef("boss");
   const latestRef = useRef([-1,-1]);
+  
+  const selectedBossesAndBans = useAppSelector(chosenBossPlusBans);
   const selectedBosses = useAppSelector(chosenBosses);
+  const selectedBossBans = useAppSelector(chosenBossBans);
   const selectedChars = useAppSelector(chosenCharacters);
   const selectedExtraBans = useAppSelector(chosenExtraBans);
   const selectedBans = useAppSelector(chosenBans);
@@ -359,7 +367,7 @@ const parseStatus = (data) => {
       case "boss":
         // check id and check name
         // console.log(bossInfo);
-        if (selectedBosses.includes(selection)) {
+        if (selectedBossesAndBans.includes(selection)) {
           return false;
         }
         break;
@@ -415,7 +423,6 @@ const parseStatus = (data) => {
     // verify the same boss / pick is not already chosen
     // boss, pick, etc
     let res = identity.result;
-    res == "waiting" ? res = "boss" : res;
     let req = "";
     if (identity.fearless) {
       if (selection >= 0 && type == "boss" && identity.fearlessBosses.includes(selection)) {
@@ -426,7 +433,7 @@ const parseStatus = (data) => {
     let found = false;
     if(selection == -3 || selection == -2){
       // set to -3 if not ban
-      if(res.toLowerCase() == "ban" || res.toLowerCase() == "extraban"){
+      if(res.toLowerCase() == "bossban" || res.toLowerCase() == "ban" || res.toLowerCase() == "extraban"){
         selection = -2; // no ban
       }
       else{
@@ -471,7 +478,7 @@ const parseStatus = (data) => {
       }
       if (
         !found &&
-        ((type == "boss" && res.toLowerCase() != "boss") ||
+        ((type == "boss" && (res.toLowerCase() != "boss" && res.toLowerCase() != "bossban")) ||
           (type == "character" &&
             res.toLowerCase() != "ban" &&
             res.toLowerCase() != "pick" &&
@@ -621,7 +628,12 @@ const parseStatus = (data) => {
     */
     let path = "";
     if (boss) {
-      path = getBossGifPath(bossRef.current.get(id) ?? BOSSES.None);
+      if (ban) {
+        path = getBossBanPath(bossRef.current.get(id) ?? BOSSES.None);
+      }
+      else {
+        path = getBossGifPath(bossRef.current.get(id) ?? BOSSES.None);
+      }
     } else {
       if (ban) {
         path = getCharacterBanPath(charRef.current.get(id) ?? CHARACTERS.None);
@@ -635,6 +647,15 @@ const parseStatus = (data) => {
       setAlertOpen(false);
     }, 5000); // shows for 5 seconds, can be changed
   };
+
+  const addSelectedBossBans = () => {
+    // no need to add fearless bosses, these are just bans
+    let newBosses: number[] = [];
+    identity.bossBans
+      .filter((boss) => boss != -1)
+      .forEach((boss) => newBosses.push(boss));
+    return newBosses;
+  }
 
   const addSelectedBosses = () => {
     let newBosses: number[] = [];
@@ -676,15 +697,22 @@ const parseStatus = (data) => {
 
   /**
    * Updates the selected ref objects to highlight grayscale objects.
-   * @param {number} option the choice of what to add to selected, default is 6 (all). 1 is bosses, 2 is extra bans, 3 is bans, 4 and 5 are team 1 and team 2 picks respective
+   * @param {number} option the choice of what to add to selected, default is 6 (all). 0 is boss bans, 1 is bosses, 2 is extra bans, 3 is bans,
+   * 4 and 5 are team 1 and team 2 picks respective
    */
   const updateSelected = (option: number = 6) => {
-    // option 1: update boss
     switch(option){
+      case 0: {
+        let newBossBans: number[] = addSelectedBossBans();
+        if (!newBossBans.every((val, i) => val == selectedBossBans[i])) {
+          dispatch(overrideBoss({ban: true, bosses: newBossBans}));
+        }
+        break;
+      }
       case 1: {
         let newBosses: number[] = addSelectedBosses();
         if (!newBosses.every((val, i) => val == selectedBosses[i])) {
-          dispatch(overrideBoss(newBosses));
+          dispatch(overrideBoss({ban: false, bosses: newBosses}));
         }
         break;
       }
@@ -718,14 +746,15 @@ const parseStatus = (data) => {
       }
       case 6: {
         // override everything, just in case
+        let bossBans: number[] = addSelectedBossBans();
         let bosses: number[] = addSelectedBosses();
         let extraBans: number[] = addSelectedExtraBans();
         let bans: number[] = addSelectedBans();
         let picksT1: number[] = addSelectedPicks(1);
         let picksT2: number[] = addSelectedPicks(2);
-
         console.log("overriding everything");
-        dispatch(overrideBoss(bosses));
+        dispatch(overrideBoss({ban: true, bosses: bossBans}));
+        dispatch(overrideBoss({ban: false, bosses: bosses}));
         dispatch(overrideAllCharacters({extraBans: extraBans, bans: bans, picksT1: picksT1, picksT2: picksT2}));
         break;
       }
@@ -780,8 +809,8 @@ const parseStatus = (data) => {
   // arguably the most important method of the code
   
   const handleSocketMessage = (event: MessageEvent) => {
-    let data: SocketBanMessage | SocketBossMessage | SocketConnectedMessage | SocketDNDMessage | SocketLatestMessage |
-    SocketMessageWithGame | SocketPauseResumeMessage | SocketPickMessage | SocketOverwriteMessage |
+    let data: SocketBanMessage | SocketBossMessage | SocketBossBanMessage | SocketConnectedMessage | SocketDNDMessage | 
+    SocketLatestMessage | SocketMessageWithGame | SocketPauseResumeMessage | SocketPickMessage | SocketOverwriteMessage |
     SocketPlayerNameMessage | SocketPhaseMessage | SocketTeamNameMessage | SocketTurnMessage = JSON.parse(event.data);
     const thisTime = Date.now();
     if(lastMessageRef.current.info == event.data && thisTime - lastMessageRef.current.time < 500){
@@ -802,7 +831,7 @@ const parseStatus = (data) => {
     if (data.type != "turn" && data.type != "game" && data.type != "latest" && totalTime != TIMER) {
       setTotalTime(TIMER);
     }
-    console.log(data.type);
+    console.log(data.type+" type");
     // console.log("data.type: " + data.type);
     switch (data.type) {
       case "create": {
@@ -896,6 +925,16 @@ const parseStatus = (data) => {
         showSelectionAlert(newData.boss, true, false);
         break;
       }
+      case "bossban": {
+        let newData = data as SocketBossBanMessage;
+        updateTimer(true, true);
+        dispatch(addBossBan({
+          boss: newData.ban,
+          replaceIndex: -1,
+          team: newData.team
+        }))
+        showSelectionAlert(newData.ban, true, false);
+      }
       case "complete": {
         break; // do nothing
       }
@@ -973,6 +1012,14 @@ const parseStatus = (data) => {
         // no more identity!!
         let newData = data as SocketOverwriteMessage;
         switch(newData.which){
+          case "bossban": {
+            dispatch(addBossBan({
+              boss: newData.replacement,
+              replaceIndex: newData.original,
+              team: 1
+            }))
+            break;
+          }
           case "extrabans": {
             dispatch(addExtraBan({
               character: newData.replacement,
@@ -982,7 +1029,8 @@ const parseStatus = (data) => {
             // timeout for 0.05s?
             break;
           }
-          case "ban": {
+          case "bans": {
+            console.log("testtesttest");
             dispatch(addCharacter({
               ban: true,
               character: newData.replacement,
@@ -1705,7 +1753,7 @@ const parseStatus = (data) => {
                           console.log("button clicked");
                           sendSelection(
                             turn,
-                            identity.result == "boss"
+                            identity.result == "boss" || identity.result == "bossban"
                               ? hoverBoss
                               : hoverCharacter,
                             identity.result
@@ -1730,6 +1778,14 @@ const parseStatus = (data) => {
                               JSON.stringify({
                                 type: "switch",
                                 phase: "extraban",
+                                id: props.id,
+                              })
+                            );
+                          } else if(identity.doBossBans){
+                            socket.current.send(
+                              JSON.stringify({
+                                type: "switch",
+                                phase: "bossban",
                                 id: props.id,
                               })
                             );
@@ -1832,6 +1888,7 @@ const parseStatus = (data) => {
                             container
                             sx={{justifyContent: "center"}}
                             size={1}
+                            key={index}
                           >
                             {bossRef.current != undefined
                               ? displayBoss(
@@ -1901,6 +1958,7 @@ const parseStatus = (data) => {
                           container
                           sx={{justifyContent: "center"}}
                           size={1}
+                          key={index}
                         >
                           {bossRef.current != undefined
                             ? displayBoss(

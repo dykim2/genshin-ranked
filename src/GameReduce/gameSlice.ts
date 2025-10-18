@@ -278,6 +278,41 @@ const gameSlice = createSlice({
       // create a reducer question mark
       // this could also manage code elsewhere
     },
+    addBossBan(
+      state,
+      action: PayloadAction<{
+        boss: number,
+        replaceIndex: number,
+        team: number
+      }>
+    ){
+      const {boss, replaceIndex, team} = action.payload;
+      if(team != 1 && team != 2) return;
+      if(replaceIndex != -1){
+        state.bossBans[replaceIndex] = boss;
+      } else {
+        const existingIndex = state.bossBans.findIndex((ban: number) => ban == boss);
+        if(existingIndex != -1 && boss >= 0){
+          console.log("boss already exists in boss bans");
+          // do nothing
+          return;
+        }
+        const emptyIndex = state.bossBans.findIndex((ban: number) => ban == -1);
+        if (emptyIndex != -1) {
+          state.bossBans[emptyIndex] = boss;
+          // last empty ban?
+          if (emptyIndex == state.bossBans.length - 1) {
+            state.turn = 1;
+            state.result = "boss";
+          }
+          else{
+            // what determines the new turn?
+             // push ones and twos in order until both limits are hit, then chooses the corresponding index
+            state.turn = team; // calculates next team
+          }
+        }
+      }
+    },
     addCharacter( // use selected team
       // socket message types: pick, ban, overwrite (just change replacementindex to not be -1)
       // does not directly handle extra bans but accounts for their existence
@@ -358,7 +393,12 @@ const gameSlice = createSlice({
           // last empty ban?
           if (emptyIndex == state.extrabans.length - 1) {
             state.turn = 1;
-            state.result = "boss";
+            if(state.doBossBans){
+              state.result = "bossban";
+            }
+            else{
+              state.result = "boss";
+            } 
           }
           else{
             // what determines the new turn?
@@ -465,7 +505,7 @@ export const totalBans = (state: RootState) => state.game.totalBans;
 export const extraBanCount = (state: RootState) => state.game.extrabans.length;
 
 export default gameSlice;
-export const {addGame, addBoss, addCharacter, addExtraBan, addName, addTeamName, changePhase, dragAndDrop, setBans, setTurn, removeGame} = gameSlice.actions;
+export const {addGame, addBoss, addBossBan, addCharacter, addExtraBan, addName, addTeamName, changePhase, dragAndDrop, setBans, setTurn, removeGame} = gameSlice.actions;
 /*
   what happens over the course of a draft? before, after, etc (SETTERS)
   - boss, ban, pick, etc
