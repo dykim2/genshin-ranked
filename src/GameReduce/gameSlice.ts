@@ -375,8 +375,6 @@ const gameSlice = createSlice({
     ) => {
       // socket message types: extraban
       const {character, replaceIndex, team} = action.payload;
-      console.log("extra ban payload");
-      console.log(action.payload);
       if (Math.abs(team) != 1 && Math.abs(team) != 2) return;
       if (replaceIndex != -1) {
         state.extrabans[replaceIndex] = character;

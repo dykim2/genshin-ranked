@@ -824,7 +824,6 @@ const parseStatus = (data) => {
     }
     lastMessageRef.current = {info: event.data, time: thisTime};
     console.log(data)
-    console.log("data data");
     if (data.id != props.id) {
       return; // do nothing if game does not match
     } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
@@ -836,7 +835,7 @@ const parseStatus = (data) => {
     if (data.type != "turn" && data.type != "game" && data.type != "latest" && totalTime != TIMER) {
       setTotalTime(TIMER);
     }
-    console.log(data.type+" type");
+    // console.log(data.type+" type");
     // console.log("data.type: " + data.type);
     switch (data.type) {
       case "create": {
@@ -847,8 +846,6 @@ const parseStatus = (data) => {
       case "get": {
         let newData = data as SocketMessageWithGame;
         dispatch(addGame(newData.game as GameInterface));
-        // updateIdentity(data.game);
-        // updateTurn(data.game.turn);
         if(newData.game.totalBans == 6){
           setBanInfo([0, 3, 6]);
         }
@@ -857,41 +854,23 @@ const parseStatus = (data) => {
         }
         // if timer inactive then set timer
         if (newData.time != -1) {
-          // data.time is -1 when game is not happening
-          // make timer visible
           // console.log("setting tiomter");
           setTotalTime(newData.time * 1000);
           updateTimer(true, false);
         }
-        /*
-        dispatch(overrideBoss(newData.game.bosses.filter((boss) => boss > -1)));
-        dispatch(
-          overrideAllCharacters({
-            extraBans: newData.game.extrabans.filter((ban) => ban > -1),
-            bans: newData.game.bans.filter((ban) => ban > -1),
-            picks: [
-              ...newData.game.pickst1.filter((pick) => pick > -1),
-              ...newData.game.pickst2.filter((pick) => pick > -1),
-            ],
-          })
-        );
-        */
-          // updateSelected(6);
         // set the turn too
         if (canPause && newData.paused) {
-          // console.log("must pause");
           // game is not paused, on server end it is paused
           setTimeout(() => {
             pauseDraft();
           }, 100);
         } else if (!canPause && !newData.paused) {
-          // console.log("must resume");
           // game is paused, server end is resumed
           setTimeout(() => {
             resumeDraft();
           }, 100);
         } else {
-          // console.log("must chill");
+
         }
         break;
       }
@@ -950,7 +929,7 @@ const parseStatus = (data) => {
         dispatch(dragAndDrop({where: newData.where, original: newData.first, target: newData.second}));
         break;
       }
-      // should only execute if extra ban setting is enabled
+      // should only execute case extraban if extra ban setting is enabled
       case "extraban":
       case "ban": {
         let newData = data as SocketBanMessage;
@@ -972,7 +951,6 @@ const parseStatus = (data) => {
             nextTeam: newData.nextTeam
           }));
         }
-        // updateSelectedDirect(newData.ban, 2);
         showSelectionAlert(newData.ban, false, true);
         break;
       }
@@ -987,7 +965,6 @@ const parseStatus = (data) => {
           team: newData.team,
           nextTeam: newData.nextTeam
         }));
-        // updateSelectedDirect(newData.pick, 3);
         showSelectionAlert(newData.pick, false, false);
         break;
       }
@@ -1018,7 +995,7 @@ const parseStatus = (data) => {
         // no more identity!!
         let newData = data as SocketOverwriteMessage;
         switch(newData.which){
-          case "bossban": {
+          case "bossBans": {
             dispatch(addBossBan({
               boss: newData.replacement,
               replaceIndex: newData.original,
@@ -1091,9 +1068,6 @@ const parseStatus = (data) => {
       }
       case "phase": {
         let newData = data as SocketPhaseMessage;
-        console.log(newData);
-        console.log("create new phase");
-        console.log(extraBanNumber)
         if (
           newData.newPhase == "extraban" ||
           (newData.newPhase == "bossban" && extraBanNumber == 0 && doBossBansExist) ||
@@ -1151,6 +1125,7 @@ const parseStatus = (data) => {
   };
   */
   const openChange = (team: number, name: string, original: number) => {
+    // console.log("team: "+team+" name: "+name+" original: "+original);
     if (cookies.player.charAt(0) != "R") {
       // reject
       alert("you can only change bosses/characters as a ref!");
@@ -1170,7 +1145,15 @@ const parseStatus = (data) => {
     }
     let info = ["", "", "0", "0"];
     if (team == 0) {
-      info[0] = "boss";
+      if(original > 0){
+        // boss
+        info[0] = "boss";
+      }
+      else{
+        // boss ban
+        info[0] = "bossban";
+        original = original * -1 - 1;
+      }
     } else {
       if (original > 14) {
         info[0] = "extraban";
@@ -1178,10 +1161,6 @@ const parseStatus = (data) => {
       } else if (original > -1) {
         info[0] = "character";
       } // need to differentiate between ban and extra ban
-      else if(original < -14){
-        info[0] = "bossban";
-        original = original * -1 - 15;
-      }
       else {
         info[0] = "ban";
         original = original * -1 - 1;
@@ -1205,7 +1184,7 @@ const parseStatus = (data) => {
     }
     let res = parseInt(change);
     if (isNaN(res)) {
-      if (changeInfo[0] == "boss") {
+      if (changeInfo[0] == "boss" || changeInfo[0] == "bossban") {
         res = bossNameRef.current.get(change.toLowerCase()) ?? -5;
         if(BOSS_DETAIL[bossRef.current.get(bossNameRef.current.get(change.toLowerCase()) ?? -5) ?? BOSSES.None].type == BOSS_TYPE.Legend){
           // create a modal that asks if they are sure they want to add a local legend
@@ -1222,9 +1201,13 @@ const parseStatus = (data) => {
         res = charNameRef.current.get(change.toLowerCase()) ?? -5;
       }
     }
-    if (res < 0) {
+    if (
+      res < 0 ||
+      ((changeInfo[0] == "boss" || changeInfo[0] == "bossban") && res > latestRef.current[0]) ||
+      (!(changeInfo[0] == "boss" || changeInfo[0] == "bossban") && res > latestRef.current[1])
+    ) {
       // ask for proper input
-      if (changeInfo[0] == "boss") {
+      if (changeInfo[0] == "boss" || changeInfo[0] == "bossban") {
         alert("The boss name specified is invalid!");
       } else {
         alert("The character name specified is invalid!");
@@ -1232,7 +1215,7 @@ const parseStatus = (data) => {
       return;
     }
     // check for max value once
-
+    
     socket.current.send(
       JSON.stringify({
         type: "overwrite",
@@ -1280,8 +1263,6 @@ const parseStatus = (data) => {
       ? [0, 2, 5, 1, 3, 4]
       : [0, 2, 4, 7, 1, 3, 5, 6];
   // console.log("ban info: "+banInfo);
-  let timeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const limit = identity.bosses.length ?? 0;
   // add pause, waiting, game over
   const smallSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 3 : 2;
   const largeSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 6 : 8;
@@ -1865,20 +1846,20 @@ const parseStatus = (data) => {
                     collisionDetection={closestCenter}
                     modifiers={[restrictToHorizontalAxis]}
                   >
-                    {timeOrder.slice(0, limit).map((time) => {
+                    {Array.from({length: identity.bosses.length ?? 0}).map((_, ind) => {
                       return (
                         <Grid
                           container
                           sx={{justifyContent: "center"}}
                           size={1}
-                          key={time}
+                          key={ind}
                         >
                           {bossRef.current != undefined
                             ? displayBoss(
-                                bossRef.current.get(identity.bosses[time]) ??
+                                bossRef.current.get(identity.bosses[ind]) ??
                                   BOSSES.None,
                                 true,
-                                time,
+                                ind,
                                 openChange
                               )
                             : null}
@@ -1903,7 +1884,7 @@ const parseStatus = (data) => {
                                   bossRef.current.get(ban) ??
                                       BOSSES.None,
                                   false,
-                                  -15 - index, // -15 for the first boss ban, -16 for the second
+                                  -1 * (index + 1), // -1 for first, -2 for second
                                   openChange
                                 )
                               : null}
@@ -1973,7 +1954,7 @@ const parseStatus = (data) => {
                                 bossRef.current.get(ban) ??
                                     BOSSES.None,
                                 false,
-                                -15 - index, // -15 for the first boss ban, -16 for the second
+                                -1 * (index + 1),
                                 openChange
                               )
                             : null}

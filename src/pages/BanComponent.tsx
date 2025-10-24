@@ -1,5 +1,5 @@
 import {Grid} from "@mui/material"
-
+// not being used atm
 import {displayCharacter} from "../components/DisplayComponent";
 import {useAppSelector} from "../hooks/ReduxHooks";
 import {CHARACTERS} from "@genshin-ranked/shared";

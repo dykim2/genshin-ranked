@@ -25,9 +25,9 @@ const App = () => {
       !socket ||
       socket.readyState === WebSocket.CLOSED ||
       socket.readyState === WebSocket.CLOSING
-    ) {
+    ) { // s
       setSocket(new WebSocket(socketOpts[0]));
-      console.log("opening new socket");
+      // console.log("opening new socket");
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
@@ -66,11 +66,11 @@ const App = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
-      console.log("close");
+      // console.log("close");
     } else {
-      console.log("no close");
+      // console.log("no close");
     }
-    console.log("new socket is here?");
+     // console.log("new socket is here?");
   }, [socket]);
 
   const socketOpen = () => {

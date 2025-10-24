@@ -53,7 +53,7 @@ export const BossSelector = ({
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}
 					sx={{
-						width: { xs: 160, md: 220, lg: 250 },
+						width: {xs: 160, md: 220, lg: 250},
 						marginTop: 0.75,
 						input: { color: "white" },
 						// Customizing the input text color
