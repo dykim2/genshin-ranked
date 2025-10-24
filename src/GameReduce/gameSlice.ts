@@ -283,10 +283,11 @@ const gameSlice = createSlice({
       action: PayloadAction<{
         boss: number,
         replaceIndex: number,
-        team: number
+        team: number,
+        nextTeam: number
       }>
     ){
-      const {boss, replaceIndex, team} = action.payload;
+      const {boss, replaceIndex, team, nextTeam} = action.payload;
       if(team != 1 && team != 2) return;
       if(replaceIndex != -1){
         state.bossBans[replaceIndex] = boss;
@@ -308,7 +309,7 @@ const gameSlice = createSlice({
           else{
             // what determines the new turn?
              // push ones and twos in order until both limits are hit, then chooses the corresponding index
-            state.turn = team; // calculates next team
+            state.turn = Math.abs(nextTeam); // calculates next team
           }
         }
       }
@@ -424,6 +425,7 @@ const gameSlice = createSlice({
       let phases = [
         "waiting",
         "boss",
+        "bossban",
         "extraban",
         "ban",
         "pick",
@@ -434,6 +436,9 @@ const gameSlice = createSlice({
         return;
       }
       if(action.payload.toLowerCase() == "extraban" && state.extrabans.length == 0){
+        return;
+      }
+      else if(action.payload.toLowerCase() == "bossban" && state.doBossBans == false){
         return;
       }
       else if(action.payload.toLowerCase() == "extraban" && state.extrabans.length > 0){
@@ -503,6 +508,7 @@ export const gameResult = (state: RootState) => state.game.result;
 export const getGameSearchResult = (state: RootState) => state.game.status;
 export const totalBans = (state: RootState) => state.game.totalBans;
 export const extraBanCount = (state: RootState) => state.game.extrabans.length;
+export const bossBansExist = (state: RootState) => state.game.doBossBans;
 
 export default gameSlice;
 export const {addGame, addBoss, addBossBan, addCharacter, addExtraBan, addName, addTeamName, changePhase, dragAndDrop, setBans, setTurn, removeGame} = gameSlice.actions;

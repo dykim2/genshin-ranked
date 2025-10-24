@@ -146,11 +146,11 @@ export const chosenPicksT1 = (state: RootState) => state.selections.selectedPick
 export const chosenPicksT2 = (state: RootState) => state.selections.selectedPicksT2;
 
 export const chosenBossPlusBans = createSelector([chosenBosses, chosenBossBans], (bosses, bossBans) => {
-    const combined = [...bosses, ...bossBans];
-    return Array.from(new Set(combined));
+  const combined = [...bosses, ...bossBans];
+  return Array.from(new Set(combined));
 });
 
 export const chosenCharacters = createSelector([chosenBans, chosenExtraBans, chosenPicksT1, chosenPicksT2], (bans, extraBans, picksT1, picksT2) => {
-    const combined = [...bans, ...extraBans, ...picksT1, ...picksT2];
-    return Array.from(new Set(combined));
+  const combined = [...bans, ...extraBans, ...picksT1, ...picksT2];
+  return Array.from(new Set(combined));
 });

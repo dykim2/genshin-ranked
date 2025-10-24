@@ -151,6 +151,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/d5/66/de/MEZJO44_t.png",
 		index: 47,
 	},
+	[BOSSES.Frostnight]: {
+		displayName: "Frostnight",
+		element: ELEMENTS.physical,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Frostnight",
+		onlineFilePath: "https://thumbs4.imagebam.com/fd/6e/7f/ME1737PK_t.png",
+		index: 53,
+	},
 	[BOSSES.GeoCube]: {
 		displayName: "Geo Cube",
 		element: ELEMENTS.geo,

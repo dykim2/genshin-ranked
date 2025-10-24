@@ -13,7 +13,7 @@ import { GroupToggle } from "../GroupToggle";
 import SearchIcon from "@mui/icons-material/Search";
 import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details";
 import { useAppSelector } from "../../../../src/hooks/ReduxHooks";
-import { chosenBosses } from "../../../../src/GameReduce/selectionSlice";
+import { chosenBossPlusBans } from "../../../../src/GameReduce/selectionSlice";
 
 // an exact copy of character selector applied for bosses - should make a selector component instead but this way gets the changes out faster
 
@@ -34,7 +34,7 @@ export const BossSelector = ({
 	const [searchFilter, setSearchFilter] = useState<string>("");
 	const [isFocused, setIsFocused] = useState<boolean>(false);
 	// const [count, setCount] = useState<number>(0); // just for re-rendering purposes, only when selections changes
-	const selections = useAppSelector(chosenBosses);
+	const selections = useAppSelector(chosenBossPlusBans);
 	const componentRef = useRef(null);
 	return (
 		<Stack direction="column">

@@ -23,7 +23,7 @@ import {BOSSES} from "@genshin-ranked/shared";
 import {BOSS_TYPE} from "@genshin-ranked/shared/src/types/level.ts";
 import type {DragEndEvent} from "@dnd-kit/core";
 import {useAppSelector, useAppDispatch} from "../hooks/ReduxHooks.ts";
-import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans, extraBanCount, gameInfo, gameTurn, addBossBan} from "../GameReduce/gameSlice.ts";
+import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans, extraBanCount, gameInfo, gameTurn, addBossBan, bossBansExist} from "../GameReduce/gameSlice.ts";
 import {chosenBossPlusBans, chosenCharacters, overrideBoss, overrideCharacter, selectBoss, selectBan, selectExtraBan, selectPickT1, selectPickT2, overrideAllCharacters, chosenBans, chosenExtraBans, chosenPicksT1, chosenPicksT2, hoveredCharacter, hoveredBoss, chosenBosses, chosenBossBans} from "../GameReduce/selectionSlice.ts";
 import ExtraBanDisplay from "./ExtraBanComponent.tsx";
 const IMG_SIZE = 75; // use eventually
@@ -147,6 +147,7 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
   const selectedPicksT1 = useAppSelector(chosenPicksT1);
   const selectedPicksT2 = useAppSelector(chosenPicksT2);
   const extraBanNumber = useAppSelector(extraBanCount);
+  const doBossBansExist = useAppSelector(bossBansExist);
   const gameTextSize = {xs: "0.5rem", sm: "0.75rem", md: "0.9rem", lg: "1rem", xl: "1.3rem"};
   const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
   const [totalTime, setTotalTime] = useState(0); // total time for timer
@@ -217,6 +218,9 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
     };
   }, [props.socket]);
 
+  useEffect(() => {
+    updateSelected(0);
+  }, [identity.bossBans]);
   useEffect(() => {
     updateSelected(1);
   }, [identity.bosses])
@@ -365,6 +369,7 @@ const parseStatus = (data) => {
     }
     switch (type) {
       case "boss":
+      case "bossban":
         // check id and check name
         // console.log(bossInfo);
         if (selectedBossesAndBans.includes(selection)) {
@@ -478,7 +483,7 @@ const parseStatus = (data) => {
       }
       if (
         !found &&
-        ((type == "boss" && (res.toLowerCase() != "boss" && res.toLowerCase() != "bossban")) ||
+        ((type == "boss" && res.toLowerCase() != "boss" && res.toLowerCase() != "bossban") ||
           (type == "character" &&
             res.toLowerCase() != "ban" &&
             res.toLowerCase() != "pick" &&
@@ -931,7 +936,8 @@ const parseStatus = (data) => {
         dispatch(addBossBan({
           boss: newData.ban,
           replaceIndex: -1,
-          team: newData.team
+          team: newData.team,
+          nextTeam: newData.nextTeam
         }))
         showSelectionAlert(newData.ban, true, false);
       }
@@ -1016,7 +1022,8 @@ const parseStatus = (data) => {
             dispatch(addBossBan({
               boss: newData.replacement,
               replaceIndex: newData.original,
-              team: 1
+              team: 1,
+              nextTeam: 1
             }))
             break;
           }
@@ -1030,7 +1037,6 @@ const parseStatus = (data) => {
             break;
           }
           case "bans": {
-            console.log("testtesttest");
             dispatch(addCharacter({
               ban: true,
               character: newData.replacement,
@@ -1089,8 +1095,9 @@ const parseStatus = (data) => {
         console.log("create new phase");
         console.log(extraBanNumber)
         if (
-          (newData.newPhase == "boss" && extraBanNumber == 0) ||
-          (newData.newPhase == "extraban")
+          newData.newPhase == "extraban" ||
+          (newData.newPhase == "bossban" && extraBanNumber == 0 && doBossBansExist) ||
+          (newData.newPhase == "boss" && extraBanNumber == 0 && !doBossBansExist)
         ) {
           updateTimer(true, true);
           if (cookies.player.charAt(0) != "S") {
@@ -1492,7 +1499,8 @@ const parseStatus = (data) => {
                   <div>
                     {cookies.player.charAt(0) != "S" ? (
                       identity.result.toLowerCase() == "waiting" ||
-                      identity.result.toLowerCase() == "boss" ? (
+                      identity.result.toLowerCase() == "boss" ||
+                      identity.result.toLowerCase() == "bossban" ? (
                         <BossDisplay
                           fearless={identity.fearless}
                           team={
@@ -1781,7 +1789,7 @@ const parseStatus = (data) => {
                                 id: props.id,
                               })
                             );
-                          } else if(identity.doBossBans){
+                          } else if(doBossBansExist){
                             socket.current.send(
                               JSON.stringify({
                                 type: "switch",

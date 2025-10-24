@@ -650,6 +650,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/0b/cf/1f/METS0VM_t.png",
 		index: 76,
 	},
+	[CHARACTERS.Nefer]: {
+		displayName: "Nefer",
+		element: ELEMENTS.dendro,
+		weapon: WEAPONS.catalyst,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Nefer",
+		onlineFilePath: "https://thumbs4.imagebam.com/8b/5b/4c/ME1737PM_t.png",
+		index: 105,
+	},
 	[CHARACTERS.Neuvillette]: {
 		displayName: "Neuvillette",
 		element: ELEMENTS.hydro,
