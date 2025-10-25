@@ -506,7 +506,7 @@ export const gameResult = (state: RootState) => state.game.result;
 export const getGameSearchResult = (state: RootState) => state.game.status;
 export const totalBans = (state: RootState) => state.game.totalBans;
 export const extraBanCount = (state: RootState) => state.game.extrabans.length;
-export const bossBansExist = (state: RootState) => state.game.doBossBans;
+export const bossBansExist = (state: RootState) => state.game.bossBans.length > 0;
 
 export default gameSlice;
 export const {addGame, addBoss, addBossBan, addCharacter, addExtraBan, addName, addTeamName, changePhase, dragAndDrop, setBans, setTurn, removeGame} = gameSlice.actions;

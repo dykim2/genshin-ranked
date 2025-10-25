@@ -1068,6 +1068,8 @@ const parseStatus = (data) => {
       }
       case "phase": {
         let newData = data as SocketPhaseMessage;
+        console.log(doBossBansExist);
+        console.log("do boss bans")
         if (
           newData.newPhase == "extraban" ||
           (newData.newPhase == "bossban" && extraBanNumber == 0 && doBossBansExist) ||
