@@ -102,17 +102,17 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   };
   const defaultInfo: GameSettings = {
     _id: idRef.current,
-    player: "1",
-    extrabanst1: bans[0],
-    extrabanst2: bans[1],
-    totalBans: 8,
-    doBossBans: enableBossBans,
     bossBans: [], // none
     bossCount: bonusParams[0],
-    initialBosses: [bonusParams[1], bonusParams[2]],
     division: mode,
+    doBossBans: enableBossBans,
+    extrabanst1: bans[0],
+    extrabanst2: bans[1],
     fearless: fearless,
     fearlessID: fearless ? bonusParams[3] : -1,
+    initialBosses: [bonusParams[1], bonusParams[2]],
+    player: "1",
+    totalBans: 8,
   };
   const choosePlayer = async (
     playerChoice: string,
@@ -211,7 +211,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       fearlessID: bonusParams[3] > -1 ? bonusParams[3] : -1,
       initialBosses: [-1, -1],
       player: "1",
-      totalBans: 6,
+      totalBans: 8,
     };
     await choosePlayer("Ref", -1, info);
   };
