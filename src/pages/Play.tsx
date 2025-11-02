@@ -145,14 +145,14 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       info.player = playerChoice.substring(playerChoice.length - 1);
       playerChoice = playerChoice.substring(playerChoice.length - 1);
     }
-    if (playerChoice == "Spectator" && creating) {
+    if ((playerChoice == "Spectator" || playerChoice == "Producer") && creating) {
       alert("You cannot create a game as a spectator!");
       return;
     }
     setReadying(true);
     // set the player in the API
     let valid = true;
-    if (playerChoice != "Spectator" && !creating) {
+    if (playerChoice != "Spectator" && playerChoice != "Producer" && !creating) {
       // have this return the game's total ban status too?
       await dispatch(changeConnected({id: id, playerChoice: playerChoice}));
     } else if (creating) {
@@ -436,6 +436,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                   "Ref (BO2 Game 2)",
                   "Ref (2 + 1 bans)",
                   "Ref (Custom)",
+                  "Producer",
                   "Spectator",
                 ].map((player, index) => {
                   return creating ||
@@ -444,7 +445,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                       <ListItemButton
                         onClick={() => choosePlayer(player, idRef.current)}
                         disabled={
-                          (player == "Spectator" && creating) ||
+                          ((player == "Spectator" || player == "Producer") && creating) ||
                           player == "Refe (Custom)" || // if i want to disable custom ref game i can do this in future (typo is intended)
                           (typeof status.connected != "undefined" &&
                             status.connected[index] >= limit[index])

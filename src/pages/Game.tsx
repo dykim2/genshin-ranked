@@ -1076,7 +1076,7 @@ const parseStatus = (data) => {
           (newData.newPhase == "boss" && extraBanNumber == 0 && !doBossBansExist)
         ) {
           updateTimer(true, true);
-          if (cookies.player.charAt(0) != "S") {
+          if (cookies.player.charAt(0) != "S" && cookies.player.charAt(0) != "P") {
             alert("Draft starts now!");
           }
         } else if (newData.newPhase == "ban" || newData.newPhase == "pick") {
@@ -1266,8 +1266,8 @@ const parseStatus = (data) => {
       : [0, 2, 4, 7, 1, 3, 5, 6];
   // console.log("ban info: "+banInfo);
   // add pause, waiting, game over
-  const smallSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 3 : 2;
-  const largeSizeChoice = cookies.player.charAt(0) == "S" && isMediumOrBigger ? 6 : 8;
+  const smallSizeChoice = (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") && isMediumOrBigger ? 3 : 2;
+  const largeSizeChoice = (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") && isMediumOrBigger ? 6 : 8;
   return (
     <div>
       <title>
@@ -1279,7 +1279,7 @@ const parseStatus = (data) => {
           ? "draft over"
           : cookies.player.charAt(0) == "" + turn
           ? "YOUR TURN! ID " + props.id
-          : cookies.player.charAt(0) == "R" || cookies.player.charAt(0) == "S"
+          : cookies.player.charAt(0) == "R" || cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P"
           ? identity[turn == 1 ? "team1" : "team2"] + " 's turn! ID " + props.id
           : "enemy turn! ID " + props.id}
       </title>
@@ -1473,14 +1473,17 @@ const parseStatus = (data) => {
                     }, 100);
                   }}
                   style={
+                    /*
                     identity.result.toLowerCase() == "progress" ||
                     cookies.player.charAt(0) == "S"
                       ? { minWidth: 1080 }
                       : undefined
+                    */
+                     undefined
                   }
                 >
                   <div>
-                    {cookies.player.charAt(0) != "S" ? (
+                    {!(cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") ? (
                       identity.result.toLowerCase() == "waiting" ||
                       identity.result.toLowerCase() == "boss" ||
                       identity.result.toLowerCase() == "bossban" ? (
@@ -1518,7 +1521,7 @@ const parseStatus = (data) => {
                   </div>
                   <div>
                     {identity.result.toLowerCase() == "progress" ||
-                    cookies.player.charAt(0) == "S" ? (
+                    (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") ? (
                       <p>thank you!</p>
                     ) : null}
                   </div>
@@ -1620,7 +1623,7 @@ const parseStatus = (data) => {
                 justifyContent={"center"}
                 columns={{ xs: 2, sm: 3, md: 4 }}
               >
-                {isMediumOrBigger && cookies.player.charAt(0) != "S" ? (
+                {isMediumOrBigger && !(cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P")? (
                   <Grid offset={1} marginTop={0} size={1}>
                     <Typography
                       textTransform="none"
@@ -1662,7 +1665,7 @@ const parseStatus = (data) => {
                         </Typography>
                       </Button>
                     </Fragment>
-                  ) : !isMediumOrBigger && cookies.player.charAt(0) != "S" ? (
+                  ) : !isMediumOrBigger && !(cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") ? (
                     <Typography
                       marginTop={1}
                       fontSize={{ xs: "0.55rem", sm: "0.8rem" }}
@@ -1798,7 +1801,7 @@ const parseStatus = (data) => {
                 </Grid>
               </Grid>
               <Grid
-                size={cookies.player.charAt(0) == "S" ? smallSizeChoice : 2}
+                size={smallSizeChoice}
               />
               {isMediumOrBigger ? (
                 <Grid
@@ -1977,7 +1980,7 @@ const parseStatus = (data) => {
             </Grid>
           </Box>
 
-          <Typography sx={{ fontSize: gameTextSize, marginLeft: 1 }}>
+          <Typography sx={{marginTop: cookies.player.charAt(0) == "P" ? 38 : 0, fontSize: gameTextSize, marginLeft: 1}}>
             {`playing game id`} <b>{`${props.id}!`}</b>
           </Typography>
           <Button
@@ -1996,6 +1999,21 @@ const parseStatus = (data) => {
             <Typography textTransform="none">refresh game info</Typography>{" "}
             {/* should check for paused game */}
           </Button>
+          {
+            cookies.player.charAt(0) == "Q" || cookies.player.charAt(0) == "Z" ? ( // change back to S and P eventually but for now keep them hidden
+              <Fragment>
+                <Button
+                  style={{ backgroundColor: "#543834", color: "white" }}
+                  fullWidth
+                  onClick={() => {
+                    showSelectionAlert(0, true, false);
+                  }}
+                >
+                  <Typography textTransform="none">display gif</Typography>{" "}
+                </Button>
+              </Fragment>
+            ) : null
+          }
           {/*
           <TimesModal
             times={identity.timest1}

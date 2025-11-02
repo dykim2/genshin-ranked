@@ -18,6 +18,8 @@ export const GifPlay = ({
   let imgHeight = 256;
   const totalWidth = useScreenSize().width;
   const totalHeight = useScreenSize().height;
+  console.log("total width: "+totalWidth);
+  console.log("total height: "+totalHeight);
   // default width is half the screen - 540 (the width of the image at full size)
   const defWidth = totalWidth / 2 - 540;
   // console.log(defWidth);
@@ -41,7 +43,10 @@ export const GifPlay = ({
     imgHeight = 256 * (imgWidth / 1080);
     height = (totalHeight / 2) - imgHeight;
   }
-  
+  if(cookies.player.charAt(0) == "P"){ // bandage fix, will look into soon
+    height = 200;
+    width = 100;
+  }
   return (
     <Fragment>
       {/* turn this in to a component, maybe by providing a state variable*/}
