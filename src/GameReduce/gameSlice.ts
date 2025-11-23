@@ -32,7 +32,7 @@ const api_list = [
   "https://rankedapi-late-cherry-618.fly.dev",
   "http://localhost:3001",
 ];
-const api = api_list[0];
+const api = api_list[1];
 
 export interface GameInterface {
   _id: number;
@@ -43,11 +43,12 @@ export interface GameInterface {
   division: "open" | "standard" | "premier";
   doBossBans: boolean;
   error: string | null;
-  extrabans: number[]; //
+  extrabans: number[];
   extrabanst1: number;
   extrabanst2: number;
   fearless: boolean;
   fearlessBosses: number[];
+  presetBossCount: number;
   longBoss: boolean[];
   pickst1: number[];
   pickst2: number[];
@@ -57,6 +58,8 @@ export interface GameInterface {
   team1: string;
   team2: string;
   totalBans: number;
+  totalTimeT1: number;
+  totalTimeT2: number;
   turn: number;
   status: "idle" | "pending" | "success" | "failed";
 }
@@ -82,6 +85,8 @@ export interface GameSettings {
   fearless: boolean;
   fearlessID: number;
   initialBosses: number[];
+  totalTimeT1: number;
+  totalTimeT2: number;
   player: string;
   totalBans: number;
 }
@@ -113,7 +118,10 @@ const initialState: GameInterface = {
   extrabanst2: 0,
   fearless: false,
   fearlessBosses: [],
+  presetBossCount: 0,
   longBoss: [false, false],
+  totalTimeT1: 240,
+  totalTimeT2: 240,
   pickst1: [],
   pickst2: [],
   playerst1: [],
@@ -123,7 +131,7 @@ const initialState: GameInterface = {
   team2: "t2 name",
   totalBans: 0,
   turn: 1,
-  status: "idle"
+  status: "idle",
 };
 // when obtaining a game, i can reset the game state
 // maybe make a reducer for each?
@@ -459,6 +467,7 @@ const gameSlice = createSlice({
       state.totalBans = action.payload;
     },
     setTurn(state, action: PayloadAction<number>) {
+      console.log("setting turn as "+action.payload);
       // socket message types: turn
       state.turn = action.payload;
     },
@@ -501,6 +510,8 @@ const gameSlice = createSlice({
 });
 
 export const gameInfo = (state: RootState) => state.game;
+export const gameTimerT1 = (state: RootState) => state.game.totalTimeT1;
+export const gameTimerT2 = (state: RootState) => state.game.totalTimeT2;
 export const gameTurn = (state: RootState) => state.game.turn;
 export const gameResult = (state: RootState) => state.game.result;
 export const getGameSearchResult = (state: RootState) => state.game.status;

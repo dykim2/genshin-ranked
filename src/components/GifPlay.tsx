@@ -18,8 +18,8 @@ export const GifPlay = ({
   let imgHeight = 256;
   const totalWidth = useScreenSize().width;
   const totalHeight = useScreenSize().height;
-  console.log("total width: "+totalWidth);
-  console.log("total height: "+totalHeight);
+  //console.log("total width: "+totalWidth);
+  //console.log("total height: "+totalHeight);
   // default width is half the screen - 540 (the width of the image at full size)
   const defWidth = totalWidth / 2 - 540;
   // console.log(defWidth);

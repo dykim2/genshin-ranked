@@ -23,7 +23,7 @@ interface IRouter {
 const WebRouter: FC<IRouter> = (props) => {
   const [active, setActive] = useState<PlayerConnection[]>([]);
   const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3001"];
-  const api = api_choice[0];
+  const api = api_choice[1];
   const findActive = async () => {
     let gameData = await fetch(`${api}/gameAPI/active`, {
       method: "GET",

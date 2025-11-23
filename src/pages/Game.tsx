@@ -1,112 +1,185 @@
-import {useState, useEffect, useRef, Fragment, FC, RefObject} from "react";
-import {useCookies} from "react-cookie";
+import { useState, useEffect, useRef, Fragment, FC, RefObject } from "react";
+import { useCookies } from "react-cookie";
 import "./css/Playing.css";
 import "./css/Gameplay.css";
 // import OrderModal from "./OrderModal.tsx";
 import Countdown from "react-countdown";
 
-import {Balancing} from "../../frontend/src/routes/balancing.tsx";
-import {BossDisplay} from "../../frontend/src/routes/bosses.tsx";
+import { Balancing } from "../../frontend/src/routes/balancing.tsx";
+import { BossDisplay } from "../../frontend/src/routes/bosses.tsx";
 
-import {BOSS_DETAIL} from "@genshin-ranked/shared/src/types/bosses/details.ts";
-import {CHARACTER_INFO} from "@genshin-ranked/shared/src/types/characters/details.ts"; 
-import {displayBoss, displayCharacter} from "../components/DisplayComponent.tsx";
-import {getBossBanPath, getBossGifPath, getCharacterBanPath, getCharacterGifPath} from "@genshin-ranked/shared/src/utils/imagePaths.ts"
+import { BOSS_DETAIL } from "@genshin-ranked/shared/src/types/bosses/details.ts";
+import { CHARACTER_INFO } from "@genshin-ranked/shared/src/types/characters/details.ts";
+import {
+  displayBoss,
+  displayCharacter,
+} from "../components/DisplayComponent.tsx";
+import {
+  getBossBanPath,
+  getBossGifPath,
+  getCharacterBanPath,
+  getCharacterGifPath,
+} from "@genshin-ranked/shared/src/utils/imagePaths.ts";
 
-import {Box, Button, Typography, Grid, useMediaQuery, useTheme, Stack} from "@mui/material";
-import {GifPlay} from "../components/GifPlay.tsx";
-import {DndContext, closestCenter} from "@dnd-kit/core";
-import {restrictToHorizontalAxis, restrictToVerticalAxis} from "@dnd-kit/modifiers";
+import {
+  Box,
+  Button,
+  Typography,
+  Grid,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
+import { GifPlay } from "../components/GifPlay.tsx";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  restrictToHorizontalAxis,
+  restrictToVerticalAxis,
+} from "@dnd-kit/modifiers";
 import ChangeModal from "./ChangeModal.tsx";
-import {CHARACTERS} from "@genshin-ranked/shared";
-import {BOSSES} from "@genshin-ranked/shared";
-import {BOSS_TYPE} from "@genshin-ranked/shared/src/types/level.ts";
-import type {DragEndEvent} from "@dnd-kit/core";
-import {useAppSelector, useAppDispatch} from "../hooks/ReduxHooks.ts";
-import {addGame, addName, dragAndDrop, GameWebInterface, setTurn, PlayerInfo, addTeamName, addExtraBan, addCharacter, addBoss, changePhase, GameInterface, totalBans, extraBanCount, gameInfo, gameTurn, addBossBan, bossBansExist} from "../GameReduce/gameSlice.ts";
-import {chosenBossPlusBans, chosenCharacters, overrideBoss, overrideCharacter, selectBoss, selectBan, selectExtraBan, selectPickT1, selectPickT2, overrideAllCharacters, chosenBans, chosenExtraBans, chosenPicksT1, chosenPicksT2, hoveredCharacter, hoveredBoss, chosenBosses, chosenBossBans} from "../GameReduce/selectionSlice.ts";
+import { CHARACTERS } from "@genshin-ranked/shared";
+import { BOSSES } from "@genshin-ranked/shared";
+import { BOSS_TYPE } from "@genshin-ranked/shared/src/types/level.ts";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { useAppSelector, useAppDispatch } from "../hooks/ReduxHooks.ts";
+import {
+  addGame,
+  addName,
+  dragAndDrop,
+  GameWebInterface,
+  setTurn,
+  PlayerInfo,
+  addTeamName,
+  addExtraBan,
+  addCharacter,
+  addBoss,
+  changePhase,
+  GameInterface,
+  totalBans,
+  extraBanCount,
+  gameInfo,
+  gameTurn,
+  addBossBan,
+  bossBansExist,
+  gameTimerT1,
+  gameTimerT2
+} from "../GameReduce/gameSlice.ts";
+import {
+  chosenBossPlusBans,
+  chosenCharacters,
+  overrideBoss,
+  overrideCharacter,
+  selectBoss,
+  selectBan,
+  selectExtraBan,
+  selectPickT1,
+  selectPickT2,
+  overrideAllCharacters,
+  chosenBans,
+  chosenExtraBans,
+  chosenPicksT1,
+  chosenPicksT2,
+  hoveredCharacter,
+  hoveredBoss,
+  chosenBosses,
+  chosenBossBans,
+} from "../GameReduce/selectionSlice.ts";
 import ExtraBanDisplay from "./ExtraBanComponent.tsx";
 const IMG_SIZE = 75; // use eventually
 // redux good for handling and modifying game information?
-const TIMER = 35500;
+const TIMER = 48000;
 
 interface SocketMessage {
-  type: string,
-  id: number,
-  message: string,
-  error?: string,
-  errType?: string,
-  requesterOnly?: boolean
+  type: string;
+  id: number;
+  message: string;
+  error?: string;
+  errType?: string;
+  requesterOnly?: boolean;
 }
-interface SocketMessageWithGame extends SocketMessage {
-  game: GameWebInterface,
-  paused: boolean,
-  time: number
+interface SocketTimeMessage extends SocketMessage {
+  timert1: number;
+  timert2: number;
+}
+interface SocketMessageWithGame extends SocketTimeMessage {
+  game: GameWebInterface;
+  paused: boolean;
 }
 interface SocketBossMessage extends SocketMessage {
-  boss: number,
-  long: boolean,
-  team: number,
-  nextTeam: number
+  boss: number;
+  long: boolean;
+  team: number;
+  nextTeam: number;
 }
 interface SocketBossBanMessage extends SocketMessage {
-  ban: number,
-  team: number,
-  nextTeam: number
+  ban: number;
+  team: number;
+  nextTeam: number;
 }
 interface SocketBanMessage extends SocketMessage {
-  ban: number,
-  team: number,
-  nextTeam: number
+  ban: number;
+  team: number;
+  nextTeam: number;
 }
 interface SocketPickMessage extends SocketMessage {
-  pick: number,
-  team: number,
-  nextTeam: number
+  pick: number;
+  team: number;
+  nextTeam: number;
 }
 interface SocketPhaseMessage extends SocketMessage {
-  newPhase: string
+  newPhase: string;
+  turn: number;
+  timert1: number;
+  timert2: number;
 }
 interface SocketDNDMessage extends SocketMessage {
-  where: string,
-  first: number,
-  second: number
+  where: string;
+  first: number;
+  second: number;
 }
-interface SocketTurnMessage extends SocketMessage {
-  paused: boolean,
-  turn: number,
-  timer: number
+interface SocketTurnMessage extends SocketTimeMessage {
+  paused: boolean;
+  turn: number;
 }
 interface SocketConnectedMessage extends SocketMessage {
   playerStatus: number[];
 }
 interface SocketOverwriteMessage extends SocketMessage {
-  which: string,
-  original: number,
-  replacement: number,
-  long?: boolean
+  which: string;
+  original: number;
+  replacement: number;
+  long?: boolean;
 }
 interface SocketPlayerNameMessage extends SocketMessage {
-  team: number,
-  newNames: string[]
-}
-interface SocketPauseResumeMessage extends SocketMessage {
-  timer: number
+  team: number;
+  newNames: string[];
 }
 interface SocketTeamNameMessage extends SocketMessage {
-  team: number,
-  newName: string
+  team: number;
+  newName: string;
 }
 interface SocketLatestMessage extends SocketMessage {
-  boss: number,
-  character: number
+  boss: number;
+  character: number;
 }
-const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, socketOpen: () => void}) => {
+interface SocketResumeMessage extends SocketMessage {
+  turn: number
+}
+
+const Game = (props: {
+  socket: WebSocket;
+  id: number;
+  resetSocket: () => void;
+  socketOpen: () => void;
+}) => {
   // the actual meat of the game, including picks / bans / etc
   const identity = useAppSelector(gameInfo);
   // const [selection, setSelection] = useState({}); // what character they choose
   // const [update, setUpdate] = useState(false);
   const turn = useAppSelector(gameTurn); // current turn
+  const pickTimeT1 = useAppSelector(gameTimerT1);
+  const pickTimeT2 = useAppSelector(gameTimerT2);
+  const pickTimeT1Ref = useRef(240);
+  const pickTimeT2Ref = useRef(240);
   const hoverBoss = useAppSelector(hoveredBoss);
   const hoverCharacter = useAppSelector(hoveredCharacter);
   const [cookies, setCookie] = useCookies(["player"]); // replace cookies for a player for redux???
@@ -120,24 +193,27 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
 
   const [canPause, setPause] = useState(true); // true or false - can the game be paused
   const [showChanges, setShowChanges] = useState(false);
-  const [changeInfo, setChangeInfo] = useState(["", "", "1", "-1"]); 
+  const [changeInfo, setChangeInfo] = useState(["", "", "1", "-1"]);
   // in order: type, name, team (1 or 2, 0 if boss), id
-  const [showTimer, setTimerVisible] = useState(false);
-  const [timer, setTimerValue] = useState(Date.now());
+  const [showTimerT1, setTimerVisibleT1] = useState(false);
+  const [showTimerT2, setTimerVisibleT2] = useState(false);
+  const secondTeamTurn = useRef(false);
+  const startingTurn = useRef(1);
+  const [timerOverTurn, setTimerOverTurn] = useState(0); // 0 for neither team, 1 for t1, 2 for t2, 3 for both
 
   const [alertLink, setLink] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
-  // const [alertBan, setAlertBan] = useState(false);
 
-  const countdownRef = useRef<Countdown>(null);
+  const countdownRefT1 = useRef<Countdown>(null);
+  const countdownRefT2 = useRef<Countdown>(null);
 
   const charRef = useRef(new Map<number, CHARACTERS>());
   const bossRef = useRef(new Map<number, BOSSES>());
   const bossNameRef = useRef(new Map<string, number>());
   const charNameRef = useRef(new Map<string, number>());
   const dndRef = useRef("boss");
-  const latestRef = useRef([-1,-1]);
-  
+  const latestRef = useRef([-1, -1]);
+
   const selectedBossesAndBans = useAppSelector(chosenBossPlusBans);
   const selectedBosses = useAppSelector(chosenBosses);
   const selectedBossBans = useAppSelector(chosenBossBans);
@@ -148,12 +224,23 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
   const selectedPicksT2 = useAppSelector(chosenPicksT2);
   const extraBanNumber = useAppSelector(extraBanCount);
   const doBossBansExist = useAppSelector(bossBansExist);
-  const gameTextSize = {xs: "0.5rem", sm: "0.75rem", md: "0.9rem", lg: "1rem", xl: "1.3rem"};
+  const gameTextSize = {
+    xs: "0.5rem",
+    sm: "0.75rem",
+    md: "0.9rem",
+    lg: "1rem",
+    xl: "1.3rem",
+  };
   const [extraInfo, setExtraInfo] = useState(""); // info to send to the balancing / bosses text
-  const [totalTime, setTotalTime] = useState(0); // total time for timer
+  const [dateWithTimeT1, setDateWithTimeT1] = useState<number>(Date.now() + 100000); 
+  const [datewithTimeT2, setDateWithTimeT2] = useState<number>(Date.now() + 100000);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const dispatch = useAppDispatch();
   const theme = useTheme();
-  const lastMessageRef = useRef<{info: string; time: number}>({info: "", time: 0});
+  const lastMessageRef = useRef<{info: string; time: number}>({
+    info: "",
+    time: 0,
+  });
   const isMediumOrBigger = useMediaQuery(theme.breakpoints.up("md"));
   useEffect(() => {
     // adds selected characters and bosses to the ref objects
@@ -171,14 +258,22 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
       );
     }
     for (const someName in CHARACTER_INFO) {
-      charRef.current.set(CHARACTER_INFO[someName as keyof typeof CHARACTERS].index, CHARACTERS[someName as keyof typeof CHARACTERS]);
-      charNameRef.current.set(CHARACTER_INFO[someName as keyof typeof CHARACTERS].displayName.toLowerCase(), CHARACTER_INFO[someName as keyof typeof CHARACTERS].index);
+      charRef.current.set(
+        CHARACTER_INFO[someName as keyof typeof CHARACTERS].index,
+        CHARACTERS[someName as keyof typeof CHARACTERS]
+      );
+      charNameRef.current.set(
+        CHARACTER_INFO[
+          someName as keyof typeof CHARACTERS
+        ].displayName.toLowerCase(),
+        CHARACTER_INFO[someName as keyof typeof CHARACTERS].index
+      );
     }
   }, []);
 
   useEffect(() => {
     setupSocket();
-    if(socket.current !== props.socket){
+    if (socket.current !== props.socket) {
       socket.current = props.socket;
     }
     const handleMessage = (event: MessageEvent) => {
@@ -223,7 +318,7 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
   }, [identity.bossBans]);
   useEffect(() => {
     updateSelected(1);
-  }, [identity.bosses])
+  }, [identity.bosses]);
   useEffect(() => {
     updateSelected(2);
   }, [identity.extrabans]);
@@ -232,134 +327,105 @@ const Game = (props: {socket: WebSocket, id: number, resetSocket: () => void, so
   }, [identity.bans]);
   useEffect(() => {
     updateSelected(4);
-  }, [identity.pickst1])
+  }, [identity.pickst1]);
   useEffect(() => {
     updateSelected(5);
   }, [identity.pickst2]);
-  
-const MyTurn: FC<{turnInfo: number, draftOver: boolean}> = ({turnInfo, draftOver}) => {
-  if (draftOver) {
-    return <></>;
-  }
-  if (turnInfo == 3) {
-    return <p style={{ color: "white"}}> draft paused</p>;
-  }
-  const [cookieInfo] = useCookies(["player"]);
-  if ("" + turnInfo == cookieInfo.player.substring(0, 1)) {
-    return <p style={{color: "green"}}>your turn!</p>;
-  } else if (
-    (cookieInfo.player.substring(0, 1) == "1" ||
-      cookieInfo.player.substring(0, 1) == "2") &&
-    turnInfo > 0
-  ) {
-    return <p style={{color: "red"}}>opponent's turn!</p>;
-  } else {
-    return (
-      <p style={{color: "white"}}>
-        team {turnInfo}'s turn!
-      </p>
-    );
-  }
-};
-// also unused 
-/*
-const parseUpdate = (data) => {
-  // console.log(identity);
-  // console.log("identity");
-  let newIden = null;
-  // arrange order
-  let newOrder: number[] = [];
-  for (let i = 0; i < identity.pickst1.length; i++) {
-    newOrder.push(identity[`pickst${data.team}`][data.order[i]]);
-  }
-  if (data.team != 1 && data.team != 2) {
-    newIden = { ...identity };
-  } else {
-    newIden = {
-      ...identity,
-      [`playerst${data.team}`]: data.playerNames,
-      [`team${data.team}`]: data.teamName,
-      [`pickst${data.team}`]: newOrder,
-    };
-  }
-  return newIden;
-  // team information
-};
-*/
-// currently unused
-/*
-const parseStatus = (data) => {
-  // update team information
-  let newIden = null;
-  switch (data.team) {
-    case 1:
-      switch (data.menu.toLowerCase()) {
-        case "penalty": {
-          newIden = {
-            ...identity,
-            penaltyt1: {
-              ...identity.penaltyt1,
-              [data.bossIndex]: data.status,
-            },
-          };
-          break;
-        }
-        case "death": {
-          newIden = {
-            ...identity,
-            deatht1: {
-              ...identity.deatht1,
-              [data.bossIndex]: data.status,
-            },
-          };
-          break;
-        }
-      }
-      break;
-    case 2:
-      switch (data.menu.toLowerCase()) {
-        case "penalty": {
-          newIden = {
-            ...identity,
-            penaltyt2: {
-              ...identity.penaltyt2,
-              [data.bossIndex]: data.status,
-            },
-          };
-          break;
-        }
-        case "death": {
-          newIden = {
-            ...identity,
-            deatht2: {
-              ...identity.deatht2,
-              [data.bossIndex]: data.status,
-            },
-          };
-          break;
-        }
-      }
-      break;
-  }
-  return newIden;
-}; 
-*/
+
+  useEffect(() => {
+    pickTimeT1Ref.current = pickTimeT1;
+  }, [pickTimeT1]);
+  useEffect(() => {
+    pickTimeT2Ref.current = pickTimeT2;
+  }, [pickTimeT2])
+
+  const MyTurn: FC<{ turnInfo: number; draftOver: boolean }> = ({
+    turnInfo,
+    draftOver,
+  }) => {
+    if (draftOver) {
+      return <></>;
+    }
+    if (turnInfo == 3) {
+      return <p style={{ color: "white" }}> draft paused</p>;
+    }
+    const [cookieInfo] = useCookies(["player"]);
+    if ("" + turnInfo == cookieInfo.player.substring(0, 1)) {
+      return <p style={{ color: "green" }}>your turn!</p>;
+    } else if (
+      (cookieInfo.player.substring(0, 1) == "1" ||
+        cookieInfo.player.substring(0, 1) == "2") &&
+      turnInfo > 0
+    ) {
+      return <p style={{ color: "red" }}>opponent's turn!</p>;
+    } else {
+      return <p style={{ color: "white" }}>team {turnInfo}'s turn!</p>;
+    }
+  };
   // set an interval
+  const startGameTimer = (team: number, timert1: number = -1, timert2: number = -1) => {
+    console.log("starting game timer");
+    if(timert1 != -1){
+      setDateWithTimeT1(Date.now() + timert1 * 1000);
+    }
+    if(timert2 != -1){
+      setDateWithTimeT2(Date.now() + timert2 * 1000);
+    }
+    team == 1 ? setTimerVisibleT1(true)
+    : team == 2 ? setTimerVisibleT2(true)
+    : null
+  }
   /**
    * updates timer information.
    * @param {boolean} enabled whether the timer is meant to be enabled or not
-   * @param {boolean} resetTime whether to reset the timer or not
+   * @param {number} team the team number to update timer for
    */
-  const updateTimer = (enabled: boolean = true, resetTime: boolean) => {
-    if (totalTime != TIMER && resetTime) {
-      // reset timer after refresh page
-      setTotalTime(TIMER);
+  const updateTimer = (enabled: boolean, team: number, nextTeam: number) => {
+    console.log("enabled: ",enabled,", team is ",team,", and next team is ", nextTeam)
+    nextTeam = Math.abs(nextTeam);
+    if (secondTeamTurn.current && nextTeam != startingTurn.current) {
+      secondTeamTurn.current = false;
+      if (nextTeam == 1) {
+        setDateWithTimeT1(Date.now() + pickTimeT1Ref.current * 1000);
+      } else {
+        setDateWithTimeT2(Date.now() + pickTimeT2Ref.current * 1000);
+      }
     }
-    if (enabled) {
-      setTimerValue(Date.now());
+    // when enabling timers for first time, reset timers
+    // if this doesnt work need to basically set a variable
+    // after starting game its set to true
+    // after the non starting team is about to take a turn set it to false
+    if (team == 1 && nextTeam != 1) {
+      if (countdownRefT1.current != null) {
+        countdownRefT1.current.getApi().pause();
+      }
+      setTimerVisibleT2(true);
+    } else if (team == 2 && nextTeam != 2) {
+      if (countdownRefT2.current != null) {
+        countdownRefT2.current.getApi().pause();
+      }
+      setTimerVisibleT1(true);
     }
-    setTimerVisible(enabled);
+    console.log(timerOverTurn+" timer over turn");
+    
+    // based on next team, reset timer accordingly
+    /*
+    if (nextTeam == 1 && (timerOverTurn == 1 || timerOverTurn == 3)) {
+      setDateWithTimeT1(Date.now() + 6200);
+    }
+    else if(nextTeam == 2 && (timerOverTurn == 2 || timerOverTurn == 3)){
+      setDateWithTimeT2(Date.now() + 6200); // 6 seconds 
+      console.log("change t2 timer expire");
+    }
+    */
     localStorage.setItem("timer", enabled + "");
+    nextTeam == 1 && countdownRefT1.current?.getApi().isPaused()
+      ? countdownRefT1.current.getApi().start()
+      : nextTeam == 2 && countdownRefT2.current?.getApi().isPaused()
+      ? countdownRefT2.current.getApi().start()
+      : null;
+    // pause other timer if not active
+    // set next team's timer to resume
   };
   const checkSelection = (selection: number, type: string) => {
     //
@@ -411,11 +477,16 @@ const parseStatus = (data) => {
     socket.current.send(req);
   };
 
-  const sendSelection = (teamNum: number, selection: number, type: string, timeout = false): void => {
+  const sendSelection = (
+    teamNum: number,
+    selection: number,
+    type: string,
+    timeout = false
+  ): void => {
     // should no longer be run on timer end
     // instead server will handle it
     // assumes coket is open which should always be the case
-    console.log("team "+teamNum+" selected "+selection+" for "+type);
+    console.log("team " + teamNum + " selected " + selection + " for " + type);
     if (socket.current.readyState != 1) {
       alert("Please refresh the page and try again!");
       return;
@@ -430,18 +501,25 @@ const parseStatus = (data) => {
     let res = identity.result;
     let req = "";
     if (identity.fearless) {
-      if (selection >= 0 && type == "boss" && identity.fearlessBosses.includes(selection)) {
+      if (
+        selection >= 0 &&
+        type == "boss" &&
+        identity.fearlessBosses.includes(selection)
+      ) {
         setExtraInfo("This boss was picked in the previous match!");
         return;
       }
     }
     let found = false;
-    if(selection == -3 || selection == -2){
+    if (selection == -3 || selection == -2) {
       // set to -3 if not ban
-      if(res.toLowerCase() == "bossban" || res.toLowerCase() == "ban" || res.toLowerCase() == "extraban"){
+      if (
+        res.toLowerCase() == "bossban" ||
+        res.toLowerCase() == "ban" ||
+        res.toLowerCase() == "extraban"
+      ) {
         selection = -2; // no ban
-      }
-      else{
+      } else {
         selection = -3; // random
       }
       req = JSON.stringify({
@@ -454,9 +532,10 @@ const parseStatus = (data) => {
           team: teamNum,
         },
       });
-    }
-    else if (selection == -1) {
-      setExtraInfo("No selection was made! Random boss / pick or no ban is selected.");
+    } else if (selection == -1) {
+      setExtraInfo(
+        "No selection was made! Random boss / pick or no ban is selected."
+      );
       req = JSON.stringify({
         id: gameID,
         type: "add",
@@ -470,11 +549,14 @@ const parseStatus = (data) => {
     } else {
       if (
         type == "boss" &&
-        BOSS_DETAIL[bossRef.current.get(selection) ?? BOSSES.None].type == BOSS_TYPE.Legend &&
+        BOSS_DETAIL[bossRef.current.get(selection) ?? BOSSES.None].type ==
+          BOSS_TYPE.Legend &&
         identity.division != "premier"
       ) {
         if (timeout) {
-          setExtraInfo("Time is up! Local legends cannot be played in your division. A random boss will be selected.");
+          setExtraInfo(
+            "Time is up! Local legends cannot be played in your division. A random boss will be selected."
+          );
           found = true;
         } else {
           setExtraInfo("You cannot pick legends in standard division!");
@@ -483,7 +565,9 @@ const parseStatus = (data) => {
       }
       if (
         !found &&
-        ((type == "boss" && res.toLowerCase() != "boss" && res.toLowerCase() != "bossban") ||
+        ((type == "boss" &&
+          res.toLowerCase() != "boss" &&
+          res.toLowerCase() != "bossban") ||
           (type == "character" &&
             res.toLowerCase() != "ban" &&
             res.toLowerCase() != "pick" &&
@@ -494,9 +578,12 @@ const parseStatus = (data) => {
       } else if (
         type == "boss" &&
         identity.longBoss[teamNum - 1] &&
-        BOSS_DETAIL[bossRef.current.get(selection) ?? BOSSES.None].type != BOSS_TYPE.Standard
+        BOSS_DETAIL[bossRef.current.get(selection) ?? BOSSES.None].type !=
+          BOSS_TYPE.Standard
       ) {
-        setExtraInfo("You cannot pick more than one long boss in standard division (two in premier division)!");
+        setExtraInfo(
+          "You cannot pick more than one long boss in standard division (two in premier division)!"
+        );
         if (timeout) {
           found = true;
         } else {
@@ -504,16 +591,22 @@ const parseStatus = (data) => {
         }
       }
       // implement check for long bosses / weeklies, all weeklies are long so i can just implement long boss check
-      
+
       if (!checkSelection(selection, res)) {
         if (timeout) {
           if (type == "boss") {
-            setExtraInfo("Time is up! An invalid boss was selected, thereby a random boss will be chosen.");
+            setExtraInfo(
+              "Time is up! An invalid boss was selected, thereby a random boss will be chosen."
+            );
           } else if (type == "character") {
             if (identity.result == "ban") {
-              setExtraInfo("Time is up. An invalid character was selected, thereby no ban will be chosen.");
+              setExtraInfo(
+                "Time is up. An invalid character was selected, thereby no ban will be chosen."
+              );
             } else {
-              setExtraInfo("Time is up. An invalid character was selected, thereby a random pick will be selected.");
+              setExtraInfo(
+                "Time is up. An invalid character was selected, thereby a random pick will be selected."
+              );
             }
           }
           found = true;
@@ -556,9 +649,7 @@ const parseStatus = (data) => {
         },
       });
     }
-    updateTimer(false, true);
-    // console.log("request");
-    // console.log(req);
+    // remove updating timer after making selections
     console.log("sent from sendselectione");
     if (found == false) {
       setExtraInfo(""); // reset on success
@@ -570,6 +661,7 @@ const parseStatus = (data) => {
     }
     socket.current.send(req);
   };
+  /* remove this method - names are not available anymore as they werent used
   const updateNames = (name: string | null | undefined, index: number) => {
     let names: string[];
     if (index < 0 || index > 5) {
@@ -603,9 +695,10 @@ const parseStatus = (data) => {
       })
     );
   };
+  */
   const updateTeamNames = (name: string | null, team: number) => {
     // should be worried about offensive names but not like i can do anything
-    if(name == null){
+    if (name == null) {
       return;
     }
     if (
@@ -635,8 +728,7 @@ const parseStatus = (data) => {
     if (boss) {
       if (ban) {
         path = getBossBanPath(bossRef.current.get(id) ?? BOSSES.None);
-      }
-      else {
+      } else {
         path = getBossGifPath(bossRef.current.get(id) ?? BOSSES.None);
       }
     } else {
@@ -660,7 +752,7 @@ const parseStatus = (data) => {
       .filter((boss) => boss != -1)
       .forEach((boss) => newBosses.push(boss));
     return newBosses;
-  }
+  };
 
   const addSelectedBosses = () => {
     let newBosses: number[] = [];
@@ -674,7 +766,7 @@ const parseStatus = (data) => {
         .forEach((boss) => newBosses.push(boss));
     }
     return newBosses;
-  }
+  };
 
   const addSelectedExtraBans = () => {
     let newCharacters: number[] = [];
@@ -682,23 +774,23 @@ const parseStatus = (data) => {
       .filter((ban) => ban > -1)
       .forEach((ban) => newCharacters.push(ban));
     return newCharacters;
-  }
-  
+  };
+
   const addSelectedBans = () => {
     let newCharacters: number[] = [];
     identity.bans
       .filter((ban) => ban > -1)
       .forEach((ban) => newCharacters.push(ban));
     return newCharacters;
-  }
-  
+  };
+
   const addSelectedPicks = (team: 1 | 2) => {
     let newCharacters: number[] = [];
     identity[`pickst${team}`]
       .filter((pick) => pick != -1)
       .forEach((pick) => newCharacters.push(pick));
     return newCharacters;
-  }
+  };
 
   /**
    * Updates the selected ref objects to highlight grayscale objects.
@@ -706,46 +798,54 @@ const parseStatus = (data) => {
    * 4 and 5 are team 1 and team 2 picks respective
    */
   const updateSelected = (option: number = 6) => {
-    switch(option){
+    switch (option) {
       case 0: {
         let newBossBans: number[] = addSelectedBossBans();
         if (!newBossBans.every((val, i) => val == selectedBossBans[i])) {
-          dispatch(overrideBoss({ban: true, bosses: newBossBans}));
+          dispatch(overrideBoss({ ban: true, bosses: newBossBans }));
         }
         break;
       }
       case 1: {
         let newBosses: number[] = addSelectedBosses();
         if (!newBosses.every((val, i) => val == selectedBosses[i])) {
-          dispatch(overrideBoss({ban: false, bosses: newBosses}));
+          dispatch(overrideBoss({ ban: false, bosses: newBosses }));
         }
         break;
       }
       case 2: {
         let newCharacters: number[] = addSelectedExtraBans();
-        if(!newCharacters.every((val, i) => val == selectedExtraBans[i])){
-          dispatch(overrideCharacter({type: "extraBans", characters: newCharacters}));
+        if (!newCharacters.every((val, i) => val == selectedExtraBans[i])) {
+          dispatch(
+            overrideCharacter({ type: "extraBans", characters: newCharacters })
+          );
         }
         break;
       }
       case 3: {
         let newCharacters: number[] = addSelectedBans();
-        if(!newCharacters.every((val, i) => val == selectedBans[i])){
-          dispatch(overrideCharacter({type: "bans", characters: newCharacters}));
+        if (!newCharacters.every((val, i) => val == selectedBans[i])) {
+          dispatch(
+            overrideCharacter({ type: "bans", characters: newCharacters })
+          );
         }
         break;
       }
       case 4: {
         let newCharacters: number[] = addSelectedPicks(1);
-        if(!newCharacters.every((val, i) => val == selectedPicksT1[i])){
-          dispatch(overrideCharacter({type: "picksT1", characters: newCharacters}));
+        if (!newCharacters.every((val, i) => val == selectedPicksT1[i])) {
+          dispatch(
+            overrideCharacter({ type: "picksT1", characters: newCharacters })
+          );
         }
         break;
       }
       case 5: {
         let newCharacters: number[] = addSelectedPicks(2);
-        if(!newCharacters.every((val, i) => val == selectedPicksT2[i])){
-          dispatch(overrideCharacter({type: "picksT2", characters: newCharacters}));
+        if (!newCharacters.every((val, i) => val == selectedPicksT2[i])) {
+          dispatch(
+            overrideCharacter({ type: "picksT2", characters: newCharacters })
+          );
         }
         break;
       }
@@ -758,17 +858,24 @@ const parseStatus = (data) => {
         let picksT1: number[] = addSelectedPicks(1);
         let picksT2: number[] = addSelectedPicks(2);
         console.log("overriding everything");
-        dispatch(overrideBoss({ban: true, bosses: bossBans}));
-        dispatch(overrideBoss({ban: false, bosses: bosses}));
-        dispatch(overrideAllCharacters({extraBans: extraBans, bans: bans, picksT1: picksT1, picksT2: picksT2}));
+        dispatch(overrideBoss({ ban: true, bosses: bossBans }));
+        dispatch(overrideBoss({ ban: false, bosses: bosses }));
+        dispatch(
+          overrideAllCharacters({
+            extraBans: extraBans,
+            bans: bans,
+            picksT1: picksT1,
+            picksT2: picksT2,
+          })
+        );
         break;
       }
     }
     // do the same for newCharacters
-  }
+  };
   const updateSelectedDirect = (id: number, option: number) => {
     // option 1: update boss
-    switch(option){
+    switch (option) {
       case 1: {
         dispatch(selectBoss(id));
         break;
@@ -792,38 +899,62 @@ const parseStatus = (data) => {
     }
   };
   const setupSocket = () => {
-    if (socket.current.readyState == 1) {
-      console.log("setting up socket");
-      socket.current.send(
-        JSON.stringify({
-          type: "get",
-          id: props.id,
-        })
-      ); // should work if first connection is to here
-      socket.current.send(
-        JSON.stringify({
-          type: "latest",
-          id: props.id,
-        })
-      );
+    if(intervalRef.current){
+      clearInterval(intervalRef.current!);
+      intervalRef.current = null;
     }
-    else{
-      console.log("waiting on socket");
-    }
+    intervalRef.current = setInterval(() => {
+      if (socket.current.readyState == 1) {
+        console.log("setting up socket");
+        socket.current.send(
+          JSON.stringify({
+            type: "get",
+            id: props.id,
+          })
+        ); // should work if first connection is to here
+        socket.current.send(
+          JSON.stringify({
+            type: "latest",
+            id: props.id,
+          })
+        );
+        clearInterval(intervalRef.current!)
+      } else {
+        console.log("waiting on socket");
+      }
+    }, 500)
+    
   };
   // arguably the most important method of the code
-  
+
   const handleSocketMessage = (event: MessageEvent) => {
-    let data: SocketBanMessage | SocketBossMessage | SocketBossBanMessage | SocketConnectedMessage | SocketDNDMessage | 
-    SocketLatestMessage | SocketMessageWithGame | SocketPauseResumeMessage | SocketPickMessage | SocketOverwriteMessage |
-    SocketPlayerNameMessage | SocketPhaseMessage | SocketTeamNameMessage | SocketTurnMessage = JSON.parse(event.data);
+    let data:
+      | SocketBanMessage
+      | SocketBossMessage
+      | SocketBossBanMessage
+      | SocketConnectedMessage
+      | SocketDNDMessage
+      | SocketLatestMessage
+      | SocketMessageWithGame
+      | SocketTimeMessage
+      | SocketPickMessage
+      | SocketOverwriteMessage
+      | SocketPlayerNameMessage
+      | SocketPhaseMessage
+      | SocketTeamNameMessage
+      | SocketTurnMessage
+      | SocketResumeMessage 
+      = JSON.parse(event.data);
     const thisTime = Date.now();
-    if(lastMessageRef.current.info == event.data && thisTime - lastMessageRef.current.time < 500){
+    if (
+      lastMessageRef.current.info == event.data &&
+      thisTime - lastMessageRef.current.time < 500
+    ) {
       // duplicate message within 500 ms, ignore
       return;
     }
     lastMessageRef.current = {info: event.data, time: thisTime};
-    console.log(data)
+    console.log(data);
     if (data.id != props.id) {
       return; // do nothing if game does not match
     } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
@@ -832,11 +963,7 @@ const parseStatus = (data) => {
       alert(data.error);
       return;
     }
-    if (data.type != "turn" && data.type != "game" && data.type != "latest" && totalTime != TIMER) {
-      setTotalTime(TIMER);
-    }
-    // console.log(data.type+" type");
-    // console.log("data.type: " + data.type);
+    // once team 1 picks something, reset base timer of t2
     switch (data.type) {
       case "create": {
         let newData = data as SocketMessageWithGame;
@@ -846,19 +973,75 @@ const parseStatus = (data) => {
       case "get": {
         let newData = data as SocketMessageWithGame;
         dispatch(addGame(newData.game as GameInterface));
-        if(newData.game.totalBans == 6){
+        if (newData.game.totalBans == 6) {
           setBanInfo([0, 3, 6]);
+        } else {
+          setBanInfo([1, 4, 8]);
         }
-        else{
-          setBanInfo([1, 4, 8]);;
+        if (
+          newData.game.result != "waiting" &&
+          newData.game.result != "progress" &&
+          newData.game.result != "finish"
+        ) {
+          // only run when game is already started
+          startGameTimer(newData.game.turn, newData.timert1, newData.timert2);
+          if(newData.game.turn == 1){
+            setTimerVisibleT2(true);
+            setTimeout(() => {
+              if(turn == 1 && countdownRefT2.current != null && !countdownRefT2.current.getApi().isPaused()){
+                countdownRefT2.current.getApi().pause();
+              }
+              else{
+                console.log("failure to do team 1")
+              }
+            }, 500)
+            // pause the timer after it is set visible
+            // set interval so that it stops the timer?
+          }
+          else{
+            setTimerVisibleT1(true);
+            setTimeout(() => {
+              if(turn == 2 && countdownRefT1.current != null && !countdownRefT1.current.getApi().isPaused()){
+                countdownRefT1.current.getApi().pause();
+              }
+              else{
+                console.log("failure to do team 2")
+              }
+            }, 500)
+            // 
+          }
         }
-        // if timer inactive then set timer
-        if (newData.time != -1) {
-          // console.log("setting tiomter");
-          setTotalTime(newData.time * 1000);
-          updateTimer(true, false);
+        else if(newData.game.result == "waiting"){
+          // preset times
+          setDateWithTimeT1(Date.now() + newData.timert1 * 1000);
+          setDateWithTimeT2(Date.now() + newData.timert2 * 1000);
+          console.log("attempt to set times");
         }
         // set the turn too
+        if (canPause && newData.paused) {
+          console.log("re check for pause");
+          // game is not paused, on server end it is paused
+          setTimeout(() => {
+            pauseDraft();
+          }, 100);
+        } else if (!canPause && !newData.paused) {
+          // game is paused, server end is resumed
+          setTimeout(() => {
+            resumeDraft(newData.game.turn);
+          }, 100);
+        } else {
+        }
+        break;
+      }
+      case "refresh": {
+        let newData = data as SocketMessageWithGame;
+        if (newData.game.totalBans == 6) {
+          setBanInfo([0, 3, 6]);
+        } else {
+          setBanInfo([1, 4, 8]);
+        }
+        dispatch(addGame(newData.game as GameInterface));
+        // no need to set ban info or timer
         if (canPause && newData.paused) {
           // game is not paused, on server end it is paused
           setTimeout(() => {
@@ -867,20 +1050,16 @@ const parseStatus = (data) => {
         } else if (!canPause && !newData.paused) {
           // game is paused, server end is resumed
           setTimeout(() => {
-            resumeDraft();
+            resumeDraft(newData.game.turn);
           }, 100);
-        } else {
-
         }
         break;
       }
       case "turn": {
         let newData = data as SocketTurnMessage;
-        dispatch(setTurn(newData.turn))
-        if (newData.timer != -1 && localStorage.getItem("timer") === "false") {
-          setTotalTime(newData.timer * 1000);
-          updateTimer(true, false);
-        }
+        console.log("new data")
+        console.log(newData);
+        dispatch(setTurn(newData.turn));
         if (canPause && newData.paused) {
           // game is not paused, on server end it is paused
           setTimeout(() => {
@@ -889,7 +1068,7 @@ const parseStatus = (data) => {
         } else if (!canPause && !newData.paused) {
           // game is paused, server end is resumed
           setTimeout(() => {
-            resumeDraft();
+            resumeDraft(newData.turn);
           }, 100);
         }
         // check for pause here too
@@ -897,27 +1076,31 @@ const parseStatus = (data) => {
       }
       case "boss": {
         let newData = data as SocketBossMessage;
-        updateTimer(true, true);
+        updateTimer(true, newData.team, newData.nextTeam);
         // handle this
-        dispatch(addBoss({
-          boss: newData.boss,
-          long: newData.long,
-          replaceIndex: -1,
-          team: newData.team,
-          nextTeam: newData.nextTeam
-        }));
+        dispatch(
+          addBoss({
+            boss: newData.boss,
+            long: newData.long,
+            replaceIndex: -1,
+            team: newData.team,
+            nextTeam: newData.nextTeam,
+          })
+        );
         showSelectionAlert(newData.boss, true, false);
         break;
       }
       case "bossban": {
         let newData = data as SocketBossBanMessage;
-        updateTimer(true, true);
-        dispatch(addBossBan({
-          boss: newData.ban,
-          replaceIndex: -1,
-          team: newData.team,
-          nextTeam: newData.nextTeam
-        }))
+        updateTimer(true, newData.team, newData.nextTeam);
+        dispatch(
+          addBossBan({
+            boss: newData.ban,
+            replaceIndex: -1,
+            team: newData.team,
+            nextTeam: newData.nextTeam,
+          })
+        );
         showSelectionAlert(newData.ban, true, false);
       }
       case "complete": {
@@ -926,7 +1109,13 @@ const parseStatus = (data) => {
       case "DND": {
         let newData = data as SocketDNDMessage;
         // utilize this choice in res
-        dispatch(dragAndDrop({where: newData.where, original: newData.first, target: newData.second}));
+        dispatch(
+          dragAndDrop({
+            where: newData.where,
+            original: newData.first,
+            target: newData.second,
+          })
+        );
         break;
       }
       // should only execute case extraban if extra ban setting is enabled
@@ -934,22 +1123,25 @@ const parseStatus = (data) => {
       case "ban": {
         let newData = data as SocketBanMessage;
         console.log("current ban");
-        updateTimer(true, true);
-        if(data.type == "extraban"){
-          dispatch(addExtraBan({
-            character: newData.ban,
-            replaceIndex: -1,
-            team: newData.nextTeam
-          }))
-        }
-        else{
-          dispatch(addCharacter({
-            ban: true,
-            character: newData.ban,
-            replaceIndex: -1,
-            team: newData.team,
-            nextTeam: newData.nextTeam
-          }));
+        updateTimer(true, newData.team, newData.nextTeam);
+        if (data.type == "extraban") {
+          dispatch(
+            addExtraBan({
+              character: newData.ban,
+              replaceIndex: -1,
+              team: newData.nextTeam,
+            })
+          );
+        } else {
+          dispatch(
+            addCharacter({
+              ban: true,
+              character: newData.ban,
+              replaceIndex: -1,
+              team: newData.team,
+              nextTeam: newData.nextTeam,
+            })
+          );
         }
         showSelectionAlert(newData.ban, false, true);
         break;
@@ -957,14 +1149,16 @@ const parseStatus = (data) => {
       case "pick": {
         let newData = data as SocketPickMessage;
         console.log("current pick");
-        updateTimer(true, true);
-        dispatch(addCharacter({
-          ban: false,
-          character: newData.pick,
-          replaceIndex: -1,
-          team: newData.team,
-          nextTeam: newData.nextTeam
-        }));
+        updateTimer(true, newData.team, newData.nextTeam);
+        dispatch(
+          addCharacter({
+            ban: false,
+            character: newData.pick,
+            replaceIndex: -1,
+            team: newData.team,
+            nextTeam: newData.nextTeam,
+          })
+        );
         showSelectionAlert(newData.pick, false, false);
         break;
       }
@@ -972,76 +1166,89 @@ const parseStatus = (data) => {
         pauseDraft();
         break;
       case "resume":
-        resumeDraft();
+        let newData = data as SocketResumeMessage;
+        resumeDraft(newData.turn);
         break;
       case "names": {
         let newData = data as SocketPlayerNameMessage;
         const info: PlayerInfo = {
           names: newData.newNames,
           team: newData.team,
-        }
+        };
         dispatch(addName(info));
         break;
       }
       case "teamname": {
         let newData = data as SocketTeamNameMessage;
-        dispatch(addTeamName({
-          team: newData.team,
-          name: newData.newName
-        }));
+        dispatch(
+          addTeamName({
+            team: newData.team,
+            name: newData.newName,
+          })
+        );
         break;
       }
       case "overwrite": {
         // no more identity!!
         let newData = data as SocketOverwriteMessage;
-        switch(newData.which){
+        switch (newData.which) {
           case "bossBans": {
-            dispatch(addBossBan({
-              boss: newData.replacement,
-              replaceIndex: newData.original,
-              team: 1,
-              nextTeam: 1
-            }))
+            dispatch(
+              addBossBan({
+                boss: newData.replacement,
+                replaceIndex: newData.original,
+                team: 1,
+                nextTeam: 1,
+              })
+            );
             break;
           }
           case "extrabans": {
-            dispatch(addExtraBan({
-              character: newData.replacement,
-              replaceIndex: newData.original,
-              team: 1
-            }));
+            dispatch(
+              addExtraBan({
+                character: newData.replacement,
+                replaceIndex: newData.original,
+                team: 1,
+              })
+            );
             // timeout for 0.05s?
             break;
           }
           case "bans": {
-            dispatch(addCharacter({
-              ban: true,
-              character: newData.replacement,
-              replaceIndex: newData.original,
-              team: 1,
-              nextTeam: 1
-            }));
+            dispatch(
+              addCharacter({
+                ban: true,
+                character: newData.replacement,
+                replaceIndex: newData.original,
+                team: 1,
+                nextTeam: 1,
+              })
+            );
             break;
           }
           case "bosses": {
-            dispatch(addBoss({
-              boss: newData.replacement,
-              long: newData.long ?? false,
-              replaceIndex: newData.original,
-              team: 1,
-              nextTeam: 1
-            }));
+            dispatch(
+              addBoss({
+                boss: newData.replacement,
+                long: newData.long ?? false,
+                replaceIndex: newData.original,
+                team: 1,
+                nextTeam: 1,
+              })
+            );
             break;
           }
           case "pickst1":
           case "pickst2": {
-            dispatch(addCharacter({
-              ban: false,
-              character: newData.replacement,
-              replaceIndex: newData.original,
-              team: newData.which == "pickst1" ? 1 : 2,
-              nextTeam: 1
-            }));
+            dispatch(
+              addCharacter({
+                ban: false,
+                character: newData.replacement,
+                replaceIndex: newData.original,
+                team: newData.which == "pickst1" ? 1 : 2,
+                nextTeam: 1,
+              })
+            );
             break;
           }
         }
@@ -1053,7 +1260,9 @@ const parseStatus = (data) => {
           let info = "";
           for (let i = 0; i < newData.playerStatus.length; i++) {
             if (i < 2) {
-              info += `Player ${i + 1} has joined: ${newData.playerStatus[i]}\n`;
+              info += `Player ${i + 1} has joined: ${
+                newData.playerStatus[i]
+              }\n`;
             } else {
               info += `Two or more refs have joined: ${newData.playerStatus[i]}\n`;
             }
@@ -1068,19 +1277,25 @@ const parseStatus = (data) => {
       }
       case "phase": {
         let newData = data as SocketPhaseMessage;
-        console.log(doBossBansExist);
-        console.log("do boss bans")
         if (
           newData.newPhase == "extraban" ||
-          (newData.newPhase == "bossban" && extraBanNumber == 0 && doBossBansExist) ||
-          (newData.newPhase == "boss" && extraBanNumber == 0 && !doBossBansExist)
+          (newData.newPhase == "bossban" &&
+            extraBanNumber == 0 &&
+            doBossBansExist) ||
+          (newData.newPhase == "boss" &&
+            extraBanNumber == 0 &&
+            !doBossBansExist)
         ) {
-          updateTimer(true, true);
-          if (cookies.player.charAt(0) != "S" && cookies.player.charAt(0) != "P") {
+          // whoever starts, their side of the timer is enabled
+          secondTeamTurn.current = true;
+          startingTurn.current = newData.turn;
+          startGameTimer(newData.turn, pickTimeT1Ref.current, pickTimeT2Ref.current);
+          if (
+            cookies.player.charAt(0) != "S" &&
+            cookies.player.charAt(0) != "P"
+          ) {
             alert("Draft starts now!");
           }
-        } else if (newData.newPhase == "ban" || newData.newPhase == "pick") {
-          updateTimer(true, true);
         }
         dispatch(changePhase(newData.newPhase));
         break;
@@ -1095,22 +1310,33 @@ const parseStatus = (data) => {
   const pauseDraft = () => {
     // maybe clear the timer?
     // i.e. remove it and readd it?
-    if (countdownRef.current != null) {
-      console.log("pausing draft");
-      // if the time has been changed, get the timer value
-      countdownRef.current.getApi().pause();
-      // solution: reset timer?
-      // meaning get info from timer
-      setPause(false);
-    } else {
-      console.log("cannot pause draft");
+    if(countdownRefT1.current != null && !countdownRefT1.current.getApi().isPaused()){
+      countdownRefT1.current.getApi().pause();
     }
+    if(countdownRefT2.current != null && !countdownRefT2.current.getApi().isPaused()){
+      countdownRefT2.current.getApi().pause();
+    }
+    setPause(false);
+    console.log("pausing draft");
   };
-  const resumeDraft = () => {
-    if (countdownRef.current != null) {
-      countdownRef.current.getApi().start();
-      setPause(true);
+  const resumeDraft = (currentTurn: number) => {
+    if (
+      currentTurn == 1 &&
+      countdownRefT1.current != null &&
+      countdownRefT1.current.getApi().isPaused()
+    ) {
+      countdownRefT1.current.getApi().start();
     }
+    else if (
+      currentTurn == 2 &&
+      countdownRefT2.current != null &&
+      countdownRefT2.current.getApi().isPaused()
+    ) {
+      countdownRefT2.current.getApi().start();
+      console.log("resuming t2 draft")
+    }
+    setPause(true);
+    console.log("resuming draft");
   };
   /*
   const closeT1Times = () => {  
@@ -1147,11 +1373,10 @@ const parseStatus = (data) => {
     }
     let info = ["", "", "0", "0"];
     if (team == 0) {
-      if(original > 0){
+      if (original > 0) {
         // boss
         info[0] = "boss";
-      }
-      else{
+      } else {
         // boss ban
         info[0] = "bossban";
         original = original * -1 - 1;
@@ -1188,14 +1413,34 @@ const parseStatus = (data) => {
     if (isNaN(res)) {
       if (changeInfo[0] == "boss" || changeInfo[0] == "bossban") {
         res = bossNameRef.current.get(change.toLowerCase()) ?? -5;
-        if(BOSS_DETAIL[bossRef.current.get(bossNameRef.current.get(change.toLowerCase()) ?? -5) ?? BOSSES.None].type == BOSS_TYPE.Legend){
+        if (
+          BOSS_DETAIL[
+            bossRef.current.get(
+              bossNameRef.current.get(change.toLowerCase()) ?? -5
+            ) ?? BOSSES.None
+          ].type == BOSS_TYPE.Legend
+        ) {
           // create a modal that asks if they are sure they want to add a local legend
-          if(!window.confirm("Are you sure you want to add a local legend? Local legends cannot be picked in standard division.")){
+          if (
+            !window.confirm(
+              "Are you sure you want to add a local legend? Local legends cannot be picked in standard division."
+            )
+          ) {
             return;
           }
-        }
-        else if(identity.longBoss[team - 1] && BOSS_DETAIL[bossRef.current.get(bossNameRef.current.get(change.toLowerCase()) ?? -5) ?? BOSSES.None].type != BOSS_TYPE.Standard){
-          if(!window.confirm("Are you sure you want to add another long boss? There is a limit of one long boss in standard division per (two in premier division).")){
+        } else if (
+          identity.longBoss[team - 1] &&
+          BOSS_DETAIL[
+            bossRef.current.get(
+              bossNameRef.current.get(change.toLowerCase()) ?? -5
+            ) ?? BOSSES.None
+          ].type != BOSS_TYPE.Standard
+        ) {
+          if (
+            !window.confirm(
+              "Are you sure you want to add another long boss? There is a limit of one long boss in standard division per (two in premier division)."
+            )
+          ) {
             return;
           }
         }
@@ -1205,8 +1450,10 @@ const parseStatus = (data) => {
     }
     if (
       res < 0 ||
-      ((changeInfo[0] == "boss" || changeInfo[0] == "bossban") && res > latestRef.current[0]) ||
-      (!(changeInfo[0] == "boss" || changeInfo[0] == "bossban") && res > latestRef.current[1])
+      ((changeInfo[0] == "boss" || changeInfo[0] == "bossban") &&
+        res > latestRef.current[0]) ||
+      (!(changeInfo[0] == "boss" || changeInfo[0] == "bossban") &&
+        res > latestRef.current[1])
     ) {
       // ask for proper input
       if (changeInfo[0] == "boss" || changeInfo[0] == "bossban") {
@@ -1217,7 +1464,7 @@ const parseStatus = (data) => {
       return;
     }
     // check for max value once
-    
+
     socket.current.send(
       JSON.stringify({
         type: "overwrite",
@@ -1235,7 +1482,7 @@ const parseStatus = (data) => {
     if (cookies.player.charAt(0) != "R") {
       return;
     }
-    const {active, over} = event;
+    const { active, over } = event;
     if (!active || !over) {
       return;
     }
@@ -1261,13 +1508,22 @@ const parseStatus = (data) => {
   };
 
   // split the page into three parts, 25% / 50% / 25% (ish - grid takes cares of this)
-  let bans = useAppSelector(totalBans) == 6
+  let bans =
+    useAppSelector(totalBans) == 6
       ? [0, 2, 5, 1, 3, 4]
       : [0, 2, 4, 7, 1, 3, 5, 6];
   // console.log("ban info: "+banInfo);
   // add pause, waiting, game over
-  const smallSizeChoice = (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") && isMediumOrBigger ? 3 : 2;
-  const largeSizeChoice = (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") && isMediumOrBigger ? 6 : 8;
+  const smallSizeChoice =
+    (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") &&
+    isMediumOrBigger
+      ? 3
+      : 2;
+  const largeSizeChoice =
+    (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") &&
+    isMediumOrBigger
+      ? 6
+      : 8;
   return (
     <div>
       <title>
@@ -1279,7 +1535,9 @@ const parseStatus = (data) => {
           ? "draft over"
           : cookies.player.charAt(0) == "" + turn
           ? "YOUR TURN! ID " + props.id
-          : cookies.player.charAt(0) == "R" || cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P"
+          : cookies.player.charAt(0) == "R" ||
+            cookies.player.charAt(0) == "S" ||
+            cookies.player.charAt(0) == "P"
           ? identity[turn == 1 ? "team1" : "team2"] + " 's turn! ID " + props.id
           : "enemy turn! ID " + props.id}
       </title>
@@ -1301,13 +1559,39 @@ const parseStatus = (data) => {
                     : identity.team1 + " picks"}
                 </div>
               </Grid>
-              <Grid container size={largeSizeChoice} columns={4}>
+              <Grid container size={largeSizeChoice} columns={5}>
+                <Grid size={1}>
+                  {identity.result != "progress" ? (
+                    showTimerT1 ? (
+                      <Countdown
+                        date={dateWithTimeT1}
+                        ref={countdownRefT1}
+                        key={-1 * dateWithTimeT1}
+                        onComplete={() => {
+                          console.log("set a turn");
+                          switch(timerOverTurn){
+                            case 0:
+                              setTimerOverTurn(1);
+                              break;
+                            case 2:
+                              setTimerOverTurn(3);
+                              break;
+                          }
+                        }}
+                      />
+                    ) : (
+                      <p>t1 timer inactive</p>
+                    )
+                  ) : null}
+                </Grid>
                 <Grid size={1}>
                   <p>
                     {cookies.player.charAt(0) == "1"
                       ? "you are team 1."
                       : cookies.player.charAt(0) == "2"
                       ? "you are team 2."
+                      : cookies.player.charAt(0) == "R"
+                      ? "you are ref."
                       : null}
                   </p>
                 </Grid>
@@ -1336,16 +1620,25 @@ const parseStatus = (data) => {
                 </Grid>
                 <Grid size={1}>
                   {identity.result != "progress" ? (
-                    showTimer ? (
+                    showTimerT2 ? (
                       <Countdown
-                        date={timer + totalTime}
-                        ref={countdownRef}
+                        date={datewithTimeT2}
+                        key={datewithTimeT2}
+                        ref={countdownRefT2}
                         onComplete={() => {
-                          updateTimer(false, true);
+                          console.log("t2 over timer");
+                          switch (timerOverTurn) {
+                            case 0:
+                              setTimerOverTurn(2);
+                              break;
+                            case 1:
+                              setTimerOverTurn(3);
+                              break;
+                          }
                         }}
                       />
                     ) : (
-                      <p>timer inactive</p>
+                      <p>t2 timer inactive</p>
                     )
                   ) : null}
                 </Grid>
@@ -1479,11 +1772,14 @@ const parseStatus = (data) => {
                       ? { minWidth: 1080 }
                       : undefined
                     */
-                     undefined
+                    undefined
                   }
                 >
                   <div>
-                    {!(cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") ? (
+                    {!(
+                      cookies.player.charAt(0) == "S" ||
+                      cookies.player.charAt(0) == "P"
+                    ) ? (
                       identity.result.toLowerCase() == "waiting" ||
                       identity.result.toLowerCase() == "boss" ||
                       identity.result.toLowerCase() == "bossban" ? (
@@ -1521,7 +1817,8 @@ const parseStatus = (data) => {
                   </div>
                   <div>
                     {identity.result.toLowerCase() == "progress" ||
-                    (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") ? (
+                    cookies.player.charAt(0) == "S" ||
+                    cookies.player.charAt(0) == "P" ? (
                       <p>thank you!</p>
                     ) : null}
                   </div>
@@ -1623,7 +1920,11 @@ const parseStatus = (data) => {
                 justifyContent={"center"}
                 columns={{ xs: 2, sm: 3, md: 4 }}
               >
-                {isMediumOrBigger && !(cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P")? (
+                {isMediumOrBigger &&
+                !(
+                  cookies.player.charAt(0) == "S" ||
+                  cookies.player.charAt(0) == "P"
+                ) ? (
                   <Grid offset={1} marginTop={0} size={1}>
                     <Typography
                       textTransform="none"
@@ -1665,7 +1966,11 @@ const parseStatus = (data) => {
                         </Typography>
                       </Button>
                     </Fragment>
-                  ) : !isMediumOrBigger && !(cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") ? (
+                  ) : !isMediumOrBigger &&
+                    !(
+                      cookies.player.charAt(0) == "S" ||
+                      cookies.player.charAt(0) == "P"
+                    ) ? (
                     <Typography
                       marginTop={1}
                       fontSize={{ xs: "0.55rem", sm: "0.8rem" }}
@@ -1747,7 +2052,8 @@ const parseStatus = (data) => {
                           console.log("button clicked");
                           sendSelection(
                             turn,
-                            identity.result == "boss" || identity.result == "bossban"
+                            identity.result == "boss" ||
+                              identity.result == "bossban"
                               ? hoverBoss
                               : hoverCharacter,
                             identity.result
@@ -1775,7 +2081,7 @@ const parseStatus = (data) => {
                                 id: props.id,
                               })
                             );
-                          } else if(doBossBansExist){
+                          } else if (doBossBansExist) {
                             socket.current.send(
                               JSON.stringify({
                                 type: "switch",
@@ -1800,9 +2106,7 @@ const parseStatus = (data) => {
                   </Fragment>
                 </Grid>
               </Grid>
-              <Grid
-                size={smallSizeChoice}
-              />
+              <Grid size={smallSizeChoice} />
               {isMediumOrBigger ? (
                 <Grid
                   container
@@ -1851,55 +2155,57 @@ const parseStatus = (data) => {
                     collisionDetection={closestCenter}
                     modifiers={[restrictToHorizontalAxis]}
                   >
-                    {Array.from({length: identity.bosses.length ?? 0}).map((_, ind) => {
+                    {Array.from({ length: identity.bosses.length ?? 0 }).map(
+                      (_, ind) => {
+                        return (
+                          <Grid
+                            container
+                            sx={{ justifyContent: "center" }}
+                            size={1}
+                            key={ind}
+                          >
+                            {bossRef.current != undefined
+                              ? displayBoss(
+                                  bossRef.current.get(identity.bosses[ind]) ??
+                                    BOSSES.None,
+                                  true,
+                                  ind,
+                                  openChange
+                                )
+                              : null}
+                          </Grid>
+                        );
+                      }
+                    )}
+                  </DndContext>
+                </Grid>
+                {!isMediumOrBigger ? (
+                  <Grid
+                    container
+                    spacing={0.5}
+                    columns={identity.bossBans.length}
+                  >
+                    {identity.bossBans.map((ban, index) => {
                       return (
                         <Grid
                           container
-                          sx={{justifyContent: "center"}}
+                          sx={{ justifyContent: "center" }}
                           size={1}
-                          key={ind}
+                          key={index}
                         >
                           {bossRef.current != undefined
                             ? displayBoss(
-                                bossRef.current.get(identity.bosses[ind]) ??
-                                  BOSSES.None,
-                                true,
-                                ind,
+                                bossRef.current.get(ban) ?? BOSSES.None,
+                                false,
+                                -1 * (index + 1), // -1 for first, -2 for second
                                 openChange
                               )
                             : null}
                         </Grid>
                       );
                     })}
-                  </DndContext>
-                </Grid>
-                {
-                  !isMediumOrBigger ? (
-                    <Grid container spacing={0.5} columns={identity.bossBans.length}>
-                      {identity.bossBans.map((ban, index) => {
-                        return (
-                          <Grid
-                            container
-                            sx={{justifyContent: "center"}}
-                            size={1}
-                            key={index}
-                          >
-                            {bossRef.current != undefined
-                              ? displayBoss(
-                                  bossRef.current.get(ban) ??
-                                      BOSSES.None,
-                                  false,
-                                  -1 * (index + 1), // -1 for first, -2 for second
-                                  openChange
-                                )
-                              : null}
-                          </Grid>
-                        )
-                      })}
-                    </Grid>
-                  ) : null
-                }
-                
+                  </Grid>
+                ) : null}
               </Grid>
               {isMediumOrBigger ? (
                 <Grid
@@ -1943,32 +2249,35 @@ const parseStatus = (data) => {
                 />
               ) : null}
               {/* need to decide proper offset for the below grid - either 10 or 8 depending on if t1 has extra bans */}
-              {
-                isMediumOrBigger ? (
-                  <Grid size={largeSizeChoice} container spacing={0.5} offset={identity.extrabanst1 > 0 ? 0 : smallSizeChoice} columns={identity.bossBans.length}>
-                    {identity.bossBans.map((ban, index) => {
-                      return (
-                        <Grid
-                          container
-                          sx={{justifyContent: "center"}}
-                          size={1}
-                          key={index}
-                        >
-                          {bossRef.current != undefined
-                            ? displayBoss(
-                                bossRef.current.get(ban) ??
-                                    BOSSES.None,
-                                false,
-                                -1 * (index + 1),
-                                openChange
-                              )
-                            : null}
-                        </Grid>
-                      )
-                    })}
-                  </Grid>
-                ) : null
-              }
+              {isMediumOrBigger ? (
+                <Grid
+                  size={largeSizeChoice}
+                  container
+                  spacing={0.5}
+                  offset={identity.extrabanst1 > 0 ? 0 : smallSizeChoice}
+                  columns={identity.bossBans.length}
+                >
+                  {identity.bossBans.map((ban, index) => {
+                    return (
+                      <Grid
+                        container
+                        sx={{ justifyContent: "center" }}
+                        size={1}
+                        key={index}
+                      >
+                        {bossRef.current != undefined
+                          ? displayBoss(
+                              bossRef.current.get(ban) ?? BOSSES.None,
+                              false,
+                              -1 * (index + 1),
+                              openChange
+                            )
+                          : null}
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              ) : null}
               {isMediumOrBigger && identity.extrabanst2 > 0 ? (
                 <ExtraBanDisplay
                   charInfo={charRef.current}
@@ -1980,7 +2289,13 @@ const parseStatus = (data) => {
             </Grid>
           </Box>
 
-          <Typography sx={{marginTop: cookies.player.charAt(0) == "P" ? 38 : 0, fontSize: gameTextSize, marginLeft: 1}}>
+          <Typography
+            sx={{
+              marginTop: cookies.player.charAt(0) == "P" ? 38 : 0,
+              fontSize: gameTextSize,
+              marginLeft: 1,
+            }}
+          >
             {`playing game id`} <b>{`${props.id}!`}</b>
           </Typography>
           <Button
@@ -1989,7 +2304,7 @@ const parseStatus = (data) => {
             onClick={() => {
               socket.current.send(
                 JSON.stringify({
-                  type: "get",
+                  type: "refresh",
                   from: "refresh info",
                   id: props.id,
                 })
@@ -1999,21 +2314,20 @@ const parseStatus = (data) => {
             <Typography textTransform="none">refresh game info</Typography>{" "}
             {/* should check for paused game */}
           </Button>
-          {
-            cookies.player.charAt(0) == "Q" || cookies.player.charAt(0) == "Z" ? ( // change back to S and P eventually but for now keep them hidden
-              <Fragment>
-                <Button
-                  style={{ backgroundColor: "#543834", color: "white" }}
-                  fullWidth
-                  onClick={() => {
-                    showSelectionAlert(0, true, false);
-                  }}
-                >
-                  <Typography textTransform="none">display gif</Typography>{" "}
-                </Button>
-              </Fragment>
-            ) : null
-          }
+          {cookies.player.charAt(0) == "Q" ||
+          cookies.player.charAt(0) == "Z" ? ( // change back to S and P eventually but for now keep them hidden
+            <Fragment>
+              <Button
+                style={{ backgroundColor: "#543834", color: "white" }}
+                fullWidth
+                onClick={() => {
+                  showSelectionAlert(0, true, false);
+                }}
+              >
+                <Typography textTransform="none">display gif</Typography>{" "}
+              </Button>
+            </Fragment>
+          ) : null}
           {/*
           <TimesModal
             times={identity.timest1}
@@ -2075,6 +2389,6 @@ const parseStatus = (data) => {
       )}
     </div>
   );
-}
+};
 
 export default Game;

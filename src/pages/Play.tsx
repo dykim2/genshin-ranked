@@ -40,19 +40,20 @@ const Play = ({ activeGames, findActive }: IPlay) => {
 
   const [extraBans, setExtraBans] = useState<string>("no one");
   const [bans, setBans] = useState<number[]>([0, 0]); // probably extra ban counts
+  const [times, setTimes] = useState<number[]>([-1, -1]);
 
   const [bonusParams, setParams] = useState<number[]>([0, -2, -1, -1]);
   const [creatingBO2, setBO2] = useState<boolean[]>([false, true]); // is it a bo2? is it game 1 or 2 of the bo2?
   // bo2 alwayshas fearless bosses i.e. cant pick same bosses
   const [fearless, setFearless] = useState<boolean>(false);
   const idRef = useRef<number>(-1);
-
+  const DEFAULT_TIMER = 435;
   const latestBoss = useRef(null);
   const api_list = [
     "https://rankedapi-late-cherry-618.fly.dev",
     "http://localhost:3001",
   ];
-  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3001"
+  const api = api_list[1]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3001"
 
   const refreshGames = () => {
     setRefresh(true);
@@ -111,6 +112,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
     fearless: fearless,
     fearlessID: fearless ? bonusParams[3] : -1,
     initialBosses: [bonusParams[1], bonusParams[2]],
+    totalTimeT1: DEFAULT_TIMER,
+    totalTimeT2: DEFAULT_TIMER,
     player: "1",
     totalBans: 8,
   };
@@ -210,6 +213,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       fearless: bonusParams[3] > -1,
       fearlessID: bonusParams[3] > -1 ? bonusParams[3] : -1,
       initialBosses: [-1, -1],
+      totalTimeT1: DEFAULT_TIMER,
+      totalTimeT2: DEFAULT_TIMER,
       player: "1",
       totalBans: 8,
     };
@@ -226,6 +231,19 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         alert("extra bans count is invalid!");
         return;
       }
+    }
+    for(let i = 0; i < times.length; i++){
+      if((times[i] < 60 && times[i] >= 0) || times[i] < -1){
+        alert("give teams more time to pick! note that timer goes down while gifs are playing, don't forget to account for it.");
+        return;
+      }
+    }
+    let newTimes = [...times];
+    if(times[0] == -1){
+      newTimes[0] = DEFAULT_TIMER;
+    }
+    if(times[1] == -1){
+      newTimes[1] = newTimes[0];
     }
     if (bonusParams[0] < -2 || bonusParams[0] > 4) {
       alert("number of extra bosses is invalid!");
@@ -261,6 +279,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
       fearless: fearless,
       fearlessID: fearless ? bonusParams[3] : -1,
       initialBosses: [bonusParams[1], bonusParams[2]],
+      totalTimeT1: newTimes[0],
+      totalTimeT2: newTimes[1],
       player: "1",
       processing: false,
       totalBans: banMode == "2+1" ? 6 : 8,
@@ -439,13 +459,14 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                   "Producer",
                   "Spectator",
                 ].map((player, index) => {
-                  return creating ||
+                  return (creating &&
+                    !player.includes("Prod") &&
+                    !player.includes("Spec")) ||
                     (!creating && !player.includes("Ref (")) ? (
                     <ListItem disableGutters key={player}>
                       <ListItemButton
                         onClick={() => choosePlayer(player, idRef.current)}
                         disabled={
-                          ((player == "Spectator" || player == "Producer") && creating) ||
                           player == "Refe (Custom)" || // if i want to disable custom ref game i can do this in future (typo is intended)
                           (typeof status.connected != "undefined" &&
                             status.connected[index] >= limit[index])
@@ -459,6 +480,9 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               </List>
             </DialogContent>
             <DialogActions>
+              <Button>
+                {/* a next page button for specifically when creating */}
+              </Button>
               <Button
                 sx={{ color: "yellow" }}
                 onClick={() => {
@@ -477,7 +501,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={options}
         onClose={() => setOptions(false)}
         slotProps={{
-          paper: {style: {color: "black", backgroundColor: "#46bdc6"}},
+          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
         }}
       >
         <DialogTitle>
@@ -509,16 +533,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             value={bossBan}
             onChange={(event) => setBossBans(event.target.value == "true")}
           >
-            <FormControlLabel
-              value={true}
-              control={<Radio />}
-              label={"yes"}
-            />
-            <FormControlLabel
-              value={false}
-              control={<Radio />}
-              label={"no"}
-            />
+            <FormControlLabel value={true} control={<Radio />} label={"yes"} />
+            <FormControlLabel value={false} control={<Radio />} label={"no"} />
           </RadioGroup>
           <Typography>standard ban count</Typography>
           <FormControl>
@@ -620,6 +636,36 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               />
             </RadioGroup>
           </FormControl>*/}
+          <Typography>how much time for each side?</Typography>
+          <br />
+          <TextField
+            helperText="Set to -1 to set the time to default 435s!"
+            label="team 1 total pick time in s"
+            variant="outlined"
+            autoFocus
+            defaultValue={times[0]}
+            onChange={(e) => {
+              let oldTimes = [...times];
+              oldTimes[0] = parseInt(e.target.value) ?? -1;
+              setTimes(oldTimes);
+            }}
+            error={(times[0] < 60 && times[0] >= 0) || times[0] < -1}
+          />
+          {" "}
+          <TextField
+            helperText="Set to -1 to set the same time as team 1"
+            label="team 2 total pick time in s"
+            variant="outlined"
+            autoFocus
+            defaultValue={times[1]}
+            onChange={(e) => {
+              let oldTimes = [...times];
+              oldTimes[1] = parseInt(e.target.value) ?? -1;
+              setTimes(oldTimes);
+            }}
+            error={(times[1] < 60 && times[1] >= 0) || times[1] < -1}
+          />
+          <br />
           <Typography>how many extra bosses?</Typography>
           <Typography textTransform="none" fontSize="13px">
             the default number of bosses is 7. the minimum is 5 and the maximum
