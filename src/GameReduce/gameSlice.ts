@@ -32,7 +32,7 @@ const api_list = [
   "https://rankedapi-late-cherry-618.fly.dev",
   "http://localhost:3001",
 ];
-const api = api_list[1];
+const api = api_list[0];
 
 export interface GameInterface {
   _id: number;
@@ -102,6 +102,8 @@ export const getPlayerKey = (team: number): TeamInfo => {
   return team === 1 ? "playerst1" : team === 2 ? "playerst2" : "playerst1";
 }
 
+const defaultPickTimer = 455;
+
 const initialState: GameInterface = {
   // all game information
   // add support for boss bans... after adding mobile support (surely)
@@ -120,8 +122,8 @@ const initialState: GameInterface = {
   fearlessBosses: [],
   presetBossCount: 0,
   longBoss: [false, false],
-  totalTimeT1: 240,
-  totalTimeT2: 240,
+  totalTimeT1: defaultPickTimer,
+  totalTimeT2: defaultPickTimer,
   pickst1: [],
   pickst2: [],
   playerst1: [],

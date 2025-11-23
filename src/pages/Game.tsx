@@ -84,9 +84,6 @@ import {
   chosenBossBans,
 } from "../GameReduce/selectionSlice.ts";
 import ExtraBanDisplay from "./ExtraBanComponent.tsx";
-const IMG_SIZE = 75; // use eventually
-// redux good for handling and modifying game information?
-const TIMER = 48000;
 
 interface SocketMessage {
   type: string;
@@ -277,7 +274,6 @@ const Game = (props: {
       socket.current = props.socket;
     }
     const handleMessage = (event: MessageEvent) => {
-      // console.log(JSON.parse(event.data));
       handleSocketMessage(event);
     };
     if (typeof cookies.player == "undefined") {
@@ -381,7 +377,6 @@ const Game = (props: {
    * @param {number} team the team number to update timer for
    */
   const updateTimer = (enabled: boolean, team: number, nextTeam: number) => {
-    console.log("enabled: ",enabled,", team is ",team,", and next team is ", nextTeam)
     nextTeam = Math.abs(nextTeam);
     if (secondTeamTurn.current && nextTeam != startingTurn.current) {
       secondTeamTurn.current = false;
@@ -406,7 +401,6 @@ const Game = (props: {
       }
       setTimerVisibleT1(true);
     }
-    console.log(timerOverTurn+" timer over turn");
     
     // based on next team, reset timer accordingly
     /*
@@ -483,10 +477,6 @@ const Game = (props: {
     type: string,
     timeout = false
   ): void => {
-    // should no longer be run on timer end
-    // instead server will handle it
-    // assumes coket is open which should always be the case
-    console.log("team " + teamNum + " selected " + selection + " for " + type);
     if (socket.current.readyState != 1) {
       alert("Please refresh the page and try again!");
       return;
@@ -857,7 +847,6 @@ const Game = (props: {
         let bans: number[] = addSelectedBans();
         let picksT1: number[] = addSelectedPicks(1);
         let picksT2: number[] = addSelectedPicks(2);
-        console.log("overriding everything");
         dispatch(overrideBoss({ ban: true, bosses: bossBans }));
         dispatch(overrideBoss({ ban: false, bosses: bosses }));
         dispatch(
@@ -959,7 +948,6 @@ const Game = (props: {
       return; // do nothing if game does not match
     } // even if i go back, props.id does not exist, so this will return true and thereby nothing will happen
     if (data.message.toLowerCase() == "failure") {
-      console.log(data);
       alert(data.error);
       return;
     }
@@ -992,7 +980,7 @@ const Game = (props: {
                 countdownRefT2.current.getApi().pause();
               }
               else{
-                console.log("failure to do team 1")
+                // console.log("failure to do team 1")
               }
             }, 500)
             // pause the timer after it is set visible
@@ -1005,17 +993,11 @@ const Game = (props: {
                 countdownRefT1.current.getApi().pause();
               }
               else{
-                console.log("failure to do team 2")
+                // console.log("failure to do team 2")
               }
             }, 500)
             // 
           }
-        }
-        else if(newData.game.result == "waiting"){
-          // preset times
-          setDateWithTimeT1(Date.now() + newData.timert1 * 1000);
-          setDateWithTimeT2(Date.now() + newData.timert2 * 1000);
-          console.log("attempt to set times");
         }
         // set the turn too
         if (canPause && newData.paused) {
@@ -1057,8 +1039,6 @@ const Game = (props: {
       }
       case "turn": {
         let newData = data as SocketTurnMessage;
-        console.log("new data")
-        console.log(newData);
         dispatch(setTurn(newData.turn));
         if (canPause && newData.paused) {
           // game is not paused, on server end it is paused
@@ -1333,7 +1313,6 @@ const Game = (props: {
       countdownRefT2.current.getApi().isPaused()
     ) {
       countdownRefT2.current.getApi().start();
-      console.log("resuming t2 draft")
     }
     setPause(true);
     console.log("resuming draft");
@@ -1353,7 +1332,6 @@ const Game = (props: {
   };
   */
   const openChange = (team: number, name: string, original: number) => {
-    // console.log("team: "+team+" name: "+name+" original: "+original);
     if (cookies.player.charAt(0) != "R") {
       // reject
       alert("you can only change bosses/characters as a ref!");
@@ -1403,7 +1381,6 @@ const Game = (props: {
   };
 
   const handleChange = (change: string, team: number) => {
-    // console.log("change: " + change);
     setShowChanges(false);
     if (cookies.player.charAt(0) != "R") {
       // reject
@@ -1512,7 +1489,6 @@ const Game = (props: {
     useAppSelector(totalBans) == 6
       ? [0, 2, 5, 1, 3, 4]
       : [0, 2, 4, 7, 1, 3, 5, 6];
-  // console.log("ban info: "+banInfo);
   // add pause, waiting, game over
   const smallSizeChoice =
     (cookies.player.charAt(0) == "S" || cookies.player.charAt(0) == "P") &&
@@ -1568,7 +1544,6 @@ const Game = (props: {
                         ref={countdownRefT1}
                         key={-1 * dateWithTimeT1}
                         onComplete={() => {
-                          console.log("set a turn");
                           switch(timerOverTurn){
                             case 0:
                               setTimerOverTurn(1);
@@ -1597,7 +1572,6 @@ const Game = (props: {
                 </Grid>
                 <Grid size={1}>
                   <div>
-                    {/* console.log(identity.result == "progress" || identity.result == "finish") */}
                     {!canPause ? (
                       <MyTurn turnInfo={3} draftOver={false} />
                     ) : (
@@ -2049,7 +2023,6 @@ const Game = (props: {
                           turn.toString() != cookies.player.charAt(0)
                         }
                         onClick={() => {
-                          console.log("button clicked");
                           sendSelection(
                             turn,
                             identity.result == "boss" ||

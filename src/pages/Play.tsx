@@ -47,13 +47,13 @@ const Play = ({ activeGames, findActive }: IPlay) => {
   // bo2 alwayshas fearless bosses i.e. cant pick same bosses
   const [fearless, setFearless] = useState<boolean>(false);
   const idRef = useRef<number>(-1);
-  const DEFAULT_TIMER = 435;
+  const DEFAULT_TIMER = 455;
   const latestBoss = useRef(null);
   const api_list = [
     "https://rankedapi-late-cherry-618.fly.dev",
     "http://localhost:3001",
   ];
-  const api = api_list[1]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3001"
+  const api = api_list[0]; // 0 for "https://rankedapi-late-cherry-618.fly.dev" or 1 for "http://localhost:3001"
 
   const refreshGames = () => {
     setRefresh(true);
@@ -639,7 +639,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           <Typography>how much time for each side?</Typography>
           <br />
           <TextField
-            helperText="Set to -1 to set the time to default 435s!"
+            helperText="Set to -1 to set the time to default 455s!"
             label="team 1 total pick time in s"
             variant="outlined"
             autoFocus

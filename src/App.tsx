@@ -19,6 +19,7 @@ const App = () => {
     `wss://rankedwebsocketapi.fly.dev?userId=${userId}`,
     `ws://localhost:8080?userId=${userId}`,
   ];
+  let socketLink = socketOpts[0];
 
   const resetSocket = () => {
     if (
@@ -26,7 +27,7 @@ const App = () => {
       socket.readyState === WebSocket.CLOSED ||
       socket.readyState === WebSocket.CLOSING
     ) { // s
-      setSocket(new WebSocket(socketOpts[1]));
+      setSocket(new WebSocket(socketLink));
       // console.log("opening new socket");
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -43,7 +44,7 @@ const App = () => {
           openRef.current = false;
           return;
         }
-        const newSocket = new WebSocket(socketOpts[0]);
+        const newSocket = new WebSocket(socketLink);
         setSocket(newSocket);
       }, 1500);
     }
