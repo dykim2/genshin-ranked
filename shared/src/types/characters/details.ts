@@ -290,6 +290,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/0c/c1/f4/METQJAC_t.png",
 		index: 52,
 	},
+	[CHARACTERS.Durin]: {
+		displayName: "Durin",
+		element: ELEMENTS.pyro,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Durin",
+		onlineFilePath: "https://thumbs4.imagebam.com/27/7f/b0/ME18BT0O_t.png",
+		index: 106,
+	},
 	[CHARACTERS.Emilie]: {
 		displayName: "Emilie",
 		element: ELEMENTS.dendro,
@@ -433,6 +442,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Itto",
 		onlineFilePath: "https://thumbs4.imagebam.com/f9/1e/15/METQJAG_t.png",
 		index: 42,
+	},
+	[CHARACTERS.Jahoda]: {
+		displayName: "Jahoda",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Jahoda",
+		onlineFilePath: "https://thumbs4.imagebam.com/bd/93/cd/ME18BT0P_t.png",
+		index: 107,
 	},
 	[CHARACTERS.Jean]: {
 		displayName: "Jean",

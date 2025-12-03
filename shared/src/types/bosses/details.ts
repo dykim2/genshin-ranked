@@ -217,6 +217,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/ce/53/25/ME15W8RD_t.png",
 		index: 51,
 	},
+	[BOSSES.Landrover]: {
+		displayName: "Landrover",
+		element: ELEMENTS.cryo,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Landrover",
+		onlineFilePath: "https://thumbs4.imagebam.com/2b/a9/8d/ME18BT0Q_t.png",
+		index: 54,
+	},
 	[BOSSES.LavaDragon]: {
 		displayName: "Lava Dragon",
 		element: ELEMENTS.pyro,

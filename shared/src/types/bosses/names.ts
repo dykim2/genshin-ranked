@@ -43,6 +43,7 @@ export enum BOSSES {
 	KnuckleDuckle = "KnuckleDuckle",
 	Moonfly = "Moonfly",
 	Frostnight = "Frostnight",
+	Landrover = "Landrover",
 
 	// Azhdaha = "Azhdaha",
 	Apep = "Apep",

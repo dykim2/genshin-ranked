@@ -64,6 +64,7 @@ export enum CHARACTERS {
 	Lauma = "Lauma",
 	Flins = "Flins",
 	Nefer = "Nefer",
+	Durin = "Durin",
 	Traveler = "Traveler",
 	Aloy = "Aloy",
 
@@ -114,4 +115,5 @@ export enum CHARACTERS {
 	Iansan = "Iansan",
 	Ifa = "Ifa",
 	Aino = "Aino",
+	Jahoda = "Jahoda",
 }
