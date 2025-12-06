@@ -447,7 +447,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		displayName: "Jahoda",
 		element: ELEMENTS.anemo,
 		weapon: WEAPONS.sword,
-		rarity: RARITY.FiveStar,
+		rarity: RARITY.FourStar,
 		imageFileName: "Jahoda",
 		onlineFilePath: "https://thumbs4.imagebam.com/bd/93/cd/ME18BT0P_t.png",
 		index: 107,

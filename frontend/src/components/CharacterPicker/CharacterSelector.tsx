@@ -131,9 +131,7 @@ export const CharacterSelector = ({
 						x != CHARACTERS.None &&
 						(x != CHARACTERS.NoBan ||
 							phase.toLowerCase() == "extraban" ||
-							phase.toLowerCase() == "ban") &&
-						(x != CHARACTERS.Random ||
-							phase.toLowerCase() == "pick") ? (
+							phase.toLowerCase() == "ban") ? (
 							<Grid key={x}>
 								<CharacterButton
 									team={team}

@@ -220,7 +220,7 @@ const Game = (props: {
   const selectedPicksT1 = useAppSelector(chosenPicksT1);
   const selectedPicksT2 = useAppSelector(chosenPicksT2);
   const extraBanNumber = useAppSelector(extraBanCount);
-  const doBossBansExist = useAppSelector(bossBansExist);
+  const doBossBansExist = useRef(false);
   const gameTextSize = {
     xs: "0.5rem",
     sm: "0.75rem",
@@ -334,6 +334,12 @@ const Game = (props: {
   useEffect(() => {
     pickTimeT2Ref.current = pickTimeT2;
   }, [pickTimeT2])
+
+  useEffect(() => {
+    if(extraInfo != undefined && extraInfo!= null  && extraInfo != ""){
+      alert(extraInfo);
+    }
+  }, [extraInfo])
 
   const MyTurn: FC<{ turnInfo: number; draftOver: boolean }> = ({
     turnInfo,
@@ -503,15 +509,6 @@ const Game = (props: {
     let found = false;
     if (selection == -3 || selection == -2) {
       // set to -3 if not ban
-      if (
-        res.toLowerCase() == "bossban" ||
-        res.toLowerCase() == "ban" ||
-        res.toLowerCase() == "extraban"
-      ) {
-        selection = -2; // no ban
-      } else {
-        selection = -3; // random
-      }
       req = JSON.stringify({
         id: gameID,
         type: "add",
@@ -526,13 +523,18 @@ const Game = (props: {
       setExtraInfo(
         "No selection was made! Random boss / pick or no ban is selected."
       );
+      // check phase 
+      let choice = -3;
+      if(identity.result == "bossban" || identity.result == "extraban" || identity.result == "ban"){
+        choice = -2;
+      }
       req = JSON.stringify({
         id: gameID,
         type: "add",
         changed: identity.result,
         data: {
-          character: -3,
-          boss: -3,
+          character: choice,
+          boss: choice,
           team: teamNum,
         },
       });
@@ -588,6 +590,8 @@ const Game = (props: {
             setExtraInfo(
               "Time is up! An invalid boss was selected, thereby a random boss will be chosen."
             );
+          } else if(type == "bossban") {
+            setExtraInfo("Time is up! An invalid boss ban was selected, thereby no boss ban will be chosen.");
           } else if (type == "character") {
             if (identity.result == "ban") {
               setExtraInfo(
@@ -602,28 +606,38 @@ const Game = (props: {
           found = true;
         } else {
           if (type == "boss") {
-            setExtraInfo("This boss has been picked already!");
+            setExtraInfo("This boss is banned or picked!");
+          } else if(type == "bossban") {
+            setExtraInfo("This boss is banned or picked!");
           } else if (
             identity.result == "ban" ||
             identity.result == "extraban"
           ) {
             //during ban phase, shows this, need to fix probs
-            setExtraInfo("This character is banned!");
+            setExtraInfo("This character is banned or picked!");
           } else {
-            setExtraInfo("This character has already been picked!");
+            setExtraInfo("This character is banned or picked!");
           }
           return;
         }
       }
     }
     if (found) {
+      let choice = -3;
+      if (
+        identity.result == "bossban" ||
+        identity.result == "extraban" ||
+        identity.result == "ban"
+      ) {
+        choice = -2;
+      }
       req = JSON.stringify({
         id: gameID,
         type: "add",
         changed: identity.result,
         data: {
-          character: -3,
-          boss: -3,
+          character: choice,
+          boss: choice,
           team: teamNum,
         },
       });
@@ -999,6 +1013,7 @@ const Game = (props: {
             // 
           }
         }
+        doBossBansExist.current = newData.game.doBossBans;
         // set the turn too
         if (canPause && newData.paused) {
           console.log("re check for pause");
@@ -1022,6 +1037,7 @@ const Game = (props: {
         } else {
           setBanInfo([1, 4, 8]);
         }
+        doBossBansExist.current = newData.game.doBossBans;
         dispatch(addGame(newData.game as GameInterface));
         // no need to set ban info or timer
         if (canPause && newData.paused) {
@@ -1257,14 +1273,16 @@ const Game = (props: {
       }
       case "phase": {
         let newData = data as SocketPhaseMessage;
+        console.log(extraBanNumber);
+        console.log("extra bans");
         if (
           newData.newPhase == "extraban" ||
           (newData.newPhase == "bossban" &&
             extraBanNumber == 0 &&
-            doBossBansExist) ||
+            doBossBansExist.current) ||
           (newData.newPhase == "boss" &&
             extraBanNumber == 0 &&
-            !doBossBansExist)
+            !doBossBansExist.current)
         ) {
           // whoever starts, their side of the timer is enabled
           secondTeamTurn.current = true;
@@ -1766,6 +1784,7 @@ const Game = (props: {
                               ? 2
                               : -1
                           }
+                          phase={identity.result.toLowerCase()}
                           sendHover={sendHover}
                           inGame={true}
                           bonusInfo={[extraInfo]}
@@ -2054,7 +2073,7 @@ const Game = (props: {
                                 id: props.id,
                               })
                             );
-                          } else if (doBossBansExist) {
+                          } else if (doBossBansExist.current) {
                             socket.current.send(
                               JSON.stringify({
                                 type: "switch",

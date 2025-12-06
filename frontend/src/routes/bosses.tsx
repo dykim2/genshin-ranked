@@ -5,13 +5,14 @@ import {BossSelector} from "../components";
 
 interface balance {
 	team: number;
+	phase: string;
 	sendHover: (teamNum: number, selected: number) => void;
 	inGame: boolean;
 	bonusInfo: string[];
 	fearless: boolean; // fearless bosses or not
 }
 
-export const BossDisplay = ({team, sendHover, inGame, bonusInfo, fearless}: balance) => {
+export const BossDisplay = ({team, phase, sendHover, inGame, bonusInfo, fearless}: balance) => {
 	// maybe add game turn? and current phase? instead of grabbing from session storage?
 	const [selection, setSelection] = React.useState<string>("None");
 	// get player turn from storage, verify it
@@ -30,6 +31,7 @@ export const BossDisplay = ({team, sendHover, inGame, bonusInfo, fearless}: bala
 					team={team}
 					updateBoss={setSelection}
 					updateHover={sendHover}
+					phase={phase}
 				/>
 			</Box>
 			{inGame ? null : (

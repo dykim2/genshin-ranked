@@ -24,7 +24,7 @@ const ImageDetail = ({boss}: IBoss) => {
 		<Fragment>
 			<Image src={getBossImagePath(boss)} />
 			<IconWrapper>
-				{boss == BOSSES.None ? null : (
+				{boss == BOSSES.None || boss == BOSSES.NoBan ? null : (
 					<IconImage src={getBossElementImagePath(boss)} />
 				)}
 			</IconWrapper>
@@ -36,13 +36,13 @@ const ChosenDetail = ({boss}: IBoss) => {
 		<Fragment>
 			<Image
 				src={getBossImagePath(boss)}
-				sx={{filter: "grayscale(100%)"}}
+				sx={{ filter: "grayscale(100%)" }}
 			/>
 			<IconWrapper>
-				{boss == BOSSES.None ? null : (
+				{boss == BOSSES.None || boss == BOSSES.NoBan ? null : (
 					<IconImage
 						src={getBossElementImagePath(boss)}
-						sx={{filter: "greyscale(100%)"}}
+						sx={{ filter: "greyscale(100%)" }}
 					/>
 				)}
 			</IconWrapper>

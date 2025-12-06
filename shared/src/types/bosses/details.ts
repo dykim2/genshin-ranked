@@ -31,6 +31,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
 		index: -1,
 	},
+	[BOSSES.NoBan]: {
+		displayName: "No Ban",
+		element: ELEMENTS.physical,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "NoBan",
+		onlineFilePath: "https://thumbs4.imagebam.com/4b/77/61/METSLWN_t.png",
+		index: -2,
+	},
 	[BOSSES.AeonblightDrake]: {
 		displayName: "Drake",
 		element: ELEMENTS.physical,

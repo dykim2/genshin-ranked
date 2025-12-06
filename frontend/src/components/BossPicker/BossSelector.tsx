@@ -22,13 +22,15 @@ export interface IBoss {
 	team: number;
 	updateBoss: React.Dispatch<React.SetStateAction<string>>;
 	updateHover: (teamNum: number, selected: number) => void;
+	phase: string;
 }
 
 export const BossSelector = ({
 	inGame,
 	team,
+	phase,
 	updateBoss,
-	updateHover
+	updateHover,
 }: IBoss) => {
 	const [elementFilter, setElementFilter] = useState<ELEMENTS | null>(null);
 	const [searchFilter, setSearchFilter] = useState<string>("");
@@ -127,7 +129,9 @@ export const BossSelector = ({
 						}
 					})
 					.map((x) => {
-						return x != BOSSES.None ? (
+						return x != BOSSES.None && 
+						(x != BOSSES.NoBan || 
+							phase.toLowerCase() == "bossban" ) ? (
 							<Grid key={x}>
 								<BossButton
 									team={team}
