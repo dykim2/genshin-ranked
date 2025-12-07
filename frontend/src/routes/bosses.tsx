@@ -2,6 +2,8 @@
 import React, { Fragment } from "react";
 import {Box, Button, Typography} from "@mui/material";
 import {BossSelector} from "../components";
+import { hoveredBoss } from "../../../src/GameReduce/selectionSlice";
+import { useAppSelector } from "../../../src/hooks/ReduxHooks";
 
 interface balance {
 	team: number;
@@ -15,6 +17,7 @@ interface balance {
 export const BossDisplay = ({team, phase, sendHover, inGame, bonusInfo, fearless}: balance) => {
 	// maybe add game turn? and current phase? instead of grabbing from session storage?
 	const [selection, setSelection] = React.useState<string>("None");
+	const hoverBoss = useAppSelector(hoveredBoss);
 	// get player turn from storage, verify it
 	// replace this when timer reaches 0
 
@@ -50,9 +53,7 @@ export const BossDisplay = ({team, phase, sendHover, inGame, bonusInfo, fearless
 								<Typography variant="h6">
 									{localStorage.getItem("boss") !=
 										undefined && !inGame
-										? `Selected boss id (for custom): ${localStorage.getItem(
-												"boss",
-										  )}`
+										? `Selected boss id (for custom): ${hoverBoss}`
 										: null}
 								</Typography>
 								<br />

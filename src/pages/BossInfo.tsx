@@ -9,7 +9,7 @@ export default function Bosses() {
       <Typography sx={{fontSize: {xs: "1rem", sm: "1.5rem", md: "2rem", lg: "2.5rem", xl: "3rem"}}}>
         view available boss options and ids here!
       </Typography>
-      <BossDisplay team={0} inGame={false} bonusInfo={[]} sendHover={sendHover} fearless={false} />
+      <BossDisplay team={0} inGame={false} bonusInfo={[]} sendHover={sendHover} fearless={false} phase={""} />
     </div>
   );
 } 
