@@ -236,6 +236,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/16/31/d8/METQJBE_t.png",
 		index: 51,
 	},
+	[CHARACTERS.Columbina]: {
+		displayName: "Columbina",
+		element: ELEMENTS.hydro,
+		weapon: WEAPONS.bow,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Columbina",
+		onlineFilePath: "https://thumbs4.imagebam.com/7d/c2/c0/ME19PXJP_t.png",
+		index: 108,
+	},
 	[CHARACTERS.Cyno]: {
 		displayName: "Cyno",
 		element: ELEMENTS.electro,
@@ -415,6 +424,15 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Iansan",
 		onlineFilePath: "https://thumbs4.imagebam.com/24/dc/3d/ME10MX77_t.png",
 		index: 95,
+	},
+	[CHARACTERS.Illgua]: {
+		displayName: "Illuga",
+		element: ELEMENTS.geo,
+		weapon: WEAPONS.polearm,
+		rarity: RARITY.FourStar,
+		imageFileName: "Illuga",
+		onlineFilePath: "https://thumbs4.imagebam.com/96/6a/d0/ME19PXJO_t.png",
+		index: 109,
 	},
 	[CHARACTERS.Ineffa]: {
 		displayName: "Ineffa",
@@ -1018,5 +1036,14 @@ export const CHARACTER_INFO: CharacterMap = {
 		imageFileName: "Zhongli",
 		onlineFilePath: "https://thumbs4.imagebam.com/37/16/5c/METQJD7_t.png",
 		index: 25,
+	},
+	[CHARACTERS.Zibai]: {
+		displayName: "Zibai",
+		element: ELEMENTS.geo,
+		weapon: WEAPONS.sword,
+		rarity: RARITY.FiveStar,
+		imageFileName: "Zibai",
+		onlineFilePath: "https://thumbs4.imagebam.com/18/fb/6d/ME19PXJR_t.png",
+		index: 110,
 	},
 };

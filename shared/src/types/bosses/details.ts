@@ -111,6 +111,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/03/04/8a/METS4US_t.png",
 		index: 1,
 	},
+	[BOSSES.Dottore]: {
+		displayName: "Dottore",
+		element: ELEMENTS.multi,
+		type: BOSS_TYPE.Weekly,
+		imageFileName: "Dottore",
+		onlineFilePath: "https://thumbs4.imagebam.com/05/27/48/ME19XV9L_t.png",
+		index: 55,
+	},
 	[BOSSES.DendroCube]: {
 		displayName: "Dendro Cube",
 		element: ELEMENTS.dendro,
@@ -272,6 +280,14 @@ export const BOSS_DETAIL: BossMap = {
 		imageFileName: "MountainKing",
 		onlineFilePath: "https://thumbs4.imagebam.com/1e/de/c7/MEVO2LF_t.png",
 		index: 41,
+	},
+	[BOSSES.Nightmare]: {
+		displayName: "Nightmare",
+		element: ELEMENTS.electro,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Nightmare",
+		onlineFilePath: "https://thumbs4.imagebam.com/9c/c2/35/ME19PXJN_t.png",
+		index: 56,
 	},
 	/*
 	[BOSSES.Oceanid]: {

@@ -11,7 +11,7 @@ export default function CharacterList() {
     if (charRef.current == undefined) {
       const newMap = new Map();
       for (const someName in CHARACTER_INFO) {
-        newMap.set(CHARACTER_INFO[someName].index, someName);
+        newMap.set(CHARACTER_INFO[someName as keyof typeof CHARACTER_INFO].index, someName);
       }
       charRef.current = newMap;
     }
@@ -44,7 +44,7 @@ export default function CharacterList() {
   return (
     <Fragment>
       <Typography sx={{fontSize: {xs: "1rem", sm: "1.5rem", md: "2rem", lg: "2.5rem", xl: "3rem"}}}>
-        view character restrictions here!
+        view character restrictions here! These are rarely updated, check changelogs or the sheet for the most recent, accurate information.
       </Typography>
       {/* <Button>Show GIF for test</Button>*/}
       <Balancing

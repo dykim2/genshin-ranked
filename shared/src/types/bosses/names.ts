@@ -46,6 +46,7 @@ export enum BOSSES {
 	Moonfly = "Moonfly",
 	Frostnight = "Frostnight",
 	Landrover = "Landrover",
+	Nightmare = "Nightmare",
 
 	// Azhdaha = "Azhdaha",
 	Apep = "Apep",
@@ -53,6 +54,7 @@ export enum BOSSES {
 	Knave = "Knave",
 	ErodedLord = "ErodedLord",
 	ChessGame = "ChessGame",
+	Dottore = "Dottore",
 
 	// 4.0
 	Vivianne = "Vivianne",

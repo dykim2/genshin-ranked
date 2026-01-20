@@ -23,7 +23,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Random]: {
 		limit: 6,
 		differences: [-1],
-		restrictions: ["Random characters don't have restrictions!"]
+		restrictions: ["Random characters don't have restrictions!"],
 	},
 	[CHARACTERS.Aino]: {
 		limit: 6,
@@ -57,7 +57,10 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Arlecchino]: {
 		limit: 2,
 		differences: [1, 2],
-		restrictions: ["Any 5* Weapon, Ballad of Fjords, Deathmatch, Lithic Spear", "Any 3* Weapon"],
+		restrictions: [
+			"Any 5* Weapon, Ballad of Fjords, Deathmatch, Lithic Spear",
+			"Any 3* Weapon",
+		],
 	},
 	[CHARACTERS.Ayaka]: {
 		limit: 6,
@@ -94,9 +97,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Bennett]: {
 		limit: 6,
 		differences: [5],
-		restrictions: [
-			"Freedom-Sworn",
-		],
+		restrictions: ["Freedom-Sworn"],
 	},
 	[CHARACTERS.Candace]: {
 		limit: 6,
@@ -115,7 +116,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 			"Astral Vulture's Crimson Plumage",
 			"Any 5* Weapon | Scion of The Blazing Sun | Flower-Wreathed Feathers | Range Gauge",
 			"Any 3* Weapon,\nAllowed: Sacrificial Bow | End of the Line",
-			"Any 2* Weapon"
+			"Any 2* Weapon",
 		],
 	},
 	[CHARACTERS.Chevreuse]: {
@@ -151,6 +152,15 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
+	[CHARACTERS.Columbina]: {
+		limit: 2,
+		differences: [0, 1, 2],
+		restrictions: [
+			"No Restrictions | WITH Lauma and Nefer, Any 4* Weapon",
+			"Nocturne's Curtain Call | Reliquary of Truth | Tome of Eternal Flow | Surf's Up | Nightweaver's Looking Glass | WITH Lauma and Nefer, Any 3* Weapon",
+			"Any 3* Weapon | WITH Lauma and Nefer, BANNED",
+		],
+	},
 	[CHARACTERS.Cyno]: {
 		limit: 6,
 		differences: [3, 6],
@@ -162,7 +172,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Dahlia]: {
 		limit: 6,
 		differences: [-1],
-		restrictions: [""]
+		restrictions: [""],
 	},
 	[CHARACTERS.Dehya]: {
 		limit: 6,
@@ -184,14 +194,15 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
+	[CHARACTERS.Durin]: {
+		limit: 1,
+		differences: [1],
+		restrictions: ["Athame Atis | Mistsplitter Reforged | Primordial Jade Cutter | Haran Geppaku Futsu"],
+	},
 	[CHARACTERS.Emilie]: {
 		limit: 3,
 		differences: [1, 2, 3],
-		restrictions: [
-			"Lumidouce Elegy",
-			"Any 4* Weapon",
-			"White Tassel"
-		],
+		restrictions: ["Lumidouce Elegy", "Any 4* Weapon", "White Tassel"],
 	},
 	[CHARACTERS.Escoffier]: {
 		limit: 2,
@@ -199,8 +210,8 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [
 			"Symphonist of Scents",
 			"Any 4* Weapon",
-			"Any 2* Weapon"
-		]
+			"Any 2* Weapon",
+		],
 	},
 	[CHARACTERS.Eula]: {
 		limit: 5,
@@ -220,7 +231,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Flins]: {
 		limit: 1,
 		differences: [0, 1],
-		restrictions: ["Unknown", "Unknown"]
+		restrictions: ["Unknown", "Unknown"],
 	},
 	[CHARACTERS.Freminet]: {
 		limit: 6,
@@ -230,7 +241,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Furina]: {
 		limit: 2,
 		differences: [2],
-		restrictions: ["Any 3* Weapon\nTeams may no longer manipulate HP between bosses after the first boss."],
+		restrictions: [
+			"Any 3* Weapon\nTeams may no longer manipulate HP between bosses after the first boss.",
+		],
 	},
 	[CHARACTERS.Gaming]: {
 		limit: 6,
@@ -244,7 +257,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 			"Astral Vulture's Crimson Plumage",
 			"Any 5* Weapon | R3+ Scion of The Blazing Sun | R3+ Flower-wreathed Feathers",
 			"Any 4* Weapon",
-			"Any 3* Weapon"
+			"Any 3* Weapon",
 		],
 	},
 	[CHARACTERS.Gorou]: {
@@ -260,17 +273,22 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Iansan]: {
 		limit: 6,
 		differences: [-1],
-		restrictions: []
+		restrictions: [],
 	},
 	[CHARACTERS.Ifa]: {
 		limit: 6,
 		differences: [-1],
-		restrictions: []
+		restrictions: [],
+	},
+	[CHARACTERS.Illgua]: {
+		limit: 6,
+		differences: [-1],
+		restrictions: [""],
 	},
 	[CHARACTERS.Ineffa]: {
 		limit: 2,
 		differences: [1, 2],
-		restrictions: ["Fractured Halo", "Any 5* Weapon"]
+		restrictions: ["Fractured Halo", "Any 5* Weapon"],
 	},
 	[CHARACTERS.Itto]: {
 		limit: 6,
@@ -279,6 +297,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 			"Redhorn Stonethresher | R3+ Serpent Spine",
 			"Any 4* Weapon | White Iron Greatsword | Ferrous Shadow,\nAllowed: Favonius Greatsword",
 		],
+	},
+	[CHARACTERS.Jahoda]: {
+		limit: 6,
+		differences: [-1],
+		restrictions: [""],
 	},
 	[CHARACTERS.Jean]: {
 		limit: 6,
@@ -313,7 +336,10 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Kinich]: {
 		limit: 1,
 		differences: [1, 2, 3],
-		restrictions: ["Any 5* Weapon | Serpent Spine", "Any 4* Weapon | Bloodtainted Greatsword | Debate Club | Any 2* Weapon"],
+		restrictions: [
+			"Any 5* Weapon | Serpent Spine",
+			"Any 4* Weapon | Bloodtainted Greatsword | Debate Club | Any 2* Weapon",
+		],
 	},
 	[CHARACTERS.Kirara]: {
 		limit: 6,
@@ -368,7 +394,10 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Lyney]: {
 		limit: 2,
 		differences: [1, 2],
-		restrictions: ["Astral Vulture's Crimson Plumage | The First Great Magic | Thundering Pulse | Aqua Simulacra", "Any 4* Weapon, Slingshots"],
+		restrictions: [
+			"Astral Vulture's Crimson Plumage | The First Great Magic | Thundering Pulse | Aqua Simulacra",
+			"Any 4* Weapon, Slingshots",
+		],
 	},
 	[CHARACTERS.Mika]: {
 		limit: 6,
@@ -378,7 +407,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Mizuki]: {
 		limit: 6,
 		differences: [6],
-		restrictions: ["Any 5* Elemental Mastery Weapon | Sacrificial Fragments | Wandering Evenstar"],
+		restrictions: [
+			"Any 5* Elemental Mastery Weapon | Sacrificial Fragments | Wandering Evenstar",
+		],
 	},
 	[CHARACTERS.Mona]: {
 		limit: 6,
@@ -391,7 +422,7 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		restrictions: [
 			"A Thousand Blazing Suns",
 			"Any 4* Weapon,\nAllowed: Earth Shaker | Prototype Archaic | Favonius Greatsword",
-			"Any 3* Weapon"
+			"Any 3* Weapon",
 		],
 	},
 	[CHARACTERS.Mualani]: {
@@ -412,22 +443,29 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		],
 	},
 	[CHARACTERS.Navia]: {
-		limit: 1,
+		limit: 2,
 		differences: [1, 2],
 		restrictions: ["Verdict, A Thousand Blazing Suns", "Any 4* Weapon"],
+	},
+	[CHARACTERS.Nefer]: {
+		limit: 1,
+		differences: [0, 1],
+		restrictions: ["Reliquarty of Truth | Nightweaver's Looking Glass | Sunny Morning Sleep-In | R3+ Dawning Frost | Nocturne's Curtain Call", "Any 4* Weapon | Magic Guide"],
 	},
 	[CHARACTERS.Neuvillette]: {
 		limit: 1,
 		differences: [0, 1],
 		restrictions: [
-			"Tome of The Eternal Flow | Surf's Up",
-			"Any 4* Weapon, Thrilling Tales of Dragon Slayers"
+			"Tome of The Eternal Flow",
+			"Any 4* Weapon",
 		],
 	},
 	[CHARACTERS.Nilou]: {
-		limit: 6,
-		differences: [6],
-		restrictions: ["Any 5* Weapon | R3+ Wolf Fang"],
+		limit: 5,
+		differences: [2],
+		restrictions: [
+			"Key of Khaj-Nisut | The Dockhand's Assistant | Sapwood Blade"
+		],
 	},
 	[CHARACTERS.Ningguang]: {
 		limit: 6,
@@ -528,7 +566,10 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Varesa]: {
 		limit: 1,
 		differences: [0, 1],
-		restrictions: ["Vivid Notions", "Any Crit 5* Weapon | Crane's Echoing Call"]
+		restrictions: [
+			"Vivid Notions",
+			"Any Crit 5* Weapon | Crane's Echoing Call",
+		],
 	},
 	[CHARACTERS.Venti]: {
 		limit: 6,
@@ -543,7 +584,11 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.Wriothesley]: {
 		limit: 3,
 		differences: [1, 2, 3],
-		restrictions: ["Cashflow Supervision | Tulaytullah's Remembrance", "Any 5* Weapon", "Any 4* Weapon"],
+		restrictions: [
+			"Cashflow Supervision | Tulaytullah's Remembrance",
+			"Any 5* Weapon",
+			"Any 4* Weapon",
+		],
 	},
 	[CHARACTERS.Xiangling]: {
 		limit: 6,
@@ -578,7 +623,10 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 	[CHARACTERS.YaeMiko]: {
 		limit: 6,
 		differences: [4, 6],
-		restrictions: ["Kagura's Verity", "Any Crit 4* Weapon, Mappa Mare, Hakushin Ring, Oathsworn Eye"],
+		restrictions: [
+			"Kagura's Verity",
+			"Any Crit 4* Weapon, Mappa Mare, Hakushin Ring, Oathsworn Eye",
+		],
 	},
 	[CHARACTERS.Yanfei]: {
 		limit: 6,
@@ -610,4 +658,9 @@ export const CHARACTER_RESTRICTIONS: CharMap = {
 		differences: [-1],
 		restrictions: [""],
 	},
+	[CHARACTERS.Zibai]: {
+		limit: 0,
+		differences: [],
+		restrictions: []
+	}
 };
