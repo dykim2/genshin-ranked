@@ -32,7 +32,7 @@ const api_list = [
   "https://rankedapi-late-cherry-618.fly.dev",
   "http://localhost:3001",
 ];
-const api = api_list[1];
+const api = api_list[0];
 
 export interface GameInterface {
   _id: number;
