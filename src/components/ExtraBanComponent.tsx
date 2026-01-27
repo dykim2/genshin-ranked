@@ -1,6 +1,6 @@
 import {Grid} from "@mui/material"
 
-import {displayCharacter} from "../components/DisplayComponent";
+import {displayCharacter} from "./DisplayComponent";
 import {useAppSelector} from "../hooks/ReduxHooks";
 import {CHARACTERS} from "@genshin-ranked/shared";
 

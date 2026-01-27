@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
 	CHARACTERS,
 	ELEMENT_INFO,
@@ -127,26 +127,30 @@ export const CharacterSelector = ({
 							return true;
 						}
 					})
-					.map((x) =>
-						x != CHARACTERS.None &&
-						(x != CHARACTERS.NoBan ||
-							phase.toLowerCase() == "extraban" ||
-							phase.toLowerCase() == "ban") ? (
-							<Grid key={x}>
-								<CharacterButton
-									team={team}
-									character={x}
-									updateCharacter={updateCharacter}
-									banDisplay={"loadout"}
-									isChosen={selectedChars.includes(
-										CHARACTER_INFO[x].index,
-									)}
-									mainDisplay={true}
-									updateHover={updateHover}
-									component={false}
-								/>
-							</Grid>
-						) : null,
+					.map((x) => 
+						{
+							return( 
+								x != CHARACTERS.None &&
+								(x != CHARACTERS.NoBan ||
+									phase.toLowerCase() == "extraban" ||
+									phase.toLowerCase() == "ban") ? (
+									<Grid key={x}>
+										<CharacterButton
+											team={team}
+											character={x}
+											updateCharacter={updateCharacter}
+											banDisplay={"loadout"}
+											isChosen={selectedChars.includes(
+												CHARACTER_INFO[x].index,
+											)}
+											mainDisplay={true}
+											updateHover={updateHover}
+											component={false}
+										/>
+									</Grid>
+								) : null
+							)
+						}
 					)}
 			</Grid>
 		</Stack>

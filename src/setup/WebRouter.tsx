@@ -13,6 +13,7 @@ import Bosses from "../pages/BossInfo.tsx";
 import { Guide } from "../pages/Guide.tsx";
 import GetInfo from "../pages/GetInfo.tsx";
 import PlayerConnection from "../interfaces/PlayerInfoInterface.tsx";
+import Ref from "../pages/Ref.tsx";
 
 interface IRouter {
   socket: WebSocket;
@@ -23,7 +24,7 @@ interface IRouter {
 const WebRouter: FC<IRouter> = (props) => {
   const [active, setActive] = useState<PlayerConnection[]>([]);
   const api_choice = ["https://rankedapi-late-cherry-618.fly.dev", "http://localhost:3001"];
-  const api = api_choice[0];
+  const api = api_choice[1];
   const findActive = async () => {
     let gameData = await fetch(`${api}/gameAPI/active`, {
       method: "GET",
@@ -68,13 +69,23 @@ const WebRouter: FC<IRouter> = (props) => {
         <Route path="/" element={<Ranked />} errorElement={<ErrorPage />}>
           <Route index element={<Home />} />
           <Route path="/rules" element={<Rules />} />
-          <Route path="/play" element={<Play activeGames={active} findActive={findActive} />} />
-          {active!.map((game: {_id: number}) => {
+          <Route
+            path="/play"
+            element={<Play activeGames={active} findActive={findActive} />}
+          />
+          {active!.map((game: { _id: number }) => {
             return (
               <Route
                 key={game._id}
                 path={`/play/${game._id}`}
-                element={<Game id={game._id} socket={props.socket} resetSocket={props.resetSocket} socketOpen={props.socketOpen} />}
+                element={
+                  <Game
+                    id={game._id}
+                    socket={props.socket}
+                    resetSocket={props.resetSocket}
+                    socketOpen={props.socketOpen}
+                  />
+                }
               />
             );
           })}
@@ -82,6 +93,7 @@ const WebRouter: FC<IRouter> = (props) => {
           <Route path="/bosses" element={<Bosses />} />
           <Route path="/guide" element={<Guide />} />
           <Route path="/checklogs" element={<GetInfo />} />
+          <Route path="/ref" element={<Ref />} />
           <Route path="*" element={<InvalidPage />} />
         </Route>
       </Routes>

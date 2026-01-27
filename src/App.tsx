@@ -19,7 +19,7 @@ const App = () => {
     `wss://rankedwebsocketapi.fly.dev?userId=${userId}`,
     `ws://localhost:8080?userId=${userId}`,
   ];
-  let socketLink = socketOpts[0];
+  let socketLink = socketOpts[1];
 
   const resetSocket = () => {
     if (

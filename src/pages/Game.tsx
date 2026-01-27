@@ -83,7 +83,8 @@ import {
   chosenBosses,
   chosenBossBans,
 } from "../GameReduce/selectionSlice.ts";
-import ExtraBanDisplay from "./ExtraBanComponent.tsx";
+import ExtraBanDisplay from "../components/ExtraBanComponent.tsx";
+import {bossMap, bossNameMap, charMap, charNameMap} from "@genshin-ranked/shared/src/utils/nameToID.ts";
 
 interface SocketMessage {
   type: string;
@@ -204,10 +205,10 @@ const Game = (props: {
   const countdownRefT1 = useRef<Countdown>(null);
   const countdownRefT2 = useRef<Countdown>(null);
 
-  const charRef = useRef(new Map<number, CHARACTERS>());
-  const bossRef = useRef(new Map<number, BOSSES>());
-  const bossNameRef = useRef(new Map<string, number>());
-  const charNameRef = useRef(new Map<string, number>());
+  const bossRef = useRef(bossMap);
+  const bossNameRef = useRef(bossNameMap);
+  const charRef = useRef(charMap);
+  const charNameRef = useRef(charNameMap);
   const dndRef = useRef("boss");
   const latestRef = useRef([-1, -1]);
 
@@ -243,29 +244,7 @@ const Game = (props: {
     // adds selected characters and bosses to the ref objects
     localStorage.setItem("timer", "false");
     // updateSelected(6);
-    for (const someName in BOSS_DETAIL) {
-      // create a hashmap between index and some name
-      bossRef.current.set(
-        BOSS_DETAIL[someName as keyof typeof BOSSES].index,
-        BOSSES[someName as keyof typeof BOSSES]
-      );
-      bossNameRef.current.set(
-        BOSS_DETAIL[someName as keyof typeof BOSSES].displayName.toLowerCase(),
-        BOSS_DETAIL[someName as keyof typeof BOSSES].index
-      );
-    }
-    for (const someName in CHARACTER_INFO) {
-      charRef.current.set(
-        CHARACTER_INFO[someName as keyof typeof CHARACTERS].index,
-        CHARACTERS[someName as keyof typeof CHARACTERS]
-      );
-      charNameRef.current.set(
-        CHARACTER_INFO[
-          someName as keyof typeof CHARACTERS
-        ].displayName.toLowerCase(),
-        CHARACTER_INFO[someName as keyof typeof CHARACTERS].index
-      );
-    }
+   
   }, []);
 
   useEffect(() => {
@@ -384,28 +363,40 @@ const Game = (props: {
    */
   const updateTimer = (enabled: boolean, team: number, nextTeam: number) => {
     nextTeam = Math.abs(nextTeam);
-    if (secondTeamTurn.current && nextTeam != startingTurn.current) {
-      secondTeamTurn.current = false;
-      if (nextTeam == 1) {
-        setDateWithTimeT1(Date.now() + pickTimeT1Ref.current * 1000);
-      } else {
-        setDateWithTimeT2(Date.now() + pickTimeT2Ref.current * 1000);
+    // code to start the second team's timer if its not started yet
+    setTimeout(() => {
+      if (secondTeamTurn.current && nextTeam != startingTurn.current) {
+        secondTeamTurn.current = false;
+        if (nextTeam == 1) {
+          setDateWithTimeT1(Date.now() + pickTimeT1Ref.current * 1000);
+        } else {
+          setDateWithTimeT2(Date.now() + pickTimeT2Ref.current * 1000);
+        }
       }
-    }
+    }, 5000)
+      
     // when enabling timers for first time, reset timers
     // if this doesnt work need to basically set a variable
     // after starting game its set to true
     // after the non starting team is about to take a turn set it to false
-    if (team == 1 && nextTeam != 1) {
+    if (team == 1) {
       if (countdownRefT1.current != null) {
         countdownRefT1.current.getApi().pause();
       }
-      setTimerVisibleT2(true);
-    } else if (team == 2 && nextTeam != 2) {
+      if(!showTimerT2){
+        setTimeout(() => {
+          setTimerVisibleT2(true);
+        }, 5000);
+      }
+    } else if (team == 2) {
       if (countdownRefT2.current != null) {
         countdownRefT2.current.getApi().pause();
       }
-      setTimerVisibleT1(true);
+      if (!showTimerT1) {
+        setTimeout(() => {
+          setTimerVisibleT1(true);
+        }, 5000);
+      }
     }
     
     // based on next team, reset timer accordingly
@@ -419,11 +410,13 @@ const Game = (props: {
     }
     */
     localStorage.setItem("timer", enabled + "");
-    nextTeam == 1 && countdownRefT1.current?.getApi().isPaused()
-      ? countdownRefT1.current.getApi().start()
-      : nextTeam == 2 && countdownRefT2.current?.getApi().isPaused()
-      ? countdownRefT2.current.getApi().start()
-      : null;
+    setTimeout(() => {
+      nextTeam == 1 && countdownRefT1.current?.getApi().isPaused()
+        ? countdownRefT1.current.getApi().start()
+        : nextTeam == 2 && countdownRefT2.current?.getApi().isPaused()
+        ? countdownRefT2.current.getApi().start()
+        : null;
+    }, 5000)
     // pause other timer if not active
     // set next team's timer to resume
   };
@@ -950,13 +943,16 @@ const Game = (props: {
       = JSON.parse(event.data);
     const thisTime = Date.now();
     if (
-      lastMessageRef.current.info == event.data &&
-      thisTime - lastMessageRef.current.time < 500
+      lastMessageRef.current.info === event.data.trim() &&
+      thisTime - lastMessageRef.current.time < 3000
     ) {
-      // duplicate message within 500 ms, ignore
+      // duplicate message within 3s, ignore
       return;
     }
-    lastMessageRef.current = {info: event.data, time: thisTime};
+    else{
+      console.log("not duplicate");
+    }
+    lastMessageRef.current = {info: event.data.trim(), time: thisTime};
     console.log(data);
     if (data.id != props.id) {
       return; // do nothing if game does not match
@@ -988,26 +984,28 @@ const Game = (props: {
           // only run when game is already started
           startGameTimer(newData.game.turn, newData.timert1, newData.timert2);
           if(newData.game.turn == 1){
-            setTimerVisibleT2(true);
+            !showTimerT2 ? setTimerVisibleT2(true) : null;
             setTimeout(() => {
-              if(turn == 1 && countdownRefT2.current != null && !countdownRefT2.current.getApi().isPaused()){
+              if(newData.game.turn == 1 && countdownRefT2.current != null && !countdownRefT2.current.getApi().isPaused()){
                 countdownRefT2.current.getApi().pause();
+                console.log("pause the timer for t2");
               }
               else{
-                // console.log("failure to do team 1")
+                console.log("failure to do team 1")
               }
             }, 500)
             // pause the timer after it is set visible
             // set interval so that it stops the timer?
           }
           else{
-            setTimerVisibleT1(true);
+            !showTimerT1 ? setTimerVisibleT1(true) : null;
             setTimeout(() => {
-              if(turn == 2 && countdownRefT1.current != null && !countdownRefT1.current.getApi().isPaused()){
+              if(newData.game.turn == 2 && countdownRefT1.current != null && !countdownRefT1.current.getApi().isPaused()){
                 countdownRefT1.current.getApi().pause();
+                console.log("pause the timer for t1");
               }
               else{
-                // console.log("failure to do team 2")
+                console.log("failure to do team 2")
               }
             }, 500)
             // 
@@ -1306,6 +1304,7 @@ const Game = (props: {
     }
   };
   const pauseDraft = () => {
+    // do something similar to this, pause on server and pause locally
     // maybe clear the timer?
     // i.e. remove it and readd it?
     if(countdownRefT1.current != null && !countdownRefT1.current.getApi().isPaused()){

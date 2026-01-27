@@ -21,12 +21,13 @@ const updateHover = (_teamNum: number, _selected: number) => {
   // alert("hi");
 }
 
+const update = () => {
+  // do nothing, mainly meant to be a set state action but not used
+}
+
 // index needed incase someone adds a boss twice
 export const displayBoss = (boss: BOSSES, isPick: boolean, index: number, change: (team: number, name: string, original: number) => void) => {
     const selecting = true; // can be changed in future
-    const updateBoss = () => {
-        // does nothing
-    }
     let z: number = BOSS_DETAIL[boss].index;
     // create a draggable element
     // it must also be droppable in a sense too
@@ -47,7 +48,7 @@ export const displayBoss = (boss: BOSSES, isPick: boolean, index: number, change
           >
             <BossButton
               boss={boss}
-              updateBoss={updateBoss}
+              updateBoss={update}
               updateHover={updateHover}
               team={0}
               mainDisplay={false}
@@ -62,9 +63,6 @@ export const displayBoss = (boss: BOSSES, isPick: boolean, index: number, change
 
 export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: number, index: number, change: (team: number, name: string, original: number) => void) => {
     const banDisplay = (isPick ? "pick" : "ban");
-    const updateCharacter = () => {
-      
-    }
     return (
       <Droppable id={CHARACTER_INFO[character].index}>
         <Dragable id={CHARACTER_INFO[character].index}>
@@ -81,7 +79,7 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
           >
             <CharacterButton
               character={character}
-              updateCharacter={updateCharacter}
+              updateCharacter={update}
               updateHover={updateHover}
               banDisplay={banDisplay}
               team={0}
@@ -93,4 +91,19 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
         </Dragable>
       </Droppable>
     );
+}
+
+export const displayCharacterNoDrag = (character: CHARACTERS, isPick: boolean, updateHover: (team: number, selected: number) => void) => {
+  return(
+    <CharacterButton
+      character={character}
+      updateCharacter={update}
+      updateHover={updateHover}
+      banDisplay={isPick ? "pick" : "ban"}
+      team={0}
+      mainDisplay={false}
+      isChosen={false}
+      component={true}
+    />
+  )
 }

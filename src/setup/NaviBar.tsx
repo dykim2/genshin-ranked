@@ -51,6 +51,9 @@ export default function NaviBar(){
                 <NavLink to="/rules">Rules</NavLink>
               </li>
               <li>
+                <NavLink to="/ref">Find Ref Element</NavLink>
+              </li>
+              <li>
                 <a href="http://discord.gg/fnGdP36E2Q">Discord</a>
               </li>
             </ul>
