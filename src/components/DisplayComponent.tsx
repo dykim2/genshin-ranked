@@ -2,7 +2,7 @@
 // we know the character information
 
 import { BOSSES, CHARACTER_INFO, CHARACTERS } from "@genshin-ranked/shared";
-import { BossButton, CharacterButton } from "../../frontend/src/components";
+import { BigCharacterButton, BossButton, CharacterButton } from "../../frontend/src/components";
 import { BOSS_DETAIL } from "@genshin-ranked/shared";
 import Droppable from "./Droppable";
 import Dragable from "./Dragable";
@@ -62,14 +62,12 @@ export const displayBoss = (boss: BOSSES, isPick: boolean, index: number, change
 }
 
 export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: number, index: number, change: (team: number, name: string, original: number) => void) => {
-    const banDisplay = (isPick ? "pick" : "ban");
     return (
       <Droppable id={CHARACTER_INFO[character].index}>
         <Dragable id={CHARACTER_INFO[character].index}>
           <div
             onContextMenu={(e) => {
               e.preventDefault();
-              console.log("index: "+index);
               change(
                 team,
                 CHARACTER_INFO[character].displayName,
@@ -81,7 +79,7 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
               character={character}
               updateCharacter={update}
               updateHover={updateHover}
-              banDisplay={banDisplay}
+              isBan={!isPick}
               team={0}
               mainDisplay={false}
               isChosen={false}
@@ -93,17 +91,8 @@ export const displayCharacter = (character: CHARACTERS, isPick: boolean, team: n
     );
 }
 
-export const displayCharacterNoDrag = (character: CHARACTERS, isPick: boolean, updateHover: (team: number, selected: number) => void) => {
+export const displayCharacterNoDrag = (character: CHARACTERS, index: number, updateHover: (which: number) => void) => {
   return(
-    <CharacterButton
-      character={character}
-      updateCharacter={update}
-      updateHover={updateHover}
-      banDisplay={isPick ? "pick" : "ban"}
-      team={0}
-      mainDisplay={false}
-      isChosen={false}
-      component={true}
-    />
+    <BigCharacterButton character={character} index={index} updateHover={updateHover} />
   )
 }

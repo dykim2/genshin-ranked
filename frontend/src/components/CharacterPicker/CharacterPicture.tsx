@@ -19,11 +19,11 @@ interface ICharacter {
 	character: CHARACTERS
 }
 interface ICharacterPicture extends ICharacter { 
-	banDisplay: string;
+	isBan: boolean;
 	component: boolean;
 }
 
-const ImageDetail = ({character}: ICharacter) => {
+export const ImageDetail = ({character}: ICharacter) => {
 	return (
 		<Fragment>
 			<Image src={getCharacterImagePath(character)} />
@@ -54,7 +54,15 @@ const BanDetail = ({character}: ICharacter) => {
 	);
 }
 
-export const CharacterPicture = ({ character, banDisplay, component }: ICharacterPicture) => {
+export const DisplayPicture = ({character}: ICharacter) => {
+	return (
+		<NormalGradientBox rarity={CHARACTER_INFO[character].rarity}>
+			<ImageDetail character={character} />
+		</NormalGradientBox>
+	);
+}
+
+export const CharacterPicture = ({character, isBan, component}: ICharacterPicture) => {
 	// check if the hovered index matches
 	// when creating a game reset both
 	// highlight 
@@ -62,7 +70,7 @@ export const CharacterPicture = ({ character, banDisplay, component }: ICharacte
 	let hoverInd = useAppSelector(hoveredCharacter)
 	return (
 		<Box sx={{ backgroundColor: "white" }}>
-			{thisInd == hoverInd && !component && banDisplay != "ban" ? (
+			{thisInd == hoverInd && !component && !isBan ? (
 				<HoveredGradientBox rarity={CHARACTER_INFO[character].rarity}>
 					<ImageDetail character={character} />
 				</HoveredGradientBox>
@@ -70,7 +78,7 @@ export const CharacterPicture = ({ character, banDisplay, component }: ICharacte
 				<HoveredBannedBox>
 					<BanDetail character={character} />
 				</HoveredBannedBox>
-			) : banDisplay != "ban" ? (
+			) : !isBan ? (
 				<NormalGradientBox rarity={CHARACTER_INFO[character].rarity}>
 					<ImageDetail character={character} />
 				</NormalGradientBox>
@@ -157,6 +165,7 @@ const IconImage = styled("img")(({ theme }) => ({
 	},
 	objectFit: "cover",
 }));
+
 
 const IconWrapper = styled(Icon)({
 	position: "absolute",
