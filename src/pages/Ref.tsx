@@ -49,50 +49,174 @@ const Ref = () => {
         let whichRestriction: TEAM_BONUS = TEAM_BONUS.none; // team element restrictions (you MUST be this element or that element)
         let whichOptions: TEAM_BONUS[] = [TEAM_BONUS.none, TEAM_BONUS.none, TEAM_BONUS.none]; // team options (aino ref, hex ref, chasca element), but per character, so if two or more moonsign, two or more hex, dont do anything
         let elementInfo: ELEMENTS[] = [ELEMENTS.physical, ELEMENTS.physical, ELEMENTS.physical];
+        let doubleUp: TEAM_BONUS[] | null = null;
         for(let i = 0; i < indexes.length; i++){
             let bonus = CHARACTER_INFO[charMap.get(indexes[i]) ?? CHARACTERS.None].bonus;
             // check for specific dual element teams - if two of them exist on the same team, they cancel each other out. tbf not necessary
+            // make an exception for something like skirk effie nilou - ignore nilou passive
             if(bonus == TEAM_BONUS.hydrocryo || bonus == TEAM_BONUS.hydrodendro || bonus == TEAM_BONUS.pyroelectro){
                 if(whichRestriction != TEAM_BONUS.none && whichRestriction != bonus){
                     whichRestriction = TEAM_BONUS.none;
-                    break;
+                    // problem is this relies on last character to work properly
+                    // maybe go back and check again if and only if this procs
+                    doubleUp = [];
+                    doubleUp.push(whichRestriction);
+                    doubleUp.push(bonus);
                 }
                 else{
-                    whichRestriction = bonus;
+                    if(doubleUp != null){
+                        // in the case of three different team bonuses
+                        doubleUp.push(bonus);
+                    }
+                    else{
+                        whichRestriction = bonus;
+                    }
                     whichOptions[i] = TEAM_BONUS.none;
                 }
             }
             else{
                 whichOptions[i] = bonus;
             }
-            // console.log(charMap.get(indexes[i]));
-            // console.log("character");
             elementInfo[i] = CHARACTER_INFO[charMap.get(indexes[i]) ?? CHARACTERS.None].element;
         }
+        let cryo = 0;
+        let dendro = 0;
+        let electro = 0;
+        let hydro = 0;
+        let pyro = 0;
+        let multi = 0;
+        for (let i = 0; i < elementInfo.length; i++) {
+            if (elementInfo[i] === ELEMENTS.cryo) {
+                cryo++;
+            }
+            if (elementInfo[i] === ELEMENTS.dendro) {
+                dendro++;
+            }
+            if (elementInfo[i] === ELEMENTS.electro) {
+                electro++;
+            }
+            if (elementInfo[i] === ELEMENTS.hydro) {
+                hydro++;
+            }
+            if (elementInfo[i] === ELEMENTS.pyro) {
+                pyro++;
+            }
+            if (elementInfo[i] === ELEMENTS.multi) {
+                multi++;
+          }
+        }
+        if(doubleUp != null){
+            // check for the first 
+            let found = false;
+            for(let i = 0; i < doubleUp.length; i++){
+                switch(doubleUp[i]){
+                    case TEAM_BONUS.pyroelectro: {
+                        if(pyro + electro + multi == 3){
+                            found = true;
+                            whichRestriction = TEAM_BONUS.pyroelectro;
+                        }
+                        break;
+                    }
+                    case TEAM_BONUS.hydrocryo: {
+                        if(hydro + cryo + multi == 3){
+                            found = true;
+                            whichRestriction = TEAM_BONUS.hydrocryo;
+                        }
+                        break;
+                    }
+                    case TEAM_BONUS.hydrodendro: {
+                        if(hydro + dendro + multi == 3){
+                            found = true;
+                            whichRestriction = TEAM_BONUS.hydrodendro;
+                        }
+                        break;
+                    }
+                }
+                if(found){
+                    break;
+                }
+            }
+        }
+        else if(whichRestriction != TEAM_BONUS.none){
+            let found = false;
+            switch(whichRestriction){
+                case TEAM_BONUS.pyroelectro: {
+                    if(pyro + electro + multi == 3){
+                        found = true;
+                        whichRestriction = TEAM_BONUS.pyroelectro;
+                    }
+                    break;
+                }
+                case TEAM_BONUS.hydrocryo: {
+                    if(hydro + cryo + multi == 3){
+                        found = true;
+                        whichRestriction = TEAM_BONUS.hydrocryo;
+                    }
+                    break;
+                }
+                case TEAM_BONUS.hydrodendro: {
+                    if(hydro + dendro + multi == 3){
+                        found = true;
+                        whichRestriction = TEAM_BONUS.hydrodendro;
+                    }
+                    break;
+                }
+            }
+            if(!found){
+                whichRestriction = TEAM_BONUS.none;
+            }
+        }
+        // re-evaluate teambonus 
+        /*
+        console.log("elements");
+        console.log(elementInfo);
+        console.log("team bonus");
+        console.log(whichRestriction);
+        console.log("team options")
+        console.log(whichOptions);
+        */
+        let count = 0;
+        let moonsign = 0;
+        let hexerei = 0;
+        let phec = false;
+        let nahida = false;
+        console.log("phec and nahida:",phec,nahida,whichOptions.length);
+        for (let i = 0; i < whichOptions.length; i++) {
+            // console.log("tes tes tes")
+            // console.log(whichOptions[i],"option",whichOptions[i] === TEAM_BONUS.phec);
+            if (whichOptions[i] === TEAM_BONUS.neuvillette) {
+                count += 0.5;
+            }
+            if (whichOptions[i] === TEAM_BONUS.chooseelement) {
+                count++;
+            }
+            if (whichOptions[i] === TEAM_BONUS.hexerei) {
+                hexerei++;
+            }
+            if (whichOptions[i] === TEAM_BONUS.moonsign) {
+                moonsign++;
+            }
+            if (whichOptions[i] === TEAM_BONUS.phec) {
+                // console.log("yes phec")
+                phec = true;
+            }
+            if (whichOptions[i] === TEAM_BONUS.nahida) {
+                nahida = true;
+            }
+        }
+        if (count == 1.5) {
+          // ref must be hydro
+            if(moonsign == 1 && !flinsInTeam.current){
+                setInfo("Aino or any non-Natlan non-Moonsign Hydro character, up to the players!");
+            }
+            else{
+                setInfo("any non-Natlan non-Moonsign Hydro character!");
+            }
+            return;
+        }
+        // atm doesnt account for chasca neuv escoffier / skirk / nilou
         if(whichRestriction == TEAM_BONUS.none){
-            let count = 0;
-            let moonsign = 0;
-            let hexerei = 0;
-            for (let i = 0; i < indexes.length; i++) {
-                if(whichOptions[i] === TEAM_BONUS.neuvillette){
-                    count+=0.5;
-                }
-                if(whichOptions[i] == TEAM_BONUS.chooseelement){
-                    count++;
-                }
-                if(whichOptions[i] == TEAM_BONUS.hexerei){
-                    hexerei++;
-                }
-                if(whichOptions[i] == TEAM_BONUS.moonsign){
-                    moonsign++;
-                }
-            }
-            if(count == 1.5){
-                // ref must be hydro
-                setInfo("any non-Natlan Hydro character (ideally non-Moonsign but not as relevant)!");
-                return;
-            }
-            else if(count == 1){
+            if(count == 1){
                 // check for flins
                 if(flinsInTeam && moonsign == 1){
                     for(let i = 0; i < indexes.length; i++){
@@ -127,50 +251,36 @@ const Ref = () => {
                 else if(hexerei == 1){
                     setInfo("Fischl, Razor, or follow standard ref rules, chosen by the players!");
                 }
+                else if(phec){
+                    // console.log("yes phec 2")
+                    let newElements = [...elementInfo];
+                    let bonusElements = [ELEMENTS.anemo, ELEMENTS.geo, ELEMENTS.dendro];
+                    newElements = newElements.concat(bonusElements);
+                    setInfo(generalElements(newElements, false));
+                }
+                else if(nahida){
+                    let newElements = [...elementInfo];
+                    let bonusElements = [ELEMENTS.hydro, ELEMENTS.pyro, ELEMENTS.electro];
+                    newElements = newElements.concat(bonusElements);
+                    setInfo(generalElements(newElements, false));
+                }
                 else{
                     setInfo(generalElements(elementInfo, false));
                 }
             }
         }
         else{
-            let cryo = 0;
-            let dendro = 0;
-            let electro = 0;
-            let hydro = 0;
-            let pyro = 0;
-            let multi = 0;
-            let newElements: (ELEMENTS | null)[] = Array.from(new Set(elementInfo));
-            for (let i = 0; i < elementInfo.length; i++) {
-                if(elementInfo[i] === ELEMENTS.cryo){
-                    cryo++;
-                }
-                if(elementInfo[i] === ELEMENTS.dendro){
-                    dendro++;
-                }
-                if (elementInfo[i] === ELEMENTS.electro) {
-                    electro++;
-                }
-                if (elementInfo[i] === ELEMENTS.hydro){
-                    hydro++;
-                }
-                if (elementInfo[i] === ELEMENTS.pyro) {
-                    pyro++;
-                }
-                if (elementInfo[i] === ELEMENTS.multi) {
-                    multi++;
-                }
-            }
             if(whichRestriction == TEAM_BONUS.pyroelectro){
                 // check everyone is pyro or electro
                 if(pyro + electro + multi == 3){
                     if((pyro > electro && pyro != 3) || electro == 3){
-                        setInfo("Any non-Natlan Pyro character!");
+                        setInfo("Any non-Natlan non-Moonsign Pyro character!");
                     }
                     else if(pyro < electro || pyro == 3){
-                        setInfo("Any non-Natlan Electro character!");
+                        setInfo("Any non-Natlan non-Moonsign Electro character!");
                     }
                     else{
-                        setInfo("Any non-Natlan Electro or Pyro character, depending on which element has more characters!");
+                        setInfo("Any non-Natlan non-Moonsign Electro or Pyro character, depending on which element has more characters!");
                     }
                 }
                 else{
@@ -180,33 +290,49 @@ const Ref = () => {
             else if(whichRestriction == TEAM_BONUS.hydrocryo){
                 if(hydro + cryo + multi == 3){
                     if((hydro > cryo && hydro != 3) || cryo == 3){
-                        setInfo("Any non-Natlan Hydro character!");
+                        setInfo("Any non-Natlan non-Moonsign Hydro character!");
                     }
                     else if(hydro < cryo || hydro == 3){
-                        setInfo("Any non-Natlan Cryo character!");
+                        setInfo("Any non-Natlan non-Moonsign Cryo character!");
                     }
                     else{
                         // TODO fix this when cryo mc comes out if ever
-                        setInfo("Any non-Natlan Hydro character!");
+                        setInfo("Any non-Natlan non-Moonsign Hydro character!");
                     }
                 }
                 else{
-                    setInfo(generalElements(elementInfo, false));
+                    let check = false; // check for escoffier
+                    let newElements: (ELEMENTS)[] = Array.from(new Set(elementInfo));
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == CHARACTER_INFO[CHARACTERS.Escoffier].index){
+                            check = true;
+                            break;
+                        }
+                    }
+                    let retStr = "any non-Natlan non-Moonsign";
+                    for (let i = 0; i < newElements.length; i++) {
+                        retStr += ` non-${newElements[i]}`;
+                    }
+                    if(check && hydro == 0){
+                        retStr += ` non-hydro`
+                    }
+                    retStr += " character, element chosen by the ref!"
                 }
             }
             else{
                 if(hydro + dendro + multi == 3){
                     if((hydro + dendro && hydro != 3) || dendro == 3){
-                        setInfo("Any non-Natlan Hydro character!");
+                        setInfo("Any non-Natlan non-Moonsign Hydro character!");
                     }
                     else if(hydro < dendro || hydro == 3){
-                        setInfo("Any non-Natlan Dendro character!");
+                        setInfo("Any non-Natlan non-Moonsign Dendro character!");
                     }
                     else{
-                        setInfo("Any non-Natlan Hydro or Dendro character, depending on which element has more characters!");
+                        setInfo("Any non-Natlan non-Moonsign Hydro or Dendro character, depending on which element has more characters!");
                     }
                 }
                 else{
+                    // check if its escoffier or skirk, skirk doesnt have a restriction of no hydro ref without full passive
                     setInfo(generalElements(elementInfo, false));
                 }
             }
@@ -238,14 +364,13 @@ const Ref = () => {
             openCharacterMenu,
           )}
         </Stack>
-        <Stack marginLeft={1} direction={"row"}>
           <Typography sx={{ fontSize: fontSizeChoice }}>
             Ref can use&nbsp;
-          </Typography>
-          <Typography sx={{ fontSize: fontSizeChoice }} fontWeight={"bold"}>
+            <Typography component={"span"} sx={{ fontSize: fontSizeChoice }} fontWeight={"bold"}>
             {`${information}`}
           </Typography>
-        </Stack>
+          </Typography>
+          
 
         <CharactersModal
           open={isOpen}
@@ -257,9 +382,9 @@ const Ref = () => {
     );  
     
 }
-const generalElements = (elementInfo: (ELEMENTS | null)[], chooseElement: boolean) => {
-  let newElements: (ELEMENTS | null)[] = Array.from(new Set(elementInfo));
-  let retStr = "any non-Natlan";
+const generalElements = (elementInfo: ELEMENTS[], chooseElement: boolean) => {
+  let newElements: (ELEMENTS)[] = Array.from(new Set(elementInfo));
+  let retStr = "any non-Natlan non-Moonsign";
   for (let i = 0; i < newElements.length; i++) {
     retStr += ` non-${newElements[i]}`;
   }
@@ -272,7 +397,5 @@ const generalElements = (elementInfo: (ELEMENTS | null)[], chooseElement: boolea
   }
   return retStr;
 };
-
-
 
 export default Ref;
