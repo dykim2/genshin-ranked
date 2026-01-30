@@ -260,8 +260,8 @@ const gameSlice = createSlice({
       if (replaceIndex != -1) {
         state.bosses[replaceIndex] = boss;
         // check if long
-        if(long && !state.longBoss[team]){
-          state.longBoss[team] = true;
+        if(long && !state.longBoss[team - 1]){
+          state.longBoss[team - 1] = true;
         }
       } else {
         const emptyIndex = state.bosses.findIndex((b: number) => b == -1);

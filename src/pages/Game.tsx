@@ -476,6 +476,7 @@ const Game = (props: {
     type: string,
     timeout = false
   ): void => {
+    console.log("team, selection, type, timeout:",teamNum, selection, type, timeout);
     if (socket.current.readyState != 1) {
       alert("Please refresh the page and try again!");
       return;
