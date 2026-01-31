@@ -281,12 +281,9 @@ const gameSlice = createSlice({
         // check for next team
       }
       // this could override the long boss problem so must fix
-      if(long && !state.longBoss[team]){
-        state.longBoss[team] = true;
+      if(long && !state.longBoss[team - 1]){
+        state.longBoss[team - 1] = true;
       }
-      // check for next boss
-      // create a reducer question mark
-      // this could also manage code elsewhere
     },
     addBossBan(
       state,
