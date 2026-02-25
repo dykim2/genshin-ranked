@@ -273,6 +273,14 @@ export const BOSS_DETAIL: BossMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/13/9a/ac/ME15W8RF_t.png",
 		index: 52,
 	},
+	[BOSSES.Moongecko]: {
+		displayName: "Moongecko",
+		element: ELEMENTS.geo,
+		type: BOSS_TYPE.Standard,
+		imageFileName: "Moongecko",
+		onlineFilePath: "https://thumbs4.imagebam.com/91/97/a0/ME1AXN4K_t.png",
+		index: 57,
+	},
 	[BOSSES.MountainKing]: {
 		displayName: "Mountain King",
 		element: ELEMENTS.dendro,

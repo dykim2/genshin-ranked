@@ -67,6 +67,7 @@ export enum CHARACTERS {
 	Durin = "Durin",
 	Columbina = "Columbina",
 	Zibai = "Zibai",
+	Varka = "Varka",
 	Traveler = "Traveler",
 	Manekin = "Manekin",
 	Manekina = "Manekina",

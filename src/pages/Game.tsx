@@ -1116,6 +1116,7 @@ const Game = (props: {
       // should only execute case extraban if extra ban setting is enabled
       case "extraban":
       case "ban": {
+        // make sure timers stay paused when extra ban happen
         let newData = data as SocketBanMessage;
         console.log("current ban");
         updateTimer(true, newData.team, newData.nextTeam);

@@ -1012,6 +1012,16 @@ export const CHARACTER_INFO: CharacterMap = {
 		onlineFilePath: "https://thumbs4.imagebam.com/ea/8e/1b/ME10MX78_t.png",
 		index: 96,
 	},
+	[CHARACTERS.Varka]: {
+		displayName: "Varka",
+		element: ELEMENTS.anemo,
+		weapon: WEAPONS.claymore,
+		rarity: RARITY.FiveStar,
+		bonus: TEAM_BONUS.hexerei,
+		imageFileName: "Varka",
+		onlineFilePath: "https://thumbs4.imagebam.com/8c/e8/e1/ME1AXN4J_t.png",
+		index: 113,
+	},
 	[CHARACTERS.Venti]: {
 		displayName: "Venti",
 		element: ELEMENTS.anemo,
