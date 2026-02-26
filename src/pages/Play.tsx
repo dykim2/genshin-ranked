@@ -452,8 +452,6 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                   "Player 1",
                   "Player 2",
                   "Ref",
-                  "Ref (BO2 Game 1)",
-                  "Ref (BO2 Game 2)",
                   "Ref (2 + 1 bans)",
                   "Ref (Custom)",
                   "Producer",
