@@ -204,7 +204,7 @@ const Ref = () => {
                 nahida = true;
             }
             if(whichOptions[i] === TEAM_BONUS.varkahex) {
-                setInfo("Sucrose, Fischl, or Razor, chosen by the players!")
+                setInfo("Sucrose, unless the players ask for fischl or razor!")
                 return;
             }
         }
