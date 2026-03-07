@@ -18,7 +18,12 @@ export default function Home(){
         flexDirection: "column",
       }}
     >
-      <Typography sx={{fontSize: {xs: 15, sm: 23, md: 36, lg: 47, xl: 60}, textAlign: "center" }}>
+      <Typography
+        sx={{
+          fontSize: { xs: 15, sm: 23, md: 36, lg: 47, xl: 60 },
+          textAlign: "center",
+        }}
+      >
         {`Welcome to the homepage of the RANKED website!`}
       </Typography>
       <br />
@@ -29,6 +34,9 @@ export default function Home(){
             fontSize: fontSizeChoice,
             minWidth: widthChoice,
             marginBottom: 3,
+            marginTop: 2,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
           href="https://docs.google.com/spreadsheets/d/1_h1ya0jeoiP8mZamL6Bt_tm0uQGdOuVj6INX0aZqJhw/edit?gid=1427018506#gid=1427018506"
         >
@@ -41,10 +49,12 @@ export default function Home(){
             fontSize: fontSizeChoice,
             minWidth: widthChoice,
             marginBottom: 3,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
-          href="https://docs.google.com/spreadsheets/d/1pKupoKUxiT_pFFgL53yDEgtMZWdPCYetk9OZiF2-474/edit?gid=2094575644#gid=2094575644"
+          href="https://docs.google.com/spreadsheets/d/102S_d95w9eh1D4rHessbPgZQeZWocIZ67bwWZx8Uw-w/"
         >
-          Player Spreadsheet (casual)
+          Points sheet
         </Button>
         <Button
           variant="contained"
@@ -52,6 +62,8 @@ export default function Home(){
             fontSize: fontSizeChoice,
             minWidth: widthChoice,
             marginBottom: 3,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
           href="https://docs.google.com/spreadsheets/d/1uQ6sFSPISXJIOyb9M7UYFSTq-iJQ2RtSph4aDAmlD_8/edit?gid=458647158#gid=458647158"
         >
@@ -63,26 +75,38 @@ export default function Home(){
             fontSize: fontSizeChoice,
             minWidth: widthChoice,
             marginBottom: 3,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
           href="http://bit.ly/genshinranked"
         >
           Ranked Discord
         </Button>
         <Typography
-          sx={{fontSize: fontSizeChoice, marginBottom: 3}}
+          sx={{ fontSize: fontSizeChoice, marginBottom: 3 }}
         >{`Links`}</Typography>
         <Button
           variant="contained"
           color="success"
-          sx={{fontSize: charBossLinkSize, minWidth: charBossButtonSize, marginBottom: 3}}
+          sx={{
+            fontSize: charBossLinkSize,
+            minWidth: charBossButtonSize,
+            marginBottom: 3,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
+          }}
           href="/characters"
         >
           Characters
         </Button>
         <Button
           variant="contained"
-          color="success"
-          sx={{ fontSize: charBossLinkSize, minWidth: charBossButtonSize }}
+          sx={{
+            fontSize: charBossLinkSize,
+            minWidth: charBossButtonSize,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
+          }}
           href="/bosses"
         >
           Bosses

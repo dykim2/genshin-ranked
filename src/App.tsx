@@ -79,7 +79,14 @@ const App = () => {
   };
 
   const theme = createTheme({
-    typography: {fontFamily: "Roboto Mono", fontSize: 10}
+    typography: { fontFamily: "Roboto Mono", fontSize: 10 },
+    palette: {
+      primary: {
+        main: "#552255",
+        dark: "#0b0b45",
+        light: "#dbe9f4",
+      },
+    },
   });
 
   return (

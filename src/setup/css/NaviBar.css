@@ -6,10 +6,9 @@
 }
 
 .navigation {
-  background-color: #1f172a;
+  background-color: #0b0b45;
   font-size: 18px;
   font-family: 'Roboto Mono';
-  
 }
 
 .navigation ul {
@@ -46,14 +45,14 @@
 }
 
 .navigation ul a {
-  color: rgb(255 233 166);
+  color: #dbe9f4;
   text-decoration: none;
   font-family: inter;
   font-family: 'Roboto Mono';
 }
 
 .navigation ul a.active {
-  color: rgb(34 197 94);
+  color: #FFE976;
   font-family: 'Roboto Mono';
 }
 

@@ -1563,7 +1563,7 @@ const Game = (props: {
                         ref={countdownRefT1}
                         key={-1 * dateWithTimeT1}
                         onComplete={() => {
-                          switch(timerOverTurn){
+                          switch (timerOverTurn) {
                             case 0:
                               setTimerOverTurn(1);
                               break;
@@ -1680,7 +1680,7 @@ const Game = (props: {
                               true,
                               1,
                               ind,
-                              openChange
+                              openChange,
                             )
                           : null}
                         {/* 
@@ -1729,7 +1729,7 @@ const Game = (props: {
                                 false,
                                 1,
                                 -1 * (ban + 1),
-                                openChange
+                                openChange,
                               )
                             : null}
                         </Grid>
@@ -1745,13 +1745,13 @@ const Game = (props: {
                     let prevValue = JSON.stringify(el.getBoundingClientRect());
                     const handle = setInterval(() => {
                       let nextValue = JSON.stringify(
-                        el.getBoundingClientRect()
+                        el.getBoundingClientRect(),
                       );
                       if (nextValue === prevValue) {
                         clearInterval(handle);
                         localStorage.setItem(
                           "x",
-                          `${el.getBoundingClientRect().x}`
+                          `${el.getBoundingClientRect().x}`,
                         );
                       } else {
                         prevValue = nextValue;
@@ -1847,7 +1847,7 @@ const Game = (props: {
                               true,
                               2,
                               ind,
-                              openChange
+                              openChange,
                             )
                           : null}
                         {/* 
@@ -1899,7 +1899,7 @@ const Game = (props: {
                                 false,
                                 2,
                                 -1 * (ban + 1),
-                                openChange
+                                openChange,
                               )
                             : null}
                         </Grid>
@@ -1947,12 +1947,12 @@ const Game = (props: {
                             JSON.stringify({
                               type: "players",
                               id: props.id,
-                            })
+                            }),
                           );
                         }}
                         sx={{
-                          backgroundColor: "#543834",
-                          color: "white",
+                          backgroundColor: "#dbe9f4",
+                          color: "#000080",
                         }}
                       >
                         <Typography textTransform="none">
@@ -1990,8 +1990,8 @@ const Game = (props: {
                     identity.result != "finish" ? (
                       <Button
                         sx={{
-                          backgroundColor: "#543834",
-                          color: "white",
+                          backgroundColor: "#dbe9f4",
+                          color: "#000080",
                         }}
                         fullWidth
                         onClick={() => {
@@ -1999,7 +1999,7 @@ const Game = (props: {
                             JSON.stringify({
                               type: "pause",
                               id: props.id,
-                            })
+                            }),
                           );
                         }}
                       >
@@ -2012,8 +2012,8 @@ const Game = (props: {
                       <>
                         <Button
                           sx={{
-                            backgroundColor: "#543834",
-                            color: "white",
+                            backgroundColor: "#dbe9f4",
+                            color: "#000080",
                           }}
                           fullWidth
                           onClick={() => {
@@ -2021,7 +2021,7 @@ const Game = (props: {
                               JSON.stringify({
                                 type: "resume",
                                 id: props.id,
-                              })
+                              }),
                             );
                           }}
                         >
@@ -2032,8 +2032,8 @@ const Game = (props: {
                       cookies.player.charAt(0) == "2" ? (
                       <Button
                         sx={{
-                          backgroundColor: "#943834",
-                          color: "white",
+                          backgroundColor: "#dbe9f4",
+                          color: "#000080",
                         }}
                         fullWidth
                         disabled={
@@ -2049,7 +2049,7 @@ const Game = (props: {
                               identity.result == "bossban"
                               ? hoverBoss
                               : hoverCharacter,
-                            identity.result
+                            identity.result,
                           );
                         }}
                       >
@@ -2061,8 +2061,8 @@ const Game = (props: {
                       identity.result == "waiting" ? (
                       <Button
                         sx={{
-                          backgroundColor: "#543834",
-                          color: "white",
+                          backgroundColor: "#dbe9f4",
+                          color: "#000080",
                         }}
                         fullWidth
                         onClick={() => {
@@ -2072,7 +2072,7 @@ const Game = (props: {
                                 type: "switch",
                                 phase: "extraban",
                                 id: props.id,
-                              })
+                              }),
                             );
                           } else if (doBossBansExist.current) {
                             socket.current.send(
@@ -2080,7 +2080,7 @@ const Game = (props: {
                                 type: "switch",
                                 phase: "bossban",
                                 id: props.id,
-                              })
+                              }),
                             );
                           } else {
                             socket.current.send(
@@ -2088,7 +2088,7 @@ const Game = (props: {
                                 type: "switch",
                                 phase: "boss",
                                 id: props.id,
-                              })
+                              }),
                             );
                           }
                         }}
@@ -2117,7 +2117,7 @@ const Game = (props: {
                               false,
                               1,
                               -1 * (ban + 1),
-                              openChange
+                              openChange,
                             )
                           : null}
                       </Fragment>
@@ -2163,12 +2163,12 @@ const Game = (props: {
                                     BOSSES.None,
                                   true,
                                   ind,
-                                  openChange
+                                  openChange,
                                 )
                               : null}
                           </Grid>
                         );
-                      }
+                      },
                     )}
                   </DndContext>
                 </Grid>
@@ -2191,7 +2191,7 @@ const Game = (props: {
                                 bossRef.current.get(ban) ?? BOSSES.None,
                                 false,
                                 -1 * (index + 1), // -1 for first, -2 for second
-                                openChange
+                                openChange,
                               )
                             : null}
                         </Grid>
@@ -2217,7 +2217,7 @@ const Game = (props: {
                               false,
                               2,
                               -1 * (ban + 1),
-                              openChange
+                              openChange,
                             )
                           : null}
                       </Fragment>
@@ -2263,7 +2263,7 @@ const Game = (props: {
                               bossRef.current.get(ban) ?? BOSSES.None,
                               false,
                               -1 * (index + 1),
-                              openChange
+                              openChange,
                             )
                           : null}
                       </Grid>
@@ -2292,7 +2292,7 @@ const Game = (props: {
             {`playing game id`} <b>{`${props.id}!`}</b>
           </Typography>
           <Button
-            style={{ backgroundColor: "#543834", color: "white" }}
+            style={{ backgroundColor: "#dbe9f4", color: "#000080" }}
             fullWidth
             onClick={() => {
               socket.current.send(
@@ -2300,7 +2300,7 @@ const Game = (props: {
                   type: "refresh",
                   from: "refresh info",
                   id: props.id,
-                })
+                }),
               );
             }}
           >
@@ -2311,7 +2311,7 @@ const Game = (props: {
           cookies.player.charAt(0) == "Z" ? ( // change back to S and P eventually but for now keep them hidden
             <Fragment>
               <Button
-                style={{ backgroundColor: "#543834", color: "white" }}
+                style={{ backgroundColor: "#dbe9f4", color: "#000080" }}
                 fullWidth
                 onClick={() => {
                   showSelectionAlert(0, true, false);

@@ -9,6 +9,7 @@ export enum TEAM_BONUS {
     neuvillette = "neuvillette",
     phec = "phec", // navia + xilonen
     nahida = "nahida",
+    varkahex = "varkahex"
 
     // hardcode specifics - chooseelement + neuvillette
     // make sure for hydrocryo, pyroelectro, hydrodendro that all party members are hydro/cryo, pyro/electro, hydro/dendro

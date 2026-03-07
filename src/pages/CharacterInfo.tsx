@@ -44,7 +44,7 @@ export default function CharacterList() {
   return (
     <Fragment>
       <Typography sx={{fontSize: {xs: "1rem", sm: "1.5rem", md: "2rem", lg: "2.5rem", xl: "3rem"}}}>
-        view character restrictions here! These are rarely updated, check changelogs or the sheet for the most recent, accurate information.
+        View character restrictions here!
       </Typography>
       {/* <Button>Show GIF for test</Button>*/}
       <Balancing

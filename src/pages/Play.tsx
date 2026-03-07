@@ -327,6 +327,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             marginBottom: 3,
             minWidth: widthChoice,
             fontFamily: "Roboto Mono",
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
           onClick={createGame}
         >
@@ -338,6 +340,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             fontSize: fontSizeChoice,
             marginBottom: 3,
             minWidth: widthChoice,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
           onClick={join}
         >
@@ -349,6 +353,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             fontSize: fontSizeChoice,
             marginBottom: 3,
             minWidth: widthChoice,
+            color: "primary.light",
+            backgroundColor: "primary.dark",
           }}
           onClick={() => {
             removeCookie("player");
@@ -363,7 +369,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         onClose={close}
         scroll="paper"
         slotProps={{
-          paper: { style: { color: "white", backgroundColor: "#73584b" } },
+          paper: { style: { color: "#0b0b45", backgroundColor: "#888fc2" } },
         }}
         sx={{ fontSize: refreshExitButtonSize }}
       >
@@ -377,8 +383,8 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                 <ListItem disableGutters key={game._id}>
                   <ListItemButton
                     sx={{
-                      backgroundColor: "#73584b",
-                      border: "2px solid red",
+                      backgroundColor: "#888fc2",
+                      border: "2px solid #0b0b45",
                       minWidth: {
                         xs: "70px",
                         sm: "85px",
@@ -418,13 +424,13 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               refreshGames();
             }}
             disabled={refreshing}
-            sx={{ fontSize: refreshExitButtonSize, color: "red" }}
+            sx={{ fontSize: refreshExitButtonSize, color: "#552255" }}
           >
             {refreshing ? "Please Wait" : "Refresh"}
           </Button>
           <Button
             onClick={close}
-            sx={{ fontSize: refreshExitButtonSize, color: "yellow" }}
+            sx={{ fontSize: refreshExitButtonSize, color: "#552255" }}
           >
             Exit
           </Button>
@@ -434,7 +440,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={choosing}
         onClose={close}
         slotProps={{
-          paper: { style: { color: "black", backgroundColor: "#73584b" } },
+          paper: { style: { color: "#0b0b45", backgroundColor: "#888fc2" } },
         }}
       >
         <DialogTitle>
@@ -482,7 +488,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
                 {/* a next page button for specifically when creating */}
               </Button>
               <Button
-                sx={{ color: "yellow" }}
+                sx={{ color: "#552255", fontSize: refreshExitButtonSize }}
                 onClick={() => {
                   setChoosing(false); // stop choosing and remove game information
                   // remove game data - set game state back to default
@@ -499,7 +505,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
         open={options}
         onClose={() => setOptions(false)}
         slotProps={{
-          paper: { style: { color: "black", backgroundColor: "#46bdc6" } },
+          paper: { style: { color: "#0b0b45", backgroundColor: "#888fc2" } },
         }}
       >
         <DialogTitle>
@@ -557,7 +563,6 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           <FormControl>
             <Typography>who gets extra bans?</Typography>
             <RadioGroup
-              sx={{ color: "black" }}
               name="extra-bans-group"
               row
               value={extraBans}
@@ -648,8 +653,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               setTimes(oldTimes);
             }}
             error={(times[0] < 60 && times[0] >= 0) || times[0] < -1}
-          />
-          {" "}
+          />{" "}
           <TextField
             helperText="Set to -1 to set the same time as team 1"
             label="team 2 total pick time in s"
@@ -701,7 +705,6 @@ const Play = ({ activeGames, findActive }: IPlay) => {
             error={bonusParams[2] < -1}
             onChange={(e) => updateFields(2, e.target.value, false)}
           />
-
           <Typography textTransform="none">fearless bosses?</Typography>
           <Typography textTransform="none" fontSize="13px">
             enabling fearless bosses with a game id means the bosses from said
@@ -740,15 +743,9 @@ const Play = ({ activeGames, findActive }: IPlay) => {
               }}
             ></TextField>
           ) : null}
-
           {/* for the id of fearless boss - game must be either in the "progress" or the "finish" state */}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => choosePlayer("Ref", status._id)}>
-            <Typography textTransform="none" fontWeight="bold">
-              {`default standard game`}
-            </Typography>
-          </Button>
           <Button
             onClick={async () => {
               submitCustom();
@@ -760,7 +757,7 @@ const Play = ({ activeGames, findActive }: IPlay) => {
           </Button>
           <Button onClick={() => setOptions(false)}>
             <Typography textTransform="none" fontWeight="bold">
-              Cancel
+              cancel
             </Typography>
           </Button>
         </DialogActions>
