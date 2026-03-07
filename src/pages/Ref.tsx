@@ -203,6 +203,10 @@ const Ref = () => {
             if (whichOptions[i] === TEAM_BONUS.nahida) {
                 nahida = true;
             }
+            if(whichOptions[i] === TEAM_BONUS.varkahex) {
+                setInfo("Sucrose, Fischl, or Razor, chosen by the players!")
+                return;
+            }
         }
         if (count == 1.5) {
           // ref must be hydro

@@ -1017,7 +1017,7 @@ export const CHARACTER_INFO: CharacterMap = {
 		element: ELEMENTS.anemo,
 		weapon: WEAPONS.claymore,
 		rarity: RARITY.FiveStar,
-		bonus: TEAM_BONUS.hexerei,
+		bonus: TEAM_BONUS.varkahex,
 		imageFileName: "Varka",
 		onlineFilePath: "https://thumbs4.imagebam.com/8c/e8/e1/ME1AXN4J_t.png",
 		index: 113,
