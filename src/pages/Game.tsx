@@ -240,6 +240,7 @@ const Game = (props: {
     time: 0,
   });
   const isMediumOrBigger = useMediaQuery(theme.breakpoints.up("md"));
+  const gridRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // adds selected characters and bosses to the ref objects
     localStorage.setItem("timer", "false");
@@ -1738,36 +1739,7 @@ const Game = (props: {
                   : undefined}
               </Grid>
               <Grid size={largeSizeChoice}>
-                <div
-                  ref={(el) => {
-                    // borrowed code
-                    if (!el) return;
-                    let prevValue = JSON.stringify(el.getBoundingClientRect());
-                    const handle = setInterval(() => {
-                      let nextValue = JSON.stringify(
-                        el.getBoundingClientRect(),
-                      );
-                      if (nextValue === prevValue) {
-                        clearInterval(handle);
-                        localStorage.setItem(
-                          "x",
-                          `${el.getBoundingClientRect().x}`,
-                        );
-                      } else {
-                        prevValue = nextValue;
-                      }
-                    }, 100);
-                  }}
-                  style={
-                    /*
-                    identity.result.toLowerCase() == "progress" ||
-                    cookies.player.charAt(0) == "S"
-                      ? { minWidth: 1080 }
-                      : undefined
-                    */
-                    undefined
-                  }
-                >
+                <div ref={gridRef}>
                   <div>
                     {!(
                       cookies.player.charAt(0) == "S" ||
@@ -1817,6 +1789,7 @@ const Game = (props: {
                     ) : null}
                   </div>
                 </div>
+                <GifPlay link={alertLink} isOpen={alertOpen} />
               </Grid>
               <Grid
                 container
@@ -2377,7 +2350,6 @@ const Game = (props: {
             name={changeInfo[1]}
             team={parseInt(changeInfo[2])}
           />
-          <GifPlay link={alertLink} isOpen={alertOpen} />
         </Fragment>
       )}
     </div>

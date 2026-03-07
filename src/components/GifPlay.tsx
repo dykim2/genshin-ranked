@@ -4,14 +4,16 @@ import { useCookies } from "react-cookie";
 import useScreenSize from "../hooks/useScreenSize.ts";
 interface play {
   link: string; // should either end in .gif or .png or other image format
-  isOpen: boolean
+  isOpen: boolean;
+  holdingContainerRef?: React.RefObject<HTMLDivElement>;
 }
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been banned!`}</Typography>
 //  <Typography sx={{ color: "white", textAlign: "center" }}>{`${selection} has been selected!`}</Typography>
 // check this works on mobile (hopefully?)
 export const GifPlay = ({
   link,
-  isOpen
+  isOpen,
+  holdingContainerRef
 }: play) => {
   const [cookies, ] = useCookies(["player"]);
   let imgWidth = 1080;
@@ -21,31 +23,14 @@ export const GifPlay = ({
   //console.log("total width: "+totalWidth);
   //console.log("total height: "+totalHeight);
   // default width is half the screen - 540 (the width of the image at full size)
-  const defWidth = totalWidth / 2 - 540;
   // console.log(defWidth);
-  let width = 1000;
-  let height = 0;
-  if (
-    cookies.player != undefined &&
-    localStorage.getItem("x") != null &&
-    cookies.player.charAt(0) == "S"
-  ) {
-    width = parseInt(localStorage.getItem("x")!);
-  } else if(defWidth > 0) {
-    width = defWidth;
-  }
-  else{
-    width = 0;
-  }
-  if(defWidth < 0){
-    imgWidth = totalWidth;
-    // proportionally scale height
-    imgHeight = 256 * (imgWidth / 1080);
-    height = (totalHeight / 2) - imgHeight;
-  }
-  if(cookies.player.charAt(0) == "P"){ // bandage fix, will look into soon
-    height = 200;
-    width = 100;
+  let centeredTop = totalHeight / 2 - 256;
+  let centeredLeft = totalWidth / 2 - imgWidth / 2;
+
+  if (holdingContainerRef?.current) {
+    const rect = holdingContainerRef.current.getBoundingClientRect();
+    centeredTop = rect.top + rect.height / 2 - 128; 
+    centeredLeft = rect.left + rect.width / 2 - imgWidth / 2;
   }
   return (
     <Fragment>
@@ -53,9 +38,9 @@ export const GifPlay = ({
       <Modal open={isOpen}>
         <Box
           sx={{
-            position: "absolute",
-            top: height == 0 ? ((totalHeight / 2) - 256) : height,
-            left: width
+            position: "fixed",
+            top: centeredTop,
+            left: centeredLeft,
           }}
         >
           <img src={link} width={imgWidth} height={imgHeight} />
