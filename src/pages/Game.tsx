@@ -1097,7 +1097,7 @@ const Game = (props: {
             nextTeam: newData.nextTeam,
           })
         );
-        showSelectionAlert(newData.ban, true, false);
+        showSelectionAlert(newData.ban, true, true);
       }
       case "complete": {
         break; // do nothing

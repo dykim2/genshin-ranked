@@ -48,7 +48,7 @@ export const getBossGifPath = (boss: BOSSES) => {
 }
 
 export const getBossBanPath = (boss: BOSSES) => {
-	return `${BOSS_IMAGE_PATH}/selections/${BOSS_DETAIL[boss].imageFileName}.gif`; // change this eventually when gifs are added
+	return `${BOSS_IMAGE_PATH}/bans/${BOSS_DETAIL[boss].imageFileName}Ban.gif`; // change this eventually when gifs are added
 }
 
 export const getElementImagePath = (elementDetail: GenericDetails) => {
